@@ -1,2 +1,2 @@
-# FYP---Deep-Purple
+# FYP-Deep-Purple
 Final year project
