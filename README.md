@@ -1,2 +1,2 @@
-# FYP-Deep-Purple
-Final year project
+# DeepPurple
+UOW CS Final year project
