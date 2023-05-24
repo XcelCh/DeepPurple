@@ -1,6 +1,7 @@
-import dogImage from "../assets/dog.jpg";
+import ProfilePicture from "../assets/ProfilePicture.jpg";
 import React from 'react';
 import { Link, useLocation } from "react-router-dom";
+import { TextIcon, ProductIcon } from '../assets';
 
 function NavBar() {
   const location = useLocation();
@@ -29,11 +30,15 @@ function NavBar() {
             <ul className="p-2 bg-[#60388B] shadow-md">
               <li>
                 <Link to="/textSentiment">
-                  <p >Text Sentiment Analyzer</p>
+                  <p className="flex mr-5">
+                    <img src={TextIcon} className="mr-4 ml-1"></img>Text Sentiment Analyzer
+                  </p>
                 </Link>
               </li>
               <li>
-                <a>Product Review Analyzer</a>
+                <p className="flex">
+                  <img src={ProductIcon}></img> Product Review Analyzer
+                </p>
               </li>
             </ul>
           </li>
@@ -51,7 +56,7 @@ function NavBar() {
 
       <div class="avatar mr-2">
         <div class="w-10 rounded-full">
-          <img src={dogImage} alt="Dog" />
+          <img src={ProfilePicture} alt="Dog" />
         </div>
         <svg
           className="fill-current ml-1"
