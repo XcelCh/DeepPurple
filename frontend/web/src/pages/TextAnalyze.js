@@ -3,7 +3,7 @@ import NavBar from '../components/NavBar';
 function TextAnalyze() {
   return (
     <div className="bg-[#B6C2FF]">
-      <NavBar />
+      {/* <NavBar /> */}
       <div
         className="md:container md:mx-auto bg-white my-5 rounded-t-lg"
         style={{ fontFamily: "Arial, Helvetica, sans-serif" }}

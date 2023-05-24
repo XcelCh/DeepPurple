@@ -1,12 +1,15 @@
 import dogImage from "../assets/dog.jpg";
 import React from 'react';
+import { Link, useLocation } from "react-router-dom";
 
 function NavBar() {
+  const location = useLocation();
   return (
     <div className="navbar bg-[#60388B] text-[#FFFFFF] flex justify-between">
-      <div className="">
-        <a className="btn btn-ghost normal-case text-xl">DeepPurple</a>
-      </div>
+      <p className="btn btn-ghost normal-case text-xl">
+        <Link to="/">DeepPurple</Link>
+      </p>
+
       <div className="">
         <ul className="menu menu-horizontal px-1">
           {/* Solutions */}
@@ -25,9 +28,9 @@ function NavBar() {
             </a>
             <ul className="p-2 bg-[#60388B] shadow-md">
               <li>
-                <a>
-                  <p>Text Sentiment Analyzer</p>
-                </a>
+                <Link to="/textSentiment">
+                  <p >Text Sentiment Analyzer</p>
+                </Link>
               </li>
               <li>
                 <a>Product Review Analyzer</a>

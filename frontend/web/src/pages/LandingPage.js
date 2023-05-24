@@ -13,7 +13,7 @@ import React from 'react';
 function LandingPage() {
   return (
     <>
-        <NavBar />
+        {/* <NavBar /> */}
         {/* Landing Header */}
         <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-tr from-[#D5B4D6] via-[#D3CBEF] via 40% to-[#9487E7]">
             <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl dark:text-white">We turn words into insights.</h1>
