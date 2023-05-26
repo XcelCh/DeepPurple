@@ -8,6 +8,7 @@ import cardImage from "../assets/Card.png";
 
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
+import { Link, useLocation } from "react-router-dom";
 import React from 'react';
 
 function LandingPage() {
@@ -15,13 +16,21 @@ function LandingPage() {
     <>
         {/* <NavBar /> */}
         {/* Landing Header */}
-        <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-tr from-[#D5B4D6] via-[#D3CBEF] via 40% to-[#9487E7]">
-            <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl dark:text-white">We turn words into insights.</h1>
-            <p className="mb-6 text-lg font-bold text-white lg:text-xl sm:px-16 xl:px-64 dark:text-gray-400">DeepPurple helps you to understand the sentiment and emotion <br></br> of your client - all wrapped up into one software tool <br></br> that will helps you improve your product.</p>
-            <a href="#" className="mb-10 inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-[#60388B] bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                Get started
-                <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-            </a>
+        <div>
+            {/* Second layer gradient */}
+            <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]" style={{position:'absolute'}}>
+                {/* Content */}
+                <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl dark:text-white">We turn words into insights.</h1>
+                <p className="mb-6 text-lg font-bold text-center text-white lg:text-xl sm:px-16 xl:px-64 dark:text-gray-400">DeepPurple helps you to understand the sentiment and emotion <br></br> of your client - all wrapped up into one software tool <br></br> that will helps you improve your product.</p>
+                <Link to="/textSentiment">
+                    <a href="#" className="mb-10 inline-flex item s-center justify-center px-5 py-3 text-base font-bold text-center text-[#60388B] bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                        Get started
+                        <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </a>
+                </Link>
+            </div>
+            {/* First layer gradient */}
+            <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]"> </div>
         </div>
 
         <div className="bg-gradient-to-b from-[#F6F4FC] via-white via-30% to-[#F6F4FC] to-50%">
@@ -36,7 +45,7 @@ function LandingPage() {
             <div className="flex flex-col justify-center items-center py-16">
                 <h2 className="text-4xl text-[#351D4F] font-extrabold dark:text-white">Benefits of using DeepPurple</h2>
                 <p className="my-2 text-lg text-[#351D4F]">Elevate your business to new heights with DeepPurple.</p>
-                <div className="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-16">
+                <div className="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-16 text-center">
                     <a className="block max-w-xs h-96 p-6 bg-[#F6F4FC] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                         <img className="mt-11 w-24 h-24 mx-auto mb-3" src={clockImage} alt="clock image"></img>
                         <h5 className="mb-2 text-2xl font-extrabold tracking-tight text-[#351D4F] dark:text-white">Save Time</h5>
@@ -64,7 +73,9 @@ function LandingPage() {
                     <span class="bg-[#351D4F] text-white text-sm font-bold px-5 py-3 rounded-2xl">BASIC FEATURES</span>
                     <h2 className="mt-10 mr-32 text-4xl text-[#351D4F] font-extrabold dark:text-white">Text Sentiment Analyzer</h2>
                     <p className="mr-32 my-4 text-lg text-[#351D4F]">Discover the Text Sentiment Analyzer, a tool that accurately<br></br>analyzes the sentiment and emotion in a text. Use this tool<br></br>to tailor your strategies and enhance customer experiences<br></br>based on real emotions.<br></br><br></br>Play around with our text sentiment analyzer, below.</p>
-                    <a href="#" className="inline-flex items-center px-5 py-3 font-bold text-center text-white bg-[#351D4F] rounded-xl hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700">Try now</a>
+                    <Link to="/textSentiment">
+                        <a href="#" className="inline-flex items-center px-5 py-3 font-bold text-center text-white bg-[#351D4F] rounded-xl hover:bg-[#3C3988] focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700">Try now</a>
+                    </Link>
                 </div>
             </div>
 
@@ -89,7 +100,7 @@ function LandingPage() {
                     <div class="text-left">
                         <h2 class="mb-2 text-3xl text-[#351D4F] font-extrabold tracking-tight text-gray-900 dark:text-white">Join us now!</h2>
                         <p class="mb-3 font-normal text-lg text-[#351D4F]">Unlock your business full potential with our premium<br></br>services. Choose from our range of tailored plans<br></br>designed to meet your needs and experience<br></br>cutting-edge features that will enhance your products.</p>
-                        <a href="#" className="inline-flex items-center px-5 py-3 font-bold text-center text-white bg-[#351D4F] rounded-xl hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700">Compare plans</a>
+                        <a href="#" className="inline-flex items-center px-5 py-3 font-bold text-center text-white bg-[#351D4F] rounded-xl hover:bg-[#3C3988] focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700">Compare plans</a>
                     </div>
                 </a>
             </div>
