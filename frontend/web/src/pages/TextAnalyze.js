@@ -64,9 +64,9 @@ function TextAnalyze() {
             </p>
 
             <div className="card card-compact w-full bg-base-100 shadow-xl">
-              <div className="bg-[#9B9B9B] rounded-t-lg h-15">{result.overallSentiment}</div>
-              <div className="card-body h-32">
-                <p className="card-body text-[#67557B]">{result.overallContent}</p>
+            <div className={`rounded-t-lg h-8 font-bold flex flex-col items-center justify-center ${result.overallSentiment === 'Negative' ? 'bg-[#FFAFAF]' : result.overallSentiment === 'Positive' ? 'bg-[#96FF66]' : result.overallSentiment === 'Neutral' ? 'bg-[#F4EEE1]' :'bg-[#9B9B9B]'}`}>{result.overallSentiment}</div>
+              <div className="">
+                <p className="card-body h-32 overflow-auto">{result.overallContent}</p>
               </div>
             </div>
           </div>
@@ -84,12 +84,13 @@ function TextAnalyze() {
               <a className="tab tab-lifted bg-[#AFC5FF]">Disgust</a>
               <a className="tab tab-lifted bg-[#DCAFFF]">Anger</a>
             </div>
-            <div className="border-x-2 border-b-2 p-4 mr-2 rounded-b-lg">
+            <div className="border-x-2 border-b-2 p-4 mr-2 rounded-b-lg]">
               {/* First card */}
               <Card
                 color="bg-[#FFFDAF]"
                 title="All emotions"
                 content={result.emotion}
+                contentStyle={{ backgroundColor: '#FF0000' }}
               />
               {/* Second card */}
               <Card
