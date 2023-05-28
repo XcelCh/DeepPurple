@@ -1,6 +1,39 @@
-import Card from '../components/Card'; 
+import Card from "../components/Card";
+import React, { useState, useEffect } from "react";
 
 function TextAnalyze() {
+  const [state, setState] = useState([]);
+  const [error, setError] = useState(null);
+
+  const [result, setResult] = useState([]);
+
+  const handleChange = (event) => {
+    setState(event.target.value); 
+    console.log(state);
+  }
+
+  const handleSubmit = () => {
+    const data = new FormData();
+    data.append("prompt", state);
+    
+    console.log(data);
+    fetch("http://localhost:8082", {
+    method: "POST",
+    body: data
+  })
+    .then((res) => res.json())
+    .then(
+      (result) => {
+        console.log("called get data");
+        console.log(result);
+        setResult(result);
+      },
+      (error) => {
+        setError(error);
+      }
+    );
+};
+
   return (
     <div className="bg-gradient-to-tr from-[#D5B4D6] via-[#D3CBEF] via 40% to-[#9487E7] border">
       <div
@@ -14,13 +47,14 @@ function TextAnalyze() {
             <p className="text-md font-bold text-left">
               Text Sentiment Analyzer
             </p>
-
             <textarea
               placeholder="Input your text here ..."
               className=" mt-2 textarea textarea-bordered textarea-md w-full max-w-full h-96"
+              value={state}
+              onChange = {handleChange}
             ></textarea>
 
-            <button className="btn rounded-full btn-sm bg-[#351D4F] mt-3 normal-case  max-w-[100px]">
+            <button onClick = {handleSubmit} className="btn rounded-full btn-sm bg-[#351D4F] mt-3 normal-case  max-w-[100px]">
               Analyze
             </button>
 
@@ -30,11 +64,9 @@ function TextAnalyze() {
             </p>
 
             <div className="card card-compact w-full bg-base-100 shadow-xl">
-              <div className="bg-[#9B9B9B] rounded-t-lg h-15">&nbsp;</div>
+              <div className="bg-[#9B9B9B] rounded-t-lg h-15">{result.overallSentiment}</div>
               <div className="card-body h-32">
-                <p className="card-body text-[#67557B]">
-                  Waiting for input...
-                </p>
+                <p className="card-body text-[#67557B]">{result.overallContent}</p>
               </div>
             </div>
           </div>
@@ -56,16 +88,8 @@ function TextAnalyze() {
               {/* First card */}
               <Card
                 color="bg-[#FFFDAF]"
-                title="Happiness"
-                content=" Lorem ipsum dolor sit amet consectetur adipiscing elit sapien,
-                  in nascetur etiam nec neque magnis. Erat vitae potenti
-                  torquent placerat tempus donec quis orci, vehicula arcu augue
-                  non convallis magna parturient vulputate curabitur, egestas
-                  blandit dictum inceptos fermentum class ridiculus. Cursus et
-                  leo ullamcorper tincidunt commodo egestas proin purus rutrum
-                  ante, fringilla euismod auctor fames mollis facilisis
-                  ultricies magnis enim, taciti varius montes eget posuere quis
-                  vel curabitur aptent."
+                title="All emotions"
+                content={result.emotion}
               />
               {/* Second card */}
               <Card
