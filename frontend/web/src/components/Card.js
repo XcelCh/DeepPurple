@@ -5,7 +5,7 @@ function Card({ color, title, content }) {
     <div tabindex="0" className="collapse group rounded-lg shadow-md">
       <div
         className={`collapse-title ${color} text-sm mt-2 font-bold rounded-t-lg`}
-      >
+      > 
         {title}
       </div>
       <div className="collapse-content bg-[#FFFFFF] text-sm">
