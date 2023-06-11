@@ -6,7 +6,6 @@ import firstPlaceholderImage from "../assets/Placeholder1.png";
 import secondPlaceholderImage from "../assets/Placeholder2.png";
 import cardImage from "../assets/Card.png";
 
-import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { Link, useLocation } from "react-router-dom";
 import React from 'react';
@@ -14,7 +13,6 @@ import React from 'react';
 function LandingPage() {
   return (
     <>
-        {/* <NavBar /> */}
         {/* Landing Header */}
         <div>
             {/* Second layer gradient */}
@@ -104,8 +102,8 @@ function LandingPage() {
                     </div>
                 </a>
             </div>
+        <Footer></Footer>
         </div>
-        <Footer/>
 
     </>
   );

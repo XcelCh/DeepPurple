@@ -31,7 +31,8 @@ function NavBar() {
               <li>
                 <Link to="/textSentiment">
                   <p className="flex mr-5">
-                    <img src={TextIcon} className="mr-4 ml-1"></img>Text Sentiment Analyzer
+                    <img src={TextIcon} className="mr-4 ml-1"></img>Text
+                    Sentiment Analyzer
                   </p>
                 </Link>
               </li>
@@ -42,6 +43,7 @@ function NavBar() {
               </li>
             </ul>
           </li>
+
           {/* Pricing */}
           <li>
             <a>Pricing</a>
@@ -54,19 +56,33 @@ function NavBar() {
         </ul>
       </div>
 
-      <div class="avatar mr-2">
-        <div class="w-10 rounded-full">
-          <img src={ProfilePicture} alt="Dog" />
+      {/* Profile */}
+      <div>
+        <div class="avatar mr-2">
+          <div class="w-10 rounded-full">
+            <img src={ProfilePicture} alt="Dog" />
+          </div>
         </div>
-        <svg
-          className="fill-current ml-1"
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-        >
-          <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
-        </svg>
+        <div className="dropdown dropdown-end">
+          <svg
+            className="fill-current ml-1"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            tabIndex={0}
+          >
+            <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+          </svg>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu p-2 shadow bg-[#60388B] rounded-box w-52 mr-5"
+          >
+            <li>
+              <Link to="/editProfile">Edit Profile</Link>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );
