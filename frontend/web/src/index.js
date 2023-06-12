@@ -21,6 +21,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./pages/Layout";
 import LandingPage from "./pages/LandingPage";
 import TextAnalyze from "./pages/TextAnalyze";
+import LoginForm from "./pages/LoginForm";
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<LandingPage />} />
           <Route path="textSentiment" element={<TextAnalyze />} />
+          <Route path="loginForm" element={<LoginForm />} />
         </Route>
       </Routes>
     </BrowserRouter>

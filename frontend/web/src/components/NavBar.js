@@ -72,7 +72,9 @@ function NavBar() {
             </svg>
           </div>
         ) : (
-          <button type="button" class="text-[#60388B] bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-sm px-5 py-1.5 text-center mr-8 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Log in</button>
+          <Link to="/loginForm">
+            <button type="button" class="text-[#60388B] bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-sm px-5 py-1.5 text-center mr-8 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Log in</button>
+          </Link>
         )}
       </div>
     </div>
