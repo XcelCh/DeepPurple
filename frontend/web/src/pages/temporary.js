@@ -1,35 +1,19 @@
-import trainImage from "../assets/train.jpg";
-import accurateImage from "../assets/Accurate.png";
-import clockImage from "../assets/Clock.png";
-import lampImage from "../assets/Lamp.png";
-import firstPlaceholderImage from "../assets/Placeholder1.png";
-import secondPlaceholderImage from "../assets/Placeholder2.png";
-import cardImage from "../assets/Card.png";
-
-import Footer from '../components/Footer';
-import { Link, useLocation } from "react-router-dom";
-import React from 'react';
-
-function LandingPage() {
-  return (
-    <>
-       {/* Landing Header */}
+{/* Landing Header */}
         <div>
-            {/* First layer gradient */}
-            <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
-                {/* Second layer gradient */}
-                <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
-                    {/* Content */}
-                    <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl dark:text-white">We turn words into insights.</h1>
-                    <p className="mb-6 text-lg font-bold text-center text-white lg:text-xl sm:px-16 xl:px-64 dark:text-gray-400">DeepPurple helps you to understand the sentiment and emotion <br></br> of your client - all wrapped up into one software tool <br></br> that will helps you improve your product.</p>
-                    <Link to="/textSentiment">
-                        <a href="#" className="mb-10 inline-flex item s-center justify-center px-5 py-3 text-base font-bold text-center text-[#60388B] bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                            Get started
-                            <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        </a>
-                    </Link>
-                </div>
+            {/* Second layer gradient */}
+            <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]" style={{position:'absolute'}}>
+                {/* Content */}
+                <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl dark:text-white">We turn words into insights.</h1>
+                <p className="mb-6 text-lg font-bold text-center text-white lg:text-xl sm:px-16 xl:px-64 dark:text-gray-400">DeepPurple helps you to understand the sentiment and emotion <br></br> of your client - all wrapped up into one software tool <br></br> that will helps you improve your product.</p>
+                <Link to="/textSentiment">
+                    <a href="#" className="mb-10 inline-flex item s-center justify-center px-5 py-3 text-base font-bold text-center text-[#60388B] bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                        Get started
+                        <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </a>
+                </Link>
             </div>
+            {/* First layer gradient */}
+            <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]"> </div>
         </div>
 
         <div className="bg-gradient-to-b from-[#F6F4FC] via-white via-30% to-[#F6F4FC] to-50%">
@@ -105,9 +89,3 @@ function LandingPage() {
             </div>
         <Footer></Footer>
         </div>
-
-    </>
-  );
-}
-
-export default LandingPage;
