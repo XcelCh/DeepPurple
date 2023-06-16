@@ -1,28 +1,80 @@
 import bgImage from "../assets/Background.png";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import AuthService from "../services/auth.service";
 
 function LoginForm() {
-  return (
+    const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const [loginError, setLoginError] = useState(false);
+
+    useEffect(() => {
+        const user = AuthService.getCurrentUser();
+        if (user) {
+          navigate('/');
+        }
+    }, []);
+
+    const onChangeEmail = (e) => {
+        const email = e.target.value;
+        setEmail(email);
+    };
+
+    const onChangePassword = (e) => {
+        const password = e.target.value;
+        setPassword(password);
+    };
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setMessage("");
+        AuthService.login(email, password).then(
+            () => {
+                setLoginError(false);
+                navigate("/");
+                window.location.reload();
+            },
+            (error) => {
+                setLoginError(true);
+                const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+                        
+                setMessage(resMessage);
+            }
+        );
+    };
+    
+  return ( 
     <>
         <section class="bg-[#F6F4FC]">
             <div class="h-screen flex flex-col items-center justify-center" style={{ backgroundImage: `url(${bgImage})` }} >
                 <div class="w-1/3 bg-white rounded-3xl shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                     <div class="p-6 space-y-4 md:space-y-6 sm:p-8 text-left">
-                        <a href="#" class="flex text-2xl font-semibold text-gray-900 dark:text-white">DeepPurple</a>
+                        {/* <a href="#" class="flex text-2xl font-semibold text-gray-900 dark:text-white">DeepPurple</a> */}
                         <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left">
                             Sign in
                         </h1>
                         <h3 class="text-sm font-normal text-gray-900 dark:text-white text-left">
                             Welcome back! It's nice to see you again.
                         </h3>
-                        <form class="space-y-4 md:space-y-6" action="#">
+                        <form class="space-y-4 md:space-y-6" onSubmit={handleLogin}>
                             <div>
                                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                                <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required=""></input>
+                                <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="" value={email}
+                                onChange={onChangeEmail}></input>
                             </div>
                             <div>
                                 <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""></input>
+                                <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="" value={password}
+                                onChange={onChangePassword}></input>
+                                {loginError && <p className="text-red-500 text-sm mt-2">Wrong email or password. Try again or click Forgot password to reset it.</p>}
                             </div>
                             
                             <button type="submit" class="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</button>
