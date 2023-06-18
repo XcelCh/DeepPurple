@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +22,10 @@ import com.example.fyp.service.AccountDetailsImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+
 @RequestMapping("/api/auth")
 public class AuthController {
+      
   @Autowired
   AuthenticationManager authenticationManager;
 
@@ -37,17 +40,17 @@ public class AuthController {
 
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
-    
+
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
     String jwt = jwtUtils.generateJwtToken(authentication);
-    
-    AccountDetailsImpl accountDetails = (AccountDetailsImpl) authentication.getPrincipal();   
 
-    return ResponseEntity.ok(new JwtResponse(jwt, 
-                         accountDetails.getEmail()));
+    AccountDetailsImpl accountDetails = (AccountDetailsImpl) authentication.getPrincipal();
+
+    return ResponseEntity.ok(new JwtResponse(jwt,
+        accountDetails.getEmail()));
   }
 
 }
