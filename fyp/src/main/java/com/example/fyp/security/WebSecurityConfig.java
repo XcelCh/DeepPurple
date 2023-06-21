@@ -17,6 +17,8 @@ import com.example.fyp.security.jwt.AuthEntryPointJwt;
 import com.example.fyp.security.jwt.AuthTokenFilter;
 import com.example.fyp.service.AccountServiceImpl;
 
+
+
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
@@ -58,6 +60,7 @@ public class WebSecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> 
                 auth.requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/analyze").permitAll()
                     .anyRequest().authenticated()
             );
 

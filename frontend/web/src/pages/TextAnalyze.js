@@ -59,7 +59,7 @@ function TextAnalyze() {
     data.append("prompt", prompt);
     setProcessing(true);
     console.log(data);
-    fetch("http://localhost:8082/api/auth/analyze", {
+    fetch("http://localhost:8082/analyze", {
       method: "POST",
       body: data,
     })
