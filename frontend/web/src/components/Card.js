@@ -9,13 +9,13 @@ function Card({ color, title, content, highlight, setHighlight, highlighted}) {
     setIsChecked(event.target.checked);
     if (event.target.checked == true) {
       setHighlight([...highlight, [highlighted, color]])
-      console.log(highlight);
+      console.log("add: " + highlight);
     } else {
       setHighlight(
         highlight.filter(
           (item) => (item[0]) !== highlighted || item[1] !== color)
       );
-      console.log(highlight);
+      console.log("remove: " + highlight);
     }
   };
 

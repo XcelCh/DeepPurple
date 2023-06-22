@@ -15,7 +15,7 @@ function TextAnalyze() {
   //   "Rewired my home network. This cable allowed me to create low cost but reliable data ports in my home office. I even made a few patch cords along the way. This was much better and lower cost than buying 50 or 100 foot patch cords."
   // );
 
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
   const [result, setResult] = useState("");
   const [filter, setFilter] = useState("");
@@ -29,10 +29,15 @@ function TextAnalyze() {
 
   // Update Highlight
   useEffect(() => {
+    console.log("original prompt: " + oriPrompt);
+
     const highlightedSentences = highlight.reduce((result, pair) => {
-      const regex = new RegExp(pair[0].trim(), "gi");
-      const sentence = pair[0].trim();
+      const sentence = pair[0];
+      const regex = new RegExp(sentence, "gi");
+      console.log("sentence: " + sentence);
+      console.log("regex: " + regex);
       const highlightColor = pair[1].trim();
+      console.log("highlightColor: " + highlightColor);
       return result.replace(
         regex,
         `<span style="background: linear-gradient(to bottom, transparent, ${highlightColor}) 50%;">
@@ -42,39 +47,45 @@ function TextAnalyze() {
     }, oriPrompt);
 
     setPrompt(highlightedSentences);
-    console.log(highlightedSentences);
+    console.log("highlighted sentence: " + highlightedSentences);
   }, [highlight]);
 
   // Change prompt content
   const handleChange = (event) => {
     setPrompt(event.target.value);
     setOriPrompt(event.target.value);
-    console.log(prompt);
   };
 
   // Analyze button
   const handleSubmit = () => {
-    setProcessing(true);
-    const data = new FormData();
-    data.append("prompt", prompt);
-    setProcessing(true);
-    console.log(data);
-    fetch("http://localhost:8082/analyze", {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log("called get data");
-          console.log(result);
-          setProcessing(false);
-          setResult(result);
-        },
-        (error) => {
-          setError(error);
-        }
-      );
+    setError("");
+    if (prompt === "") {
+      setError("Please input at least one sentence to be analyzed :D");
+    } else {
+      setProcessing(true);
+      const data = new FormData();
+      data.append("prompt", prompt);
+      setProcessing(true);
+      console.log(data);
+      fetch("http://localhost:8082/analyze", {
+        method: "POST",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then(
+          (result) => {
+            console.log("called get data");
+            console.log(result);
+            setProcessing(false);
+            setResult(result);
+            setOriPrompt(prompt);
+            console.log("highlight: " + highlight);
+          },
+          (error) => {
+            setError(error);
+          }
+        );
+    }
   };
 
   const handleFilter = (title) => {
@@ -84,6 +95,8 @@ function TextAnalyze() {
   const handleEdit = () => {
     setResult("");
     setProcessing(false);
+    setPrompt(oriPrompt);
+    setHighlight([])
   };
 
   return (
@@ -99,7 +112,7 @@ function TextAnalyze() {
             </p>
 
             {/* Input Text */}
-            {result === "" ? (
+            {result === "" && processing === false ? (
               <textarea
                 placeholder="Input your text here ..."
                 className=" mt-2 textarea textarea-bordered textarea-md w-full max-w-full h-96"
@@ -111,6 +124,13 @@ function TextAnalyze() {
                 className="border p-4 text-sm leading-loose h-96 rounded-lg bg-[#F2F2F2]"
                 dangerouslySetInnerHTML={{ __html: prompt }}
               ></div>
+            )}
+
+            {/* Error Message */}
+            {Error && (
+              <p className="text-red-500 text-sm mt-2">
+                {error}
+              </p>
             )}
 
             {/* Button */}
@@ -238,3 +258,5 @@ function TextAnalyze() {
 }
 
 export default TextAnalyze;
+
+
