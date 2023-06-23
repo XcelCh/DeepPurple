@@ -32,14 +32,17 @@ function TextAnalyze() {
     console.log("original prompt: " + oriPrompt);
 
     const highlightedSentences = highlight.reduce((result, pair) => {
-      const sentence = pair[0].trim();
-      const sentence_regex = sentence.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const sentence = pair[0].trim().replaceAll('"', "");
+      const sentence_regex = sentence
+        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+        .replaceAll('\"', "");
       const regex = new RegExp(sentence_regex, "gi");
       const highlightColor = pair[1].trim();
       // debug
       console.log("sentence: " + sentence);
       console.log("sentence_regex: " + sentence_regex);
       console.log("highlightColor: " + highlightColor);
+      console.log("regex: " + regex);
       // debug
       return result.replace(
         regex,

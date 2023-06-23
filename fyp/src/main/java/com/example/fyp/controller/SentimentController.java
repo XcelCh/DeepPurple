@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+
 import com.example.fyp.model.promptModel;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
@@ -89,7 +91,7 @@ public class SentimentController {
      		t.setOverallContent(overallContent);
 
             
-     		prompt = "Analyze the given input sentence " + sentence +  "and detect the emotions associated with highlighted keywords or sentences, then give explanation and associate them with a unique color in hexcode that are not too dark."
+     		prompt = "Analyze the given input sentence " + sentence +  " and detect the emotions associated with highlighted keywords or sentences, then give explanation and associate them with a unique color in hexcode that are not too dark."
             		+ " Please format the answer as [Emotion]|[highlighted keyword or sentence]|[explanation]|[hexcode]\n[IF MORE EMOTIONS].";                       		
      		String[] output_array = {""};
 //     		boolean segment = true;
@@ -139,7 +141,9 @@ public class SentimentController {
 
                 // check if highlighte is inside the text
                 DetailEmotion d = new DetailEmotion();
-                if (!prompt.contains(output_array[i].split("\\|")[1])) {
+                System.out.println("sentence: " + sentence.toLowerCase());
+                System.out.println("highlighted: " + output_array[i].split("\\|")[1].toLowerCase());
+                if (!sentence.toLowerCase().contains(output_array[i].split("\\|")[1].toLowerCase().replaceAll("\"", ""))) {
                         d.setTitle(output_array[i].split("\\|")[0]);
                         d.setHighlighted(output_array[i].split("\\|")[1]);
                         d.setExplanation(output_array[i].split("\\|")[2]);
@@ -168,7 +172,7 @@ public class SentimentController {
         @CrossOrigin(origins = "*", exposedHeaders = "Referrer-Policy")
         @PostMapping(value = "/analyze", produces = MediaType.APPLICATION_JSON_VALUE)
         @ResponseBody
-        public TextSentimentAnswer inputSentence(Model model, @ModelAttribute promptModel prompt){        	
+        public TextSentimentAnswer inputSentence(ModelMap model, @ModelAttribute promptModel prompt){        	
         		while(true) {
         			try {        		
     	        		TextSentimentAnswer response = textAnalyzer(prompt.prompt());     
