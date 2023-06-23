@@ -21,10 +21,9 @@ function Card({ color, title, content, highlight, setHighlight, highlighted}) {
 
   return (
     <div tabIndex="0" className="collapse rounded-lg shadow-md">
-      <input type="checkbox"
-        onClick={handleCheckboxChange} />
+      <input type="checkbox" onClick={handleCheckboxChange} />
       <div
-        className="collapse-title text-sm mt-2 font-bold rounded-t-lg"
+        className="collapse-title text-sm mt-2 font-bold rounded-t-lg text-[#FFFFFF]"
         style={{ backgroundColor: `${color}` }}
       >
         {title}

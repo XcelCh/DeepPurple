@@ -9,7 +9,7 @@ function TextAnalyze() {
   const [prompt, setPrompt] = useState("");
 
   // const [oriPrompt, setOriPrompt] = useState(
-  //   "Rewired my home network. This cable allowed me to create low cost but reliable data ports in my home office. I even made a few patch cords along the way. This was much better and lower cost than buying 50 or 100 foot patch cords."
+  //   "Rewired my home network. $This cable allowed me to create low cost but reliable data ports in my home office. I even made a few patch cords along the way. This was much better and lower cost than buying 50 or 100 foot patch cords."
   // );
   // const [prompt, setPrompt] = useState(
   //   "Rewired my home network. This cable allowed me to create low cost but reliable data ports in my home office. I even made a few patch cords along the way. This was much better and lower cost than buying 50 or 100 foot patch cords."
@@ -32,15 +32,18 @@ function TextAnalyze() {
     console.log("original prompt: " + oriPrompt);
 
     const highlightedSentences = highlight.reduce((result, pair) => {
-      const sentence = pair[0];
-      const regex = new RegExp(sentence, "gi");
-      console.log("sentence: " + sentence);
-      console.log("regex: " + regex);
+      const sentence = pair[0].trim();
+      const sentence_regex = sentence.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(sentence_regex, "gi");
       const highlightColor = pair[1].trim();
+      // debug
+      console.log("sentence: " + sentence);
+      console.log("sentence_regex: " + sentence_regex);
       console.log("highlightColor: " + highlightColor);
+      // debug
       return result.replace(
         regex,
-        `<span style="background: linear-gradient(to bottom, transparent, ${highlightColor}) 50%;">
+        `<span style="background: linear-gradient(to bottom, transparent 65%, ${highlightColor}) 50%;">
         ${sentence}
       </span>`
       );
@@ -121,7 +124,7 @@ function TextAnalyze() {
               ></textarea>
             ) : (
               <div
-                className="border p-4 text-sm leading-loose h-96 rounded-lg bg-[#F2F2F2]"
+                className="border p-4 text-sm leading-loose h-96 rounded-lg bg-[#FFFFFF]"
                 dangerouslySetInnerHTML={{ __html: prompt }}
               ></div>
             )}
@@ -209,7 +212,7 @@ function TextAnalyze() {
                 result.emotions.map((elem) => {
                   return (
                     <a
-                      className={`tab tab-lifted bg-[#E5E6E6] font-bold ${
+                      className={`tab tab-lifted bg-[#E5E6E6] font-bold text-[#FFFFFF] ${
                         elem.title === filter ? "tab-active" : ""
                       }`}
                       // className="tab tab-lifted font-bold"

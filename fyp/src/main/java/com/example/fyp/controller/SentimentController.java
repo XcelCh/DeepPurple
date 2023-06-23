@@ -24,13 +24,19 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.*;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.beans.factory.annotation.Value;
+
 
 @RestController
 public class SentimentController {
 
+@Value("${apiKey}")private String apiKeyContent;
+
         private TextSentimentAnswer textAnalyzer(String sentence) throws RuntimeException{
-//                String apiKey = "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";
-    		String apiKey = "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";
+        String apiKey = apiKeyContent;
+
+        // String apiKey = "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";
+                
 
             String currentModel = "text-davinci-003";
             TextSentimentAnswer t = new TextSentimentAnswer();
@@ -83,8 +89,8 @@ public class SentimentController {
      		t.setOverallContent(overallContent);
 
             
-     		prompt = "Analyze the given sentence " + sentence +  "and detect the emotions associated with highlighted keywords or sentences, then give explanation and associate them with a unique color in hexcode that are not too dark."
-            		+ " Please format the answer as [Emotion]|[highlighted keyword or sentence]|[explanation]|[hexcode]\n[IF MORE EMOTIONS]";                       		
+     		prompt = "Analyze the given input sentence " + sentence +  "and detect the emotions associated with highlighted keywords or sentences, then give explanation and associate them with a unique color in hexcode that are not too dark."
+            		+ " Please format the answer as [Emotion]|[highlighted keyword or sentence]|[explanation]|[hexcode]\n[IF MORE EMOTIONS].";                       		
      		String[] output_array = {""};
 //     		boolean segment = true;
 //     		while(segment) {
@@ -129,15 +135,23 @@ public class SentimentController {
             System.out.println(output_array.length);            
             for (int i = 0; i < output_array.length; i++) {            
             	// System.out.println(output_array[i]);            	
-            	// System.out.println("Regex length (FORDEBUG)" + output_array[i].split("\\|").length);
-            	if(output_array[i].equals("")) {
-            		continue;
-            	}
+                // System.out.println("Regex length (FORDEBUG)" + output_array[i].split("\\|").length);
+
+                // check if highlighte is inside the text
                 DetailEmotion d = new DetailEmotion();
-                d.setTitle(output_array[i].split("\\|")[0]);
-                d.setHighlighted(output_array[i].split("\\|")[1]);
-                d.setExplanation(output_array[i].split("\\|")[2]);
-                d.setColor(output_array[i].split("\\|")[3]);
+                if (!prompt.contains(output_array[i].split("\\|")[1])) {
+                        d.setTitle(output_array[i].split("\\|")[0]);
+                        d.setHighlighted(output_array[i].split("\\|")[1]);
+                        d.setExplanation(output_array[i].split("\\|")[2]);
+                        d.setColor("#E6E9ED");
+                } else {
+                        d.setTitle(output_array[i].split("\\|")[0]);
+                        d.setHighlighted(output_array[i].split("\\|")[1]);
+                        d.setExplanation(output_array[i].split("\\|")[2]);
+                        d.setColor(output_array[i].split("\\|")[3]);
+                }
+
+               
                 emotions.add(d);
             }
 
