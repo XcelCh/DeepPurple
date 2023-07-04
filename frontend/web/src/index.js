@@ -22,6 +22,10 @@ import Layout from "./pages/Layout";
 import LandingPage from "./pages/LandingPage";
 import TextAnalyze from "./pages/TextAnalyze";
 import LoginForm from "./pages/LoginForm";
+import EditProfile from "./pages/EditProfile";
+import AboutUs from "./pages/AboutUs";
+import Pricing from "./pages/Pricing";
+
 
 export default function App() {
   return (
@@ -31,6 +35,9 @@ export default function App() {
           <Route index element={<LandingPage />} />
           <Route path="textSentiment" element={<TextAnalyze />} />
           <Route path="loginForm" element={<LoginForm />} />
+          <Route path="editProfile" element={<EditProfile />} />
+          <Route path="aboutUs" element={<AboutUs />} />
+          <Route path="pricing" element={<Pricing />} />
         </Route>
       </Routes>
     </BrowserRouter>

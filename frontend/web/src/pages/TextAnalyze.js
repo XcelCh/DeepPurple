@@ -1,31 +1,16 @@
 import Card from "../components/Card";
 import React, { useState, useEffect } from "react";
 import { EmptySentiment, Loading } from "../assets/index";
-import { data } from "./data.js";
 import AuthService from "../services/auth.service";
 
 function TextAnalyze() {
   const [oriPrompt, setOriPrompt] = useState("");
   const [prompt, setPrompt] = useState("");
-
-  // const [oriPrompt, setOriPrompt] = useState(
-  //   "Rewired my home network. $This cable allowed me to create low cost but reliable data ports in my home office. I even made a few patch cords along the way. This was much better and lower cost than buying 50 or 100 foot patch cords."
-  // );
-  // const [prompt, setPrompt] = useState(
-  //   "Rewired my home network. This cable allowed me to create low cost but reliable data ports in my home office. I even made a few patch cords along the way. This was much better and lower cost than buying 50 or 100 foot patch cords."
-  // );
-
   const [error, setError] = useState("");
-
   const [result, setResult] = useState("");
   const [filter, setFilter] = useState("");
   const [processing, setProcessing] = useState(false);
   const [highlight, setHighlight] = useState([]);
-
-  // // temporary
-  // useEffect(() => {
-  //   setResult(data);
-  // }, []);
 
   // Update Highlight
   useEffect(() => {
