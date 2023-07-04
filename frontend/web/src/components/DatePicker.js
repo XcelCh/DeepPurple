@@ -16,9 +16,9 @@ const options = {
     icons: "",
     text: "",
     disabledText: "",
-    input: "",
+    input: "bg-white border-gray-400",
     inputIcon: "",
-    selected: "",
+    selected: "border-indigo-600",
   },
   icons: {
     prev: () => (
@@ -37,10 +37,11 @@ const options = {
   language: "en",
 };
 
-const DatePicker = () => {
+const DatePicker = ({formData, setFormData}) => {
   const [show, setShow] = useState(false);
 
   const handleChange = (selectedDate) => {
+    setFormData({...formData, dateOfBirth: selectedDate})
     console.log(selectedDate);
   };
 
