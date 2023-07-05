@@ -19,14 +19,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.fyp.service.AccountServiceImpl;
 
-public class AuthTokenFilter extends OncePerRequestFilter {
+public class AuthTokenValidationFilter extends OncePerRequestFilter {
+  
   @Autowired
   private JwtUtils jwtUtils;
 
   @Autowired
   private AccountServiceImpl accountService;
 
-  private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+  private static final Logger logger = LoggerFactory.getLogger(AuthTokenValidationFilter.class);
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

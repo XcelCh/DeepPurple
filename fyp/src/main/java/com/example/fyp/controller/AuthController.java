@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.fyp.controller.dto.LoginDto;
-import com.example.payload.response.JwtResponse;
 import com.example.fyp.repo.AccountRepository;
 import com.example.fyp.security.jwt.JwtUtils;
+import com.example.fyp.security.payload.response.JwtResponse;
 import com.example.fyp.service.AccountDetailsImpl;
 
 // TextSentiment 
@@ -36,7 +36,7 @@ import com.example.fyp.model.DetailEmotion;
 import java.util.*;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+// @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 
 @RequestMapping("/api/auth")
@@ -66,7 +66,7 @@ public class AuthController {
     AccountDetailsImpl accountDetails = (AccountDetailsImpl) authentication.getPrincipal();
 
     return ResponseEntity.ok(new JwtResponse(jwt,
-        accountDetails.getEmail()));
+        accountDetails.getUsername()));
   }
 
 }

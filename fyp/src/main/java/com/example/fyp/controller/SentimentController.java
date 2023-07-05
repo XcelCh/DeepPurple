@@ -164,12 +164,12 @@ public class SentimentController {
             return t;
         }
 
-        @GetMapping("/")
-        public String index() {
-                return "index";
-        }
+        // @GetMapping("/")
+        // public String index() {
+        //         return "index";
+        // }
 
-        @CrossOrigin(origins = "*", exposedHeaders = "Referrer-Policy")
+        // @CrossOrigin(origins = "*", exposedHeaders = "Referrer-Policy")
         @PostMapping(value = "/analyze", produces = MediaType.APPLICATION_JSON_VALUE)
         @ResponseBody
         public TextSentimentAnswer inputSentence(ModelMap model, @ModelAttribute promptModel prompt){        	
