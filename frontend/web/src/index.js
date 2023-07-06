@@ -25,6 +25,8 @@ import LoginForm from "./pages/LoginForm";
 import EditProfile from "./pages/EditProfile";
 import AboutUs from "./pages/AboutUs";
 import Pricing from "./pages/Pricing";
+import ForgetPasswordForm from './pages/ForgetPasswordForm';
+import SignUpForm from './pages/SignUpForm';
 
 
 export default function App() {
@@ -38,6 +40,8 @@ export default function App() {
           <Route path="editProfile" element={<EditProfile />} />
           <Route path="aboutUs" element={<AboutUs />} />
           <Route path="pricing" element={<Pricing />} />
+          <Route path="forgetPasswordForm" element={<ForgetPasswordForm />} />
+          <Route path="signUpForm" element={<SignUpForm />} />
         </Route>
       </Routes>
     </BrowserRouter>

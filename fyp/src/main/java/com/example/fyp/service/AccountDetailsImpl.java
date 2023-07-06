@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class AccountDetailsImpl implements UserDetails {
   private static final long serialVersionUID = 1L;
 
-  private String username;
+  // private String username;
   private String email;
   private Collection<? extends GrantedAuthority> authorities;
 
@@ -31,12 +31,12 @@ public class AccountDetailsImpl implements UserDetails {
 
   @Override
   public String getUsername() {
-    return username;
-  }
-
-  public String getEmail() {
     return email;
   }
+
+  // public String getEmail() {
+  //   return email;
+  // }
 
   @Override
   public String getPassword() {

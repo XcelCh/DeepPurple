@@ -29,11 +29,11 @@ public class JwtUtils {
     AccountDetailsImpl userPrincipal = (AccountDetailsImpl) authentication.getPrincipal();
 
     return Jwts.builder()
-        .setSubject((userPrincipal.getUsername()))
-        .setIssuedAt(new Date())
-        .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-        .signWith(key(), SignatureAlgorithm.HS256)
-        .compact();
+                .setSubject((userPrincipal.getUsername()))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(key(), SignatureAlgorithm.HS256)
+                .compact();
   }
   
   private Key key() {
@@ -41,8 +41,22 @@ public class JwtUtils {
   }
 
   public String getUserNameFromJwtToken(String token) {
-    return Jwts.parserBuilder().setSigningKey(key()).build()
-               .parseClaimsJws(token).getBody().getSubject();
+    return Jwts.parserBuilder()
+               .setSigningKey(key())
+               .build()
+               .parseClaimsJws(token)
+               .getBody()
+               .getSubject();
+
+    // Claims claims = Jwts.parserBuilder()
+    //                     .setSigningKey(key())
+    //                     .build()
+    //                     .parseClaimsJws(token)
+    //                     .getBody();
+    // String username = String.valueOf(claims.get("username"));
+    // String authorities = (String) claims.get("authorities");
+
+    // return username;
   }
 
   public boolean validateJwtToken(String authToken) {

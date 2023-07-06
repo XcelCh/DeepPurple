@@ -1,4 +1,4 @@
-package com.example.payload.response;
+package com.example.fyp.security.payload.response;
 
 public class JwtResponse {
   private String token;

@@ -8,8 +8,9 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Role {
+// public class Subscription {
     
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
