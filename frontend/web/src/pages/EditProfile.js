@@ -13,13 +13,14 @@ function EditProfile() {
     const [phoneNum, setPhoneNum] = useState('');
     const [dob , setDOB] = useState(new Date());
 
+
     const navigate = useNavigate();
 
     const token = authHeader();
 
     useEffect(() => {
 
-      fetch ("http://localhost:8082/editProfile",{
+      fetch ("http://localhost:8080/editProfile",{
           headers: token
         })
           .then(response => {
@@ -69,9 +70,9 @@ function EditProfile() {
         'roles': null
       }
 
-      console.log(data);
+      console.log(JSON.stringify(data));
 
-      fetch ("http://localhost:8082/editProfile", {
+      fetch ("http://localhost:8080/editProfile", {
         method : 'POST',
         headers : {'Authorization' : token.Authorization,
                  'Content-Type' : 'application/json'} ,
@@ -79,10 +80,11 @@ function EditProfile() {
       })
       .then(response => {
         if (!response.ok) {
-          throw new Error('Send data failed.')
+          throw new Error('Send data failed.');
         }
         else {
-          console.log('Success sending data.')
+          navigate('/');
+          console.log('Success sending data.');
         }
       })
       .catch (error =>  {

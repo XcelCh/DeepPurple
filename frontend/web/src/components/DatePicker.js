@@ -41,7 +41,7 @@ const DatePicker = ({formData, setFormData}) => {
   const [show, setShow] = useState(false);
 
   const handleChange = (selectedDate) => {
-    setFormData({...formData, dateOfBirth: selectedDate})
+    setFormData({...formData, dob: selectedDate})
     console.log(selectedDate);
   };
 

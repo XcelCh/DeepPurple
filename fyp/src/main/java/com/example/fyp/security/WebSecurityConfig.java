@@ -83,6 +83,8 @@ public class WebSecurityConfig {
                 auth.requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/analyze").permitAll()
                     .requestMatchers("/error").permitAll()
+                    .requestMatchers("/checkEmail").permitAll()
+                    .requestMatchers("/createAccount").permitAll()
                     .anyRequest().authenticated()
             );
 

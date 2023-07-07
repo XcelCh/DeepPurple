@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import DatePicker from "../components/DatePicker"; 
+import { useNavigate } from 'react-router-dom';
 
 function SignUpForm() {
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
         password: "",
-        confirmPassword: "",
-        phoneNumber: "",
-        dateOfBirth: "",
-        gender: "Gender"
+        phoneNum: "",
+        dob: "",
+        gender: "Gender",
+        roles: null
     })
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [page, setPage] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
     const [accountMessage, setAccountMessage] = useState('');
     const [credentialsMessage, setCredentialsMessage] = useState('');
     const [startDate, setStartDate] = useState(new Date());
+
+    const navigate = useNavigate();
 
     const handleCheckboxChange = () => {
         setShowPassword(!showPassword);
@@ -42,23 +46,46 @@ function SignUpForm() {
             return;
         }
 
-        if (formData.confirmPassword.trim() === '') {
+        if (confirmPassword.trim() === '') {
             setAccountMessage('Confirm your password');
             return;
         }
 
-        if(formData.password != formData.confirmPassword){
+        if(formData.password != confirmPassword){
             setAccountMessage("Passwords didn't match. Try again.");
             return;
         }
-        setPage((currPage) => currPage + 1)
+
+
+        fetch ('http://localhost:8080/checkEmail', {
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body : JSON.stringify({email : formData.email})
+            
+        })
+        .then (response => {
+            if (response.status == 200) {
+
+                console.log('Email has been successfully checked.');
+                setPage((currPage) => currPage + 1);
+                
+            }
+            else if (response.status == 409) {
+                setAccountMessage("Email has been used.")
+                throw new Error('Email has been used.');
+            }
+        })
+        .catch (error => {
+            console.error(error);
+        })
+        
     };
 
     const handleFinalSignup = (e) => {
         e.preventDefault();
         setCredentialsMessage("");
 
-        if (formData.phoneNumber.trim() === '') {
+        if (formData.phoneNum.trim() === '') {
             setCredentialsMessage('Enter your phone number');
             return;
         }
@@ -69,6 +96,27 @@ function SignUpForm() {
             setCredentialsMessage('Select your gender');
             return;
         }
+
+
+        console.log(formData);
+
+        fetch ('http://localhost:8080/createAccount', {
+            method : 'POST',
+            headers : {'Content-Type' : 'application/json'},
+            body : JSON.stringify(formData)
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("Account succesfully created.");
+                navigate('/');
+            }
+            else if (!response.ok) {
+                throw new Error('Create account FAILED.')
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        })
     };
     
     return (
@@ -149,7 +197,7 @@ function SignUpForm() {
                                                 id="confirmPassword"
                                                 class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                                                 value={formData.confirmPassword}
-                                                onChange={(event) => setFormData({...formData, confirmPassword: event.target.value})}
+                                                onChange={(event) => setConfirmPassword(event.target.value)}
                                                 required
                                                 ></input>
                                                 <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
@@ -238,8 +286,8 @@ function SignUpForm() {
                                             name="phoneNumber"
                                             id="phoneNumber"
                                             class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                                            value={formData.phoneNumber}
-                                            onChange={(event) => setFormData({...formData, phoneNumber: event.target.value})}
+                                            value={formData.phoneNum}
+                                            onChange={(event) => setFormData({...formData, phoneNum: event.target.value})}
                                             required
                                             ></input>
                                             <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
