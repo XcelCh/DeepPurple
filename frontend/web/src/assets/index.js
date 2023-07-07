@@ -10,6 +10,8 @@ import LeftArrow from "./LeftArrow.svg";
 import RightArrow from "./RightArrow.svg";
 import ShortLine from "./ShortLine.svg";
 import Tick from "./Tick.svg";
+import Unauthorized from "./Unauthorized.svg";
 
 
-export { TextIcon, ProductIcon, EmptySentiment, Loading, Camera, Line, Linkedin, Instagram, LeftArrow, RightArrow, ShortLine, Tick};
+
+export { TextIcon, ProductIcon, EmptySentiment, Loading, Camera, Line, Linkedin, Instagram, LeftArrow, RightArrow, ShortLine, Tick, Unauthorized};

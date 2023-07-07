@@ -22,7 +22,7 @@ function Pricing() {
             <h2 className="text-3xl text-[#351D4F] font-bold mt-5 ml-12">
               Basic
             </h2>
-            <div className="grid grid-cols-2 mb-8">
+            <div className="grid grid-cols-2 mb-8 ml-10">
               <h2 className="text-6xl text-[#351D4F] font-bold mt-5 text-right">
                 $0
               </h2>
@@ -31,29 +31,42 @@ function Pricing() {
             <div className="flex justify-center">
               <img src={ShortLine}></img>
             </div>
-            <div className="flex ml-10 mt-5">
-              <img src={Tick} className="mr-5"></img>
-              <p className="text-sm font-bold">Unlimited Text</p>
-            </div>
-            <div className="flex ml-10 mt-5">
-              <img src={Tick} className="mr-5"></img>
-              <p className="text-sm font-bold">Unlimited Text</p>
-            </div>
-            <div className="flex ml-10 mt-5">
-              <img src={Tick} className="mr-5"></img>
-              <p className="text-sm font-bold">Unlimited Text</p>
-            </div>
-            <div className="flex ml-10 mt-5">
-              <img src={Tick} className="mr-5"></img>
-              <p className="text-sm font-bold">Unlimited Text</p>
-            </div>
+              <div className="flex mt-5 justify-center">
+                <img src={Tick} className="mr-5"></img>
+                <p className="text-sm font-bold">Unlimited Text</p>
+              </div>
+              <div className="flex mt-5 justify-center">
+                <img src={Tick} className="mr-5"></img>
+                <p className="text-sm font-bold">Unlimited Text</p>
+              </div>
+              <div className="flex mt-5 justify-center">
+                <img src={Tick} className="mr-5"></img>
+                <p className="text-sm font-bold">Unlimited Text</p>
+              </div>
+              <div className="flex mt-5 justify-center">
+                <img src={Tick} className="mr-5"></img>
+                <p className="text-sm font-bold">Unlimited Text</p>
+              </div>
             <div className="flex items-center justify-center mt-8">
-              <Link to={toPath} className="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-white bg-[#9554FE] rounded-lg hover:bg-[#6F2DA8] focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                  Buy now
-                  <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+              <Link
+                to={toPath}
+                className="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-white bg-[#9554FE] rounded-lg hover:bg-[#6F2DA8] focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+              >
+                Buy now
+                <svg
+                  class="w-5 h-5 ml-2 -mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
               </Link>
             </div>
-            
           </div>
           {/* PRO */}
           <div className="container md:mx-auto bg-white rounded-3xl h-full w-80 my-5 border max-w-5xl drop-shadow-lg">
@@ -69,26 +82,41 @@ function Pricing() {
             <div className="flex justify-center">
               <img src={ShortLine}></img>
             </div>
-            <div className="flex ml-10 mt-5">
+              <div className="flex mt-5 justify-center">
               <img src={Tick} className="mr-5"></img>
               <p className="text-sm font-bold">Unlimited Text</p>
             </div>
-            <div className="flex ml-10 mt-5">
+            <div className="flex mt-5 justify-center">
               <img src={Tick} className="mr-5"></img>
               <p className="text-sm font-bold">Unlimited Text</p>
             </div>
-            <div className="flex ml-10 mt-5">
+            <div className="flex mt-5 justify-center">
               <img src={Tick} className="mr-5"></img>
               <p className="text-sm font-bold">Unlimited Text</p>
             </div>
-            <div className="flex ml-10 mt-5">
+            <div className="flex mt-5 justify-center">
               <img src={Tick} className="mr-5"></img>
               <p className="text-sm font-bold">Unlimited Text</p>
-            </div>
+              </div>
+              
             <div className="flex items-center justify-center mt-8">
-              <Link to={toPath} className="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-white bg-[#9554FE] rounded-lg hover:bg-[#6F2DA8] focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                  Buy now
-                  <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+              <Link
+                to={toPath}
+                className="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-white bg-[#9554FE] rounded-lg hover:bg-[#6F2DA8] focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+              >
+                Buy now
+                <svg
+                  class="w-5 h-5 ml-2 -mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
               </Link>
             </div>
           </div>
