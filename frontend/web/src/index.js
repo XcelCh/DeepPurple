@@ -27,6 +27,7 @@ import AboutUs from "./pages/AboutUs";
 import Pricing from "./pages/Pricing";
 import ForgetPasswordForm from './pages/ForgetPasswordForm';
 import SignUpForm from './pages/SignUpForm';
+import PaymentForm from "./pages/PaymentForm";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 
 
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="pricing" element={<Pricing />} />
           <Route path="forgetPasswordForm" element={<ForgetPasswordForm />} />
           <Route path="signUpForm" element={<SignUpForm />} />
+          <Route path="paymentForm" element={<PaymentForm />} />
         </Route>
         <Route path="unauthorizedPage" element={<UnauthorizedPage />} />
       </Routes>
