@@ -1,32 +1,39 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Tick } from "../assets"
+import { Link, useNavigate } from 'react-router-dom';
 import DatePicker from "../components/DatePicker"; 
-import { useNavigate } from 'react-router-dom';
 
 function SignUpForm() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
         password: "",
+        confirmPassword: "",
         phoneNum: "",
         dob: "",
         gender: "Gender",
         roles: null
     })
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [page, setPage] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
     const [accountMessage, setAccountMessage] = useState('');
     const [credentialsMessage, setCredentialsMessage] = useState('');
     const [startDate, setStartDate] = useState(new Date());
 
-    const navigate = useNavigate();
+    const basicPlan = {
+        planName: "Basic",
+        planPrice: "10"
+    }
+    const proPlan = {
+        planName: "Professional",
+        planPrice: "20"
+    }
 
     const handleCheckboxChange = () => {
         setShowPassword(!showPassword);
-        console.log(formData);
     };
-
+    
     const handleContinue = (e) => {
         e.preventDefault();
         setAccountMessage("");
@@ -46,12 +53,12 @@ function SignUpForm() {
             return;
         }
 
-        if (confirmPassword.trim() === '') {
+        if (formData.confirmPassword.trim() === '') {
             setAccountMessage('Confirm your password');
             return;
         }
 
-        if(formData.password != confirmPassword){
+        if(formData.password != formData.confirmPassword){
             setAccountMessage("Passwords didn't match. Try again.");
             return;
         }
@@ -81,7 +88,7 @@ function SignUpForm() {
         
     };
 
-    const handleFinalSignup = (e) => {
+    const handleSecondContinue = (e) => {
         e.preventDefault();
         setCredentialsMessage("");
 
@@ -108,7 +115,7 @@ function SignUpForm() {
         .then(response => {
             if (response.ok) {
                 console.log("Account succesfully created.");
-                navigate('/');
+                setPage((currPage) => currPage + 1);
             }
             else if (!response.ok) {
                 throw new Error('Create account FAILED.')
@@ -117,6 +124,18 @@ function SignUpForm() {
         .catch(error => {
             console.error(error);
         })
+    };
+
+    const handleFinalSignup = (e) => {
+        e.preventDefault();
+        const basicRadio = document.getElementById('basic-plan-radio');
+        const proRadio = document.getElementById('pro-plan-radio');
+
+        if(basicRadio.checked){
+            navigate('/paymentForm', {state: basicPlan});
+        } else{
+            navigate('/paymentForm', {state: proPlan});
+        }
     };
     
     return (
@@ -197,7 +216,7 @@ function SignUpForm() {
                                                 id="confirmPassword"
                                                 class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                                                 value={formData.confirmPassword}
-                                                onChange={(event) => setConfirmPassword(event.target.value)}
+                                                onChange={(event) => setFormData({...formData, confirmPassword: event.target.value})}
                                                 required
                                                 ></input>
                                                 <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
@@ -252,7 +271,7 @@ function SignUpForm() {
                                         </div>
                                     </form>
                                 </div>
-                            ) : (
+                            ) : page === 1 ? (
                                 <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
                                     {/* <a href="#" className="flex text-2xl font-semibold text-gray-900 dark:text-white">DeepPurple</a> */}
                                     <div className="flex items-center">
@@ -283,8 +302,8 @@ function SignUpForm() {
                                         <label class="relative w-full">
                                             <input 
                                             type="text"
-                                            name="phoneNumber"
-                                            id="phoneNumber"
+                                            name="phoneNum"
+                                            id="phoneNum"
                                             class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                                             value={formData.phoneNum}
                                             onChange={(event) => setFormData({...formData, phoneNum: event.target.value})}
@@ -342,9 +361,9 @@ function SignUpForm() {
 
                                     <button
                                         className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                        onClick={handleFinalSignup}
+                                        onClick={handleSecondContinue}
                                     >
-                                        Create my account
+                                        Continue
                                     </button>
 
                                     <div className="flex flex-col items-left">
@@ -357,6 +376,82 @@ function SignUpForm() {
                                     </div>
                                     </form>
                                 </div> 
+                            ) : (
+                                <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
+                                    <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left">
+                                    Choose a plan
+                                    </h1>
+                                    <h3 className="text-sm font-normal text-gray-900 dark:text-white text-left">
+                                    Select a plan that suits your business.
+                                    </h3>
+                                    <form className="space-y-4 md:space-y-6">
+                                        <div class="grid w-full gap-6 md:grid-cols-2">
+                                            <label for="basic-plan-radio" class="flex items-center">
+                                                <div class="flex items-center w-full pl-2 border border-gray-200 rounded dark:border-gray-700">
+                                                    <input checked id="basic-plan-radio" type="radio" value="" name="plan-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                                                    <div class="ml-4 mt-4">
+                                                        <label for="basic-plan-radio" class="text-xl font-semibold">{basicPlan.planName} Plan</label>
+                                                        <div className="flex mt-1 items-center">
+                                                            <img src={Tick} className="w-4 h-4"></img>
+                                                            <p class="text-sm ml-2">Benefit text</p>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <img src={Tick} className="w-4 h-4"></img>
+                                                            <p class="text-sm ml-2">Benefit text</p>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <img src={Tick} className="w-4 h-4"></img>
+                                                            <p class="text-sm ml-2">Benefit text</p>
+                                                        </div>
+                                                        <p class="text-2xl font-bold mt-2 mb-4">${basicPlan.planPrice}/mo</p>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                            <label for="pro-plan-radio" class="flex items-center">
+                                                <div class="flex items-center w-full pl-2 border border-gray-200 rounded dark:border-gray-700">
+                                                    <input id="pro-plan-radio" type="radio" value="" name="plan-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                                                    <div class="ml-4 mt-4">
+                                                        <label for="pro-plan-radio" class="text-xl font-semibold">{proPlan.planName} Plan</label>
+                                                        <div className="flex mt-1 items-center">
+                                                            <img src={Tick} className="w-4 h-4"></img>
+                                                            <p class="text-sm ml-2">Benefit text</p>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <img src={Tick} className="w-4 h-4"></img>
+                                                            <p class="text-sm ml-2">Benefit text</p>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <img src={Tick} className="w-4 h-4"></img>
+                                                            <p class="text-sm ml-2">Benefit text</p>
+                                                        </div>
+                                                        <p class="text-2xl font-bold mt-2 mb-4">${proPlan.planPrice}/mo</p>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div className="grid grid-cols-2 items-center">
+                                            <div className="flex flex-col items-left">
+                                                <p className="text-sm font-regular">
+                                                    Already have an account?<br/>
+                                                    <Link to="/loginForm" className="font-regular text-blue-600 hover:underline dark:text-primary-500">
+                                                        Sign in
+                                                    </Link>
+                                                    {" "}or{" "}
+                                                    <Link to="/pricing" class="font-regular text-blue-600 hover:underline dark:text-primary-500">
+                                                        View plans
+                                                    </Link>
+                                                </p>
+                                            </div>
+
+                                            <button
+                                                className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                                onClick={handleFinalSignup}
+                                            >
+                                                Proceed to payment  
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             )}
                         </div>
                         <p className="mt-4 text-xs text-[#3C3988] dark:text-gray-400">
