@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { Camera } from "../assets/index";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, userNavigate } from "react-router-dom";
 import authHeader from "../services/auth-header";
+import DatePicker from "../components/DatePicker"; 
 
 function EditProfile() {
     const [email, setEmail] = useState('');
@@ -12,7 +13,11 @@ function EditProfile() {
     const [gender, setGender] = useState('');
     const [phoneNum, setPhoneNum] = useState('');
     const [dob , setDOB] = useState(new Date());
-
+  const [changePassword, setChangePassword] = useState("");
+  
+  const clickChangePassword = () => {
+    setChangePassword("active");
+  }
 
     const navigate = useNavigate();
 
@@ -46,6 +51,7 @@ function EditProfile() {
           .catch(error => {
             console.error(error);
           });
+      
 
     }, [])
     
@@ -58,7 +64,6 @@ function EditProfile() {
     }, [password])
 
     const handleSave = () => {
-
 
       const data = {
         'email': email,
@@ -134,7 +139,7 @@ function EditProfile() {
                   type="text"
                   value={fullName}
                   className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
-                  onChange = {(e) => setFullName(e.target.value)}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
               </div>
             </div>
@@ -145,9 +150,13 @@ function EditProfile() {
                     Gender
                   </span>
                 </label>
-                <select value = {gender} onChange = {(e) => setGender(e.target.value)} className="select select-bordered w-full max-w-xs">
-                  <option value = "Male">Male</option>
-                  <option value = "Female">Female</option>
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="select select-bordered w-full max-w-xs font-normal"
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </select>
               </div>
             </div>
@@ -178,13 +187,17 @@ function EditProfile() {
                   value="05/08/2002"
                   className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
                 /> */}
-                <DatePicker
+                {/* <DatePicker
                   selected={dob}
                   onChange={(date) => setDOB(date)}
-                />
+                /> */}
+                <DatePicker
+                  formData={dob}
+                  setFormData={(date) => setDOB(date)}
+                ></DatePicker>
               </div>
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-7">
               <div className="form-control w-full max-w-xs">
                 <label className="label">
                   <span className="label-text text-xs text-[#A5A5A5]">
@@ -199,26 +212,72 @@ function EditProfile() {
                 />
               </div>
             </div>
-            <div className="flex justify-center">
-              <div className="form-control w-full max-w-xs">
-                <label className="label">
-                  <span className="label-text text-xs text-[#A5A5A5]">
-                    Password
-                  </span>
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
 
+            {changePassword == "active" ? (
+              <>
+                {/* Change Password */}
+                {/* Current password */}
+                <div className="flex justify-center">
+                  <div className="form-control w-full max-w-xs">
+                    <label className="label">
+                      <span className="label-text text-xs text-[#A5A5A5]">
+                        Current Password
+                      </span>
+                    </label>
+                    <input
+                      type="Current Password"
+                      value={password}
+                      className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                </div>
+                {/* New password */}
+                <div className="flex justify-center">
+                  <div className="form-control w-full max-w-xs">
+                    <label className="label">
+                      <span className="label-text text-xs text-[#A5A5A5]">
+                        New Password
+                      </span>
+                    </label>
+                    <input
+                      type="New Password"
+                      value={password}
+                      className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                </div>
+                {/* Confirmation Password */}
+                <div className="flex justify-center">
+                  <div className="form-control w-full max-w-xs">
+                    <label className="label">
+                      <span className="label-text text-xs text-[#A5A5A5]">
+                        Confirmation New Password
+                      </span>
+                    </label>
+                    <input
+                      type="Confirmation New Password"
+                      value={password}
+                      className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="ml-20 mt-8 ">
+                <button className="btn ml-1 normal-case" onClick={clickChangePassword}>
+                  Change Password
+                </button>
+              </div>
+            )}
+
+            {/* Save Button */}
             <div className="ml-12">
-              <button 
+              <button
                 className="btn rounded-full btn-sm bg-[#351D4F] mt-10 normal-case min-w-[25%] h-10"
-                onClick = {handleSave}
+                onClick={handleSave}
               >
                 Save
               </button>

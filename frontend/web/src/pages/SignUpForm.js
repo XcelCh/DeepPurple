@@ -57,7 +57,7 @@ function SignUpForm() {
         }
 
 
-        fetch ('http://localhost:8080/checkEmail', {
+        fetch ('http://localhost:8082/checkEmail', {
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
             body : JSON.stringify({email : formData.email})
@@ -100,7 +100,7 @@ function SignUpForm() {
 
         console.log(formData);
 
-        fetch ('http://localhost:8080/createAccount', {
+        fetch ('http://localhost:8082/createAccount', {
             method : 'POST',
             headers : {'Content-Type' : 'application/json'},
             body : JSON.stringify(formData)

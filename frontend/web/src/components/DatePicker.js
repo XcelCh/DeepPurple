@@ -33,7 +33,7 @@ const options = {
     ),
   },
   datepickerClassNames: "top-12",
-  defaultDate: new Date(),
+  defaultDate: "",
   language: "en",
 };
 
