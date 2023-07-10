@@ -29,7 +29,7 @@ import ForgetPasswordForm from './pages/ForgetPasswordForm';
 import SignUpForm from './pages/SignUpForm';
 import PaymentForm from "./pages/PaymentForm";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
-
+import ChangePassword from "./pages/ChangePassword";
 
 export default function App() {
   return (
@@ -40,6 +40,7 @@ export default function App() {
           <Route path="textSentiment" element={<TextAnalyze />} />
           <Route path="loginForm" element={<LoginForm />} />
           <Route path="editProfile" element={<EditProfile />} />
+          <Route path="changePassword" element={<ChangePassword />} />
           <Route path="aboutUs" element={<AboutUs />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="forgetPasswordForm" element={<ForgetPasswordForm />} />

@@ -8,16 +8,10 @@ import DatePicker from "../components/DatePicker";
 
 function EditProfile() {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [fullName, setFullName] = useState('');
     const [gender, setGender] = useState('');
     const [phoneNum, setPhoneNum] = useState('');
     const [dob , setDOB] = useState(new Date());
-  const [changePassword, setChangePassword] = useState("");
-  
-  const clickChangePassword = () => {
-    setChangePassword("active");
-  }
 
     const navigate = useNavigate();
 
@@ -55,20 +49,12 @@ function EditProfile() {
 
     }, [])
     
-    useEffect(() => {
-
-      if (password == '') {
-        
-        setPassword(null);
-      }
-    }, [password])
 
     const handleSave = () => {
 
       const data = {
         'email': email,
         'fullName': fullName,
-        'password': password,
         'gender': gender,
         'phoneNum': phoneNum,
         'dob': dob,
@@ -213,70 +199,11 @@ function EditProfile() {
               </div>
             </div>
 
-            {changePassword == "active" ? (
-              <>
-                {/* Change Password */}
-                {/* Current password */}
-                <div className="flex justify-center">
-                  <div className="form-control w-full max-w-xs">
-                    <label className="label">
-                      <span className="label-text text-xs text-[#A5A5A5]">
-                        Current Password
-                      </span>
-                    </label>
-                    <input
-                      type="Current Password"
-                      value={password}
-                      className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                </div>
-                {/* New password */}
-                <div className="flex justify-center">
-                  <div className="form-control w-full max-w-xs">
-                    <label className="label">
-                      <span className="label-text text-xs text-[#A5A5A5]">
-                        New Password
-                      </span>
-                    </label>
-                    <input
-                      type="New Password"
-                      value={password}
-                      className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                </div>
-                {/* Confirmation Password */}
-                <div className="flex justify-center">
-                  <div className="form-control w-full max-w-xs">
-                    <label className="label">
-                      <span className="label-text text-xs text-[#A5A5A5]">
-                        Confirmation New Password
-                      </span>
-                    </label>
-                    <input
-                      type="Confirmation New Password"
-                      value={password}
-                      className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="ml-20 mt-8 ">
-                <button className="btn ml-1 normal-case" onClick={clickChangePassword}>
-                  Change Password
-                </button>
-              </div>
-            )}
-
             {/* Save Button */}
-            <div className="ml-12">
+            <div></div>
+            <div className="ml-20">
               <button
-                className="btn rounded-full btn-sm bg-[#351D4F] mt-10 normal-case min-w-[25%] h-10"
+                className="btn rounded-full btn-sm bg-[#351D4F] mt-8 normal-case min-w-[25%] h-10"
                 onClick={handleSave}
               >
                 Save
