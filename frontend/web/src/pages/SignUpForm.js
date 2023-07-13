@@ -115,7 +115,7 @@ function SignUpForm() {
         .then(response => {
             if (response.ok) {
                 console.log("Account succesfully created.");
-                setPage((currPage) => currPage + 1);
+                // setPage((currPage) => currPage + 1);
             }
             else if (!response.ok) {
                 throw new Error('Create account FAILED.')
@@ -128,14 +128,14 @@ function SignUpForm() {
 
     const handleFinalSignup = (e) => {
         e.preventDefault();
-        const basicRadio = document.getElementById('basic-plan-radio');
-        const proRadio = document.getElementById('pro-plan-radio');
+    //     const basicRadio = document.getElementById('basic-plan-radio');
+    //     const proRadio = document.getElementById('pro-plan-radio');
 
-        if(basicRadio.checked){
-            navigate('/paymentForm', {state: basicPlan});
-        } else{
-            navigate('/paymentForm', {state: proPlan});
-        }
+    //     if(basicRadio.checked){
+    //         navigate('/paymentForm', {state: basicPlan});
+    //     } else{
+    //         navigate('/paymentForm', {state: proPlan});
+    //     }
     };
     
     return (
