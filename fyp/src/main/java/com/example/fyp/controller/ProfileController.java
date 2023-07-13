@@ -1,6 +1,8 @@
 package com.example.fyp.controller;
 
 import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,14 +18,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.fyp.controller.dto.PasswordResetRequestDto;
 import com.example.fyp.entity.Account;
 import com.example.fyp.repo.AccountRepository;
 import com.example.fyp.service.AccountDetailsImpl;
 import com.example.fyp.service.AccountServiceImpl;
+import com.example.fyp.service.EmailServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micrometer.core.ipc.http.HttpSender.Response;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class ProfileController {
@@ -33,10 +40,13 @@ public class ProfileController {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailServiceImpl emailServiceImpl;
     
 
     @GetMapping("/editProfile")
-    public ResponseEntity<Account> editProfile() {
+    public ResponseEntity<?> editProfile() {
 
         Account acc = new Account();
 
@@ -50,10 +60,12 @@ public class ProfileController {
             acc.setPassword(null);
             acc.setRoles(null);
             // System.out.println(acc);
+
+            return ResponseEntity.ok().body(acc);
         }
 
-
-        return ResponseEntity.ok().body(acc);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not Logged In.");
+        
 
     }
 
@@ -63,18 +75,10 @@ public class ProfileController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AccountDetailsImpl userPrincipal = (AccountDetailsImpl) authentication.getPrincipal();
-
-        String password = account.getPassword();
-
-        if (password != null) {
-            account.setPassword(passwordEncoder.encode(password));
-            // account.setRoles(userPrincipal.getAuthorities());
-        }
-        else if (password == null) {
           
-            account.setPassword(userPrincipal.getPassword());
-            // account.setRoles(userPrincipal.getAuthorities());
-        }
+        account.setPassword(userPrincipal.getPassword());
+        // account.setRoles(userPrincipal.getAuthorities());
+        
         accountServiceImpl.saveAccount(account);
 
         return ResponseEntity.ok("Edit Profile received succesfully.");
@@ -116,6 +120,74 @@ public class ProfileController {
         accountServiceImpl.saveAccount(account);
 
         return ResponseEntity.ok("Account successfully created.");
+    }
+
+    @PostMapping("/generatePasswordOTP")
+    public ResponseEntity<?> generatePasswordOTP (@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
+
+        try {
+            Account account = accountServiceImpl.loadUserDetailsByUsername(passwordResetRequestDto.getEmail());
+
+            Random random = new Random();
+            String passwordToken = String.valueOf(random.nextInt(900000) + 100000);
+
+            emailServiceImpl.sendOTPEmail(account, passwordToken);
+
+            System.out.println(passwordToken);
+
+            accountServiceImpl.generatePasswordResetToken(account, passwordToken);
+
+            return ResponseEntity.ok("Account found. Sending OTP to email.");
+        }
+        catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No Account Found");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+        }
+    }
+
+    @PostMapping("/validateOTP")
+    public ResponseEntity<String> validateOTP (@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
+
+        
+        try {
+
+            String result = accountServiceImpl.validatePasswordResetToken(passwordResetRequestDto.getOtp(), passwordResetRequestDto.getEmail());
+
+            System.out.println(passwordResetRequestDto.getOtp() + result);
+
+            if (result.equals("expired")) {
+                
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP has expired.");
+            }
+
+            return ResponseEntity.ok("OTP Successfully verified.");
+
+        }
+        catch (EntityNotFoundException e) {
+            
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Invalid OTP.");
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error found in verifying.");
+        }
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword (@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
+
+        String email = passwordResetRequestDto.getEmail();
+        String newPassword = passwordResetRequestDto.getNewPassword();
+
+        String encodePassword = passwordEncoder.encode(newPassword);
+        accountServiceImpl.changePassword(email, encodePassword);
+
+        return ResponseEntity.ok("Password Successfully reset.");
     }
 
 

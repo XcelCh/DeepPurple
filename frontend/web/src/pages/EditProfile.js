@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import { Camera } from "../assets/index";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, userNavigate } from "react-router-dom";
 import authHeader from "../services/auth-header";
 import DatePicker from "../components/DatePicker"; 
@@ -19,7 +17,7 @@ function EditProfile() {
 
     useEffect(() => {
 
-      fetch ("http://localhost:8080/editProfile",{
+      fetch ("http://localhost:8082/editProfile",{
           headers: token
         })
           .then(response => {
@@ -55,6 +53,7 @@ function EditProfile() {
       const data = {
         'email': email,
         'fullName': fullName,
+        'password': '',
         'gender': gender,
         'phoneNum': phoneNum,
         'dob': dob,
@@ -63,7 +62,7 @@ function EditProfile() {
 
       console.log(JSON.stringify(data));
 
-      fetch ("http://localhost:8080/editProfile", {
+      fetch ("http://localhost:8082/editProfile", {
         method : 'POST',
         headers : {'Authorization' : token.Authorization,
                  'Content-Type' : 'application/json'} ,
@@ -198,6 +197,7 @@ function EditProfile() {
                 />
               </div>
             </div>
+
 
             {/* Save Button */}
             <div></div>

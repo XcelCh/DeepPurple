@@ -85,6 +85,9 @@ public class WebSecurityConfig {
                     .requestMatchers("/error").permitAll()
                     .requestMatchers("/checkEmail").permitAll()
                     .requestMatchers("/createAccount").permitAll()
+                    .requestMatchers("/generatePasswordOTP").permitAll()
+                    .requestMatchers("/validateOTP").permitAll()
+                    .requestMatchers("/resetPassword").permitAll()
                     .anyRequest().authenticated()
             );
 

@@ -1,58 +1,134 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function ForgetPasswordForm() {
 
     const [formData, setFormData] = useState({
         email: "",
-        code: "",
-        password: "",
-        confirmPassword: ""
+        newPassword: "",
+        otp: ""
     })
+
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     const [showPassword, setShowPassword] = useState(false);
     const [page, setPage] = useState(0);
     const [message, setMessage] = useState("");
+
+    const navigate = useNavigate();
     
     const handleCheckboxChange = () => {
         setShowPassword(!showPassword);
         console.log(formData);
     };
 
+    const handleCheckEmail = (e) => {
+
+        e.preventDefault();
+        setMessage('');
+
+        if (formData.email.trim() === '' || !formData.email.trim().toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+            setMessage('Enter your email');
+            return;
+        }
+
+        fetch ('http://localhost:8082/generatePasswordOTP', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (response.status == 200) {
+                console.log('Account found. Sending OTP to email.');
+                if (page == 0) {
+                    setPage((currPage) => currPage+1);
+                }
+            }
+            else if (response.status == 204) {
+                setMessage('Email does not exist.');
+                throw new Error('Email not Found.');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        })
+
+    }
+
+    const handleOTP = (e) => {
+
+        e.preventDefault();
+        setMessage('');
+
+        if (formData.otp.trim() === '') {
+            setMessage('Enter the code sent');
+            return;
+        }
+
+        fetch ('http://localhost:8082/validateOTP', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (response.status == 401) {
+                setMessage('OTP expired.');
+                throw new Error('OTP expired.');
+            }
+            else if (response.status == 204) {
+                setMessage('Invalid OTP');
+                throw new Error('Invalid OTP');
+            }
+            else if (response.status == 200) {
+                console.log('OTP Successfully verified.');
+                setPage((currPage) => currPage+1);
+            }
+        })
+        .catch (error => {
+            console.error(error);
+        })
+
+    }
+
     const handleReset = (e) => {
         e.preventDefault();
         setMessage("");
 
-        if(page == 0){
-            if (formData.email.trim() === '' || !formData.email.trim().toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-                setMessage('Enter your email');
-                return;
-            }
-        } else if(page == 1){
-            if (formData.code.trim() === '') {
-                setMessage('Enter the code sent');
-                return;
-            }
-        } else{
-            if (formData.password.trim() === '') {
-                setMessage('Enter a new password');
-                return;
-            }
-    
-            if (formData.confirmPassword.trim() === '') {
-                setMessage('Confirm your new password');
-                return;
-            }
-    
-            if(formData.password != formData.confirmPassword){
-                setMessage("Passwords didn't match. Try again.");
-                return;
-            }
+        if (formData.newPassword.trim() === '') {
+            setMessage('Enter a new password');
+            return;
         }
 
-        if(page < 2){
-            setPage((currPage) => currPage + 1)
+        if (confirmPassword.trim() === '') {
+            setMessage('Confirm your new password');
+            return;
         }
+
+        if(formData.newPassword != confirmPassword){
+            setMessage("Passwords didn't match. Try again.");
+            return;
+        }
+
+        fetch('http://localhost:8082/resetPassword', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if(response.ok) {
+                console.log('Password reset Successful.');
+                navigate('/');
+            }
+            else {
+                console.log('Error occured in resetting');
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+    
+
     }
 
     return (
@@ -112,7 +188,7 @@ function ForgetPasswordForm() {
 
                                 <button
                                     className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                    onClick={handleReset}
+                                    onClick={handleCheckEmail}
                                 >
                                     Send
                                 </button>
@@ -148,8 +224,8 @@ function ForgetPasswordForm() {
                                             name="code"
                                             id="code"
                                             class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                                            value={formData.code}
-                                            onChange={(event) => setFormData({...formData, code: event.target.value})}
+                                            value={formData.otp}
+                                            onChange={(event) => setFormData({...formData, otp: event.target.value})}
                                             required
                                             ></input>
                                             <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
@@ -177,14 +253,16 @@ function ForgetPasswordForm() {
                                     )}
 
                                     <div className="flex flex-col items-left">
-                                        <Link to="/loginForm" className="text-sm font-regular text-blue-600 hover:underline dark:text-primary-500">
+                                        <button 
+                                            className="text-sm font-regular text-blue-600 hover:underline dark:text-primary-500"
+                                            onClick={handleCheckEmail}>
                                             Resend verification code
-                                        </Link>
+                                        </button>
                                     </div>
 
                                     <button
                                         className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                        onClick={handleReset}
+                                        onClick={handleOTP}
                                     >
                                         Next
                                     </button>
@@ -207,8 +285,8 @@ function ForgetPasswordForm() {
                                             name="password"
                                             id="password"
                                             class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                                            value={formData.password}
-                                            onChange={(event) => setFormData({...formData, password: event.target.value})}
+                                            value={formData.newPassword}
+                                            onChange={(event) => setFormData({...formData, newPassword: event.target.value})}
                                             required
                                             ></input>
                                             <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
@@ -223,8 +301,8 @@ function ForgetPasswordForm() {
                                             name="confirmPassword"
                                             id="confirmPassword"
                                             class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                                            value={formData.confirmPassword}
-                                            onChange={(event) => setFormData({...formData, confirmPassword: event.target.value})}
+                                            value={confirmPassword}
+                                            onChange={(event) => setConfirmPassword(event.target.value)}
                                             required
                                             ></input>
                                             <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
