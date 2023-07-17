@@ -146,14 +146,14 @@ function SignUpForm() {
                     {/* Gradient */}
                     <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
                         {/* Card */}
-                        <div className="flex flex-col justify-center items-center w-2/5 h-4/7 bg-white rounded-3xl shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                        <div className="flex flex-col justify-center items-center w-2/5 h-4/7 bg-white rounded-3xl shadow md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                             {page === 0 ? (
                                 <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
                                     {/* <a href="#" className="flex text-2xl font-semibold text-gray-900 dark:text-white">DeepPurple</a> */}
-                                    <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left">
+                                    <h1 className="text-xl font-bold text-gray-900 md:text-2xl text-left">
                                     Create an account
                                     </h1>
-                                    <h3 className="text-sm font-normal text-gray-900 dark:text-white text-left">
+                                    <h3 className="text-sm font-normal text-gray-900 text-left">
                                     Welcome! Please enter your details.
                                     </h3>
                                     <form className="space-y-4 md:space-y-6">

@@ -93,7 +93,7 @@ function TextAnalyze() {
   return (
     <div className="bg-gradient-to-tr from-[#D5B4D6] via-[#D3CBEF] via 40% to-[#9487E7] border">
       <div
-        className="container md:mx-auto bg-white rounded-t-lg rounded-b-lg h-screen my-5 border max-w-5xl"
+        className="container md:mx-auto bg-white rounded-t-lg rounded-b-lg my-5 border max-w-5xl"
         style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
       >
         <div className="grid grid-cols-2 gap-4">
@@ -200,7 +200,7 @@ function TextAnalyze() {
                 result.emotions.map((elem) => {
                   return (
                     <a
-                      className={`tab tab-lifted bg-[#E5E6E6] font-bold text-[#FFFFFF] ${
+                      className={`tab tab-lifted bg-[#E5E6E6] font-bold text-[#FFFFFF]${
                         elem.title === filter ? "tab-active" : ""
                       }`}
                       // className="tab tab-lifted font-bold"

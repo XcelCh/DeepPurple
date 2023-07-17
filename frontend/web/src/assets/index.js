@@ -1,5 +1,5 @@
-import TextIcon from './TextIcon.svg';
-import ProductIcon from './ProductIcon.svg';
+import TextIcon from "./TextIcon.svg";
+import ProductIcon from "./ProductIcon.svg";
 import EmptySentiment from "./EmptySentiment.svg";
 import Loading from "./Loading.svg";
 import Camera from "./Camera.svg";
@@ -11,7 +11,35 @@ import RightArrow from "./RightArrow.svg";
 import ShortLine from "./ShortLine.svg";
 import Tick from "./Tick.svg";
 import Unauthorized from "./Unauthorized.svg";
+import ArrowButton from "./ArrowButton.svg";
+import StarterDummy from "./StarterDummy.svg";
+import SidebarMusic from "./SidebarMusic.svg";
+import SidebarEmployee from "./SidebarEmployee.svg";
+import SidebarStats from "./SidebarStats.svg";
+import Toggle from "./Toggle.svg";
+import Upload from "./Upload.svg";
+import ThreeDotsVertical from "./ThreeDotsVertical.svg";
 
-
-
-export { TextIcon, ProductIcon, EmptySentiment, Loading, Camera, Line, Linkedin, Instagram, LeftArrow, RightArrow, ShortLine, Tick, Unauthorized};
+export {
+  TextIcon,
+  ProductIcon,
+  EmptySentiment,
+  Loading,
+  Camera,
+  Line,
+  Linkedin,
+  Instagram,
+  LeftArrow,
+  RightArrow,
+  ShortLine,
+  Tick,
+  Unauthorized,
+ArrowButton,
+StarterDummy,
+    SidebarMusic,
+    SidebarEmployee,
+    SidebarStats,
+    Upload,
+  Toggle,
+  ThreeDotsVertical
+};

@@ -1,86 +1,80 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import { Camera } from "../assets/index";
 import { useNavigate, userNavigate } from "react-router-dom";
 import authHeader from "../services/auth-header";
-import DatePicker from "../components/DatePicker"; 
+import DatePicker from "../components/DatePicker";
 
 function EditProfile() {
-    const [email, setEmail] = useState('');
-    const [fullName, setFullName] = useState('');
-    const [gender, setGender] = useState('');
-    const [phoneNum, setPhoneNum] = useState('');
-    const [dob , setDOB] = useState(new Date());
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [gender, setGender] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+  const [dob, setDOB] = useState(new Date());
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const token = authHeader();
+  const token = authHeader();
 
-    useEffect(() => {
-
-      fetch ("http://localhost:8082/editProfile",{
-          headers: token
-        })
-          .then(response => {
-            // error unauthorized
-            if (response.status == 401) {
-                navigate("/");
-                console.log("401 Unauthorized");
-            }
-            else if (response.status == 200) {
-              console.log("Success");
-              return response.json();
-            }
-          })
-          .then(data => {
-            
-            setEmail(data.email);
-            setFullName(data.fullName);
-            setGender(data.gender);
-            setPhoneNum(data.phoneNum);
-            setDOB(new Date(data.dob));
-            console.log(email, fullName, gender, phoneNum, dob);
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      
-
-    }, [])
-    
-
-    const handleSave = () => {
-
-      const data = {
-        'email': email,
-        'fullName': fullName,
-        'password': '',
-        'gender': gender,
-        'phoneNum': phoneNum,
-        'dob': dob,
-        'roles': null
-      }
-
-      console.log(JSON.stringify(data));
-
-      fetch ("http://localhost:8082/editProfile", {
-        method : 'POST',
-        headers : {'Authorization' : token.Authorization,
-                 'Content-Type' : 'application/json'} ,
-        body : JSON.stringify(data),
+  useEffect(() => {
+    fetch("http://localhost:8082/editProfile", {
+      headers: token,
+    })
+      .then((response) => {
+        // error unauthorized
+        if (response.status == 401) {
+          navigate("/");
+          console.log("401 Unauthorized");
+        } else if (response.status == 200) {
+          console.log("Success");
+          return response.json();
+        }
       })
-      .then(response => {
+      .then((data) => {
+        setEmail(data.email);
+        setFullName(data.fullName);
+        setGender(data.gender);
+        setPhoneNum(data.phoneNum);
+        setDOB(new Date(data.dob));
+        console.log(email, fullName, gender, phoneNum, dob);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const handleSave = () => {
+    const data = {
+      email: email,
+      fullName: fullName,
+      password: "",
+      gender: gender,
+      phoneNum: phoneNum,
+      dob: dob,
+      roles: null,
+    };
+
+    console.log(JSON.stringify(data));
+
+    fetch("http://localhost:8082/editProfile", {
+      method: "POST",
+      headers: {
+        Authorization: token.Authorization,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
         if (!response.ok) {
-          throw new Error('Send data failed.');
-        }
-        else {
-          navigate('/');
-          console.log('Success sending data.');
+          throw new Error("Send data failed.");
+        } else {
+          navigate("/");
+          console.log("Success sending data.");
         }
       })
-      .catch (error =>  {
-          console.error(error);
-      })
-    }
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <>
@@ -117,17 +111,40 @@ function EditProfile() {
               <div className="form-control w-full max-w-xs">
                 <label className="label">
                   <span className="label-text text-xs text-[#A5A5A5]">
-                    Name
+                    Full Name
                   </span>
                 </label>
-                <input
-                  type="text"
-                  value={fullName}
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
-                  onChange={(e) => setFullName(e.target.value)}
-                />
+                <label class="relative w-full">
+                  <input
+                    type="text"
+                    name="fullName"
+                    id="fullName"
+                    class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Full Name"
+                    required
+                  ></input>
+                </label>
               </div>
             </div>
+
+            {/* <div className="flex justify-center mb-7">
+              <div className="form-control w-full max-w-xs">
+                <DropdownButton
+                  id="dropdown-basic-button"
+                  title="Dropdown button"
+                >
+                  <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                  <Dropdown.Item href="#/action-2">
+                    Another action
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/action-3">
+                    Something else
+                  </Dropdown.Item>
+                </DropdownButton>
+              </div>
+            </div> */}
             <div className="flex justify-center mb-7">
               <div className="form-control w-full max-w-xs">
                 <label className="label">
@@ -138,7 +155,7 @@ function EditProfile() {
                 <select
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="select select-bordered w-full max-w-xs font-normal"
+                  className="select select-bordered select-sm w-full max-w-xs font-normal h-11"
                 >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -154,10 +171,14 @@ function EditProfile() {
                 </label>
                 <input
                   type="text"
+                  name="phoneNum"
+                  id="phoneNum"
+                  class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                   value={phoneNum}
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
                   onChange={(e) => setPhoneNum(e.target.value)}
-                />
+                  placeholder="Phone Number"
+                  required
+                ></input>
               </div>
             </div>
             <div className="flex justify-center">
@@ -167,15 +188,6 @@ function EditProfile() {
                     Date of Birth
                   </span>
                 </label>
-                {/* <input
-                  type="text"
-                  value="05/08/2002"
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
-                /> */}
-                {/* <DatePicker
-                  selected={dob}
-                  onChange={(date) => setDOB(date)}
-                /> */}
                 <DatePicker
                   formData={dob}
                   setFormData={(date) => setDOB(date)}
@@ -191,13 +203,22 @@ function EditProfile() {
                 </label>
                 <input
                   type="text"
+                  name="email"
+                  id="email"
+                  class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  disabled
+                ></input>
+                {/* <input
+                  type="text"
                   value={email}
                   className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
                   disabled
-                />
+                /> */}
               </div>
             </div>
-
 
             {/* Save Button */}
             <div></div>

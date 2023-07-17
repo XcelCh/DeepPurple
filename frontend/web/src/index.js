@@ -1,6 +1,6 @@
 // import React from 'react';
 // import ReactDOM from 'react-dom/client';
-import './index.css';
+import "./index.css";
 // import reportWebVitals from './reportWebVitals';
 // import LandingPage from "./pages/LandingPage";
 
@@ -18,27 +18,29 @@ import './index.css';
 
 import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./pages/Layout";
+import NavbarLayout from "./pages/NavbarLayout";
 import LandingPage from "./pages/LandingPage";
 import TextAnalyze from "./pages/TextAnalyze";
 import LoginForm from "./pages/LoginForm";
 import EditProfile from "./pages/EditProfile";
 import AboutUs from "./pages/AboutUs";
 import Pricing from "./pages/Pricing";
-import ForgetPasswordForm from './pages/ForgetPasswordForm';
-import SignUpForm from './pages/SignUpForm';
+import ForgetPasswordForm from "./pages/ForgetPasswordForm";
+import SignUpForm from "./pages/SignUpForm";
 import PaymentForm from "./pages/PaymentForm";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import ChangePassword from "./pages/ChangePassword";
-
+import Starter from "./pages/Starter";
+import RecordingList from "./pages/RecordingList";
+// import SidebarLayout from "./pages/SidebarLayout";
+import Sidebar from "./components/Sidebar";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={<NavbarLayout />}>
           <Route index element={<LandingPage />} />
-          <Route path="textSentiment" element={<TextAnalyze />} />
           <Route path="loginForm" element={<LoginForm />} />
           <Route path="editProfile" element={<EditProfile />} />
           <Route path="changePassword" element={<ChangePassword />} />
@@ -47,6 +49,19 @@ export default function App() {
           <Route path="forgetPasswordForm" element={<ForgetPasswordForm />} />
           <Route path="signUpForm" element={<SignUpForm />} />
           <Route path="paymentForm" element={<PaymentForm />} />
+          <Route path="starter" element={<Starter />} />
+
+          {/* Text Sentiment */}
+          <Route path="textSentiment" element={<TextAnalyze />} />
+          
+             <Route
+            path="recordingList"
+            element={
+              <Sidebar>
+                <RecordingList />
+              </Sidebar>
+            }
+          />
         </Route>
         <Route path="unauthorizedPage" element={<UnauthorizedPage />} />
       </Routes>
