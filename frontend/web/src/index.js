@@ -1,20 +1,4 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom/client';
 import "./index.css";
-// import reportWebVitals from './reportWebVitals';
-// import LandingPage from "./pages/LandingPage";
-
-// const root = ReactDOM.createRoot(document.getElementById('root'));
-// root.render(
-//   <React.StrictMode>
-//     <LandingPage />
-//   </React.StrictMode>
-// );
-
-// // If you want to start measuring performance in your app, pass a function
-// // to log results (for example: reportWebVitals(console.log))
-// // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
 
 import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -32,8 +16,9 @@ import UnauthorizedPage from "./pages/UnauthorizedPage";
 import ChangePassword from "./pages/ChangePassword";
 import Starter from "./pages/Starter";
 import RecordingList from "./pages/RecordingList";
-// import SidebarLayout from "./pages/SidebarLayout";
 import Sidebar from "./components/Sidebar";
+import EmployeeList from "./pages/EmployeeList";
+import AddRecording from "./pages/AddRecording";
 
 export default function App() {
   return (
@@ -53,8 +38,9 @@ export default function App() {
 
           {/* Text Sentiment */}
           <Route path="textSentiment" element={<TextAnalyze />} />
-          
-             <Route
+
+          {/* With Sidebar */}
+          <Route
             path="recordingList"
             element={
               <Sidebar>
@@ -62,8 +48,28 @@ export default function App() {
               </Sidebar>
             }
           />
+
+          <Route
+            path="employeeList"
+            element={
+              <Sidebar>
+                <EmployeeList />
+              </Sidebar>
+            }
+          />
+
+          <Route
+            path="recordingList/addRecording"
+            element={
+              <Sidebar>
+                <AddRecording />
+              </Sidebar>
+            }
+          />
+
+          {/* Unauthorized Page */}
+          <Route path="unauthorizedPage" element={<UnauthorizedPage />} />
         </Route>
-        <Route path="unauthorizedPage" element={<UnauthorizedPage />} />
       </Routes>
     </BrowserRouter>
   );

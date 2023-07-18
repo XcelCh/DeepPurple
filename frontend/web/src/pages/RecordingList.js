@@ -14,11 +14,11 @@ import {
 
 function RecordingList() {
   return (
-    <div>
-      <p className="text-xl font-bold text-left ml-20 mb-5">Recording List</p>
+    <div className="mx-20">
+      <p className="text-xl font-bold text-left mb-5">Recording List</p>
 
-      <div class="grid grid-cols-2 mb-5 mx-20">
-        <form className="max-w-sm px-4">
+      <div class="grid grid-cols-2 mb-5">
+        <form className="max-w-xs text-sm">
           <div className="relative">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@ function RecordingList() {
           </div>
         </form>
         <div className="place-self-end">
-          <Link to="/RecordingList">
+          <Link to="./AddRecording">
             <button className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]">
               <img src={Upload} className="mr-2 h-5"></img>
               <p className="mr-2 text-md">Upload</p>
@@ -55,24 +55,32 @@ function RecordingList() {
           </Link>
         </div>
       </div>
-      <div className="overflow-x-auto flex justify-center">
-        <table className="table">
+      <div className="max-h-screen">
+        <table className="table mx-auto w-full border border-dashed text-sm">
           {/* head */}
           <thead>
             <tr>
-              <th className="bg-[#F6F4FC]">No</th>
-              <th className="bg-[#F6F4FC]">Recording name</th>
-              <th className="bg-[#F6F4FC]">Upload Date</th>
-              <th className="bg-[#F6F4FC]">Date Recorded</th>
-              <th className="bg-[#F6F4FC]">Employee Name</th>
-              <th className="bg-[#F6F4FC]">Category</th>
-              <th className="bg-[#F6F4FC]">Sentiment</th>
-              <th className="bg-[#F6F4FC]">Action</th>
+              <th className="bg-[#F6F4FC] normal-case text-base">No</th>
+              <th className="bg-[#F6F4FC] normal-case text-base">
+                Recording name
+              </th>
+              <th className="bg-[#F6F4FC] normal-case text-base">
+                Upload Date
+              </th>
+              <th className="bg-[#F6F4FC] normal-case text-base">
+                Date Recorded
+              </th>
+              <th className="bg-[#F6F4FC] normal-case text-base">
+                Employee Name
+              </th>
+              <th className="bg-[#F6F4FC] normal-case text-base">Category</th>
+              <th className="bg-[#F6F4FC] normal-case text-base">Sentiment</th>
+              <th className="bg-[#F6F4FC] normal-case text-base">Action</th>
             </tr>
           </thead>
           <tbody>
             {/* row 1 */}
-            <tr className="bg-base-200">
+            <tr className="hover">
               <th>1</th>
               <td>Sample recording 1</td>
               <td>2023-01-01 01:01:01</td>
@@ -86,11 +94,11 @@ function RecordingList() {
                     tabIndex={0}
                     className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
                   >
-                    <img src={ThreeDotsVertical} className="mt-2"></img>
+                    <img src={ThreeDotsVertical}></img>
                   </label>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[1] menu p-2 shadow bg-[#F6F4FC] rounded-box w-44 rounded-none border-[#D1D1D1]"
+                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none border-[#D1D1D1]"
                   >
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#9554FE]">
@@ -112,7 +120,7 @@ function RecordingList() {
               </td>
             </tr>
             {/* row 2 */}
-            <tr>
+            <tr className="hover">
               <th>2</th>
               <td>Sample recording 1</td>
               <td>2023-01-01 01:01:01</td>
@@ -130,20 +138,29 @@ function RecordingList() {
                   </label>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[1] menu p-2 shadow bg-[#F6F4FC] rounded-box w-52"
+                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none border-[#D1D1D1]"
                   >
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a>Item 1</a>
+                      <a className="text-[#9554FE]">
+                        <img src={Eye}></img> View Analysis
+                      </a>
                     </li>
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a>Item 2</a>
+                      <a className="text-[#D55454]">
+                        <img src={TrashCan}></img> Delete
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <img src={Download}></img> Download
+                      </a>
                     </li>
                   </ul>
                 </div>
               </td>
             </tr>
             {/* row 3 */}
-            <tr>
+            <tr className="hover">
               <th>3</th>
               <td>Sample recording 1</td>
               <td>2023-01-01 01:01:01</td>
@@ -161,13 +178,61 @@ function RecordingList() {
                   </label>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[1] menu p-2 shadow bg-[#F6F4FC] rounded-box w-52"
+                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none border-[#D1D1D1]"
                   >
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a>Item 1</a>
+                      <a className="text-[#9554FE]">
+                        <img src={Eye}></img> View Analysis
+                      </a>
                     </li>
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a>Item 2</a>
+                      <a className="text-[#D55454]">
+                        <img src={TrashCan}></img> Delete
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <img src={Download}></img> Download
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            <tr className="hover">
+              <th>4</th>
+              <td>Sample recording 1</td>
+              <td>2023-01-01 01:01:01</td>
+              <td>2023-01-01 01:01:01</td>
+              <td>David</td>
+              <td>Inquiry</td>
+              <td>Positive</td>
+              <td className="flex justify-center items-center">
+                <div className="dropdown">
+                  <label
+                    tabIndex={0}
+                    className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
+                  >
+                    <img src={ThreeDotsVertical} className="mt-2"></img>
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none border-[#D1D1D1]"
+                  >
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <img src={Eye}></img> View Analysis
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#D55454]">
+                        <img src={TrashCan}></img> Delete
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <img src={Download}></img> Download
+                      </a>
                     </li>
                   </ul>
                 </div>
@@ -176,7 +241,7 @@ function RecordingList() {
           </tbody>
         </table>
       </div>
-      <div className="join flex justify-end mt-10 mr-20 ">
+      <div className="join flex justify-end mt-10">
         <button className="join-item btn btn-xs bg-[#9554FE] border-[#9554FE]">
           1
         </button>

@@ -20,7 +20,7 @@ const Sidebar = ({ children }) => {
   const menuItem = [
     {
       path: "/recordingList",
-      name: "Recording List",
+      name: "Recording",
       //   icon: <FaTh />,
       icon: (
         <span>
@@ -30,7 +30,7 @@ const Sidebar = ({ children }) => {
     },
     {
       path: "/employeeList",
-      name: "Employee List",
+      name: "Employee",
       icon: (
         <span>
           <img src={SidebarEmployee}></img>
@@ -39,7 +39,7 @@ const Sidebar = ({ children }) => {
     },
     {
       path: "/summaryAnalysis",
-      name: "Summary Analysis",
+      name: "Summary",
       icon: (
         <span>
           <img src={SidebarStats}></img>
