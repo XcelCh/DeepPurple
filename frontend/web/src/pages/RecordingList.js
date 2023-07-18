@@ -1,23 +1,50 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Link } from "react-router-dom";
-import { Toggle, Upload, ThreeDotsVertical } from "../assets/index";
+import {
+  Toggle,
+  Upload,
+  ThreeDotsVertical,
+  Filter,
+  TrashCan,
+  Download,
+  Eye
+  
+} from "../assets/index";
 
 function RecordingList() {
   return (
-    <>
+    <div>
+      <p className="text-xl font-bold text-left ml-20 mb-5">Recording List</p>
+
       <div class="grid grid-cols-2 mb-5 mx-20">
-        <p className="text-xl font-bold text-left">Recording List</p>
-        <input
-          type="text"
-          name="fullName"
-          id="fullName"
-          class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-36 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-        //   value={fullName}
-        //   onChange={(e) => setFullName(e.target.value)}
-          placeholder="Full Name"
-          required
-        ></input>
+        <form className="max-w-sm px-4">
+          <div className="relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search"
+              className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
+            />
+            <img
+              src={Filter}
+              className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 right-3"
+            ></img>
+          </div>
+        </form>
         <div className="place-self-end">
           <Link to="/RecordingList">
             <button className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]">
@@ -54,7 +81,34 @@ function RecordingList() {
               <td>Inquiry</td>
               <td>Positive</td>
               <td className="flex justify-center items-center">
-                <img src={ThreeDotsVertical} className="mt-2"></img>
+                <div className="dropdown">
+                  <label
+                    tabIndex={0}
+                    className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
+                  >
+                    <img src={ThreeDotsVertical} className="mt-2"></img>
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content z-[1] menu p-2 shadow bg-[#F6F4FC] rounded-box w-44 rounded-none border-[#D1D1D1]"
+                  >
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <img src={Eye}></img> View Analysis
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#D55454]">
+                        <img src={TrashCan}></img> Delete
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <img src={Download}></img> Download
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </td>
             </tr>
             {/* row 2 */}
@@ -67,7 +121,25 @@ function RecordingList() {
               <td>Inquiry</td>
               <td>Positive</td>
               <td className="flex justify-center items-center">
-                <img src={ThreeDotsVertical} className="mt-2"></img>
+                <div className="dropdown">
+                  <label
+                    tabIndex={0}
+                    className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
+                  >
+                    <img src={ThreeDotsVertical} className="mt-2"></img>
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content z-[1] menu p-2 shadow bg-[#F6F4FC] rounded-box w-52"
+                  >
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a>Item 1</a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a>Item 2</a>
+                    </li>
+                  </ul>
+                </div>
               </td>
             </tr>
             {/* row 3 */}
@@ -80,7 +152,25 @@ function RecordingList() {
               <td>Inquiry</td>
               <td>Positive</td>
               <td className="flex justify-center items-center">
-                <img src={ThreeDotsVertical} className="mt-2"></img>
+                <div className="dropdown">
+                  <label
+                    tabIndex={0}
+                    className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
+                  >
+                    <img src={ThreeDotsVertical} className="mt-2"></img>
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content z-[1] menu p-2 shadow bg-[#F6F4FC] rounded-box w-52"
+                  >
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a>Item 1</a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a>Item 2</a>
+                    </li>
+                  </ul>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -100,7 +190,7 @@ function RecordingList() {
           4
         </button>
       </div>
-    </>
+    </div>
   );
 }
 

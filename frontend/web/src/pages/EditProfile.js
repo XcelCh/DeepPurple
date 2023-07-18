@@ -80,7 +80,7 @@ function EditProfile() {
     <>
       <div className="bg-gradient-to-tr from-[#D5B4D6] via-[#D3CBEF] via 40% to-[#9487E7] border">
         <div
-          className="container md:mx-auto bg-white rounded-t-lg rounded-b-lg h-screen my-5 border max-w-5xl"
+          className="md:mx-auto bg-white rounded-t-lg rounded-b-lg my-5 border max-w-5xl"
           style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
         >
           <div className="grid grid-cols-2 mx-5 my-5">

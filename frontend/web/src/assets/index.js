@@ -19,6 +19,12 @@ import SidebarStats from "./SidebarStats.svg";
 import Toggle from "./Toggle.svg";
 import Upload from "./Upload.svg";
 import ThreeDotsVertical from "./ThreeDotsVertical.svg";
+import Search from "./Search.svg";
+import TrashCan from "./TrashCan.svg";
+import Eye from "./Eye.svg";
+import Filter from "./Filter.svg";
+import Download from "./Download.svg";
+
 
 export {
   TextIcon,
@@ -41,5 +47,10 @@ StarterDummy,
     SidebarStats,
     Upload,
   Toggle,
-  ThreeDotsVertical
+  ThreeDotsVertical,
+  Search,
+  Filter,
+  TrashCan,
+  Eye,
+  Download,
 };
