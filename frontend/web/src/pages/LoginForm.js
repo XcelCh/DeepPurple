@@ -13,7 +13,7 @@ function LoginForm() {
     useEffect(() => {
         const user = AuthService.getCurrentUser();
         if (user) {
-          navigate('/');
+          navigate('/unauthorizedPage');
         }
     }, []);
 
@@ -44,7 +44,7 @@ function LoginForm() {
         AuthService.login(email, password).then(
             () => {
                 navigate("/");
-                window.location.reload();
+                // window.location.reload();
             },
             (error) => {
                 setMessage("Wrong email or password. Try again or click Forgot password to reset it.");

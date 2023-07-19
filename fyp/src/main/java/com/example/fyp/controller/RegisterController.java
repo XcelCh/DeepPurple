@@ -14,13 +14,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.fyp.controller.dto.PasswordResetRequestDto;
 import com.example.fyp.entity.Account;
+import com.example.fyp.entity.Role;
 import com.example.fyp.repo.AccountRepository;
+import com.example.fyp.repo.RoleRepository;
 import com.example.fyp.service.AccountDetailsImpl;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.EmailServiceImpl;
@@ -33,7 +36,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-public class ProfileController {
+@RequestMapping("/register")
+public class RegisterController {
 
     @Autowired
     AccountServiceImpl accountServiceImpl;
@@ -43,47 +47,10 @@ public class ProfileController {
 
     @Autowired
     private EmailServiceImpl emailServiceImpl;
+
+    @Autowired
+    private RoleRepository roleRepository;
     
-
-    @GetMapping("/editProfile")
-    public ResponseEntity<?> editProfile() {
-
-        Account acc = new Account();
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-
-            String username = authentication.getName();
-
-            acc = accountServiceImpl.loadUserDetailsByUsername(username);
-
-            acc.setPassword(null);
-            acc.setRoles(null);
-            // System.out.println(acc);
-
-            return ResponseEntity.ok().body(acc);
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not Logged In.");
-        
-
-    }
-
-    @PostMapping("/editProfile")
-    public ResponseEntity<String> saveEdit(@RequestBody Account account) {
-        
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        AccountDetailsImpl userPrincipal = (AccountDetailsImpl) authentication.getPrincipal();
-          
-        account.setPassword(userPrincipal.getPassword());
-        // account.setRoles(userPrincipal.getAuthorities());
-        
-        accountServiceImpl.saveAccount(account);
-
-        return ResponseEntity.ok("Edit Profile received succesfully.");
-    }
-
     @PostMapping("/checkEmail")
     public ResponseEntity<String> checkEmail(@RequestBody String body) {
 
@@ -114,8 +81,12 @@ public class ProfileController {
 
         // Set roles here.
 
+        Role roleFree = roleRepository.findByDescription("Free");
+
         String encodePassword = passwordEncoder.encode(account.getPassword());
+        
         account.setPassword(encodePassword);
+        account.addRole(roleFree);
 
         accountServiceImpl.saveAccount(account);
 
