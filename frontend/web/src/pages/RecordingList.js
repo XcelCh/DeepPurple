@@ -75,7 +75,9 @@ function RecordingList() {
               </th>
               <th className="bg-[#F6F4FC] normal-case text-base">Category</th>
               <th className="bg-[#F6F4FC] normal-case text-base">Sentiment</th>
-              <th className="bg-[#F6F4FC] normal-case text-base">Action</th>
+              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -241,17 +243,17 @@ function RecordingList() {
           </tbody>
         </table>
       </div>
-      <div className="join flex justify-end mt-10">
-        <button className="join-item btn btn-xs bg-[#9554FE] border-[#9554FE]">
+      <div className="join flex justify-end mt-10 mb-10">
+        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
           1
         </button>
-        <button className="join-item btn btn-xs btn-active bg-[#9554FE] border-[#9554FE]">
+        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
           2
         </button>
-        <button className="join-item btn btn-xs bg-[#9554FE] border-[#9554FE]">
+        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
           3
         </button>
-        <button className="join-item btn btn-xs bg-[#9554FE] border-[#9554FE]">
+        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
           4
         </button>
       </div>

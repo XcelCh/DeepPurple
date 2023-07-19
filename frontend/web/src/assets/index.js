@@ -24,7 +24,9 @@ import TrashCan from "./TrashCan.svg";
 import Eye from "./Eye.svg";
 import Filter from "./Filter.svg";
 import Download from "./Download.svg";
-
+import ArrowLeft from "./ArrowLeft.svg";
+import Analyze from "./Analyze.svg";
+import Cross from "./Cross.svg";
 
 export {
   TextIcon,
@@ -53,4 +55,7 @@ StarterDummy,
   TrashCan,
   Eye,
   Download,
+  ArrowLeft,
+  Analyze,
+  Cross
 };

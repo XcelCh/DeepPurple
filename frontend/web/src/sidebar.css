@@ -39,7 +39,7 @@ main{
     text-decoration: none;
 }
 .link:hover{
-    background:#9c3587;
+    background:#60388B;
     color: white;
     transition: all 0.5s;
 }
