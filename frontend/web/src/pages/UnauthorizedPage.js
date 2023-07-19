@@ -7,8 +7,8 @@ function UnauthorizedPage() {
     <>
       <div className="m-20">
         <img className="m-auto h-40 mt-20" src={Unauthorized}></img>
-        <p className="text-center mt-5 font-bold">Unauthorized</p>
-        <p className="text-center font-bold">Your token is not valid</p>
+        <p className="text-center mt-5 font-bold">You are not authorized to access this page.</p>
+        {/* <p className="text-center font-bold">Your token is not valid</p> */}
 
         <div className="flex items-center justify-center mt-8">
           <Link

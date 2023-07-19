@@ -47,16 +47,6 @@ public class JwtUtils {
                .parseClaimsJws(token)
                .getBody()
                .getSubject();
-
-    // Claims claims = Jwts.parserBuilder()
-    //                     .setSigningKey(key())
-    //                     .build()
-    //                     .parseClaimsJws(token)
-    //                     .getBody();
-    // String username = String.valueOf(claims.get("username"));
-    // String authorities = (String) claims.get("authorities");
-
-    // return username;
   }
 
   public boolean validateJwtToken(String authToken) {

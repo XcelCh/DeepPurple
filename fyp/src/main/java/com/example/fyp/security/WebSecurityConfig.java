@@ -82,13 +82,10 @@ public class WebSecurityConfig {
             .authorizeHttpRequests(auth -> 
                 auth.requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/analyze").permitAll()
-                    .requestMatchers("/error").permitAll()
-                    .requestMatchers("/checkEmail").permitAll()
-                    .requestMatchers("/createAccount").permitAll()
-                    .requestMatchers("/generatePasswordOTP").permitAll()
-                    .requestMatchers("/validateOTP").permitAll()
-                    .requestMatchers("/resetPassword").permitAll()
-                    .anyRequest().authenticated()
+                    .requestMatchers("/register/**").anonymous()
+                    .requestMatchers("/profile/**").authenticated()
+                    .requestMatchers("/addSubs").authenticated()
+                    // .anyRequest().authenticated()
             );
 
         http.authenticationProvider(authenticationProvider());

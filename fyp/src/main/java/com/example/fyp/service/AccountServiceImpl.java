@@ -1,14 +1,19 @@
 package com.example.fyp.service;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.fyp.entity.Account;
+import com.example.fyp.entity.Role;
 import com.example.fyp.repo.AccountRepository;
 
 @Service
@@ -26,8 +31,20 @@ public class AccountServiceImpl implements UserDetailsService, AccountService {
         Account account = accountRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + email));
 
-        return AccountDetailsImpl.build(account);
         
+        System.out.println(account.getRoles());
+
+        Collection<? extends GrantedAuthority> authorities = (mapRolesToAuthorities(account.getRoles()));
+
+        return AccountDetailsImpl.build(account, authorities);
+        
+    }
+
+    private Collection <? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
+
+        return roles.stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getName()))
+                    .collect(Collectors.toList());
     }
 
     @Override

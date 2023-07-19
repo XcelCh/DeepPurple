@@ -18,15 +18,17 @@ public class AccountDetailsImpl implements UserDetails {
   @JsonIgnore
   private String password;
 
-  public AccountDetailsImpl(String email, String password) {
+  public AccountDetailsImpl(String email, String password, Collection<? extends GrantedAuthority> authorities) {
     this.email = email;
     this.password = password;
+    this.authorities = authorities;
   }
 
-  public static AccountDetailsImpl build(Account account) {
+  public static AccountDetailsImpl build(Account account, Collection<? extends GrantedAuthority> authorities) {
     return new AccountDetailsImpl( 
         account.getEmail(),
-        account.getPassword());
+        account.getPassword(),
+        authorities);
   }
 
   @Override

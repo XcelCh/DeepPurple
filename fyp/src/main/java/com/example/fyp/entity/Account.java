@@ -1,7 +1,10 @@
 package com.example.fyp.entity;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collection;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -29,14 +32,15 @@ public class Account {
     private Date dob;
 
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     // @JoinTable(name = "users_subs",
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_email", referencedColumnName = "email"),
             // inverseJoinColumns = @JoinColumn(name = "subs_id", referencedColumnName = "id"))   
-            inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     // private Collection<Subscription> subs;
-    private Collection<Role> roles;
+    private Collection<Role> roles = new ArrayList<>();
 
     public Account (String email, String fullName, String gender, String phoneNum, Date dob) {
 
@@ -45,5 +49,9 @@ public class Account {
         this.gender = gender;
         this.phoneNum = phoneNum;
         this.dob = dob;
+    }
+
+    public void addRole (Role role) {
+        this.roles.add(role);
     }
 }
