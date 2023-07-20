@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
 import { Link } from "react-router-dom";
 import {
   Toggle,
@@ -39,10 +38,27 @@ function RecordingList() {
               placeholder="Search"
               className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
             />
-            <img
-              src={Filter}
+            {/* The button to open modal */}
+            <label
+              htmlFor="my_modal_6"
               className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 right-3"
-            ></img>
+            >
+              <img src={Filter} className=""></img>
+            </label>
+
+            {/* Put this part before </body> tag */}
+            <input type="checkbox" id="my_modal_6" className="modal-toggle" />
+            <div className="modal">
+              <div className="modal-box">
+                <h3 className="font-bold text-lg">Hello!</h3>
+                <p className="py-4">This modal works with a hidden checkbox!</p>
+                <div className="modal-action">
+                  <label htmlFor="my_modal_6" className="btn">
+                    Close!
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
         <div className="place-self-end">
@@ -96,7 +112,7 @@ function RecordingList() {
                     tabIndex={0}
                     className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
                   >
-                    <img src={ThreeDotsVertical}></img>
+                    <img src={ThreeDotsVertical} className="mt-2"></img>
                   </label>
                   <ul
                     tabIndex={0}

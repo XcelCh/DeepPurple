@@ -49,12 +49,12 @@ const Sidebar = ({ children }) => {
     <div className="flex">
       <div style={{ width: isOpen ? "250px" : "70px" }} className="sidebar">
         <div className="top_section">
-          <h1 style={{ display: isOpen ? "block" : "none" }} className="logo">
-            Logo
-          </h1>
-          <div style={{ marginLeft: isOpen ? "50px" : "0px" }} className="bars">
+          <p style={{ display: isOpen ? "block" : "none" }} className="text-sm font-bold">
+            Customer Service Analyzer 
+          </p>
+          <div style={{ marginLeft: isOpen ? "40px" : "0px" }} className="bars">
             <FaBars
-              className="ml-2"
+              className=""
               style={{ fill: "#60388B" }}
               onClick={toggle}
             />
@@ -64,7 +64,7 @@ const Sidebar = ({ children }) => {
           <NavLink
             to={item.path}
             key={index}
-            className="link rounded m-2"
+            className="link rounded-lg m-2"
             activeClassName="active"
           >
             <div className="icon flex items-center justify-center py-1">

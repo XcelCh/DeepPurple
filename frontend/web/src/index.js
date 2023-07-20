@@ -19,11 +19,13 @@ import RecordingList from "./pages/RecordingList";
 import Sidebar from "./components/Sidebar";
 import EmployeeList from "./pages/EmployeeList";
 import AddRecording from "./pages/AddRecording";
+import SummaryAnalysis from "./pages/SummaryAnalysis";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="summaryAnalysis" element={<SummaryAnalysis/>} />
         <Route path="/" element={<NavbarLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="loginForm" element={<LoginForm />} />
