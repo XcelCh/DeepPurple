@@ -49,7 +49,7 @@ const Sidebar = ({ children }) => {
   ];
     
   return (
-    <div className="xl:container flex">
+    <div className="flex">
       <div style={{ width: isOpen ? "250px" : "50px" }} className="sidebar">
         <div className="top_section">
           <h1 style={{ display: isOpen ? "block" : "none" }} className="logo">

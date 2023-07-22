@@ -19,6 +19,15 @@ import SidebarStats from "./SidebarStats.svg";
 import Toggle from "./Toggle.svg";
 import Upload from "./Upload.svg";
 import ThreeDotsVertical from "./ThreeDotsVertical.svg";
+import Category from "./Category.svg";
+import CallSentiment from "./CallSentiment.svg"; 
+import EmployeeSentiment from "./EmployeeSentiment.svg";
+import CustomerSentiment from "./CustomerSentiment.svg";
+import Confidence from "./Confidence.svg";
+import SampleRate from "./SampleRate.svg";
+import AudioFormat from "./AudioFormat.svg";
+import Forward from "./Forward.svg";
+import Backward from "./Backward.svg";
 
 export {
   TextIcon,
@@ -34,12 +43,21 @@ export {
   ShortLine,
   Tick,
   Unauthorized,
-ArrowButton,
-StarterDummy,
-    SidebarMusic,
-    SidebarEmployee,
-    SidebarStats,
-    Upload,
+  ArrowButton,
+  StarterDummy,
+  SidebarMusic,
+  SidebarEmployee,
+  SidebarStats,
+  Upload,
   Toggle,
-  ThreeDotsVertical
+  ThreeDotsVertical,
+  Category,
+  CallSentiment,
+  CustomerSentiment,
+  EmployeeSentiment,
+  AudioFormat,
+  SampleRate,
+  Confidence,
+  Forward,
+  Backward
 };
