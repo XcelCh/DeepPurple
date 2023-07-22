@@ -16,6 +16,7 @@ import UnauthorizedPage from "./pages/UnauthorizedPage";
 import ChangePassword from "./pages/ChangePassword";
 import Starter from "./pages/Starter";
 import RecordingList from "./pages/RecordingList";
+import RecordingAnalysis from "./pages/RecordingAnalysis";
 import Sidebar from "./components/Sidebar";
 import EmployeeList from "./pages/EmployeeList";
 import AddRecording from "./pages/AddRecording";
@@ -37,7 +38,6 @@ export default function App() {
           <Route path="signUpForm" element={<SignUpForm />} />
           <Route path="paymentForm" element={<PaymentForm />} />
           <Route path="starter" element={<Starter />} />
-
           {/* Text Sentiment */}
           <Route path="textSentiment" element={<TextAnalyze />} />
 
