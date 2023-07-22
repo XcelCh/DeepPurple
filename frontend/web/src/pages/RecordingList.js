@@ -7,10 +7,9 @@ import {
   Filter,
   TrashCan,
   Download,
-  Eye
-  
+  Eye,
 } from "../assets/index";
-
+import { DateRangePickerComponent } from "@syncfusion/ej2-react-calendars";
 function RecordingList() {
   return (
     <div className="mx-20">
@@ -38,29 +37,129 @@ function RecordingList() {
               placeholder="Search"
               className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
             />
-            {/* The button to open modal */}
-            <label
-              htmlFor="my_modal_6"
-              className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 right-3"
-            >
-              <img src={Filter} className=""></img>
-            </label>
 
-            {/* Put this part before </body> tag */}
-            <input type="checkbox" id="my_modal_6" className="modal-toggle" />
-            <div className="modal">
-              <div className="modal-box">
-                <h3 className="font-bold text-lg">Hello!</h3>
-                <p className="py-4">This modal works with a hidden checkbox!</p>
-                <div className="modal-action">
-                  <label htmlFor="my_modal_6" className="btn">
-                    Close!
-                  </label>
+            <div className="dropdown dropdown-bottom dropdown-end mb-4">
+              <label
+                tabIndex={0}
+                className="absolute top-0 bottom-0 w-6 h-6 text-gray-400 right-3"
+              >
+                <img src={Filter} className=""></img>
+              </label>
+              <div
+                tabIndex={0}
+                className="mt-10 dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-96 disabled:hover  text-xs "
+              >
+                {/* Pop up */}
+                {/* <div className="bg-white rounded-3xl shadow border p-5"> */}
+                {/* Handled By */}
+                <div className="grid grid-cols-2 flex items-center mb-5">
+                  <p className="font-bold">Handled by</p>
+                  <select
+                    // value={gender}
+                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    className="select select-bordered font-normal select-sm h-11"
+                  >
+                    <option value="">Any Employee</option>
+                    <option value="existingEmployee">Existing Employee</option>
+                    <option value="metadata">Metadata</option>
+                    <option value="folderName">Folder Name</option>
+                    <option value="splitFileName">Split File Name</option>
+                    <option value="none">None</option>
+                  </select>
+                </div>
+                {/* </div> */}
+
+                {/* Category */}
+                <div className="grid grid-cols-2 flex items-center mb-5">
+                  <p className="font-bold">Category</p>
+                  <select
+                    // value={gender}
+                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    className="select select-bordered font-normal select-sm h-11"
+                  >
+                    <option value="">Any Employee</option>
+                    <option value="existingEmployee">Existing Employee</option>
+                    <option value="metadata">Metadata</option>
+                    <option value="folderName">Folder Name</option>
+                    <option value="splitFileName">Split File Name</option>
+                    <option value="none">None</option>
+                  </select>
+                </div>
+
+                {/* Overall Sentiment */}
+                <div className="grid grid-cols-2 flex items-center mb-5">
+                  <p className="font-bold">Overall Sentiment</p>
+                  <select
+                    // value={gender}
+                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    className="select select-bordered font-normal select-sm h-11"
+                  >
+                    <option value="">Any Employee</option>
+                    <option value="existingEmployee">Existing Employee</option>
+                    <option value="metadata">Metadata</option>
+                    <option value="folderName">Folder Name</option>
+                    <option value="splitFileName">Split File Name</option>
+                    <option value="none">None</option>
+                  </select>
+                </div>
+
+                {/* Date Recorded */}
+                <div className="grid grid-cols-2 flex items-center mb-5">
+                  <p className="font-bold">Date Recorded</p>
+                  <DateRangePickerComponent
+                    id="daterangepicker"
+                    placeholder="Select range"
+                  />
+                </div>
+
+                {/* Upload Date */}
+                <div className="grid grid-cols-2 flex items-center mb-5">
+                  <p className="font-bold">Upload Date</p>
+                  <DateRangePickerComponent
+                    id="daterangepicker"
+                    placeholder="Select range"
+                  />
+                </div>
+
+                {/* Employer's Sentiment */}
+                <div className="grid grid-cols-2 flex items-center mb-5">
+                  <p className="font-bold">Employer's Sentiment</p>
+                  <select
+                    // value={gender}
+                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    className="select select-bordered font-normal select-sm h-11"
+                  >
+                    <option value="">Any Employee</option>
+                    <option value="existingEmployee">Existing Employee</option>
+                    <option value="metadata">Metadata</option>
+                    <option value="folderName">Folder Name</option>
+                    <option value="splitFileName">Split File Name</option>
+                    <option value="none">None</option>
+                  </select>
+                </div>
+
+                {/* Customer's Sentiment */}
+                <div className="grid grid-cols-2 flex items-center mb-5">
+                  <p className="font-bold">Customer's Sentiment</p>
+                  <select
+                    // value={gender}
+                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    className="select select-bordered font-normal select-sm h-11"
+                  >
+                    <option value="">Any Employee</option>
+                    <option value="existingEmployee">Existing Employee</option>
+                    <option value="metadata">Metadata</option>
+                    <option value="folderName">Folder Name</option>
+                    <option value="splitFileName">Split File Name</option>
+                    <option value="none">None</option>
+                  </select>
                 </div>
               </div>
             </div>
           </div>
         </form>
+
+        {/* Upload */}
         <div className="place-self-end">
           <Link to="./AddRecording">
             <button className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]">
@@ -71,6 +170,7 @@ function RecordingList() {
           </Link>
         </div>
       </div>
+
       <div className="max-h-screen">
         <table className="table mx-auto w-full border border-dashed text-sm">
           {/* head */}
@@ -98,7 +198,7 @@ function RecordingList() {
           </thead>
           <tbody>
             {/* row 1 */}
-            <tr className="hover">
+            <tr>
               <th>1</th>
               <td>Sample recording 1</td>
               <td>2023-01-01 01:01:01</td>

@@ -54,7 +54,7 @@ const Sidebar = ({ children }) => {
           </p>
           <div style={{ marginLeft: isOpen ? "40px" : "0px" }} className="bars">
             <FaBars
-              className=""
+              className="ml-2"
               style={{ fill: "#60388B" }}
               onClick={toggle}
             />
