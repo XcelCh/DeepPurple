@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { Dropdown } from "flowbite-react";
 import { ArrowButton, StarterDummy } from "../assets";
 import { Link } from "react-router-dom";
 

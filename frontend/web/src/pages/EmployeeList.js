@@ -7,14 +7,16 @@ import {
   Filter,
   TrashCan,
   Download,
-  Eye
-  
+  Eye,
 } from "../assets/index";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 
-function RecordingList() {
+function EmployeeList() {
   return (
     <div className="mx-20">
-      <p className="text-xl font-bold text-left mb-5">Recording List</p>
+      <p className="text-xl font-bold text-left mb-5">Employee List</p>
 
       <div class="grid grid-cols-2 mb-5">
         <form className="max-w-xs text-sm">
@@ -38,59 +40,78 @@ function RecordingList() {
               placeholder="Search"
               className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
             />
-            {/* The button to open modal */}
-            <label
-              htmlFor="my_modal_6"
-              className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 right-3"
-            >
-              <img src={Filter} className=""></img>
-            </label>
-
-            {/* Put this part before </body> tag */}
-            <input type="checkbox" id="my_modal_6" className="modal-toggle" />
-            <div className="modal">
-              <div className="modal-box">
-                <h3 className="font-bold text-lg">Hello!</h3>
-                <p className="py-4">This modal works with a hidden checkbox!</p>
-                <div className="modal-action">
-                  <label htmlFor="my_modal_6" className="btn">
-                    Close!
+          </div>
+        </form>
+        <div className="place-self-end">
+          {/* The button to open modal */}
+          <label
+            htmlFor="my_modal_6"
+            className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]"
+          >
+            <AddCircleOutlineIcon className="mr-2" />
+            <p className="mr-2 text-md">Add Employee</p>
+          </label>
+          <input type="checkbox" id="my_modal_6" className="modal-toggle" />
+          <div className="modal">
+            <div className="modal-box p-0 rounded-lg w-fit">
+              {/* Title */}
+              <div className="grid grid-cols-2 bg-[#9554FE] p-5">
+                <p className="font-bold text-xl text-[#FFFFFF]">Add Employee</p>
+                <div className="modal-action m-0">
+                  <label htmlFor="my_modal_6">
+                    <CloseIcon
+                      style={{ fill: "#FFFFFF" }}
+                      className="place-self-end"
+                    />
                   </label>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-5">
+                <div className="mx-auto">
+                  <p className="mb-2">Employee Name</p>
+                  <input
+                    type="text"
+                    name="phoneNum"
+                    id="phoneNum"
+                    className="mb-7 border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-72 duration-200 peer focus:border-indigo-60 bg-white"
+                    // value={phoneNum}
+                    // onChange={(e) => setPhoneNum(e.target.value)}
+                    placeholder="Enter Employee Name"
+                    required
+                  ></input>
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    className="btn btn-sm bg-[#9554FE] normal-case h-11 px-5 border-[#9554FE]"
+                    // onClick={handleNext}
+                  >
+                    Add
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-        </form>
-        <div className="place-self-end">
-          <Link to="./AddRecording">
-            <button className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]">
-              <img src={Upload} className="mr-2 h-5"></img>
-              <p className="mr-2 text-md">Upload</p>
-              <img src={Toggle} className="h-5"></img>
-            </button>
-          </Link>
         </div>
       </div>
+
       <div className="max-h-screen">
         <table className="table mx-auto w-full border border-dashed text-sm">
           {/* head */}
           <thead>
             <tr>
               <th className="bg-[#F6F4FC] normal-case text-base">No</th>
-              <th className="bg-[#F6F4FC] normal-case text-base">
-                Recording name
+              <th className="bg-[#F6F4FC] normal-case text-base">Name</th>
+              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+                Calls Handled
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base">
-                Upload Date
+              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+                Positive Sentiment
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base">
-                Date Recorded
+              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+                Negative Sentiment
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base">
-                Employee Name
-              </th>
-              <th className="bg-[#F6F4FC] normal-case text-base">Category</th>
-              <th className="bg-[#F6F4FC] normal-case text-base">Sentiment</th>
               <th className="bg-[#F6F4FC] normal-case text-base text-center">
                 Action
               </th>
@@ -100,37 +121,35 @@ function RecordingList() {
             {/* row 1 */}
             <tr className="hover">
               <th>1</th>
-              <td>Sample recording 1</td>
-              <td>2023-01-01 01:01:01</td>
-              <td>2023-01-01 01:01:01</td>
               <td>David</td>
-              <td>Inquiry</td>
-              <td>Positive</td>
+              <td className="text-center">386</td>
+              <td className="text-center">311</td>
+              <td className="text-center">75</td>
               <td className="flex justify-center items-center">
                 <div className="dropdown">
                   <label
                     tabIndex={0}
                     className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
                   >
-                    <img src={ThreeDotsVertical} className="mt-2"></img>
+                    <img src={ThreeDotsVertical}></img>
                   </label>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none border-[#D1D1D1]"
+                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
                   >
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#9554FE]">
-                        <img src={Eye}></img> View Analysis
+                        <img src={Eye}></img> View Calls Handled
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <EditIcon /> Edit Name
                       </a>
                     </li>
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#D55454]">
                         <img src={TrashCan}></img> Delete
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <img src={Download}></img> Download
                       </a>
                     </li>
                   </ul>
@@ -140,37 +159,35 @@ function RecordingList() {
             {/* row 2 */}
             <tr className="hover">
               <th>2</th>
-              <td>Sample recording 1</td>
-              <td>2023-01-01 01:01:01</td>
-              <td>2023-01-01 01:01:01</td>
               <td>David</td>
-              <td>Inquiry</td>
-              <td>Positive</td>
+              <td className="text-center">386</td>
+              <td className="text-center">311</td>
+              <td className="text-center">75</td>
               <td className="flex justify-center items-center">
                 <div className="dropdown">
                   <label
                     tabIndex={0}
                     className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
                   >
-                    <img src={ThreeDotsVertical} className="mt-2"></img>
+                    <img src={ThreeDotsVertical}></img>
                   </label>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none border-[#D1D1D1]"
+                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
                   >
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#9554FE]">
-                        <img src={Eye}></img> View Analysis
+                        <img src={Eye}></img> View Calls Handled
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <EditIcon /> Edit Name
                       </a>
                     </li>
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#D55454]">
                         <img src={TrashCan}></img> Delete
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <img src={Download}></img> Download
                       </a>
                     </li>
                   </ul>
@@ -180,76 +197,73 @@ function RecordingList() {
             {/* row 3 */}
             <tr className="hover">
               <th>3</th>
-              <td>Sample recording 1</td>
-              <td>2023-01-01 01:01:01</td>
-              <td>2023-01-01 01:01:01</td>
               <td>David</td>
-              <td>Inquiry</td>
-              <td>Positive</td>
+              <td className="text-center">386</td>
+              <td className="text-center">311</td>
+              <td className="text-center">75</td>
               <td className="flex justify-center items-center">
                 <div className="dropdown">
                   <label
                     tabIndex={0}
                     className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
                   >
-                    <img src={ThreeDotsVertical} className="mt-2"></img>
+                    <img src={ThreeDotsVertical}></img>
                   </label>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none border-[#D1D1D1]"
+                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
                   >
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#9554FE]">
-                        <img src={Eye}></img> View Analysis
+                        <img src={Eye}></img> View Calls Handled
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <EditIcon /> Edit Name
                       </a>
                     </li>
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#D55454]">
                         <img src={TrashCan}></img> Delete
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <img src={Download}></img> Download
                       </a>
                     </li>
                   </ul>
                 </div>
               </td>
             </tr>
+            {/* Row 4 */}
             <tr className="hover">
               <th>4</th>
-              <td>Sample recording 1</td>
-              <td>2023-01-01 01:01:01</td>
-              <td>2023-01-01 01:01:01</td>
               <td>David</td>
-              <td>Inquiry</td>
-              <td>Positive</td>
+              <td className="text-center">386</td>
+              <td className="text-center">311</td>
+              <td className="text-center">75</td>
               <td className="flex justify-center items-center">
                 <div className="dropdown">
                   <label
                     tabIndex={0}
                     className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
                   >
-                    <img src={ThreeDotsVertical} className="mt-2"></img>
+                    <img src={ThreeDotsVertical}></img>
                   </label>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none border-[#D1D1D1]"
+                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
                   >
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#9554FE]">
-                        <img src={Eye}></img> View Analysis
+                        <img src={Eye}></img> View Calls Handled
+                      </a>
+                    </li>
+                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                      <a className="text-[#9554FE]">
+                        <EditIcon /> Edit Name
                       </a>
                     </li>
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#D55454]">
                         <img src={TrashCan}></img> Delete
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <img src={Download}></img> Download
                       </a>
                     </li>
                   </ul>
@@ -277,4 +291,4 @@ function RecordingList() {
   );
 }
 
-export default RecordingList;
+export default EmployeeList;

@@ -28,6 +28,14 @@ import SampleRate from "./SampleRate.svg";
 import AudioFormat from "./AudioFormat.svg";
 import Forward from "./Forward.svg";
 import Backward from "./Backward.svg";
+import Search from "./Search.svg";
+import TrashCan from "./TrashCan.svg";
+import Eye from "./Eye.svg";
+import Filter from "./Filter.svg";
+import Download from "./Download.svg";
+import ArrowLeft from "./ArrowLeft.svg";
+import Analyze from "./Analyze.svg";
+import Cross from "./Cross.svg";
 
 export {
   TextIcon,
@@ -59,5 +67,13 @@ export {
   SampleRate,
   Confidence,
   Forward,
-  Backward
+  Backward,
+  Search,
+  Filter,
+  TrashCan,
+  Eye,
+  Download,
+  ArrowLeft,
+  Analyze,
+  Cross
 };

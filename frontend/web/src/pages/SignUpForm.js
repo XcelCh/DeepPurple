@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tick } from "../assets"
 import { Link, useNavigate } from 'react-router-dom';
 import DatePicker from "../components/DatePicker"; 
+import AuthService from "../services/auth.service";
 
 function SignUpForm() {
+
+    useEffect(() => {
+        const user = AuthService.getCurrentUser();
+        if (user) {
+          navigate('/unauthorizedPage');
+        }
+    }, []);
+
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         fullName: "",
@@ -64,7 +73,7 @@ function SignUpForm() {
         }
 
 
-        fetch ('http://localhost:8082/checkEmail', {
+        fetch ('http://localhost:8082/register/checkEmail', {
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
             body : JSON.stringify({email : formData.email})
@@ -107,7 +116,7 @@ function SignUpForm() {
 
         console.log(formData);
 
-        fetch ('http://localhost:8082/createAccount', {
+        fetch ('http://localhost:8082/register/createAccount', {
             method : 'POST',
             headers : {'Content-Type' : 'application/json'},
             body : JSON.stringify(formData)
@@ -115,7 +124,20 @@ function SignUpForm() {
         .then(response => {
             if (response.ok) {
                 console.log("Account succesfully created.");
-                // setPage((currPage) => currPage + 1);
+
+                console.log("Logging in the New Account.");
+                AuthService.login(formData.email, formData.password).then(
+                    () => {
+                        console.log('Logged In.');
+                    
+                    },
+                    (error) => {
+                        
+                        console.error(error);
+                    }
+                );
+
+                setPage((currPage) => currPage + 1);
             }
             else if (!response.ok) {
                 throw new Error('Create account FAILED.')
@@ -128,14 +150,14 @@ function SignUpForm() {
 
     const handleFinalSignup = (e) => {
         e.preventDefault();
-    //     const basicRadio = document.getElementById('basic-plan-radio');
-    //     const proRadio = document.getElementById('pro-plan-radio');
+        const basicRadio = document.getElementById('basic-plan-radio');
+        const proRadio = document.getElementById('pro-plan-radio');
 
-    //     if(basicRadio.checked){
-    //         navigate('/paymentForm', {state: basicPlan});
-    //     } else{
-    //         navigate('/paymentForm', {state: proPlan});
-    //     }
+        if(basicRadio.checked){
+            navigate('/paymentForm', {state: basicPlan});
+        } else{
+            navigate('/paymentForm', {state: proPlan});
+        }
     };
     
     return (

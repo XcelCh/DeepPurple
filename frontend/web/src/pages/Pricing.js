@@ -16,16 +16,16 @@ function Pricing() {
   }
   
   return (
-    <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
+    <div className="bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
       <h2 className="text-4xl text-[#351D4F] font-bold dark:text-white ml-40 mr-40 pt-16 text-center">
         Pricing to suit all sizes of business
       </h2>
       <p className="text-md font-semibold text-white text-center ml-40 mr-40 mt-2">
         Choose a plan that works best for you and your team.
       </p>
-      <div className="grid grid-cols-2 mt-5 ml-40 mr-40 gap-0">
+      <div className="grid grid-cols-2 mt-5 ml-40 mr-40 gap-0 mb-20">
         {/* BASIC */}
-        <div className="container md:mx-auto bg-white rounded-3xl h-full w-80 my-5 border max-w-5xl drop-shadow-lg">
+        <div className="md:mx-auto bg-white rounded-3xl h-full w-80 my-5 border max-w-5xl drop-shadow-lg">
           <h2 className="text-3xl text-[#351D4F] font-bold mt-5 ml-12">
             {basicPlan.planName}
           </h2>
@@ -63,7 +63,7 @@ function Pricing() {
           
         </div>
         {/* PRO */}
-        <div className="container md:mx-auto bg-white rounded-3xl h-full w-80 my-5 border max-w-5xl drop-shadow-lg">
+        <div className="md:mx-auto bg-white rounded-3xl h-full w-80 my-5 border max-w-5xl drop-shadow-lg">
           <h2 className="text-3xl text-[#351D4F] font-bold mt-5 ml-12">
             {proPlan.planName}
           </h2>

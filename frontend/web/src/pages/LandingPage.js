@@ -21,7 +21,7 @@ function LandingPage() {
             <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]"> 
                 {/* Second layer gradient */}
                 <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
-                    {/* Content */}
+                      {/* Content */}
                     <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl dark:text-white">We turn words into insights.</h1>
                     <p className="mb-6 text-lg font-bold text-center text-white lg:text-xl sm:px-16 xl:px-64 dark:text-gray-400">DeepPurple helps you to understand the sentiment and emotion <br></br> of your client - all wrapped up into one software tool <br></br> that will helps you improve your product.</p>
                     <Link to="/textSentiment" className="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-[#60388B] bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">

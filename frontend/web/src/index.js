@@ -1,20 +1,4 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom/client';
 import "./index.css";
-// import reportWebVitals from './reportWebVitals';
-// import LandingPage from "./pages/LandingPage";
-
-// const root = ReactDOM.createRoot(document.getElementById('root'));
-// root.render(
-//   <React.StrictMode>
-//     <LandingPage />
-//   </React.StrictMode>
-// );
-
-// // If you want to start measuring performance in your app, pass a function
-// // to log results (for example: reportWebVitals(console.log))
-// // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
 
 import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -33,13 +17,16 @@ import ChangePassword from "./pages/ChangePassword";
 import Starter from "./pages/Starter";
 import RecordingList from "./pages/RecordingList";
 import RecordingAnalysis from "./pages/RecordingAnalysis";
-// import SidebarLayout from "./pages/SidebarLayout";
 import Sidebar from "./components/Sidebar";
+import EmployeeList from "./pages/EmployeeList";
+import AddRecording from "./pages/AddRecording";
+import SummaryAnalysis from "./pages/SummaryAnalysis";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="summaryAnalysis" element={<SummaryAnalysis/>} />
         <Route path="/" element={<NavbarLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="loginForm" element={<LoginForm />} />
@@ -53,7 +40,8 @@ export default function App() {
           <Route path="starter" element={<Starter />} />
           {/* Text Sentiment */}
           <Route path="textSentiment" element={<TextAnalyze />} />
-          
+
+          {/* With Sidebar */}
           <Route
             path="recordingList"
             element={
@@ -63,16 +51,27 @@ export default function App() {
             }
           />
 
-          <Route 
-            path="recordingAnalysis" 
+          <Route
+            path="employeeList"
             element={
               <Sidebar>
-                <RecordingAnalysis />
+                <EmployeeList />
               </Sidebar>
-            } 
+            }
           />
+
+          <Route
+            path="recordingList/addRecording"
+            element={
+              <Sidebar>
+                <AddRecording />
+              </Sidebar>
+            }
+          />
+
+          {/* Unauthorized Page */}
+          <Route path="unauthorizedPage" element={<UnauthorizedPage />} />
         </Route>
-        <Route path="unauthorizedPage" element={<UnauthorizedPage />} />
       </Routes>
     </BrowserRouter>
   );

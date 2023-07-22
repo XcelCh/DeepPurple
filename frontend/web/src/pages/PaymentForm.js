@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import mastercardImage from "../assets/Mastercard.png";
 import visaImage from "../assets/Visa.png";
-
 import AuthService from "../services/auth.service";
+import authHeader from '../services/auth-header';
 
 // PAYMENT NEEDS TO GET PLAN INFO FROM DATABASE
 // INSTEAD OF HARD CODING $10 $20
@@ -11,8 +11,12 @@ import AuthService from "../services/auth.service";
 function PaymentForm() {
     const navigate = useNavigate();
     const location = useLocation();
+
     console.log(location.state);
     const selectedPlan = location.state;
+
+    const token = authHeader();
+
     const [formData, setFormData] = useState({
       cardholderName: "",
       cardNumber: "",
@@ -124,10 +128,34 @@ function PaymentForm() {
     };
 
     const handlePayment = (e) => {
+
+      e.preventDefault();
+
       if(cardholderNameMessage != "" || cardNumberMessage != "" || expiryDateMessage != "" || securityCodeMessage != "") {
-        e.preventDefault();
+
+        
+        
       } else{
-        navigate('/');
+
+        fetch ('http://localhost:8082/addSubs', {
+          method: 'POST',
+          headers: {'Authorization': token.Authorization,
+                    'Content-Type': 'applicaiton/json'},
+          body: JSON.stringify({subs: selectedPlan.planName})
+        })
+        .then (response => {
+
+          if (response.status == 200) {
+            
+            console.log('Subscription Added.');
+            navigate('/');
+          }
+          else if (!response.ok) {
+            console.log(response.status);
+            console.log("Subscription Failed.");
+          }
+        })
+
       }
 
     };
