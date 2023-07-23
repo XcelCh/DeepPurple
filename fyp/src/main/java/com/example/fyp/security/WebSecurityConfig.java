@@ -24,8 +24,6 @@ import com.example.fyp.service.AccountServiceImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-
-
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
@@ -46,7 +44,7 @@ public class WebSecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        
+
         authProvider.setUserDetailsService(accountService);
         authProvider.setPasswordEncoder(passwordEncoder());
 
@@ -67,31 +65,32 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
 
-            .cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
-                @Override
-                public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                    config.setAllowedMethods(Collections.singletonList("*"));
-                    config.setAllowCredentials(true);
-                    config.setAllowedHeaders(Collections.singletonList("*"));
-                    config.setExposedHeaders(Arrays.asList("Authorization"));
-                    config.setMaxAge(3600L);
-                    return config;
-                }
-            }))
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler).accessDeniedHandler(customAccessDeniedHandler))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/analyze").permitAll()
-                    .requestMatchers("/register/**").anonymous()
-                    .requestMatchers("/profile/**").authenticated()
-                    .requestMatchers("/addSubs").authenticated()
-                    .requestMatchers("/starter/**").hasAnyRole("BASIC", "PRO")
-                    .requestMatchers("/getPricing").permitAll()
-                    // .anyRequest().authenticated()
-            );
+                .cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        config.setAllowedMethods(Collections.singletonList("*"));
+                        config.setAllowCredentials(true);
+                        config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setExposedHeaders(Arrays.asList("Authorization"));
+                        config.setMaxAge(3600L);
+                        return config;
+                    }
+                }))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)
+                        .accessDeniedHandler(customAccessDeniedHandler))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/analyze").permitAll()
+                        .requestMatchers("/register/**").anonymous()
+                        .requestMatchers("/profile/**").authenticated()
+                        .requestMatchers("/addSubs").authenticated()
+                        .requestMatchers("/starter/**").hasAnyRole("BASIC", "PRO")
+                        .requestMatchers("/getPricing").permitAll()
+                        .requestMatchers("/employeeList/**").permitAll()
+                // .anyRequest().authenticated()
+                );
 
         http.authenticationProvider(authenticationProvider());
 
