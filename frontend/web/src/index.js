@@ -68,6 +68,15 @@ export default function App() {
               </Sidebar>
             }
           />
+          
+          <Route
+            path="RecordingAnalysis"
+            element={
+              <Sidebar>
+                <RecordingAnalysis />
+              </Sidebar>
+            }
+          />
 
           {/* Unauthorized Page */}
           <Route path="unauthorizedPage" element={<UnauthorizedPage />} />
