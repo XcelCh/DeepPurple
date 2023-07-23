@@ -36,13 +36,12 @@ public class Account {
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    // @JoinTable(name = "users_subs",
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_email", referencedColumnName = "email"),
-            // inverseJoinColumns = @JoinColumn(name = "subs_id", referencedColumnName = "id"))   
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    // private Collection<Subscription> subs;
     private Collection<Role> roles = new ArrayList<>();
+
+    private String profilePic;
 
     public Account (String email, String fullName, String gender, String phoneNum, Date dob) {
 

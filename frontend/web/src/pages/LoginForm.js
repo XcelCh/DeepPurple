@@ -1,7 +1,7 @@
 import bgImage from "../assets/Background.png";
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import authHeader from "../services/auth-header";
 import AuthService from "../services/auth.service";
 
 function LoginForm() {
@@ -9,6 +9,7 @@ function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+
 
     useEffect(() => {
         const user = AuthService.getCurrentUser();
@@ -41,23 +42,34 @@ function LoginForm() {
           return;
         }
 
-        AuthService.login(email, password).then(
+        AuthService.login(email, password)
+        .then(
             () => {
-                navigate("/");
-                // window.location.reload();
+
+              const token = authHeader();
+
+              fetch ("http://localhost:8082/profile/getProfilePic", {
+                  headers: token
+                })
+                .then((response) => {
+                  if (response.ok) {
+                    return response.blob();
+                  }
+                })
+                .then((blob) => {
+                  
+                  localStorage.setItem("profilepic", URL.createObjectURL(blob));
+                  navigate('/');
+                })
+                .catch((error) => {
+                  console.error(error);
+                })
             },
             (error) => {
                 setMessage("Wrong email or password. Try again or click Forgot password to reset it.");
-                // const resMessage =
-                // (error.response &&
-                //     error.response.data &&
-                //     error.response.data.message) ||
-                // error.message ||
-                // error.toString();
-                        
-                // setMessage(resMessage);
             }
         );
+
     };
     
   return (
