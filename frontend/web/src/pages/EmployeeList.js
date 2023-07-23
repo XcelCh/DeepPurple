@@ -12,12 +12,13 @@ import {
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
+import GenericModal from "../components/GenericModal";
+import Pagination from "../components/Pagination";
 
 function EmployeeList() {
   return (
     <div className="mx-20">
       <p className="text-xl font-bold text-left mb-5">Employee List</p>
-
       <div class="grid grid-cols-2 mb-5">
         <form className="max-w-xs text-sm">
           <div className="relative">
@@ -43,56 +44,13 @@ function EmployeeList() {
           </div>
         </form>
         <div className="place-self-end">
-          {/* The button to open modal */}
           <label
-            htmlFor="my_modal_6"
+            htmlFor="addEmployeeModal"
             className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]"
           >
             <AddCircleOutlineIcon className="mr-2" />
             <p className="mr-2 text-md">Add Employee</p>
           </label>
-          <input type="checkbox" id="my_modal_6" className="modal-toggle" />
-          <div className="modal">
-            <div className="modal-box p-0 rounded-lg w-fit">
-              {/* Title */}
-              <div className="grid grid-cols-2 bg-[#9554FE] p-5">
-                <p className="font-bold text-xl text-[#FFFFFF]">Add Employee</p>
-                <div className="modal-action m-0">
-                  <label htmlFor="my_modal_6">
-                    <CloseIcon
-                      style={{ fill: "#FFFFFF" }}
-                      className="place-self-end"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-5">
-                <div className="mx-auto">
-                  <p className="mb-2">Employee Name</p>
-                  <input
-                    type="text"
-                    name="phoneNum"
-                    id="phoneNum"
-                    className="mb-7 border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-72 duration-200 peer focus:border-indigo-60 bg-white"
-                    // value={phoneNum}
-                    // onChange={(e) => setPhoneNum(e.target.value)}
-                    placeholder="Enter Employee Name"
-                    required
-                  ></input>
-                </div>
-                <div className="flex justify-end">
-                  <button
-                    className="btn btn-sm bg-[#9554FE] normal-case h-11 px-5 border-[#9554FE]"
-                    // onClick={handleNext}
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -143,9 +101,9 @@ function EmployeeList() {
                       </a>
                     </li>
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <EditIcon /> Edit Name
-                      </a>
+                      <label className="text-[#9554FE]" htmlFor="editNameModal">
+                        <EditIcon /> Edit Names
+                      </label>
                     </li>
                     <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                       <a className="text-[#D55454]">
@@ -274,19 +232,27 @@ function EmployeeList() {
         </table>
       </div>
       <div className="join flex justify-end mt-10 mb-10">
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          1
-        </button>
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          2
-        </button>
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          3
-        </button>
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          4
-        </button>
+        <Pagination></Pagination>
       </div>
+
+      {/* Modals */}
+      {/* Add Employee Modal */}
+      <GenericModal
+        cardTitle="Add Employee"
+        fieldName="Employee Name"
+        placeholderContent="Enter Employee Name"
+        buttonContent="Add"
+        id="addEmployeeModal"
+      ></GenericModal>
+
+      {/* Edit Employee Modal */}
+      <GenericModal
+        cardTitle="Edit Employee Name"
+        fieldName="Employee Name"
+        placeholderContent="Enter Employee Name"
+        buttonContent="Save"
+        id="editNameModal"
+      ></GenericModal>
     </div>
   );
 }
