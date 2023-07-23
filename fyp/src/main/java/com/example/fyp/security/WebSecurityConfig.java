@@ -35,6 +35,9 @@ public class WebSecurityConfig {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public AuthTokenValidationFilter authenticationJwtTokenFilter() {
         return new AuthTokenValidationFilter();
@@ -77,7 +80,7 @@ public class WebSecurityConfig {
                     return config;
                 }
             }))
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler).accessDeniedHandler(customAccessDeniedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> 
                 auth.requestMatchers("/api/auth/**").permitAll()
@@ -85,6 +88,8 @@ public class WebSecurityConfig {
                     .requestMatchers("/register/**").anonymous()
                     .requestMatchers("/profile/**").authenticated()
                     .requestMatchers("/addSubs").authenticated()
+                    .requestMatchers("/starter/**").hasAnyRole("BASIC", "PRO")
+                    .requestMatchers("/getPricing").permitAll()
                     // .anyRequest().authenticated()
             );
 

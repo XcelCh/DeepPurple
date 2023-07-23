@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { ShortLine, Tick } from "../assets"
 import { Link } from 'react-router-dom';
 import AuthService from "../services/auth.service";
@@ -6,14 +6,34 @@ import AuthService from "../services/auth.service";
 function Pricing() {
 
   const user = AuthService.getCurrentUser();
-  const basicPlan = {
-    planName: "Basic",
-    planPrice: "10"
-  }
-  const proPlan = {
-    planName: "Professional",
-    planPrice: "20"
-  }
+  const [basicPlan, setBasicPlan] = useState({
+    planName: '',
+    planPrice: 0.0
+  })
+
+  const [proPlan, setProPlan] = useState({
+    planName: '',
+    planPrice: 0.0
+  })
+
+  fetch('http://localhost:8082/getPricing')
+  .then(response => {
+
+    if(response.ok){
+
+      console.log('Get Price Success.');
+      return response.json();
+    }
+  })
+  .then(data => {
+
+    console.log(data.Basic);
+    setBasicPlan({...basicPlan, planPrice: data.Basic});
+    setProPlan({...proPlan, planPrice: data.Professional});
+    
+  })
+
+
   
   return (
     <div className="bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
