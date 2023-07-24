@@ -14,14 +14,21 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class RecordingAnalysis {
-    @Id 
+public class Analysis {   
+    @Id
+    private Integer recordingId;
+
     @OneToOne
-    @JoinColumn(name = "recording_id")
+    @MapsId
+    @JoinColumn(name = "recordingId")
     private Recording recording;
 
     private String category;
@@ -37,6 +44,12 @@ public class RecordingAnalysis {
     private String recordingSentiment;
     private double transcriptConfidence;
     
-    @OneToMany(mappedBy = "recordingAnalysis")
+    @OneToMany(mappedBy = "analysis")
     private List<Transcript> transcripts;
+
+    public Analysis(String category, String summary) {
+        this.category = category;
+        this.summary = summary;
+    }
+
 }

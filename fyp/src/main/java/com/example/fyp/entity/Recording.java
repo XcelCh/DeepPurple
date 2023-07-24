@@ -3,7 +3,9 @@ package com.example.fyp.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,15 +31,19 @@ public class Recording {
     private String recordingName;
     
     @Lob
+    @Column(length = 100000)
     private byte[] content;
 
     private LocalDateTime uploadDate;
     private LocalDateTime recordingDate;
+
+    @Nullable
     private double recordingDuration;
+
     private String audioFormat;
     private Integer sampleRate;
     
     @OneToOne(mappedBy = "recording", cascade = CascadeType.ALL, orphanRemoval = true)
-    private RecordingAnalysis recordingAnalysis;
+    private Analysis recordingAnalysis;
 
 }

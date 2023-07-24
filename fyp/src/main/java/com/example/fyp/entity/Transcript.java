@@ -13,12 +13,12 @@ import lombok.Data;
 @Entity
 public class Transcript {
     @Id
-    @ManyToOne
-    @JoinColumn(name = "recording_id")
-    private RecordingAnalysis recordingAnalysis;
+    private Integer transcriptId;
 
     @Id
-    private Integer transcriptId;
+    @ManyToOne
+    @JoinColumn(name = "recording_id")
+    private Analysis analysis;
 
     private String startTime;
     private String endTime;

@@ -89,6 +89,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/starter/**").hasAnyRole("BASIC", "PRO")
                         .requestMatchers("/getPricing").permitAll()
                         .requestMatchers("/employeeList/**").permitAll()
+                        .requestMatchers("/recording/RecordingAnalysis").permitAll()
                 // .anyRequest().authenticated()
                 );
 

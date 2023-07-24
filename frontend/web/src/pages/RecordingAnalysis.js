@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import TranscriptCard from '../components/TranscriptCard';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { EmptySentiment } from "../assets/index";
@@ -24,6 +25,7 @@ ChartJS.register(
 )
 
 function RecordingAnalysis() {
+    const navigate = useNavigate();
     const [isEdited, setIsEdited] = useState(false);
     const updateIsEdited = (value) => {
         setIsEdited(value);
@@ -75,6 +77,27 @@ function RecordingAnalysis() {
         { id: 'group1_p6', role: "Customer", speaker: "Customer", startTime: "01:38", endTime: "02:02", sentence: "Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed. Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed." },
         // Add more paragraphs as needed
     ];
+
+    useEffect(() => {
+        fetch("http://localhost:8082/recording/RecordingAnalysis")
+            .then(response => {
+                // error unauthorized
+                if (response.status == 401) {
+                    navigate("/");
+                    console.log("401 Unauthorized");
+                }
+                else if (response.status == 200) {
+                    console.log("Success");
+                    return response.json();
+                }
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            })
+    }, [])
 
     return (
         <div className="">

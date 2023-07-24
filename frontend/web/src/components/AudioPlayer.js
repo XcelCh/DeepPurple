@@ -114,12 +114,12 @@ function AudioPlayer({initialParagraphs}) {
                             const endTime = timeStringToSeconds(paragraph.endTime);
                             if(role == "Agent") {
                                 const widthPercentage = `${(endTime - startTime) / duration * 100}%`;
-                                console.log(widthPercentage);
+                                // console.log(widthPercentage);
                                 return (<div style={{ width: widthPercentage }} class="bg-[#80F2AA] transition-all duration-500 ease-out"></div>);
                             } else {
                                 const gap = endTime - startTime;
                                 const widthPercentage = `${gap / duration * 100}%`;
-                                console.log(widthPercentage);
+                                // console.log(widthPercentage);
                                 return (<div style={{ width: widthPercentage }} class="bg-[#F5F5F5] transition-all duration-500 ease-out"></div>);
                             }
                         })
