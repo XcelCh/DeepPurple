@@ -5,16 +5,24 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AuthService from "../services/auth.service";
+import authHeader from "../services/auth-header";
 
 function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = AuthService.getCurrentUser();
+  const [profilePic, setProfilePic] = useState('');
 
+  useEffect(() => {
+  // if (user) {
+    console.log('run');
+    setProfilePic(localStorage.getItem("profilepic"));
+  }, [user])
+  // }  
+  
   const logOut = () => {
     AuthService.logout();
     navigate("/");
-    window.location.reload();
   };
 
   return (
@@ -101,7 +109,7 @@ function NavBar() {
           <Link to="/">
             <div class="avatar mr-2">
               <div class="w-10 rounded-full">
-                <img src={ProfilePicture} alt="Dog" />
+                <img src={profilePic} alt="Dog" />
               </div>
             </div>
             <div className="dropdown dropdown-end">

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { ShortLine, Tick } from "../assets"
 import { Link } from 'react-router-dom';
 import AuthService from "../services/auth.service";
@@ -16,22 +16,32 @@ function Pricing() {
     planPrice: 0.0
   })
 
-  fetch('http://localhost:8082/getPricing')
-  .then(response => {
+  useEffect (() => {
 
-    if(response.ok){
+    fetch('http://localhost:8082/getPricing')
+    .then(response => {
 
-      console.log('Get Price Success.');
-      return response.json();
-    }
-  })
-  .then(data => {
+      if(response.ok){
 
-    console.log(data.Basic);
-    setBasicPlan({...basicPlan, planPrice: data.Basic});
-    setProPlan({...proPlan, planPrice: data.Professional});
-    
-  })
+        console.log('Get Price Success.');
+        return response.json();
+      }
+    })
+    .then(data => {
+
+      console.log(data.Basic);
+      setBasicPlan({...basicPlan, planPrice: data.Basic});
+      setProPlan({...proPlan, planPrice: data.Professional});
+      
+    })
+    .catch(error => {
+      console.error(error);
+    })
+
+  }, [])
+
+
+  
 
 
   

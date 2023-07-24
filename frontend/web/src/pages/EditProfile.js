@@ -3,6 +3,7 @@ import { Camera } from "../assets/index";
 import { useNavigate, userNavigate } from "react-router-dom";
 import authHeader from "../services/auth-header";
 import DatePicker from "../components/DatePicker"; 
+import ProfilePicture from "../assets/ProfilePicture.jpg";
 
 function EditProfile() {
     const [email, setEmail] = useState('');
@@ -10,6 +11,8 @@ function EditProfile() {
     const [gender, setGender] = useState('');
     const [phoneNum, setPhoneNum] = useState('');
     const [dob , setDOB] = useState(new Date());
+    // const [picPath, setPicPath] = useState('');
+    const [profilePic, setProfilePic] = useState('');
 
     const navigate = useNavigate();
 
@@ -38,15 +41,16 @@ function EditProfile() {
             setGender(data.gender);
             setPhoneNum(data.phoneNum);
             setDOB(new Date(data.dob));
+            // setPicPath(data.picPath);
             console.log(email, fullName, gender, phoneNum, dob);
           })
           .catch(error => {
             console.error(error);
           });
-      
+
+      setProfilePic(localStorage.getItem("profilepic"));
 
     }, [])
-    
 
     const handleSave = () => {
 
@@ -57,7 +61,7 @@ function EditProfile() {
         'gender': gender,
         'phoneNum': phoneNum,
         'dob': dob,
-        'roles': null
+        'roles': null,
       }
 
       console.log(JSON.stringify(data));
@@ -80,6 +84,7 @@ function EditProfile() {
       .catch (error =>  {
           console.error(error);
       })
+ 
     }
 
   return (
@@ -104,7 +109,7 @@ function EditProfile() {
             <div className="col-span-2 flex justify-center my-5">
               <div className="avatar">
                 <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                  <img src={profilePic} />
                 </div>
                 <div className="place-self-end absolute top-17 right-0">
                   <img src={Camera}></img>
