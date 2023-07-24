@@ -6,12 +6,15 @@ import DatePicker from "../components/DatePicker";
 import ProfilePicture from "../assets/ProfilePicture.jpg";
 
 function EditProfile() {
-    const [email, setEmail] = useState('');
-    const [fullName, setFullName] = useState('');
-    const [gender, setGender] = useState('');
-    const [phoneNum, setPhoneNum] = useState('');
-    const [dob , setDOB] = useState(new Date());
-    // const [picPath, setPicPath] = useState('');
+    const [formData, setFormData] = useState({
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phoneNum: "",
+      dob: "",
+      gender: "Gender"
+    })
     const [profilePic, setProfilePic] = useState('');
 
     const navigate = useNavigate();
@@ -35,14 +38,18 @@ function EditProfile() {
             }
           })
           .then(data => {
+
+            console.log(data);
+
+            setFormData((formData) => ({
+                        ...formData, 
+                        fullName: data.fullName,
+                        email: data.email, 
+                        gender: data.gender, 
+                        phoneNum: data.phoneNum, 
+                        dob: data.dob}));
+                
             
-            setEmail(data.email);
-            setFullName(data.fullName);
-            setGender(data.gender);
-            setPhoneNum(data.phoneNum);
-            setDOB(new Date(data.dob));
-            // setPicPath(data.picPath);
-            console.log(email, fullName, gender, phoneNum, dob);
           })
           .catch(error => {
             console.error(error);
@@ -52,16 +59,18 @@ function EditProfile() {
 
     }, [])
 
+
     const handleSave = () => {
 
       const data = {
-        'email': email,
-        'fullName': fullName,
-        'password': '',
-        'gender': gender,
-        'phoneNum': phoneNum,
-        'dob': dob,
+        'email': formData.email,
+        'fullName': formData.fullName,
+        'password': null,
+        'gender': formData.gender,
+        'phoneNum': formData.phoneNum,
+        'dob': formData.dob,
         'roles': null,
+        'profilePic': null
       }
 
       console.log(JSON.stringify(data));
@@ -127,9 +136,9 @@ function EditProfile() {
                 </label>
                 <input
                   type="text"
-                  value={fullName}
+                  value={formData.fullName}
                   className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
-                  onChange={(e) => setFullName(e.target.value)}
+                  onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                 />
               </div>
             </div>
@@ -141,8 +150,8 @@ function EditProfile() {
                   </span>
                 </label>
                 <select
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
+                  value={formData.gender}
+                  onChange={(e) => setFormData({...formData, gender: e.target.value})}
                   className="select select-bordered w-full max-w-xs font-normal"
                 >
                   <option value="Male">Male</option>
@@ -159,9 +168,9 @@ function EditProfile() {
                 </label>
                 <input
                   type="text"
-                  value={phoneNum}
+                  value={formData.phoneNum}
                   className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
-                  onChange={(e) => setPhoneNum(e.target.value)}
+                  onChange={(e) => setFormData({...formData, phoneNum: e.target.value})}
                 />
               </div>
             </div>
@@ -182,8 +191,9 @@ function EditProfile() {
                   onChange={(date) => setDOB(date)}
                 /> */}
                 <DatePicker
-                  formData={dob}
-                  setFormData={(date) => setDOB(date)}
+                  formData={formData}
+                  setFormData={setFormData}
+                  
                 ></DatePicker>
               </div>
             </div>
@@ -196,7 +206,7 @@ function EditProfile() {
                 </label>
                 <input
                   type="text"
-                  value={email}
+                  value={formData.email}
                   className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
                   disabled
                 />

@@ -1,5 +1,4 @@
 import axios from "axios";
-import authHeader from "./auth-header";
 
 const API_URL = "http://localhost:8082/api/auth/";
 
@@ -9,13 +8,31 @@ const login = (email, password) => {
       email,
       password,
     })
-    .then((response) => {
+    .then( async (response) => {
 
       console.log(response);
       if (response.data.accessToken) {
         localStorage.setItem("user", JSON.stringify(response.data));
 
-        
+
+        await fetch ("http://localhost:8082/profile/getProfilePic", {
+            headers: {Authorization: 'Bearer ' +response.data.accessToken}
+          })
+          .then((response) => {
+            if (response.ok) {
+              return response.blob();
+            }
+          })
+          .then((blob) => {
+            
+            console.log('set');
+            localStorage.setItem("profilepic", URL.createObjectURL(blob));
+            // navigate('/');
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+
       }
 
       return response.data;

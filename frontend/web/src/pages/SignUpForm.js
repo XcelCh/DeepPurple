@@ -20,7 +20,7 @@ function SignUpForm() {
         password: "",
         confirmPassword: "",
         phoneNum: "",
-        dob: "",
+        dob: '',
         gender: "Gender",
         roles: null
     })
@@ -129,6 +129,7 @@ function SignUpForm() {
                 AuthService.login(formData.email, formData.password).then(
                     () => {
                         console.log('Logged In.');
+                        
                     
                     },
                     (error) => {
@@ -138,6 +139,8 @@ function SignUpForm() {
                 );
 
                 setPage((currPage) => currPage + 1);
+
+                
             }
             else if (!response.ok) {
                 throw new Error('Create account FAILED.')
