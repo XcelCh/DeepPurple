@@ -2,6 +2,8 @@ package com.example.fyp.controller;
 
 import java.io.IOException;
 
+import javax.print.attribute.standard.Media;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
@@ -68,9 +70,11 @@ public class EditProfileController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AccountDetailsImpl userPrincipal = (AccountDetailsImpl) authentication.getPrincipal();
-          
-        account.setPassword(userPrincipal.getPassword());
-        // account.setRoles(userPrincipal.getAuthorities());
+
+        Account acc = accountServiceImpl.loadUserDetailsByUsername(userPrincipal.getUsername());
+
+        account.setProfilePic(acc.getProfilePic());
+        account.setPassword(acc.getPassword());
         
         accountServiceImpl.saveAccount(account);
 
@@ -124,12 +128,15 @@ public class EditProfileController {
         String username = authentication.getName();
         Account acc = accountServiceImpl.loadUserDetailsByUsername(username);
 
+
         String profilePic = "profilepic/" + acc.getProfilePic();
 
         var imgFile = new ClassPathResource(profilePic);
         byte[] bytes = StreamUtils.copyToByteArray(imgFile.getInputStream());
 
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
+        MediaType contentType = profilePic.contains(".png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG;
+
+        return ResponseEntity.ok().contentType(contentType).body(bytes);
     }
 
     

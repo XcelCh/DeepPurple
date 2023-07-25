@@ -45,30 +45,16 @@ function LoginForm() {
         AuthService.login(email, password)
         .then(
             () => {
-
-              const token = authHeader();
-
-              fetch ("http://localhost:8082/profile/getProfilePic", {
-                  headers: token
-                })
-                .then((response) => {
-                  if (response.ok) {
-                    return response.blob();
-                  }
-                })
-                .then((blob) => {
-                  
-                  localStorage.setItem("profilepic", URL.createObjectURL(blob));
-                  navigate('/');
-                })
-                .catch((error) => {
-                  console.error(error);
-                })
+              
+              console.log('login');
+              navigate('/');
             },
             (error) => {
                 setMessage("Wrong email or password. Try again or click Forgot password to reset it.");
             }
         );
+
+        
 
     };
     

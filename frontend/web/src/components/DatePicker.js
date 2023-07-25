@@ -33,11 +33,13 @@ const options = {
     ),
   },
   datepickerClassNames: "top-12",
-  defaultDate: "",
+  defaultDate: '',
   language: "en",
 };
 
 const DatePicker = ({formData, setFormData}) => {
+
+  
   const [show, setShow] = useState(false);
 
   const handleChange = (selectedDate) => {
@@ -48,6 +50,7 @@ const DatePicker = ({formData, setFormData}) => {
   const handleClose = (state) => {
     setShow(state);
   };
+  // console.log(new Date());/
 
   return (
     <div>
@@ -55,8 +58,10 @@ const DatePicker = ({formData, setFormData}) => {
         options={options}
         onChange={handleChange}
         show={show}
-        setShow={handleClose}
-      />
+        setShow={handleClose} >
+
+        <input type = "text" value= {new Date(formData.dob)} onFocus={() => setShow(true)} readOnly /> 
+      </Datepicker>
     </div>
   );
 };

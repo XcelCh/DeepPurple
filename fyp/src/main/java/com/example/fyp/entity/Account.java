@@ -27,7 +27,6 @@ public class Account {
     private String email;
     private String fullName;
 
-    @JsonIgnore
     private String password;
     private String gender;
     private String phoneNum;
