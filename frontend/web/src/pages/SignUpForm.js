@@ -30,15 +30,9 @@ function SignUpForm() {
     const [credentialsMessage, setCredentialsMessage] = useState('');
     const [startDate, setStartDate] = useState(new Date());
 
-    const basicPlan = {
-        planName: "Basic",
-        planPrice: "10"
-    }
-    const proPlan = {
-        planName: "Professional",
-        planPrice: "20"
-    }
-
+    const basicPlan = JSON.parse(sessionStorage.getItem('plan'))[0];
+    const proPlan = JSON.parse(sessionStorage.getItem('plan'))[1];
+    
     const handleCheckboxChange = () => {
         setShowPassword(!showPassword);
     };

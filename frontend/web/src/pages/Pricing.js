@@ -18,30 +18,51 @@ function Pricing() {
 
   useEffect (() => {
 
-    fetch('http://localhost:8082/getPricing')
-    .then(response => {
+      const plans = sessionStorage.getItem('plan');
 
-      if(response.ok){
+      if (plans) {
 
-        console.log('Get Price Success.');
-        return response.json();
+        setBasicPlan(JSON.parse(sessionStorage.getItem('plan'))[0]);
+        setProPlan (JSON.parse(sessionStorage.getItem('plan'))[1]);
       }
-    })
-    .then(data => {
+      else {
 
-      console.log(data.Basic);
-      setBasicPlan({...basicPlan, planPrice: data.Basic});
-      setProPlan({...proPlan, planPrice: data.Professional});
-      
-    })
-    .catch(error => {
-      console.error(error);
-    })
+        fetch('http://localhost:8082/getPricing')
+        .then(response => {
 
-  }, [])
+          if(response.ok){
 
+            console.log('Get Price Success.');
+            return response.json();
+          }
+        })
+        .then( data => {
 
+          for (const key in data) {
+
+            if (key === 'Basic') {
+              setBasicPlan({planName:key, planPrice: data[key]});
+            }
+            else if (key === 'Professional') {
+              setProPlan({planName:key, planPrice: data[key]});
+            }
+          }
+          
+        })
+        .catch(error => {
+          console.error(error);
+        })
+      }
+    } , []);
   
+  
+    useEffect (() => {
+
+      const arrayPlan = [basicPlan, proPlan];
+          sessionStorage.setItem('plan', JSON.stringify(arrayPlan));
+
+          console.log(basicPlan, proPlan);
+    }, [basicPlan, proPlan])
 
 
   
