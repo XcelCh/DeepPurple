@@ -15,10 +15,16 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Recording {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +39,9 @@ public class Recording {
     @Lob
     @Column(length = 100000)
     private byte[] content;
+    // @Lob
+    // @Column(name = "content",length = 100000)
+    // private byte[] audioData;
 
     private LocalDateTime uploadDate;
     private LocalDateTime recordingDate;
@@ -43,7 +52,7 @@ public class Recording {
     private String audioFormat;
     private Integer sampleRate;
     
-    @OneToOne(mappedBy = "recording", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Analysis recordingAnalysis;
+    // @OneToOne(mappedBy = "recording", cascade = CascadeType.ALL, orphanRemoval = true)
+    // private Analysis analysis;
 
 }

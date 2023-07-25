@@ -55,6 +55,27 @@ function AddRecording() {
     }
   }, [employee]);
 
+  const handleUpload = () => {    
+    const data = new FormData();
+    const audioInput = document.getElementById("audioInput");        
+    data.set("audio", audioInput.files[0])    
+    console.log(audioInput.files[0]);
+    fetch("http://localhost:8082/audio/uploadAudio", {
+      method: "POST",
+      body: data
+    })
+    .then (response => {
+
+      if (response.ok) {
+        console.log('upload file successful');
+      }
+    })
+    .catch (error => {
+      console.error(error);
+    })
+
+  };
+
   return (
     <div className="mx-20">
       <div className="flex mb-5">
@@ -78,10 +99,14 @@ function AddRecording() {
           className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] w-44 rounded border border-[#9554FE]"
         >
           <li className="hover:bg-[#9554FE]">
-            <a className="text-[#9554FE] hover:text-[#FFFFFF]">
+            {/* <a className="text-[#9554FE] hover:text-[#FFFFFF]" onClick={handleUpload}>
               <UploadFileIcon />
               File Upload
-            </a>
+            </a> */}
+            <form>
+              <UploadFileIcon />
+              <input type="file" id="audioInput" accept="audio/*" onChange={handleUpload} multiple/>
+            </form>            
           </li>
           <li className="hover:bg-[#9554FE] ">
             <a className="text-[#9554FE] hover:text-[#FFFFFF]">

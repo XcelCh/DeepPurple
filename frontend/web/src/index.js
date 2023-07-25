@@ -16,7 +16,7 @@ import UnauthorizedPage from "./pages/UnauthorizedPage";
 import ChangePassword from "./pages/ChangePassword";
 import Starter from "./pages/Starter";
 import RecordingList from "./pages/RecordingList";
-import RecordingAnalysis from "./pages/RecordingAnalysis";
+import Analysis from "./pages/Analysis";
 import Sidebar from "./components/Sidebar";
 import EmployeeList from "./pages/EmployeeList";
 import AddRecording from "./pages/AddRecording";
@@ -70,10 +70,10 @@ export default function App() {
           />
           
           <Route
-            path="RecordingAnalysis"
+            path="analysis"
             element={
               <Sidebar>
-                <RecordingAnalysis />
+                <Analysis />
               </Sidebar>
             }
           />

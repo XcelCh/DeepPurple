@@ -15,10 +15,10 @@ public class Transcript {
     @Id
     private Integer transcriptId;
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "recording_id")
-    private Analysis analysis;
+    // @Id
+    // @ManyToOne
+    // @JoinColumn(name = "recording_id")
+    // private Analysis analysis;
 
     private String startTime;
     private String endTime;

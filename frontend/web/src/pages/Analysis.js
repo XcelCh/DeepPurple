@@ -24,7 +24,7 @@ ChartJS.register(
     Legend
 )
 
-function RecordingAnalysis() {
+function Analysis() {
     const navigate = useNavigate();
     const [isEdited, setIsEdited] = useState(false);
     const updateIsEdited = (value) => {
@@ -68,6 +68,8 @@ function RecordingAnalysis() {
         }
     }
 
+    const [analysisData, setAnalysisData] = useState({})
+
     let initialParagraphs = [
         { id: 'group1_p1', role: "Agent", speaker: "Excel", startTime: "00:00", endTime: "00:05", sentence: "Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed. Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed." },
         { id: 'group1_p2', role: "Customer", speaker: "Customer", startTime: "00:05", endTime: "00:10", sentence: "Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed. Lorem ipsum dolor." },
@@ -78,8 +80,9 @@ function RecordingAnalysis() {
         // Add more paragraphs as needed
     ];
 
+    const recordingId = 1;
     useEffect(() => {
-        fetch("http://localhost:8082/recording/RecordingAnalysis")
+        fetch(`http://localhost:8082/analysis/${recordingId}`)
             .then(response => {
                 // error unauthorized
                 if (response.status == 401) {
@@ -92,12 +95,27 @@ function RecordingAnalysis() {
                 }
             })
             .then(data => {
-                console.log(data);
+                setAnalysisData(data);
             })
             .catch(error => {
                 console.error(error);
             })
-    }, [])
+    }, [recordingId])
+
+    const calculateTime = (secs) => {
+        if(secs < 60) {
+            return `${secs} ${secs === 1 ? 'second' : 'seconds'}`;
+        } else {
+            const minutes = Math.floor(secs / 60);
+            const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+            const seconds = Math.floor(secs % 60);
+            if(seconds === 0) {
+                return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '}`;
+            }
+            const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+            return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '} ${returnedSeconds} ${seconds === 1 ? 'second' : 'seconds'}`;
+        }
+    }
 
     return (
         <div className="">
@@ -180,7 +198,7 @@ function RecordingAnalysis() {
                             Category
                         </div>
                         <div className="flex-grow">
-                            Inquiry
+                            {analysisData.category}
                         </div>
                     </div>
                 </div>
@@ -188,11 +206,7 @@ function RecordingAnalysis() {
             <div className="mt-8 w-full border rounded-lg text-justify p-4">
                 <p className="text-xl font-bold">Summary</p>
                 <p className="text-md">
-                    The customer called to report their laptop’s battery is swollen. The employee told the customer 
-                    to bring the customer to the official service. The agent confirmed the customer personal details 
-                    and sent a booking website link to the customer. The customer asked how long the estimate time to 
-                    service the laptop. The agent said it will be around 5 days and the call ended. The caller’s needs 
-                    were met.
+                    {analysisData.summary}
                 </p>
             </div>
             <div className="mt-8 grid w-full gap-4 grid-cols-5">
@@ -201,15 +215,15 @@ function RecordingAnalysis() {
                         <p className="text-xl font-bold">Speaker Time</p>
                         <div className="mt-4">
                             <p className="text-lg font-bold">Employee Time</p>
-                            <p>2 minutes 30 seconds</p>
+                            <p>{calculateTime(analysisData.employeeSpeakTime)}</p>
                         </div>
                         <div className="mt-4">
                             <p className="text-lg font-bold">Customer Time</p>
-                            <p>2 minutes 30 seconds</p>
+                            <p>{calculateTime(analysisData.customerSpeakTime)}</p>
                         </div>
                         <div className="mt-4">
                             <p className="text-lg font-bold">Silent Time</p>
-                            <p>30 seconds</p>
+                            <p>{calculateTime(analysisData.silentTime)}</p>
                         </div>
                     </div>
                     <div className="col-span-3">
@@ -232,20 +246,32 @@ function RecordingAnalysis() {
                                 <img src={CustomerSentiment}/>
                                 <p className="font-semibold">Customer</p>
                                 <div className="flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#80F2AA" class="w-7 h-7">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm2.023 6.828a.75.75 0 10-1.06-1.06 3.75 3.75 0 01-5.304 0 .75.75 0 00-1.06 1.06 5.25 5.25 0 007.424 0z" clip-rule="evenodd" />
-                                    </svg>
-                                    <p className="ml-1">Positive</p>
+                                    {analysisData.customerSentiment === 'Positive' ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#80F2AA" class="w-7 h-7">
+                                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm2.023 6.828a.75.75 0 10-1.06-1.06 3.75 3.75 0 01-5.304 0 .75.75 0 00-1.06 1.06 5.25 5.25 0 007.424 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    ) : (
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFAFAF" class="w-7 h-7">
+                                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm-4.34 7.964a.75.75 0 01-1.061-1.06 5.236 5.236 0 013.73-1.538 5.236 5.236 0 013.695 1.538.75.75 0 11-1.061 1.06 3.736 3.736 0 00-2.639-1.098 3.736 3.736 0 00-2.664 1.098z" clip-rule="evenodd" />
+                                        </svg>
+                                    )}
+                                    <p className="ml-1">{analysisData.customerSentiment}</p>
                                 </div>
                             </div>
                             <div class="flex flex-col justify-center items-center">
                                 <img src={EmployeeSentiment}/>
                                 <p className="font-semibold">Employee</p>
                                 <div className="flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFAFAF" class="w-7 h-7">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm-4.34 7.964a.75.75 0 01-1.061-1.06 5.236 5.236 0 013.73-1.538 5.236 5.236 0 013.695 1.538.75.75 0 11-1.061 1.06 3.736 3.736 0 00-2.639-1.098 3.736 3.736 0 00-2.664 1.098z" clip-rule="evenodd" />
-                                    </svg>
-                                    <p className="ml-1">Negative</p>
+                                    {analysisData.employeeSentiment === 'Positive' ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#80F2AA" class="w-7 h-7">
+                                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm2.023 6.828a.75.75 0 10-1.06-1.06 3.75 3.75 0 01-5.304 0 .75.75 0 00-1.06 1.06 5.25 5.25 0 007.424 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    ) : (
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFAFAF" class="w-7 h-7">
+                                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm-4.34 7.964a.75.75 0 01-1.061-1.06 5.236 5.236 0 013.73-1.538 5.236 5.236 0 013.695 1.538.75.75 0 11-1.061 1.06 3.736 3.736 0 00-2.639-1.098 3.736 3.736 0 00-2.664 1.098z" clip-rule="evenodd" />
+                                        </svg>
+                                    )}
+                                    <p className="ml-1">{analysisData.employeeSentiment}</p>
                                 </div>
                             </div>
                         </div>
@@ -253,10 +279,16 @@ function RecordingAnalysis() {
                             <img src={CallSentiment}/>
                             <p className="font-semibold">Call</p>
                             <div className="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFAFAF" class="w-7 h-7">
-                                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm-4.34 7.964a.75.75 0 01-1.061-1.06 5.236 5.236 0 013.73-1.538 5.236 5.236 0 013.695 1.538.75.75 0 11-1.061 1.06 3.736 3.736 0 00-2.639-1.098 3.736 3.736 0 00-2.664 1.098z" clip-rule="evenodd" />
-                                </svg>
-                                <p className="ml-1">Negative</p>
+                                {analysisData.recordingSentiment === 'Positive' ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#80F2AA" class="w-7 h-7">
+                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm2.023 6.828a.75.75 0 10-1.06-1.06 3.75 3.75 0 01-5.304 0 .75.75 0 00-1.06 1.06 5.25 5.25 0 007.424 0z" clip-rule="evenodd" />
+                                    </svg>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFAFAF" class="w-7 h-7">
+                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm-4.34 7.964a.75.75 0 01-1.061-1.06 5.236 5.236 0 013.73-1.538 5.236 5.236 0 013.695 1.538.75.75 0 11-1.061 1.06 3.736 3.736 0 00-2.639-1.098 3.736 3.736 0 00-2.664 1.098z" clip-rule="evenodd" />
+                                    </svg>
+                                )}
+                                <p className="ml-1">{analysisData.recordingSentiment}</p>
                             </div>
                         </div>
                     </div>
@@ -279,7 +311,7 @@ function RecordingAnalysis() {
                                 <div className="w-full">
                                     <div className="flex justify-between items-center w-full">
                                         <p className="text-xl font-bold">Transcript Confidence Rate</p>
-                                        <p className="text-xl font-bold">90%</p>
+                                        <p className="text-xl font-bold">{analysisData.transcriptConfidence}%</p>
                                     </div>
                                     <p className="inline-block px-3 rounded-full bg-[#3CAA1E] text-white">High</p>
                                 </div>
@@ -350,4 +382,4 @@ function RecordingAnalysis() {
     );
 }
 
-export default RecordingAnalysis;
+export default Analysis;

@@ -10,6 +10,6 @@ import com.example.fyp.entity.Analysis;
 @Repository
 public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
 
-    Optional<Analysis> findByRecordingId(Integer recordingId);
+    // Analysis findByRecordingId(Integer recordingId);
     
 }

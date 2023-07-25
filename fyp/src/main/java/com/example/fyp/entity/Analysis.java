@@ -19,17 +19,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Analysis {   
     @Id
     private Integer recordingId;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "recordingId")
-    private Recording recording;
+    // @OneToOne
+    // @MapsId
+    // @JoinColumn(name = "recordingId")
+    // private Recording recording;
 
     private String category;
 
@@ -44,12 +42,8 @@ public class Analysis {
     private String recordingSentiment;
     private double transcriptConfidence;
     
-    @OneToMany(mappedBy = "analysis")
-    private List<Transcript> transcripts;
-
-    public Analysis(String category, String summary) {
-        this.category = category;
-        this.summary = summary;
-    }
+    // @OneToMany(mappedBy = "analysis")
+    // private List<Transcript> transcripts;
+    
 
 }
