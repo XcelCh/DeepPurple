@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.fyp.controller.dto.ChangePasswordDto;
@@ -75,6 +76,7 @@ public class EditProfileController {
 
         account.setProfilePic(acc.getProfilePic());
         account.setPassword(acc.getPassword());
+        account.setRoles(acc.getRoles());
         
         accountServiceImpl.saveAccount(account);
 
@@ -139,5 +141,32 @@ public class EditProfileController {
         return ResponseEntity.ok().contentType(contentType).body(bytes);
     }
 
-    
+    @GetMapping("/getCompanyField")
+    public ResponseEntity<String> getCompanyField() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+        Account acc = accountServiceImpl.loadUserDetailsByUsername(username);
+
+        String companyField = acc.getCompanyField();
+
+
+        return ResponseEntity.ok().body(companyField);
+    }
+
+    @PostMapping("/setCompanyField")
+    public ResponseEntity<String> setCompanyField(@RequestBody String companyField) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+        Account acc = accountServiceImpl.loadUserDetailsByUsername(username);
+
+        acc.setCompanyField(companyField);
+        accountServiceImpl.saveAccount(acc);
+
+        return ResponseEntity.ok().body("Set Company Field Successful.");
+
+    }
 }

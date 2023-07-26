@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Tick } from "../assets"
 import { Link, useNavigate } from 'react-router-dom';
-import DatePicker from "../components/DatePicker"; 
+
 import AuthService from "../services/auth.service";
+import Datepicker from '../components/DatePicker2';
 
 function SignUpForm() {
 
@@ -22,7 +23,7 @@ function SignUpForm() {
         phoneNum: "",
         dob: '',
         gender: "Gender",
-        roles: null
+        companyField: "-"
     })
     const [page, setPage] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
@@ -337,7 +338,8 @@ function SignUpForm() {
                                     <div>
                                         <div className="form-control w-full">
                                             <label className="relative w-full">
-                                            <DatePicker formData={formData} setFormData={setFormData}></DatePicker>
+                                            {/* <DatePicker formData={formData} setFormData={setFormData}></DatePicker> */}
+                                            <Datepicker formData = {formData} setFormData={setFormData}></Datepicker>
                                             <span class="absolute left-0 top-2.5 px-1 text-lg text-gray-400 tracking-wide
                                             pointer-events-none duration-200 text-xs -translate-y-5 bg-white ml-2">Date of Birth</span>
                                             </label>

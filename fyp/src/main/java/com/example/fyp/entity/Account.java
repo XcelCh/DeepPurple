@@ -41,6 +41,7 @@ public class Account {
     private Collection<Role> roles = new ArrayList<>();
 
     private String profilePic;
+    private String companyField;
 
     public Account (String email, String fullName, String gender, String phoneNum, Date dob) {
 
