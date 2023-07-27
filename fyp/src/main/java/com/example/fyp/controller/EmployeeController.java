@@ -115,7 +115,7 @@ public class EmployeeController {
 
     // Update Employee Name by Id
     @PostMapping("/updateEmployeeNameById/{id}")
-    public ResponseEntity<?> updateEmpNameById(@PathVariable Long id, @RequestBody Employee newEmpData)
+    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer id, @RequestBody Employee newEmpData)
     {
         ResponseStatus response = new ResponseStatus();
         Optional<Employee> oldEmpData = empRepo.findById(id);
@@ -131,11 +131,61 @@ public class EmployeeController {
             response.setMessage("Successfully change the name to " + newEmpData.getEmployeeName());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
-         // RESPONSE DATA
-            response.setSuccess(false);
-            response.setMessage("Fail to change the name to " + newEmpData.getEmployeeName());
+        // RESPONSE DATA
+        response.setSuccess(false);
+        response.setMessage("Fail to change the name to " + newEmpData.getEmployeeName());
 
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // View Recording List of the Employee
+    @GetMapping("/getEmployeeRecording/{id}")
+    public ResponseEntity<?> getEmployeeRecordingList(@PathVariable Integer id, @RequestParam(required = false) String search) {
+        ResponseStatus<List<Recording>> response = new ResponseStatus<>();
+
+        try {
+            List<Recording> recList = new ArrayList<>();
+            recRepo.findByEmployeeId(id).forEach(recList::add);
+
+             if (search != null && !search.isEmpty()){
+                String searchKeyword = "%" + search + "%";
+                recList = recList.stream()
+                .filter(rec -> rec.getRecordingName().toLowerCase().contains(search.toLowerCase()))
+                        .collect(Collectors.toList());
+            }
+
+            // RESPONSE DATA
+            response.setSuccess(true);
+            response.setData(recList);
             return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        } catch (Exception ex) {
+            // RESPONSE DATA
+            response.setSuccess(false);
+            response.setMessage("Fail to get All Employees.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // Get Employee Detail
+    @GetMapping("/getEmployeeDetail/{id}")
+    public ResponseEntity<?> getEmployeeDetail(@PathVariable Integer id) {
+        ResponseStatus<Optional<Employee>> response = new ResponseStatus<>();
+
+        try {
+            Optional<Employee> emp = empRepo.findById(id);
+
+            // RESPONSE DATA
+            response.setSuccess(true);
+            response.setData(emp);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        } catch (Exception ex) {
+            // RESPONSE DATA
+            response.setSuccess(false);
+            response.setMessage("Fail to get All Employees.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
 
