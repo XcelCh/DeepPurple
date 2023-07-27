@@ -84,7 +84,7 @@ public class EmployeeController {
 
     // Delete Employee
     @DeleteMapping("/deleteEmployeeById/{id}")
-    public ResponseEntity<?> deleteEmployeeById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteEmployeeById(@PathVariable Integer id) {
         ResponseStatus response = new ResponseStatus();
         try {
             empRepo.deleteById(id);

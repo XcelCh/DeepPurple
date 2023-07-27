@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Forward, Backward } from "../assets/index";
 import styles from "../styles/AudioPlayer.module.css";
 
@@ -46,7 +46,10 @@ function AudioPlayer({initialParagraphs}) {
     }
 
     const changeRange = () => {
+        console.log("Before change: " + progressBar.current.value);
+        console.log("Before change: " + audioPlayer.current.currentTime);
         audioPlayer.current.currentTime = progressBar.current.value;
+        console.log("After change: " + audioPlayer.current.currentTime);
         changePlayerCurrentTime();
     }
 
@@ -65,16 +68,11 @@ function AudioPlayer({initialParagraphs}) {
         changeRange();
     }
 
-    const timeStringToSeconds = (timeString) => {
-        const [minutes, seconds] = timeString.split(':').map(Number);
-        const totalSeconds = minutes * 60 + seconds;
-        return totalSeconds;
-    }
-
     return (
         <div className={styles.audioPlayer}>
             <div className="flex items-center">
-                <audio ref={audioPlayer} src="https://www.bensound.com/bensound-music/bensound-buddy.mp3" preload="metadata" onLoadedMetadata={onLoadedMetadata}></audio>
+                <audio ref={audioPlayer} src="http://localhost:8082/audio/4157.wav" preload="metadata" onLoadedMetadata={onLoadedMetadata}></audio>
+                {/* <audio ref={audioPlayer} src="https://www.bensound.com/bensound-music/bensound-buddy.mp3" preload="metadata" onLoadedMetadata={onLoadedMetadata}></audio> */}
                 
                 {/* current time */}
                 <div className="mr-2">{calculateTime(currentTime)}</div>
@@ -109,10 +107,9 @@ function AudioPlayer({initialParagraphs}) {
                 <div class="mb-4 flex h-2 overflow-hidden rounded bg-[#F5F5F5] text-xs">
                     {
                         initialParagraphs.map(paragraph => {
-                            const role = paragraph.role;
-                            const startTime = timeStringToSeconds(paragraph.startTime);
-                            const endTime = timeStringToSeconds(paragraph.endTime);
-                            if(role == "Agent") {
+                            const startTime = paragraph.startTime;
+                            const endTime = paragraph.endTime;
+                            if(paragraph.employeeId != null) {
                                 const widthPercentage = `${(endTime - startTime) / duration * 100}%`;
                                 // console.log(widthPercentage);
                                 return (<div style={{ width: widthPercentage }} class="bg-[#80F2AA] transition-all duration-500 ease-out"></div>);
@@ -131,10 +128,9 @@ function AudioPlayer({initialParagraphs}) {
                 <div class="mb-4 flex h-2 overflow-hidden rounded bg-[#F5F5F5] text-xs">
                     {
                         initialParagraphs.map(paragraph => {
-                            const role = paragraph.role;
-                            const startTime = timeStringToSeconds(paragraph.startTime);
-                            const endTime = timeStringToSeconds(paragraph.endTime);
-                            if(role == "Agent") {
+                            const startTime = paragraph.startTime;
+                            const endTime = paragraph.endTime;
+                            if(paragraph.employeeId != null) {
                                 const widthPercentage = `${(endTime - startTime) / duration * 100}%`;
                                 return (<div style={{ width: widthPercentage }} class="bg-[#F5F5F5] transition-all duration-500 ease-out"></div>);
                             } else {
