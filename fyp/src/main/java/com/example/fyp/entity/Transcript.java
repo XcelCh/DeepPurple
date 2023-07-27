@@ -7,12 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Data
 @Entity
 public class Transcript {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer transcriptId;
 
     // @Id
@@ -20,10 +22,23 @@ public class Transcript {
     // @JoinColumn(name = "recording_id")
     // private Analysis analysis;
 
-    private String startTime;
-    private String endTime;
+    private double startTime;
+    private double endTime;
+    private Integer employeeId;
+    private Integer recordingId;
+    
+    @Transient
+    private String employeeName;
 
     @Column(columnDefinition = "TEXT")
     private String dialog;
     
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
 }

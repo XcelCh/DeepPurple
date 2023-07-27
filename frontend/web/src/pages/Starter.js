@@ -8,8 +8,15 @@ function Starter() {
 
   const token = authHeader();
   const navigate = useNavigate();
+  const [companyField, setCompanyField] = useState('');
+  const [fetchDone, setFetchDone] = useState(false);
+  
 
-  fetch ('http://localhost:8082/starter/check', {
+
+  useEffect (() => {
+
+    console.log("1 called");
+    fetch ('http://localhost:8082/starter/check', {
     
     headers : token,
   })
@@ -36,23 +43,107 @@ function Starter() {
     console.error(error);
   })
 
+  console.log("2 called");
+
+    fetch('http://localhost:8082/profile/getCompanyField', {
+      headers:token,
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log('Company Field fetch successfully.');
+        return response.text();
+      }
+      else {
+        throw new Error('Error Occured')
+      }
+    })
+    .then (data => {
+      setCompanyField(data);
+    })
+    .catch(error => {
+      console.error(error);
+    })
+    
+  }, [])
+
+  // console.log(fetchDone);
+
+  useEffect (() => {
+    console.log('here2'+companyField, fetchDone);
+
+    if (companyField.trim() !== '') {
+      console.log('run here');
+      setFetchDone(true);
+    }
+    
+  }, [companyField])
+
+ 
+  useEffect (() => {
+    console.log(fetchDone);
+    console.log('here'+companyField);
+    if ((companyField.trim() !== "-") && (companyField.trim() !== '')) {
+
+      setNext(true);
+    }
+    
+  }, [fetchDone])
 
   const [dropdown, setDropdown] = useState("");
   const [otherInput, setOtherInput] = useState(false);
   const [next, setNext] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleDropdown = (selected) => {
-    setDropdown(selected);
-    console.log(otherInput);
-  };
+  
 
   const handleNext = () => {
-    setNext(true);
+
+    setErrorMessage('');
+
+      if (companyField === '') {
+        setErrorMessage('Company Field cannot be empty!');
+        return ;
+      }
+
+
+    
+
+    console.log(companyField);
+    fetch('http://localhost:8082/profile/setCompanyField', {
+      method: 'POST',
+      headers: {'Authorization': token.Authorization, 
+                'Content-Type': 'text/plain'},
+      body : companyField
+    })
+    .then (response => {
+
+      if(!response.ok) {
+        throw new Error ('Set Company Field Failed');
+      }
+      else {
+
+        console.log('Set Company Field Successful');
+        setNext(true);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    })
+
+    
     console.log(next);
   }
 
+  const handleDropdown = (selected) => {
+    setDropdown(selected);
+    setCompanyField(selected);
+    console.log(otherInput + selected);
+  };
+
   useEffect(() => {
+    
     if (dropdown == "other") {
+      setCompanyField('');
       setOtherInput(true);
     } else {
       setOtherInput(false);
@@ -84,23 +175,40 @@ function Starter() {
                       onChange={(e) => handleDropdown(e.target.value)}
                       className="select select-bordered font-normal  bg-[#9554FE] mt-10 text-[#FFFFFF] select-sm h-11"
                     >
-                      <option value="">Select</option>
-                      <option value="f&B">F&B</option>
-                      <option value="fintech">Financial Technology</option>
+                      <option value="-">Select</option>
+                      <option value="F&B">F&B</option>
+                      <option value="FinTech">Financial Technology</option>
                       <option value="other">Other</option>
                     </select>
                     {otherInput == true ? (
                       <input
                         type="text"
-                        name="phoneNum"
-                        id="phoneNum"
+                        name="companyField"
+                        id="companyField"
                         className="mt-5 border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                        // value={phoneNum}
-                        // onChange={(e) => setPhoneNum(e.target.value)}
+                        value={companyField}
+                        onChange={(e) => setCompanyField(e.target.value)}
                         placeholder="Enter Industry"
                         required
                       ></input>
                     ) : null}
+                    {errorMessage && (
+                        <div className="flex items-center text-red-500 text-sm mt-2">
+                            <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-5 h-5 mr-2"
+                            >
+                            <path
+                                fillRule="evenodd"
+                                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clipRule="evenodd"
+                            />
+                            </svg>
+                            {errorMessage}
+                        </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex justify-end">

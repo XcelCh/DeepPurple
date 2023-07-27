@@ -31,11 +31,65 @@ function Analysis() {
         setIsEdited(value);
     };
 
+    const [employeeName, setEmployeeName] = useState("");
+    const [analysisData, setAnalysisData] = useState({});
+    const [recordingData, setRecordingData] = useState({});
+    const [transcriptData, setTranscriptData] = useState([]);
+
+    const recordingId = 1;
+    useEffect(() => {
+        fetch(`http://localhost:8082/analysis/${recordingId}`)
+            .then(response => {
+                // error unauthorized
+                if (response.status == 401) {
+                    navigate("/");
+                    console.log("401 Unauthorized");
+                }
+                else if (response.status == 200) {
+                    console.log("Success");
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data.recording) {
+                    data.recording.uploadDate = data.recording.uploadDate.replace("T", " ");
+                    data.recording.recordingDate = data.recording.recordingDate.replace("T", " ");
+                }
+                setEmployeeName(data.employeeName);
+                setAnalysisData(data.analysis);
+                setRecordingData(data.recording);
+                setTranscriptData(data.transcripts);
+            })
+            .catch(error => {
+                console.error(error);
+            })
+    }, [recordingId])
+    
+    const calculateTime = (secs) => {
+        if(secs < 60) {
+            return `${secs} ${secs === 1 ? 'second' : 'seconds'}`;
+        } else {
+            const minutes = Math.floor(secs / 60);
+            const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+            const seconds = Math.floor(secs % 60);
+            if(seconds === 0) {
+                return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '}`;
+            }
+            const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+            return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '} ${returnedSeconds} ${seconds === 1 ? 'second' : 'seconds'}`;
+        }
+    }
+
+    const timeToPercentage = (secs) => {
+        const totalTime = analysisData.employeeSpeakTime + analysisData.customerSpeakTime + analysisData.silentTime;
+        return secs / totalTime * 100;
+    }
+
     const data = {
-        labels: ['Silent', 'Employee', 'Customer'],
+        labels: ['Silent', 'Customer', 'Employee'],
         datasets: [
             {
-                data: [20, 40, 60],
+                data: [timeToPercentage(analysisData.silentTime), timeToPercentage(analysisData.customerSpeakTime), timeToPercentage(analysisData.employeeSpeakTime)],
                 backgroundColor: ['yellow', 'green', 'blue'],
                 borderColor: 'black',
                 borderWidth: 1,    
@@ -68,55 +122,6 @@ function Analysis() {
         }
     }
 
-    const [analysisData, setAnalysisData] = useState({})
-
-    let initialParagraphs = [
-        { id: 'group1_p1', role: "Agent", speaker: "Excel", startTime: "00:00", endTime: "00:05", sentence: "Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed. Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed." },
-        { id: 'group1_p2', role: "Customer", speaker: "Customer", startTime: "00:05", endTime: "00:10", sentence: "Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed. Lorem ipsum dolor." },
-        { id: 'group1_p3', role: "Agent", speaker: "Excel", startTime: "00:10", endTime: "01:00",  sentence: "Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed. Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed." },
-        { id: 'group1_p4', role: "Customer", speaker: "Customer", startTime: "01:00", endTime: "01:23", sentence: "Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed. Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed." },
-        { id: 'group1_p5', role: "Agent", speaker: "Excel", startTime: "01:23", endTime: "01:38", sentence: "Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed. Lorem ipsum dolor." },
-        { id: 'group1_p6', role: "Customer", speaker: "Customer", startTime: "01:38", endTime: "02:02", sentence: "Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed. Lorem ipsum dolor sit amet consectetur adipiscing elit, porttitor cum dui sem cubilia sed." },
-        // Add more paragraphs as needed
-    ];
-
-    const recordingId = 1;
-    useEffect(() => {
-        fetch(`http://localhost:8082/analysis/${recordingId}`)
-            .then(response => {
-                // error unauthorized
-                if (response.status == 401) {
-                    navigate("/");
-                    console.log("401 Unauthorized");
-                }
-                else if (response.status == 200) {
-                    console.log("Success");
-                    return response.json();
-                }
-            })
-            .then(data => {
-                setAnalysisData(data);
-            })
-            .catch(error => {
-                console.error(error);
-            })
-    }, [recordingId])
-
-    const calculateTime = (secs) => {
-        if(secs < 60) {
-            return `${secs} ${secs === 1 ? 'second' : 'seconds'}`;
-        } else {
-            const minutes = Math.floor(secs / 60);
-            const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
-            const seconds = Math.floor(secs % 60);
-            if(seconds === 0) {
-                return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '}`;
-            }
-            const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-            return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '} ${returnedSeconds} ${seconds === 1 ? 'second' : 'seconds'}`;
-        }
-    }
-
     return (
         <div className="">
             <div className="flex items-center">
@@ -127,7 +132,7 @@ function Analysis() {
                 </button>
                 <p className="text-2xl font-bold text-left ml-4">Recording Analysis</p>
             </div>
-            <p className="text-xl font-bold text-left ml-12 mt-4">Sample Recording 1</p>
+            <p className="text-xl font-bold text-left ml-12 mt-4">{recordingData.recordingName}</p>
             <div class="grid w-full gap-6 grid-cols-9 mt-8">
                 <div class="flex items-center">
                     <div className="w-1/4 flex flex-col items-center">
@@ -140,7 +145,7 @@ function Analysis() {
                             Agent
                         </div>
                         <div className="flex-grow">
-                            Excel
+                            {employeeName}
                         </div>
                     </div>
                 </div>
@@ -155,7 +160,7 @@ function Analysis() {
                             Upload Data and Time
                         </div>
                         <div className="flex-grow">
-                            2023-01-01 01:01:01
+                            {recordingData.uploadDate}
                         </div>
                     </div>
                 </div>
@@ -170,7 +175,7 @@ function Analysis() {
                             Date Recorded
                         </div>
                         <div className="flex-grow">
-                            2023-01-01 01:01:01
+                            {recordingData.recordingDate}
                         </div>
                     </div>
                 </div>
@@ -185,7 +190,7 @@ function Analysis() {
                             Call Duration
                         </div>
                         <div className="flex-grow">
-                            5 minutes 30 seconds
+                            {calculateTime(recordingData.recordingDuration)}
                         </div>
                     </div>
                 </div>
@@ -296,10 +301,10 @@ function Analysis() {
             </div>
             <div className="mt-4">
                 <p className="text-xl font-bold">Recording Playback</p>
-                <div className="mt-4 grid w-full gap-4 grid-cols-5">
+                <div className="mt-4 grid w-full gap-4 grid-cols-5 items-center">
                     <div className="grid w-full p-4 border rounded-lg col-span-3">
                         <p className="text-xl font-bold mb-2">Sample Recording 1</p>
-                        <AudioPlayer initialParagraphs={initialParagraphs}/>
+                        <AudioPlayer initialParagraphs={transcriptData}/>
                     </div>
                     
                     <div className="col-span-2">
@@ -324,7 +329,7 @@ function Analysis() {
                                         </div>
                                         <div className="w-full">
                                             <p className="text-lg font-bold">Audio Format</p>
-                                            <p>.wav</p>
+                                            <p>{recordingData.audioFormat}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -335,7 +340,7 @@ function Analysis() {
                                         </div>
                                         <div className="w-full">
                                             <p className="text-lg font-bold">Sample Rate</p>
-                                            <p>8000 Hz</p>
+                                            <p>{recordingData.sampleRate} Hz</p>
                                         </div>
                                     </div>
                                 </div>
@@ -348,7 +353,7 @@ function Analysis() {
                 <div className="mt-4 grid w-full gap-4 grid-cols-5">
                     <div className="grid w-full rounded-lg col-span-3">
                         <div className="p-2">
-                            <TranscriptCard isEdited={isEdited} updateIsEdited={updateIsEdited} initialParagraphs={initialParagraphs} />
+                            <TranscriptCard updateIsEdited={updateIsEdited} initialParagraphs={transcriptData} updateInitialParagraphs={setTranscriptData} />
                         </div>
                         <div className="flex mt-2 justify-end items-center pr-4">
                             <button disabled={!isEdited} className={`inline-flex items-center justify-center w-1/5 mr-2 px-4 py-2 text-white rounded-lg focus:outline-none ${isEdited ? "bg-[#3C3988] hover:bg-[#351D4F]" : "bg-[#83848A]"}`}>

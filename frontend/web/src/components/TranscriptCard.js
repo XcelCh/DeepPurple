@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const TranscriptCard = ({ isEdited, updateIsEdited, initialParagraphs }) => {
+const TranscriptCard = ({ updateIsEdited, initialParagraphs, updateInitialParagraphs }) => {
     
     const [isEditable, setIsEditable] = useState(false);
-    const [paragraphs, setParagraphs] = useState([...initialParagraphs]);
+    const [paragraphs, setParagraphs] = useState([]);
+
+    useEffect(() => {
+        setParagraphs([...initialParagraphs]);
+    }, [initialParagraphs]);
 
     const handleEditClick = () => {
         setIsEditable(!isEditable);
@@ -17,17 +21,51 @@ const TranscriptCard = ({ isEdited, updateIsEdited, initialParagraphs }) => {
     const handleParagraphChange = (paragraphId, newContent) => {
         setParagraphs((prevEditedParagraphs) =>
             prevEditedParagraphs.map((paragraph) =>
-                paragraph.id === paragraphId ? { ...paragraph, sentence: newContent } : paragraph
+                paragraph.transcriptId === paragraphId ? { ...paragraph, dialog: newContent } : paragraph
             )
         );
     };
 
     const handleSaveChanges = () => {
         updateIsEdited(true);
-        initialParagraphs = [...paragraphs];
+        updateInitialParagraphs([...paragraphs]);
         setIsEditable(!isEditable);
+
+        paragraphs.forEach((paragraph) => {
+            const data = {
+                'transcriptId': paragraph.transcriptId,
+                'recordingId': paragraph.recordingId,
+                'newTranscript': paragraph.dialog
+            }
+
+            fetch ("http://localhost:8082/analysis/editTranscript", {
+                method : 'POST',
+                headers : {'Content-Type' : 'application/json'} ,
+                body : JSON.stringify(data),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Send data failed.');
+                }
+                else {
+                    console.log('Success sending data.');
+                }
+            })
+            .catch (error =>  {
+                console.error(error);
+            })
+        });
+        
     };
 
+    const timeFormat = (secs) => {
+        const minutes = Math.floor(secs / 60);
+        const seconds = secs % 60;
+
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = seconds.toString().padStart(2, '0');
+        return `[${formattedMinutes}:${formattedSeconds}]`;
+    }
 
   return (
     <div>
@@ -52,12 +90,12 @@ const TranscriptCard = ({ isEdited, updateIsEdited, initialParagraphs }) => {
             {paragraphs.map((paragraph) => (
                 <div className="mt-2 border border-[#EFF0F6] rounded-lg p-2 bg-[#FAFAFA]">
                     <div className="flex items-center justify-between">
-                        <p className={`font-bold ${paragraph.role === 'Agent' ? 'text-[#80F2AA]' : 'text-[#9554FE]'}`}>{paragraph.speaker}</p>
-                        <p className="text-sm text-[#83848A]">[{paragraph.startTime}]</p>
+                        <p className={`font-bold ${paragraph.employeeId === 1 ? 'text-[#80F2AA]' : 'text-[#9554FE]'}`}>{paragraph.employeeName}</p>
+                        <p className="text-sm text-[#83848A]">{timeFormat(paragraph.startTime)}</p>
                     </div>
                     <div className="flex items-center justify-between">
-                        <p key={paragraph.id} id={paragraph.id} contentEditable={isEditable} onBlur={(e) => handleParagraphChange(paragraph.id, e.target.textContent)}
-                        className={`text-sm py-2 pr-4 ${isEditable ? 'bg-white border border-[#EFF0F6] rounded w-full' : ''}`}>{paragraph.sentence}</p>
+                        <p key={paragraph.transcriptId} id={paragraph.transcriptId} contentEditable={isEditable} onBlur={(e) => handleParagraphChange(paragraph.transcriptId, e.target.textContent)}
+                        className={`text-sm py-2 pr-4 ${isEditable ? 'bg-white border border-[#EFF0F6] rounded w-full' : ''}`}>{paragraph.dialog}</p>
                     </div>
                 </div>
             ))}
