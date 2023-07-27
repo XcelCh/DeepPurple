@@ -1,6 +1,8 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
+import React, { useEffect, useState } from "react";
+import { TableSortLabel } from "@mui/material";
 
 const GenericModal = ({
   cardTitle,
@@ -8,7 +10,20 @@ const GenericModal = ({
   placeholderContent,
   buttonContent,
   id,
+  valueContent,
+  handleSave,
+  empId
 }) => {
+  const [data, setData] = useState(valueContent);
+
+  useEffect(() => {
+    setData(valueContent);
+  }, [valueContent]);
+
+  const handleChange = (event) => {
+    setData(event.target.value) 
+  }
+
   return (
     <>
       <input type="checkbox" id={id} className="modal-toggle" />
@@ -33,22 +48,23 @@ const GenericModal = ({
               <p className="mb-2">{fieldName}</p>
               <input
                 type="text"
-                name="phoneNum"
-                id="phoneNum"
+                name="element"
+                id="element"
                 className="mb-7 border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-72 duration-200 peer focus:border-indigo-60 bg-white"
-                // value={phoneNum}
-                // onChange={(e) => setPhoneNum(e.target.value)}
+                value={data}
+                onChange={handleChange}
                 placeholder={placeholderContent}
                 required
               ></input>
             </div>
-            <div className="flex justify-end">
-              <button
+            <div className="flex justify-end modal-action">
+              <label
+                htmlFor={id}
                 className="btn btn-sm bg-[#9554FE] normal-case h-11 px-5 border-[#9554FE]"
-                // onClick={handleNext}
+                onClick={() => handleSave(data, empId)}
               >
-                {buttonContent}
-              </button>
+                  {buttonContent}
+              </label>
             </div>
           </div>
         </div>

@@ -30,20 +30,24 @@ public class Recording {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer recordingId;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    private Integer employeeId;
+    // @ManyToOne
+    // @JoinColumn(name = "employee_id")
+    // private Employee employee;
 
     private String recordingName;
     
     @Lob
-    @Column(length = 100000)
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] content;
     // @Lob
     // @Column(name = "content",length = 100000)
     // private byte[] audioData;
 
+    @Column(columnDefinition = "DATETIME")
     private LocalDateTime uploadDate;
+
+    @Column(columnDefinition = "DATETIME")
     private LocalDateTime recordingDate;
 
     @Nullable

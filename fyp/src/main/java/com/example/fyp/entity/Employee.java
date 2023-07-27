@@ -24,7 +24,7 @@ public class Employee {
     private Integer numPositiveSentiment;
     private Integer numNegativeSentiment;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Recording> recordings;
+    // @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    // private List<Recording> recordings;
 
 }
