@@ -12,7 +12,7 @@ const DateRange = ({ formData, setFormData }) => {
         <input
           type="text"
           value={value}
-          className="input input-bordered bg-[#FBFBFB] w-full"
+          className="input input-bordered bg-[#FBFBFB] w-full h-8 text-xs px-2"
           onClick={onClick}
               onChange={onChange}
         ></input>

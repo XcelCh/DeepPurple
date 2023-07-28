@@ -115,7 +115,7 @@ function RecordingList() {
               className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
             />
 
-            <div className="dropdown dropdown-bottom dropdown-right mb-4">
+            <div className="dropdown mb-4">
               <label
                 tabIndex={0}
                 className="absolute top-0 bottom-0 w-6 h-6 text-gray-400 right-3"
@@ -124,7 +124,7 @@ function RecordingList() {
               </label>
               <div
                 tabIndex={0}
-                className="-top-14 dropdown-content z-[1] menu p-5 shadow bg-[#FFFDFA] rounded-box w-128 disabled:hover text-xs border"
+                className="-top-120 dropdown-content z-[1] menu p-5 drop-shadow-sm bg-[#FFFFFF] rounded-box w-128 disabled:hover text-xs border"
               >
                 {/* Filter Pop up */}
                 {/* Handled By */}
@@ -133,7 +133,7 @@ function RecordingList() {
                   <select
                     // value={gender}
                     // onChange={(e) => handleAssignEmployee(e.target.value)}
-                    className="select select-bordered font-normal select-sm h-11"
+                    className="select select-bordered font-normal select-xs h-8"
                   >
                     <option value="">Any Employee</option>
                     <option value="existingEmployee">Existing Employee</option>
@@ -150,7 +150,7 @@ function RecordingList() {
                   <select
                     // value={gender}
                     // onChange={(e) => handleAssignEmployee(e.target.value)}
-                    className="select select-bordered font-normal select-sm h-11"
+                    className="select select-bordered font-normal select-xs h-8"
                   >
                     <option value="">Any Employee</option>
                     <option value="existingEmployee">Existing Employee</option>
@@ -167,7 +167,7 @@ function RecordingList() {
                   <select
                     // value={gender}
                     // onChange={(e) => handleAssignEmployee(e.target.value)}
-                    className="select select-bordered font-normal select-sm h-11"
+                    className="select select-bordered font-normal select-xs h-8"
                   >
                     <option value="">Any Employee</option>
                     <option value="existingEmployee">Existing Employee</option>
@@ -202,7 +202,7 @@ function RecordingList() {
                   <select
                     // value={gender}
                     // onChange={(e) => handleAssignEmployee(e.target.value)}
-                    className="select select-bordered font-normal select-sm h-11"
+                    className="select select-bordered font-normal select-xs h-8"
                   >
                     <option value="">Any Employee</option>
                     <option value="existingEmployee">Existing Employee</option>
@@ -219,7 +219,7 @@ function RecordingList() {
                   <select
                     // value={gender}
                     // onChange={(e) => handleAssignEmployee(e.target.value)}
-                    className="select select-bordered font-normal select-sm h-11"
+                    className="select select-bordered font-normal select-xs h-8"
                   >
                     <option value="">Any Employee</option>
                     <option value="existingEmployee">Existing Employee</option>
@@ -230,9 +230,9 @@ function RecordingList() {
                   </select>
                 </div>
                 <div className="flex justify-end items-center">
-                  <p className="text-[#9554FE] mr-8 text-sm">Reset</p>
+                  <p className="text-[#9554FE] mr-8 text-xs">Reset</p>
                   <button
-                    className="btn btn-sm bg-[#9554FE] normal-case h-8 px-5 border-[#9554FE] text-sm"
+                    className="btn btn-sm bg-[#9554FE] normal-case h-5 px-5 border-[#9554FE] text-xs"
                     // onClick={() => handleSave(data, empId)}
                   >
                     Search
@@ -257,26 +257,26 @@ function RecordingList() {
 
       <div className="max-h-screen">
         {/* table */}
-        <table className="table mx-auto w-full border border-dashed text-sm">
+        <table className="table table-auto mx-auto w-full border border-dashed text-xs">
           {/* head */}
           <thead>
             <tr>
-              <th className="bg-[#F6F4FC] normal-case text-base">No</th>
-              <th className="bg-[#F6F4FC] normal-case text-base">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
+                No
+              </th>
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Recording name
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base">
-                Upload Date
-              </th>
-              <th className="bg-[#F6F4FC] normal-case text-base">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">Upload Date</th>
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Date Recorded
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Employee Name
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base">Category</th>
-              <th className="bg-[#F6F4FC] normal-case text-base">Sentiment</th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">Category</th>
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">Sentiment</th>
+              <th className="bg-[#F6F4FC] normal-case text-sm text-center font-semibold">
                 Action
               </th>
             </tr>
@@ -286,18 +286,18 @@ function RecordingList() {
             {/* row 1 */}
             {recList.map((recording, index) => (
               <tr>
-                <th>{numbering + index}</th>
-                <td>{recording.recordingName}</td>
-                <td>{recording.uploadDate}</td>
-                <td>{recording.recordingDate}</td>
-                <td>{recording.employeeId}</td>
-                <td>Category</td>
-                <td>Sentiment</td>
+                <th className="h-1">{numbering + index}</th>
+                <td className="h-1">{recording.recordingName}</td>
+                <td className="h-1">{recording.uploadDate}</td>
+                <td className="h-1">{recording.recordingDate}</td>
+                <td className="h-1">{recording.employeeId}</td>
+                <td className="h-1">Category</td>
+                <td className="h-1">Sentiment</td>
                 <td className="flex justify-center items-center">
                   <div className="dropdown dropdown-end">
                     <label
                       tabIndex={0}
-                      className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
+                      className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
                     >
                       {/* <img src={ThreeDotsVertical} className="mt-2"></img> */}
                       <MoreVertIcon style={{ color: "black" }}></MoreVertIcon>
