@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import {
-  Toggle,
-  Upload,
   ThreeDotsVertical,
-  Filter,
   TrashCan,
-  Download,
   Eye,
 } from "../assets/index";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -14,8 +9,138 @@ import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import GenericModal from "../components/GenericModal";
 import Pagination from "../components/Pagination";
+import Swal from "sweetalert2";
 
 function EmployeeList() {
+  const [empList, setEmpList] = useState([]);
+  const [numbering, setNumbering] = useState(1);
+  const [error, setError] = useState("");
+  const [currentName, setCurrentName] = useState("");
+  const [currentEmployeeId, setCurrentEmployeeId] = useState();
+  const [search, setSearch] = useState("");
+
+  // Get All Employees
+  const getEmpList = async () => {
+    const params = `?search=${search}`;
+    try {
+      const response = await fetch(
+        `http://localhost:8082/employeeList/getAllEmployees${params}`
+      );
+
+      response.json().then((data) => {
+        setEmpList(data.data);
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getEmpList();
+  }, [search]);
+
+  // Delete Employee
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Deleting
+        fetch(`http://localhost:8082/employeeList/deleteEmployeeById/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then(
+            (result) => {
+              getEmpList();
+            },
+            (error) => {
+              setError(error);
+            }
+          );
+
+        // Success message
+        Swal.fire("Deleted!", "The employee has been deleted!", "success");
+
+        // Reload getEmpList();table
+        getEmpList();
+      }
+    });
+  };
+
+  // Update Employee
+  const updateEmployee = (empData, currentEmployeeId) => {
+    let data = {employeeName: empData };
+     fetch(
+       `http://localhost:8082/employeeList/updateEmployeeNameById/${currentEmployeeId}`,
+       {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json", // Set the content type to indicate JSON data
+         },
+         body: JSON.stringify(data),
+       }
+     )
+       .then((res) => res.json())
+       .then(
+         (result) => {
+           getEmpList();
+           // Success message
+           Swal.fire(
+             "Updated",
+             "The employee name has been updated!",
+             "success"
+           );
+         },
+         (error) => {
+           setError(error);
+           console.log(error);
+           Swal.fire("Fail", "Fail to update employee name", "error");
+         }
+       );
+
+        
+  };
+
+  // Add Employee
+  const addEmployee = (empData) => {
+    let data = { employeeName: empData };
+    fetch(
+      `http://localhost:8082/employeeList/addEmployee`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Set the content type to indicate JSON data
+        },
+        body: JSON.stringify(data),
+      }
+    )
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          getEmpList();
+          // Success message
+          Swal.fire(
+            "Updated",
+            "The employee has been added.",
+            "success"
+          );
+        },
+        (error) => {
+          setError(error);
+          console.log(error);
+          Swal.fire("Fail", "Fail to add employee.", "error");
+        }
+      );
+  };
+
+
   return (
     <div className="mx-20">
       <p className="text-xl font-bold text-left mb-5">Employee List</p>
@@ -39,6 +164,14 @@ function EmployeeList() {
             <input
               type="text"
               placeholder="Search"
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.keyCode == 13) {
+                  getEmpList();
+                }
+              }}
+              value={search}
+              name="search"
               className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
             />
           </div>
@@ -77,157 +210,61 @@ function EmployeeList() {
           </thead>
           <tbody>
             {/* row 1 */}
-            <tr className="hover">
-              <th>1</th>
-              <td>David</td>
-              <td className="text-center">386</td>
-              <td className="text-center">311</td>
-              <td className="text-center">75</td>
-              <td className="flex justify-center items-center">
-                <div className="dropdown">
-                  <label
-                    tabIndex={0}
-                    className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
-                  >
-                    <img src={ThreeDotsVertical}></img>
-                  </label>
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
-                  >
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <img src={Eye}></img> View Calls Handled
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <label className="text-[#9554FE]" htmlFor="editNameModal">
-                        <EditIcon /> Edit Names
-                      </label>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#D55454]">
-                        <img src={TrashCan}></img> Delete
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            {/* row 2 */}
-            <tr className="hover">
-              <th>2</th>
-              <td>David</td>
-              <td className="text-center">386</td>
-              <td className="text-center">311</td>
-              <td className="text-center">75</td>
-              <td className="flex justify-center items-center">
-                <div className="dropdown">
-                  <label
-                    tabIndex={0}
-                    className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
-                  >
-                    <img src={ThreeDotsVertical}></img>
-                  </label>
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
-                  >
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <img src={Eye}></img> View Calls Handled
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <EditIcon /> Edit Name
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#D55454]">
-                        <img src={TrashCan}></img> Delete
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            {/* row 3 */}
-            <tr className="hover">
-              <th>3</th>
-              <td>David</td>
-              <td className="text-center">386</td>
-              <td className="text-center">311</td>
-              <td className="text-center">75</td>
-              <td className="flex justify-center items-center">
-                <div className="dropdown">
-                  <label
-                    tabIndex={0}
-                    className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
-                  >
-                    <img src={ThreeDotsVertical}></img>
-                  </label>
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
-                  >
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <img src={Eye}></img> View Calls Handled
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <EditIcon /> Edit Name
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#D55454]">
-                        <img src={TrashCan}></img> Delete
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            {/* Row 4 */}
-            <tr className="hover">
-              <th>4</th>
-              <td>David</td>
-              <td className="text-center">386</td>
-              <td className="text-center">311</td>
-              <td className="text-center">75</td>
-              <td className="flex justify-center items-center">
-                <div className="dropdown">
-                  <label
-                    tabIndex={0}
-                    className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
-                  >
-                    <img src={ThreeDotsVertical}></img>
-                  </label>
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
-                  >
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <img src={Eye}></img> View Calls Handled
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#9554FE]">
-                        <EditIcon /> Edit Name
-                      </a>
-                    </li>
-                    <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                      <a className="text-[#D55454]">
-                        <img src={TrashCan}></img> Delete
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
+            {empList.map((employee, index) => (
+              <tr className="hover">
+                <th>{numbering + index}</th>
+                <td>{employee.employeeName}</td>
+                <td className="text-center">{employee.numCallsHandled}</td>
+                <td className="text-center">{employee.numNegativeSentiment}</td>
+                <td className="text-center">{employee.numPositiveSentiment}</td>
+                <td className="flex justify-center items-center">
+                  <div className="dropdown">
+                    <label
+                      tabIndex={0}
+                      className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
+                    >
+                      <img src={ThreeDotsVertical}></img>
+                    </label>
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
+                    >
+                      <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                        <a
+                          className="text-[#9554FE]"
+                          href={`/recordingList/${currentEmployeeId}`}
+                          onClick={() => {
+                            setCurrentEmployeeId(employee.employeeId);
+                          }}
+                        >
+                          <img src={Eye}></img> View Calls Handled
+                        </a>
+                      </li>
+                      <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                        <label
+                          className="text-[#9554FE]"
+                          htmlFor="editNameModal"
+                          onClick={() => {
+                            setCurrentName(employee.employeeName);
+                            setCurrentEmployeeId(employee.employeeId);
+                          }}
+                        >
+                          <EditIcon /> Edit Names
+                        </label>
+                      </li>
+                      <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                        <a
+                          className="text-[#D55454]"
+                          onClick={() => handleDelete(employee.employeeId)}
+                        >
+                          <img src={TrashCan}></img> Delete
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -243,15 +280,18 @@ function EmployeeList() {
         placeholderContent="Enter Employee Name"
         buttonContent="Add"
         id="addEmployeeModal"
+        handleSave={addEmployee}
       ></GenericModal>
 
       {/* Edit Employee Modal */}
       <GenericModal
         cardTitle="Edit Employee Name"
         fieldName="Employee Name"
-        placeholderContent="Enter Employee Name"
         buttonContent="Save"
         id="editNameModal"
+        valueContent={currentName}
+        empId={currentEmployeeId}
+        handleSave={updateEmployee}
       ></GenericModal>
     </div>
   );

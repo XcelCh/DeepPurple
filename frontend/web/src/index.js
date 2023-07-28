@@ -76,7 +76,7 @@ export default function App() {
               </Sidebar>
             }
           />
-          
+
           <Route
             path="analysis"
             element={
