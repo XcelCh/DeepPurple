@@ -27,7 +27,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="summaryAnalysis" element={<SummaryAnalysis />} />
         <Route path="/" element={<NavbarLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="loginForm" element={<LoginForm />} />
@@ -83,6 +82,16 @@ export default function App() {
             element={
               <Sidebar>
                 <Analysis />
+              </Sidebar>
+            }
+          />
+
+          {/* Summary Analysis */}
+          <Route 
+            path="summaryAnalysis"
+            element={
+              <Sidebar>
+                <SummaryAnalysis/>
               </Sidebar>
             }
           />
