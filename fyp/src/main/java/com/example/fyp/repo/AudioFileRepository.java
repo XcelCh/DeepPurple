@@ -5,7 +5,7 @@ import com.example.fyp.entity.Recording;
 import java.util.List;
 import java.util.Optional;
 
-public interface AudioFileRepository extends JpaRepository<Recording, Long> {
+public interface AudioFileRepository extends JpaRepository<Recording, Integer> {
 
     Optional<Recording> findByRecordingName(String fileName);
 

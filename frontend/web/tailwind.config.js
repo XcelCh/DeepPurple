@@ -8,7 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {
-      
+      width: {
+        128: "31rem",
+      },
     },
   },
   plugins: [require("daisyui", "flowbite/plugin")],

@@ -232,7 +232,7 @@ function EmployeeList() {
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                         <a
                           className="text-[#9554FE]"
-                          href={`/recordingList/${currentEmployeeId}`}
+                          href={`/employeeList/recordingList/${currentEmployeeId}`}
                           onClick={() => {
                             setCurrentEmployeeId(employee.employeeId);
                           }}

@@ -13,12 +13,18 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 function EmployeeRecordingList() {
   const { id } = useParams();
+  // Numbering the table
   const [numbering, setNumbering] = useState(1);
+
+  // Temporary storage
   const [recList, setRecList] = useState([]);
   const [empName, setEmpName] = useState("");
   const [search, setSearch] = useState("");
+  
+  // Error message
+  const [error, setError] = useState("");
 
-  // Get Employee Name 
+  // Get Employee Name
   const getEmployeeDetail = async () => {
     try {
       const response = await fetch(
@@ -33,7 +39,7 @@ function EmployeeRecordingList() {
     }
   };
 
-  // Get All Recording
+  // Get All Recording Per Employee
   const getRecList = async () => {
     const params = `?search=${search}`;
     try {
@@ -44,17 +50,51 @@ function EmployeeRecordingList() {
       response.json().then((data) => {
         setRecList(data.data);
       });
-
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  // Delete Recording
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Deleting
+        fetch(`http://localhost:8082/recordingList/deleteRecordingById/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then(
+            (result) => {
+              getRecList();
+            },
+            (error) => {
+              setError(error);
+            }
+          );
+
+        // Success message
+        Swal.fire("Deleted!", "The recording has been deleted!", "success");
+
+        // Reload getEmpList();table
+        getRecList();
+      }
+    });
+  };
+
   useEffect(() => {
     getRecList();
     getEmployeeDetail();
-  },[search]) ;
-  
+  }, [search]);
+
   return (
     <div className="mx-20">
       <div className="flex mb-5">
@@ -162,7 +202,7 @@ function EmployeeRecordingList() {
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                         <label
                           className="text-[#D55454]"
-                          // onClick={() => handleDelete(recording.recordingId)}
+                          onClick={() => handleDelete(recording.recordingId)}
                         >
                           <img src={TrashCan} className="ml-1"></img>{" "}
                           <p className="ml-1">Delete</p>
