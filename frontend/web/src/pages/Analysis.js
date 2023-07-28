@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import TranscriptCard from '../components/TranscriptCard';
 import { AudioPlayer } from '../components/AudioPlayer';
-import { EmptySentiment } from "../assets/index";
-import { Category, EmployeeSentiment, CustomerSentiment, CallSentiment, Confidence, SampleRate, AudioFormat } from "../assets/index";
+import { Category, EmployeeSentiment, CustomerSentiment, CallSentiment, Confidence, SampleRate, AudioFormat, EmptySentiment } from "../assets/index";
 
 import {
     Chart as ChartJS,
@@ -90,9 +89,8 @@ function Analysis() {
         datasets: [
             {
                 data: [timeToPercentage(analysisData.silentTime), timeToPercentage(analysisData.customerSpeakTime), timeToPercentage(analysisData.employeeSpeakTime)],
-                backgroundColor: ['yellow', 'green', 'blue'],
-                borderColor: 'black',
-                borderWidth: 1,    
+                backgroundColor: ['#83848A', '#9554FE', '#80F2AA'],
+                borderWidth: 0,    
             }
         ]
     }
@@ -112,14 +110,19 @@ function Analysis() {
             },
         },
         scales: {
+            x: {
+              grid: {
+                display: false, // Set to false to hide the vertical grid lines
+              },
+            },
             y: {
-                ticks: {
-                    callback: function (value) {
-                        return value + '%';
-                    },
-                }
-            }
-        }
+              ticks: {
+                callback: function (value) {
+                  return value + '%';
+                },
+              },
+            },
+        },
     }
 
     return (
@@ -235,7 +238,7 @@ function Analysis() {
                         <p className="text-xl font-bold">Visualization</p>
                         <Bar
                             style = {{
-                                padding: '20px'
+                                padding: '10px'
                             }}
                             data = {data}
                             options = {options}    

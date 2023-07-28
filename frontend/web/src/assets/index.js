@@ -36,6 +36,14 @@ import Download from "./Download.svg";
 import ArrowLeft from "./ArrowLeft.svg";
 import Analyze from "./Analyze.svg";
 import Cross from "./Cross.svg";
+import Duration from "./Duration.svg";
+import Inquiries from "./Inquiries.svg";
+import Complaints from "./Complaints.svg";
+import Warranties from "./Warranties.svg";
+import PositiveRectangle from "./PositiveRectangle.svg";
+import NegativeRectangle from "./NegativeRectangle.svg";
+import Heart from "./Heart.svg";
+import NegativeWordmap from "./NegativeWordmap.svg";
 
 export {
   TextIcon,
@@ -75,5 +83,13 @@ export {
   Download,
   ArrowLeft,
   Analyze,
-  Cross
+  Cross,
+  Duration,
+  Inquiries,
+  Complaints,
+  Warranties,
+  PositiveRectangle,
+  NegativeRectangle,
+  Heart,
+  NegativeWordmap
 };

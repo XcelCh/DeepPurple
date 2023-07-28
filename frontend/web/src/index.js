@@ -21,12 +21,12 @@ import Sidebar from "./components/Sidebar";
 import EmployeeList from "./pages/EmployeeList";
 import AddRecording from "./pages/AddRecording";
 import SummaryAnalysis from "./pages/SummaryAnalysis";
+import EmployeeRecordingList from "./pages/EmployeeRecordingList";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="summaryAnalysis" element={<SummaryAnalysis/>} />
         <Route path="/" element={<NavbarLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="loginForm" element={<LoginForm />} />
@@ -38,7 +38,6 @@ export default function App() {
           <Route path="signUpForm" element={<SignUpForm />} />
           <Route path="paymentForm" element={<PaymentForm />} />
           <Route path="starter" element={<Starter />} />
-          {/* Text Sentiment */}
           <Route path="textSentiment" element={<TextAnalyze />} />
 
           {/* With Sidebar */}
@@ -61,6 +60,15 @@ export default function App() {
           />
 
           <Route
+            path="employeeList/recordingList/:id"
+            element={
+              <Sidebar>
+                <EmployeeRecordingList />
+              </Sidebar>
+            }
+          />
+
+          <Route
             path="recordingList/addRecording"
             element={
               <Sidebar>
@@ -74,6 +82,16 @@ export default function App() {
             element={
               <Sidebar>
                 <Analysis />
+              </Sidebar>
+            }
+          />
+
+          {/* Summary Analysis */}
+          <Route 
+            path="summaryAnalysis"
+            element={
+              <Sidebar>
+                <SummaryAnalysis/>
               </Sidebar>
             }
           />
