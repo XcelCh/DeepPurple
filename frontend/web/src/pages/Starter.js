@@ -69,10 +69,10 @@ function Starter() {
   // console.log(fetchDone);
 
   useEffect (() => {
-    console.log('here2'+companyField, fetchDone);
+    // console.log('here2'+companyField, fetchDone);
 
     if (companyField.trim() !== '') {
-      console.log('run here');
+      // console.log('run here');
       setFetchDone(true);
     }
     
@@ -80,11 +80,12 @@ function Starter() {
 
  
   useEffect (() => {
-    console.log(fetchDone);
-    console.log('here'+companyField);
+    // console.log(fetchDone);
+    // console.log('here'+companyField);
     if ((companyField.trim() !== "-") && (companyField.trim() !== '')) {
 
-      setNext(true);
+      // setNext(true);
+      navigate('/RecordingList')
     }
     
   }, [fetchDone])
@@ -153,6 +154,7 @@ function Starter() {
   return (
     <>
       {/* Gradient */}
+      {fetchDone ? (
       <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
         {/* Gradient */}
         <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
@@ -242,8 +244,10 @@ function Starter() {
           )}
         </div>
       </div>
+    ) : null}
     </>
   );
+  
 }
 
 export default Starter;
