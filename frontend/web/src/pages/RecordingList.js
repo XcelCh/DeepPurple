@@ -78,6 +78,17 @@ function RecordingList() {
     });
   };
 
+  // Download Recording
+  const handleDownload = (fileName) => {
+    const link = document.createElement("a");
+    link.href = `https://localhost8082/${fileName}`
+    link.download = fileName;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   useEffect(() => {
     getRecList();
   }, []);
@@ -255,9 +266,9 @@ function RecordingList() {
         </div>
       </div>
 
-      <div className="max-h-screen">
+      <div className="max-h-screen border border-dashed bg-[#F6F4FC]">
         {/* table */}
-        <table className="table table-auto mx-auto w-full border border-dashed text-xs">
+        <table className="table table-auto mx-auto w-full text-xs">
           {/* head */}
           <thead>
             <tr>
@@ -267,15 +278,21 @@ function RecordingList() {
               <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Recording name
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">Upload Date</th>
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
+                Upload Date
+              </th>
               <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Date Recorded
               </th>
               <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Employee Name
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">Category</th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">Sentiment</th>
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
+                Category
+              </th>
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
+                Sentiment
+              </th>
               <th className="bg-[#F6F4FC] normal-case text-sm text-center font-semibold">
                 Action
               </th>
@@ -304,7 +321,7 @@ function RecordingList() {
                     </label>
                     <ul
                       tabIndex={0}
-                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none border-[#D1D1D1]"
+                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none"
                     >
                       <li className="hover:bg-[#9554FE]">
                         <a className="text-[#9554FE] hover:text-[#FFFFFF]">
@@ -321,7 +338,12 @@ function RecordingList() {
                         </a>
                       </li>
                       <li className="hover:bg-[#9554FE]">
-                        <a className="text-[#9554FE] hover:text-[#FFFFFF]">
+                        <a
+                          onClick={() =>
+                            handleDownload(recording.recordingName)
+                          }
+                          className="text-[#9554FE] hover:text-[#FFFFFF]"
+                        >
                           <FileDownloadOutlinedIcon></FileDownloadOutlinedIcon>{" "}
                           Download
                         </a>

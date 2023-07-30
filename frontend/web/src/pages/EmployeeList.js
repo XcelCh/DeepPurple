@@ -10,6 +10,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import GenericModal from "../components/GenericModal";
 import Pagination from "../components/Pagination";
 import Swal from "sweetalert2";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import TablePagination from "@mui/material/TablePagination";
 
 function EmployeeList() {
   const [empList, setEmpList] = useState([]);
@@ -140,9 +145,21 @@ function EmployeeList() {
       );
   };
 
+  const [state, setState] = useState(rowsPerPage, )
+
+  const handleNumbering = () => {
+    if (state.rowsPerPage === 5) {
+      return state.page * 5;
+    } else if (state.rowsPerPage === 10) {
+      return state.page * 10;
+    } else if (state.rowsPerPage === 25) {
+      return state.page * 25;
+    }
+  };
+
 
   return (
-    <div className="mx-20">
+    <div className="ml-20 mt-16">
       <p className="text-xl font-bold text-left mb-5">Employee List</p>
       <div class="grid grid-cols-2 mb-5">
         <form className="max-w-xs text-sm">
@@ -187,23 +204,27 @@ function EmployeeList() {
         </div>
       </div>
 
-      <div className="max-h-screen">
-        <table className="table mx-auto w-full border border-dashed text-sm">
+      <div className="max-h-screen border border-dashed bg-[#F6F4FC]">
+        <table className="table table-auto mx-auto w-full text-xs">
           {/* head */}
           <thead>
             <tr>
-              <th className="bg-[#F6F4FC] normal-case text-base">No</th>
-              <th className="bg-[#F6F4FC] normal-case text-base">Name</th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
+                No
+              </th>
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
+                Name
+              </th>
+              <th className="bg-[#F6F4FC] normal-case  text-sm font-semibold text-center">
                 Calls Handled
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case  text-sm font-semibold text-center">
                 Positive Sentiment
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case  text-sm font-semibold text-center">
                 Negative Sentiment
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case  text-sm font-semibold text-center">
                 Action
               </th>
             </tr>
@@ -212,18 +233,22 @@ function EmployeeList() {
             {/* row 1 */}
             {empList.map((employee, index) => (
               <tr className="hover">
-                <th>{numbering + index}</th>
-                <td>{employee.employeeName}</td>
-                <td className="text-center">{employee.numCallsHandled}</td>
-                <td className="text-center">{employee.numNegativeSentiment}</td>
-                <td className="text-center">{employee.numPositiveSentiment}</td>
+                <th className="h-1">{numbering + index}</th>
+                <td className="h-1">{employee.employeeName}</td>
+                <td className="text-center h-1">{employee.numCallsHandled}</td>
+                <td className="text-center h-1">
+                  {employee.numNegativeSentiment}
+                </td>
+                <td className="text-center h-1">
+                  {employee.numPositiveSentiment}
+                </td>
                 <td className="flex justify-center items-center">
                   <div className="dropdown">
                     <label
                       tabIndex={0}
-                      className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
+                      className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
                     >
-                      <img src={ThreeDotsVertical}></img>
+                      <MoreVertIcon style={{ color: "black" }}></MoreVertIcon>
                     </label>
                     <ul
                       tabIndex={0}
@@ -231,33 +256,34 @@ function EmployeeList() {
                     >
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                         <a
-                          className="text-[#9554FE]"
+                          className="text-[#9554FE] hover:text-[#FFFFFF]"
                           href={`/employeeList/recordingList/${currentEmployeeId}`}
                           onClick={() => {
                             setCurrentEmployeeId(employee.employeeId);
                           }}
                         >
-                          <img src={Eye}></img> View Calls Handled
+                          <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>{" "}
+                          View Calls Handled
                         </a>
                       </li>
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                         <label
-                          className="text-[#9554FE]"
+                          className="text-[#9554FE] hover:font-bold"
                           htmlFor="editNameModal"
                           onClick={() => {
                             setCurrentName(employee.employeeName);
                             setCurrentEmployeeId(employee.employeeId);
                           }}
                         >
-                          <EditIcon /> Edit Names
+                          <EditOutlinedIcon></EditOutlinedIcon>Edit Names
                         </label>
                       </li>
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                         <a
-                          className="text-[#D55454]"
+                          className="text-[#D55454] hover:text-[#FFFFFF]"
                           onClick={() => handleDelete(employee.employeeId)}
                         >
-                          <img src={TrashCan}></img> Delete
+                          <DeleteOutlinedIcon></DeleteOutlinedIcon> Delete
                         </a>
                       </li>
                     </ul>
@@ -269,7 +295,26 @@ function EmployeeList() {
         </table>
       </div>
       <div className="join flex justify-end mt-10 mb-10">
-        <Pagination></Pagination>
+        {/* <Pagination></Pagination> */}
+        {/* <TablePagination
+          className="px-16 mx-5"
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={dataLokasiAbsensi?.length ? dataLokasiAbsensi?.length : 0}
+          rowsPerPage={state.rowsPerPage}
+          labelRowsPerPage={"From"}
+          page={state.page}
+          backIconButtonProps={{
+            "aria-label": "Previous page",
+          }}
+          nextIconButtonProps={{
+            "aria-label": "Next page",
+          }}
+          backIconButtonText="Previous page"
+          nextIconButtonText="Next page"
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={setRowsPerPage}
+        /> */}
       </div>
 
       {/* Modals */}
