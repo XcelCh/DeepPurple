@@ -24,6 +24,10 @@ function EmployeeList() {
   const [currentEmployeeId, setCurrentEmployeeId] = useState();
   const [search, setSearch] = useState("");
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostPerPage] = useState(5);
+
   // Get All Employees
   const getEmpList = async () => {
     const params = `?search=${search}`;
@@ -39,6 +43,11 @@ function EmployeeList() {
       console.error("Error fetching data:", error);
     }
   };
+
+  // Pagination 
+  const lastPostIndex = currentPage * postsPerPage;
+  const firstPostIndex = lastPostIndex - postsPerPage;
+  const currentPosts = empList.slice(firstPostIndex, lastPostIndex);
 
   useEffect(() => {
     getEmpList();
@@ -145,18 +154,6 @@ function EmployeeList() {
       );
   };
 
-  const [state, setState] = useState(rowsPerPage, )
-
-  const handleNumbering = () => {
-    if (state.rowsPerPage === 5) {
-      return state.page * 5;
-    } else if (state.rowsPerPage === 10) {
-      return state.page * 10;
-    } else if (state.rowsPerPage === 25) {
-      return state.page * 25;
-    }
-  };
-
 
   return (
     <div className="ml-20 mt-16">
@@ -231,7 +228,7 @@ function EmployeeList() {
           </thead>
           <tbody>
             {/* row 1 */}
-            {empList.map((employee, index) => (
+            {currentPosts.map((employee, index) => (
               <tr className="hover">
                 <th className="h-1">{numbering + index}</th>
                 <td className="h-1">{employee.employeeName}</td>
@@ -295,28 +292,13 @@ function EmployeeList() {
         </table>
       </div>
       <div className="join flex justify-end mt-10 mb-10">
-        {/* <Pagination></Pagination> */}
-        {/* <TablePagination
-          className="px-16 mx-5"
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={dataLokasiAbsensi?.length ? dataLokasiAbsensi?.length : 0}
-          rowsPerPage={state.rowsPerPage}
-          labelRowsPerPage={"From"}
-          page={state.page}
-          backIconButtonProps={{
-            "aria-label": "Previous page",
-          }}
-          nextIconButtonProps={{
-            "aria-label": "Next page",
-          }}
-          backIconButtonText="Previous page"
-          nextIconButtonText="Next page"
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={setRowsPerPage}
-        /> */}
+        <Pagination
+          totalPosts={empList.length}
+          postsPerPage={postsPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        ></Pagination>
       </div>
-
       {/* Modals */}
       {/* Add Employee Modal */}
       <GenericModal
