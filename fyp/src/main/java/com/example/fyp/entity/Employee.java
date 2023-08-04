@@ -19,6 +19,8 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer employeeId;
     
+    private Integer accountId;
+    
     private String employeeName;
     private Integer numCallsHandled;
     private Integer numPositiveSentiment;

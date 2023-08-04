@@ -67,7 +67,7 @@ function Pricing() {
 
   
   return (
-    <div className="bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7] border-b">
+    <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
       <h2 className="text-4xl text-[#351D4F] font-bold dark:text-white ml-40 mr-40 pt-16 text-center">
         Pricing to suit all sizes of business
       </h2>

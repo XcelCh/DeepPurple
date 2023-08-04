@@ -31,6 +31,7 @@ public class Recording {
     private Integer recordingId;
 
     private Integer employeeId;
+    private Integer accountId;
 
     // @ManyToOne
     // @JoinColumn(name = "employee_id")
