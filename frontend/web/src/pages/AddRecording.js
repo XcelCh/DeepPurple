@@ -58,9 +58,9 @@ function AddRecording() {
   const handleUpload = () => {    
     const data = new FormData();
     const audioInput = document.getElementById("audioInput");        
-    data.set("audio", audioInput.files[0])    
+    data.set("audio2", audioInput.files[0])    
     console.log(audioInput.files[0]);
-    fetch("http://localhost:8082/audio/uploadAudio", {
+    fetch("http://localhost:8082/audio/uploadAudio2", {
       method: "POST",
       body: data
     })

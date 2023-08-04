@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Duration, Inquiries, Complaints, Warranties, PositiveRectangle, NegativeRectangle, Heart, NegativeWordmap } from "../assets/index";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Duration, Inquiries, Complaints, Warranties, PositiveRectangle, NegativeRectangle, Heart, RedHeart } from "../assets/index";
+import randomColor from 'randomcolor';
 import { 
   Chart as ChartJS,
   BarElement,
@@ -32,17 +34,12 @@ ChartJS.register(
 )
 
 function SummaryAnalysis() {
+  const navigate = useNavigate();
 
-  const mostMentionedData = {
-    labels: ['Battery', 'Monitor', 'Internet', 'Keyboard', 'Mouse'],
-    datasets: [
-        {
-            data: [1000, 800, 700, 500, 300],
-            backgroundColor: '#EE5B3D',
-            borderWidth: 0,    
-        }
-    ]
-  }
+  const [mostMentionedData, setMostMentionedData] = useState({
+    labels: [],
+    datasets: []
+  });
 
   const mostMentionedOptions = {
       indexAxis: "y",
@@ -65,35 +62,69 @@ function SummaryAnalysis() {
       },
   }
 
-  useEffect(() => {
-    // Chart data
-    const dataDoughnut = {
-      labels: ["Positive", "Negative"],
-      datasets: [
-        {
-          label: "Number of calls",
-          data: [1544, 386],
-          backgroundColor: [
-            "#80F2AA",
-            "#EE5B3D",
-          ],
-          hoverOffset: 4,
-        },
-      ],
-    };
+  const calculateTime = (secs) => {
+    if(secs < 60) {
+        return `${secs} ${secs === 1 ? 'second' : 'seconds'}`;
+    } else {
+        const minutes = Math.floor(secs / 60);
+        const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+        const seconds = Math.floor(secs % 60);
+        if(seconds === 0) {
+            return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '}`;
+        }
+        const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+        return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '} ${returnedSeconds} ${seconds === 1 ? 'second' : 'seconds'}`;
+    }
+  }
 
-    // Chart configuration
-    const configDoughnut = {
-      type: "doughnut",
-      data: dataDoughnut,
-      options: {
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-      },
-    };
+  const countToPercentage = (num, otherHalf) => {
+    const totalCount = num + otherHalf;
+    return Math.round(num / totalCount * 100);
+  }
+
+  const [summaryAnalysisData, setSummaryAnalysisData] = useState([]);
+  const [topSentimentOption, setTopSentimentOption] = useState('Positive');
+  const [randomColors, setRandomColors] = useState([]);
+  const [employeeSentimentOption, setEmployeeSentimentOption] = useState(0);
+  const [employeeSentiment, setEmployeeSentiment] = useState({
+    sentimentCount: [],
+    sentimentPercentage: [],
+    sentimentCategory: ''
+  });
+
+  useEffect(() => {
+    fetch(`http://localhost:8082/summaryAnalysis/getAnalysis`)
+      .then(response => {
+          // error unauthorized
+          if (response.status == 401) {
+              navigate("/");
+              console.log("401 Unauthorized");
+          }
+          else if (response.status == 200) {
+              console.log("Success");
+              return response.json();
+          }
+      })
+      .then(data => {
+        data.averageCallDuration = parseInt(data.averageCallDuration);
+        setSummaryAnalysisData(data);
+        setEmployeeSentiment({
+          sentimentCount: data.employeeSentiment,
+          sentimentPercentage: [countToPercentage(data.employeeSentiment[0][0], data.employeeSentiment[0][1]), countToPercentage(data.employeeSentiment[0][1], data.employeeSentiment[0][0])],
+          sentimentCategory: countToPercentage(data.employeeSentiment[0][0], data.employeeSentiment[0][1]) > 49 ? "High" : "Low",
+        })
+        setMostMentionedData({
+          labels: [data.mostMentionedWords[0][0], data.mostMentionedWords[1][0], data.mostMentionedWords[2][0], data.mostMentionedWords[3][0], data.mostMentionedWords[4][0]],
+          datasets: [{
+            data: [data.mostMentionedWords[0][1], data.mostMentionedWords[1][1], data.mostMentionedWords[2][1], data.mostMentionedWords[3][1], data.mostMentionedWords[4][1]],
+            backgroundColor: '#EE5B3D',
+            borderWidth: 0,
+          }]
+        })
+      })
+      .catch(error => {
+          console.error(error);
+      })
 
     const dataLine = {
       type: 'line',
@@ -137,22 +168,92 @@ function SummaryAnalysis() {
       }
     };
 
-    const canvas = document.getElementById("chartDoughnut");
     const categoryCanvas = document.getElementById("chartCategoryTrend");
-
-    // Destroy any existing chart instance on the canvas
-    if (canvas.chart) {
-      canvas.chart.destroy();
-    }
 
     if (categoryCanvas.chart) {
       categoryCanvas.chart.destroy();
     }
-
-    // Render the doughnut chart
-    canvas.chart = new ChartJS(canvas, configDoughnut);
+    
     categoryCanvas.chart = new ChartJS(categoryCanvas, dataLine);
   }, []);
+
+  useEffect(() => {
+    console.log(employeeSentiment);
+    console.log(summaryAnalysisData);
+
+    if (!summaryAnalysisData) {
+      // Data is not available yet, skip rendering the chart
+      return;
+    }
+
+    if (summaryAnalysisData.callsHandled) {
+      const colors = summaryAnalysisData.callsHandled.map(randomColor);
+      setRandomColors(colors);
+    }
+
+    // Chart data
+    const dataDoughnut = {
+      labels: ["Positive", "Negative"],
+      datasets: [
+        {
+          label: "Number of calls",
+          data: [summaryAnalysisData.countPositiveSentiment, summaryAnalysisData.countNegativeSentiment],
+          backgroundColor: [
+            "#80F2AA",
+            "#EE5B3D",
+          ],
+          hoverOffset: 4,
+        },
+      ],
+    };
+
+    // Chart configuration
+    const configDoughnut = {
+      type: "doughnut",
+      data: dataDoughnut,
+      options: {
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+      },
+    };
+
+    const canvas = document.getElementById("chartDoughnut");
+    // Destroy any existing chart instance on the canvas
+    if (canvas.chart) {
+      canvas.chart.destroy();
+    }
+    // Render the doughnut chart
+    canvas.chart = new ChartJS(canvas, configDoughnut);
+  }, [summaryAnalysisData])
+
+  const handleEmployeeSentiment = (employeeId) => {
+    setEmployeeSentimentOption(employeeId);
+    fetch(`http://localhost:8082/summaryAnalysis/employeeSentiment/${employeeId}`)
+      .then(response => {
+          // error unauthorized
+          if (response.status == 401) {
+              navigate("/");
+              console.log("401 Unauthorized");
+          }
+          else if (response.status == 200) {
+              console.log("Success");
+              return response.json();
+          }
+      })
+      .then(data => {
+        setEmployeeSentiment({
+          sentimentCount: data,
+          sentimentPercentage: [countToPercentage(data[0][0], data[0][1]), countToPercentage(data[0][1], data[0][0])],
+          sentimentCategory: countToPercentage(data[0][0], data[0][1]) > 49 ? "High" : "Low"
+        });
+      })
+      .catch(error => {
+          console.error(error);
+      })
+  }
 
   return (
     <>
@@ -175,7 +276,7 @@ function SummaryAnalysis() {
                       Average Call Duration
                   </div>
                   <div className="flex-grow font-bold text-md mt-2">
-                      4 minutes 30 seconds
+                      {calculateTime(summaryAnalysisData.averageCallDuration)}
                   </div>
               </div>
               <div className="w-1/4 flex flex-col items-center">
@@ -190,7 +291,7 @@ function SummaryAnalysis() {
                       Number of Inquiries
                   </div>
                   <div className="flex-grow font-bold text-xl mt-2">
-                      330
+                      {summaryAnalysisData.countInquiry}
                   </div>
               </div>
               <div className="w-1/4 flex flex-col items-center">
@@ -205,7 +306,7 @@ function SummaryAnalysis() {
                       Number of Complaints
                   </div>
                   <div className="flex-grow font-bold text-xl mt-2">
-                      600
+                      {summaryAnalysisData.countComplaint}
                   </div>
               </div>
               <div className="w-1/4 flex flex-col items-center">
@@ -220,7 +321,7 @@ function SummaryAnalysis() {
                       Number of Warranties
                   </div>
                   <div className="flex-grow font-bold text-xl mt-2">
-                      1000
+                      {summaryAnalysisData.countWarranty}
                   </div>
               </div>
               <div className="w-1/4 flex flex-col items-center">
@@ -245,11 +346,11 @@ function SummaryAnalysis() {
               </div>
               <div className="flex flex-grow font-medium mt-2">
                 <img src={PositiveRectangle} />
-                <p className="ml-2">80% Positive (1544)</p>
+                <p className="ml-2">{countToPercentage(summaryAnalysisData.countPositiveSentiment, summaryAnalysisData.countNegativeSentiment)}% Positive ({summaryAnalysisData.countPositiveSentiment})</p>
               </div>
               <div className="flex flex-grow font-medium">
                 <img src={NegativeRectangle} />
-                <p className="ml-2">20% Negative (386)</p>
+                <p className="ml-2">{countToPercentage(summaryAnalysisData.countNegativeSentiment, summaryAnalysisData.countPositiveSentiment)}% Negative ({summaryAnalysisData.countNegativeSentiment})</p>
               </div>
             </div>
           </div>
@@ -265,8 +366,8 @@ function SummaryAnalysis() {
                   <select 
                       className="bg-gray-50 block appearance-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 h-full px-2" 
                       id="grid-state"
-                      // value={formData.gender}
-                      // onChange={(event) => setFormData({ ...formData, gender: event.target.value })}
+                      value={topSentimentOption}
+                      onChange={(event) => setTopSentimentOption(event.target.value)}
                   >
                       <option value="Positive">Positive</option>
                       <option value="Negative">Negative</option>
@@ -292,61 +393,35 @@ function SummaryAnalysis() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="bg-[#80F2AA] border-b border-[#83848A]">
-                      <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                          1
-                      </th>
-                      <td className="px-6 py-2">
-                          Gui
-                      </td>
-                      <td className="px-6 py-2">
-                          99%
-                      </td>
-                    </tr>
-                    <tr className="bg-[#80F2AA] border-b border-[#83848A]">
-                      <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                          1
-                      </th>
-                      <td className="px-6 py-2">
-                          Gui
-                      </td>
-                      <td className="px-6 py-2">
-                          99%
-                      </td>
-                    </tr>
-                    <tr className="bg-[#80F2AA] border-b border-[#83848A]">
-                      <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                          1
-                      </th>
-                      <td className="px-6 py-2">
-                          Gui
-                      </td>
-                      <td className="px-6 py-2">
-                          99%
-                      </td>
-                    </tr>
-                    <tr className="bg-[#80F2AA] border-b border-[#83848A]">
-                      <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                          1
-                      </th>
-                      <td className="px-6 py-2">
-                          Gui
-                      </td>
-                      <td className="px-6 py-2">
-                          99%
-                      </td>
-                    </tr>
-                    <tr className="bg-[#80F2AA]">
-                      <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                          1
-                      </th>
-                      <td className="px-6 py-2">
-                          Gui
-                      </td>
-                      <td className="px-6 py-2">
-                          99%
-                      </td>
-                    </tr>
+                    {topSentimentOption === 'Positive' ? (
+                      summaryAnalysisData.top5Positive && summaryAnalysisData.top5Positive.map((employee, index) => (
+                        <tr className="bg-[#80F2AA] border-b border-[#83848A]">
+                          <th scope="row" className="px-6 py-2 font-medium text-black whitespace-nowrap">
+                              {index+1}
+                          </th>
+                          <td className="px-6 py-2 text-black">
+                              {employee[0]}
+                          </td>
+                          <td className="px-6 py-2 text-black">
+                              {employee[1]}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      summaryAnalysisData.top5Negative && summaryAnalysisData.top5Negative.map((employee, index) => (
+                        <tr className="bg-[#EE5B3D] border-b border-[#83848A]">
+                          <th scope="row" className="px-6 py-2 font-medium text-black whitespace-nowrap">
+                              {index+1}
+                          </th>
+                          <td className="px-6 py-2 text-black">
+                              {employee[0]}
+                          </td>
+                          <td className="px-6 py-2 text-black">
+                              {employee[2]}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -362,12 +437,14 @@ function SummaryAnalysis() {
                   <select 
                       className="bg-gray-50 block appearance-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg w-full p-2.5 focus:ring-indigo-600 focus:border-indigo-600 block px-2" 
                       id="grid-state"
-                      // value={formData.gender}
-                      // onChange={(event) => setFormData({ ...formData, gender: event.target.value })}
+                      value={employeeSentimentOption}
+                      onChange={(event) => handleEmployeeSentiment(event.target.value)}
                   >
-                      <option value="Bryant">Bryant</option>
-                      <option value="Excel">Excel</option>
-                      <option value="Patricia">Patricia</option>
+                    {summaryAnalysisData.allEmployeeName && summaryAnalysisData.allEmployeeName.map((employee, index) => (
+                      <option key={index} value={employee[0]}>
+                        {employee[1]}
+                      </option>
+                    ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -375,30 +452,32 @@ function SummaryAnalysis() {
                 </div>
               </div>
               <div className="p-4">
-                <div className="grid grid-cols-3">
-                  <div className="flex flex-col items-center col-span-1">
-                    <div className="flex items-center">
-                      <img src={Heart} />
-                      <p className="text-3xl font-bold text-[#80F2AA]">90%</p>
+                {employeeSentiment.sentimentCount && employeeSentiment.sentimentCount[0] && (
+                  <div className="grid grid-cols-3">
+                    <div className="flex flex-col items-center col-span-1">
+                      <div className="flex items-center">
+                        <img src={employeeSentiment.sentimentCategory === "Low" ? RedHeart : Heart} />
+                        <p className={`text-3xl font-bold ${employeeSentiment.sentimentCategory === "Low" ? "text-[#EE5B3D]" : "text-[#80F2AA]"}`}>{employeeSentiment.sentimentPercentage[0]}%</p>
+                      </div>
+                      <p className="text-xl font-medium">{employeeSentiment.sentimentCategory}</p>
                     </div>
-                    <p className="text-xl font-medium">High</p>
-                  </div>
-                  <div className="flex flex-col items-center justify-center col-span-2">
-                    <div className="relative w-full">
-                      <div className="flex items-center justify-between font-medium">
-                        <div className="text-[#80F2AA]">174 (90%)</div>
-                        <div className="text-[#EE5B3D]">19 (10%)</div>
-                      </div>
-                      <div className="flex h-3 overflow-hidden rounded-xl bg-[#EE5B3D] text-xs">
-                        <div style={{ width: '90%' }} className="bg-[#80F2AA]"></div>
-                      </div>
-                      <div className="flex items-center justify-between font-medium">
-                        <div className="text-[#80F2AA]">Positive</div>
-                        <div className="text-[#EE5B3D]">Negative</div>
+                    <div className="flex flex-col items-center justify-center col-span-2">
+                      <div className="relative w-full">
+                        <div className="flex items-center justify-between font-medium">
+                          <div className="text-[#80F2AA]">{employeeSentiment.sentimentCount[0][0]} ({employeeSentiment.sentimentPercentage[0]}%)</div>
+                          <div className="text-[#EE5B3D]">{employeeSentiment.sentimentCount[0][1]} ({employeeSentiment.sentimentPercentage[1]}%)</div>
+                        </div>
+                        <div className="flex h-3 overflow-hidden rounded-xl bg-[#EE5B3D] text-xs">
+                          <div style={{ width: `${employeeSentiment.sentimentPercentage[0]}%` }} className="bg-[#80F2AA]"></div>
+                        </div>
+                        <div className="flex items-center justify-between font-medium">
+                          <div className="text-[#80F2AA]">Positive</div>
+                          <div className="text-[#EE5B3D]">Negative</div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -416,65 +495,22 @@ function SummaryAnalysis() {
           {/* Number of calls handled */}
           <div className="border rounded-md p-8">
             <p className="font-bold text-xl mb-4">Number of Calls Handled</p>
-            <div className="mb-4">
-              <p className="font-semibold">Gui</p>
-              <div className="relative w-full">
-                <div className="flex items-center justify-between">
-                  <div className="text-[#83848A]">Average session: 2 minutes 58 seconds</div>
-                  <div className="text-[#83848A]">579 of 1930 calls</div>
+            <div className="overflow-y-scroll h-96 pr-4">
+              {summaryAnalysisData.callsHandled && summaryAnalysisData.callsHandled.map((call, index) => (
+                <div className="mb-4">
+                  <p className="font-semibold">{call[0]}</p>
+                  <div className="relative w-full">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[#83848A]">Average session: {calculateTime(call[1])}</div>
+                      <div className="text-[#83848A]">{call[2]} of {summaryAnalysisData.recordingCount} calls</div>
+                    </div>
+                    {/* Bar */}
+                    <div className="mb-5 h-3 rounded-full bg-[#F5F5F5]">
+                      <div className="h-3 rounded-full" style={{ width: `${countToPercentage(call[2], summaryAnalysisData.recordingCount - call[2])}%`, backgroundColor: randomColors[index] }}></div>
+                    </div>
+                  </div>
                 </div>
-                <div className="mb-5 h-3 rounded-full bg-[#F5F5F5]">
-                  <div className="h-3 rounded-full bg-[#A5A5A5]" style={{ width: '80%' }}></div>
-                </div>
-              </div>
-            </div>
-            <div className="mb-4">
-              <p className="font-semibold">Bryant</p>
-              <div className="relative w-full">
-                <div className="flex items-center justify-between">
-                  <div className="text-[#83848A]">Average session: 2 minutes 58 seconds</div>
-                  <div className="text-[#83848A]">579 of 1930 calls</div>
-                </div>
-                <div className="mb-5 h-3 rounded-full bg-[#F5F5F5]">
-                  <div className="h-3 rounded-full bg-[#FFC000]" style={{ width: '70%' }}></div>
-                </div>
-              </div>
-            </div>
-            <div className="mb-4">
-              <p className="font-semibold">Gui</p>
-              <div className="relative w-full">
-                <div className="flex items-center justify-between">
-                  <div className="text-[#83848A]">Average session: 2 minutes 58 seconds</div>
-                  <div className="text-[#83848A]">579 of 1930 calls</div>
-                </div>
-                <div className="mb-5 h-3 rounded-full bg-[#F5F5F5]">
-                  <div className="h-3 rounded-full bg-[#4472C4]" style={{ width: '30%' }}></div>
-                </div>
-              </div>
-            </div>
-            <div className="mb-4">
-              <p className="font-semibold">Gui</p>
-              <div className="relative w-full">
-                <div className="flex items-center justify-between">
-                  <div className="text-[#83848A]">Average session: 2 minutes 58 seconds</div>
-                  <div className="text-[#83848A]">579 of 1930 calls</div>
-                </div>
-                <div className="mb-5 h-3 rounded-full bg-[#F5F5F5]">
-                  <div className="h-3 rounded-full bg-[#ED7D31]" style={{ width: '20%' }}></div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <p className="font-semibold">Gui</p>
-              <div className="relative w-full">
-                <div className="flex items-center justify-between">
-                  <div className="text-[#83848A]">Average session: 2 minutes 58 seconds</div>
-                  <div className="text-[#83848A]">579 of 1930 calls</div>
-                </div>
-                <div className="mb-5 h-3 rounded-full bg-[#F5F5F5]">
-                  <div className="h-3 rounded-full bg-[#5B9BD5]" style={{ width: '10%' }}></div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

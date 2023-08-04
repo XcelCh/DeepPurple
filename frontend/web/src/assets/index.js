@@ -44,6 +44,7 @@ import PositiveRectangle from "./PositiveRectangle.svg";
 import NegativeRectangle from "./NegativeRectangle.svg";
 import Heart from "./Heart.svg";
 import NegativeWordmap from "./NegativeWordmap.svg";
+import RedHeart from "./RedHeart.svg";
 
 export {
   TextIcon,
@@ -91,5 +92,6 @@ export {
   PositiveRectangle,
   NegativeRectangle,
   Heart,
-  NegativeWordmap
+  NegativeWordmap,
+  RedHeart
 };

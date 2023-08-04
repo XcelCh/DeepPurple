@@ -38,12 +38,10 @@ public class Recording {
 
     private String recordingName;
     
+    @Nullable
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] content;
-    // @Lob
-    // @Column(name = "content",length = 100000)
-    // private byte[] audioData;
 
     @Column(columnDefinition = "DATETIME")
     private LocalDateTime uploadDate;
@@ -53,6 +51,9 @@ public class Recording {
 
     @Nullable
     private double recordingDuration;
+
+    @Nullable
+    private String recordingUrl;
 
     private String audioFormat;
     private Integer sampleRate;

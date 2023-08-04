@@ -1,0 +1,26 @@
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA5TXNJJLOF3UB7U43
+      secret-key: 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
+    region:
+      static: ap-southeast-2
+    stack:
+      auto: false
+    
+application:
+  bucket:
+    name: fypfilestorage
+    
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 100MB
+      max-file-size: 100MB
+      max-request-size: 110MB
+      
+server:
+  port: 9090
+        
+     
