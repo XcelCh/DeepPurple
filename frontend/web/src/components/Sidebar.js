@@ -47,7 +47,7 @@ const Sidebar = ({ children }) => {
     
   return (
     <div className="flex">
-      <div style={{ width: isOpen ? "250px" : "70px" }} className="sidebar">
+      <div style={{ width: isOpen ? "250px" : "70px" }} className="sidebar fixed z-[1000]">
         <div className="top_section">
           <p style={{ display: isOpen ? "block" : "none" }} className="text-sm font-bold">
             Customer Service Analyzer 

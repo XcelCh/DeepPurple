@@ -36,7 +36,6 @@ const Datepicker = ({formData, setFormData}) => {
     return (
     
             <DatePicker 
-                
                 selected={startDate} 
                 onChange={handleChange} 
                 dateFormat="MMMM d, yyyy"
@@ -45,7 +44,6 @@ const Datepicker = ({formData, setFormData}) => {
                 dropdownMode="select"
                 maxDate={new Date()}
                 customInput={<CustomInput/>}
-                
             />
        
     );

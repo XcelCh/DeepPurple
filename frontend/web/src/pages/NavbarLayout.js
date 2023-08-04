@@ -5,9 +5,9 @@ import NavBar from "../components/NavBar";
 const NavbarLayout = () => {
   return (
     <>
-      <div>
-        <NavBar />
-        <Outlet />
+      <div className="relative">
+        <NavBar/>
+        <Outlet/>
       </div>
     </>
   );

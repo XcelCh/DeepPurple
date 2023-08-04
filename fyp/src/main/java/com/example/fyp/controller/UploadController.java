@@ -43,7 +43,6 @@ public class UploadController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.contentType(MediaType.valueOf("mp3/wav"))
 				.body(imageData);
-
 	}
 
 	@PostMapping("/uploadAudio2")

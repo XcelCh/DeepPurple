@@ -89,6 +89,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/starter/**").hasAnyRole("BASIC", "PRO")
                         .requestMatchers("/getPricing").permitAll()
                         .requestMatchers("/employeeList/**").permitAll()
+                        .requestMatchers("/recordingList/**").permitAll()
+
                         .requestMatchers("/audio/**").permitAll()
                         .requestMatchers("/analysis/**").permitAll()
                         .requestMatchers("/summaryAnalysis/**").permitAll()

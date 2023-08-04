@@ -10,15 +10,22 @@ import Pagination from "../components/Pagination";
 import Swal from "sweetalert2";
 import { ArrowLeft } from "../assets/index";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 function EmployeeRecordingList() {
   const { id } = useParams();
+  // Numbering the table
   const [numbering, setNumbering] = useState(1);
+
+  // Temporary storage
   const [recList, setRecList] = useState([]);
   const [empName, setEmpName] = useState("");
   const [search, setSearch] = useState("");
+  
+  // Error message
+  const [error, setError] = useState("");
 
-  // Get Employee Name 
+  // Get Employee Name
   const getEmployeeDetail = async () => {
     try {
       const response = await fetch(
@@ -33,7 +40,7 @@ function EmployeeRecordingList() {
     }
   };
 
-  // Get All Recording
+  // Get All Recording Per Employee
   const getRecList = async () => {
     const params = `?search=${search}`;
     try {
@@ -44,21 +51,55 @@ function EmployeeRecordingList() {
       response.json().then((data) => {
         setRecList(data.data);
       });
-
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  // Delete Recording
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Deleting
+        fetch(`http://localhost:8082/recordingList/deleteRecordingById/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then(
+            (result) => {
+              getRecList();
+            },
+            (error) => {
+              setError(error);
+            }
+          );
+
+        // Success message
+        Swal.fire("Deleted!", "The recording has been deleted!", "success");
+
+        // Reload getEmpList();table
+        getRecList();
+      }
+    });
+  };
+
   useEffect(() => {
     getRecList();
     getEmployeeDetail();
-  },[search]) ;
-  
+  }, [search]);
+
   return (
     <div className="mx-20">
       <div className="flex mb-5">
-        <Link to="../RecordingList">
+        <Link to="../employeeList">
           <img src={ArrowLeft} className="mr-3"></img>
         </Link>
         <p className="text-xl font-bold text-left mr-3">
@@ -70,9 +111,9 @@ function EmployeeRecordingList() {
           <div className="relative">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
+              className="absolute top-1 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
               fill="none"
-              viewBox="0 0 24 24"
+              viewBox="0 0 30 30"
               stroke="currentColor"
             >
               <path
@@ -99,28 +140,30 @@ function EmployeeRecordingList() {
         </form>
       </div>
 
-      <div className="max-h-screen">
-        <table className="table mx-auto w-full border border-dashed text-sm">
+      <div className="max-h-screen border border-dashed bg-[#F6F4FC]">
+        <table className="table table-auto mx-auto w-full text-xs">
           {/* head */}
           <thead>
             <tr>
-              <th className="bg-[#F6F4FC] normal-case text-base">No</th>
-              <th className="bg-[#F6F4FC] normal-case text-base">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
+                No
+              </th>
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Recording Name
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case  text-sm font-semibold text-center">
                 Upload Date
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
                 Date Recorded
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
                 Category
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
                 Sentiment
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-base text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
                 Action
               </th>
             </tr>
@@ -129,19 +172,19 @@ function EmployeeRecordingList() {
             {/* row 1 */}
             {recList.map((recording, index) => (
               <tr className="hover">
-                <th>{numbering + index}</th>
-                <td>{recording.recordingName}</td>
-                <td className="text-center">{recording.uploadDate}</td>
-                <td className="text-center">{recording.recordingDate}</td>
-                <td className="text-center">category</td>
-                <td className="text-center">sentiment</td>
+                <th className="h-1">{numbering + index}</th>
+                <td className="h-1">{recording.recordingName}</td>
+                <td className="text-center h-1">{recording.uploadDate}</td>
+                <td className="text-center h-1">{recording.recordingDate}</td>
+                <td className="text-center h-1">category</td>
+                <td className="text-center h-1">sentiment</td>
                 <td className="flex justify-center items-center">
                   <div className="dropdown">
                     <label
                       tabIndex={0}
-                      className="btn m-1 bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
+                      className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
                     >
-                      <img src={ThreeDotsVertical}></img>
+                      <MoreVertIcon style={{ color: "black" }}></MoreVertIcon>
                     </label>
                     <ul
                       tabIndex={0}
@@ -162,7 +205,7 @@ function EmployeeRecordingList() {
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                         <label
                           className="text-[#D55454]"
-                          // onClick={() => handleDelete(recording.recordingId)}
+                          onClick={() => handleDelete(recording.recordingId)}
                         >
                           <img src={TrashCan} className="ml-1"></img>{" "}
                           <p className="ml-1">Delete</p>
