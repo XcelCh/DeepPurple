@@ -31,6 +31,9 @@ function SignUpForm() {
     const [credentialsMessage, setCredentialsMessage] = useState('');
     const [startDate, setStartDate] = useState(new Date());
 
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
+    const phonePattern = /^\d{8,}$/;
+
     const basicPlan = JSON.parse(sessionStorage.getItem('plan'))[0];
     const proPlan = JSON.parse(sessionStorage.getItem('plan'))[1];
     
@@ -57,10 +60,20 @@ function SignUpForm() {
             return;
         }
 
+        if (!passwordPattern.test(formData.password)) {
+            setAccountMessage('Password must be at least 6 characters and should include a combination of one uppercase, lowercase letter and numbers.');
+            return;
+          }
+
         if (formData.confirmPassword.trim() === '') {
             setAccountMessage('Confirm your password');
             return;
         }
+
+        if (!passwordPattern.test(formData.confirmPassword)) {
+            setAccountMessage('Password must be at least 6 characters and should include a combination of one uppercase, lowercase letter and numbers.');
+            return;
+          }
 
         if(formData.password != formData.confirmPassword){
             setAccountMessage("Passwords didn't match. Try again.");
@@ -101,7 +114,21 @@ function SignUpForm() {
             return;
         }
 
-        //date of birth
+        if (!phonePattern.test(formData.phoneNum)) {
+            setCredentialsMessage('Please enter a valid Singapore phone number.');
+            return;
+          }
+
+        if (formData.dob === '') {
+            setCredentialsMessage('Please enter your Date of Birth.');
+            return;
+        }
+
+        if (new Date().setFullYear(new Date().getFullYear() - 18) < new Date(formData.dob)) {
+            
+            setCredentialsMessage('You must be at least 18 years old.');
+            return;
+        }
 
         if (formData.gender != "Female" && formData.gender != "Male") {
             setCredentialsMessage('Select your gender');

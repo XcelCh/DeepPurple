@@ -30,6 +30,9 @@ function PaymentForm() {
     const [securityCodeMessage, setSecurityCodeMessage] = useState('');
     const [currentDate, setCurrentDate] = useState('');
 
+    const namePattern = /^[A-Za-z]+( [A-Za-z]+)*$/;
+
+
     useEffect(() => {
       // Get today's date
       const today = new Date();
@@ -97,6 +100,12 @@ function PaymentForm() {
       if(event.target.value.trim() === "") {
         setCardholderNameMessage('Cardholder name required.')
       }
+
+      if (!namePattern.test(event.target.value)) {
+        setCardholderNameMessage('Enter a valid name.');
+      }
+
+
     };
 
     const handleCardNumberBlur = (event) => {
@@ -289,7 +298,7 @@ function PaymentForm() {
                           </label>
                           <label class="relative w-full">
                               <input 
-                              type="text"
+                              type="password"
                               name="securityCode"
                               id="securityCode"
                               class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"

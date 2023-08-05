@@ -4,6 +4,7 @@ import { useNavigate, userNavigate } from "react-router-dom";
 import authHeader from "../services/auth-header";
 
 import Datepicker from '../components/DatePicker2';
+import AuthService from '../services/auth.service';
 
 function EditProfile() {
     const [formData, setFormData] = useState({
@@ -33,8 +34,14 @@ function EditProfile() {
           .then(response => {
             // error unauthorized
             if (response.status == 401) {
-                navigate("/");
+
+                const user = AuthService.getCurrentUser();
+                if (user) {
+                  AuthService.logout();
+                }
                 console.log("401 Unauthorized");
+                navigate("/unauthorizedPage");
+                
             }
             else if (response.status == 200) {
               console.log("Success");
