@@ -18,4 +18,7 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Integer>
         "FROM Transcript t " +
         "JOIN Analysis a ON t.recordingId = a.recordingId ")
     List<String> getTranscripts();
+
+    @Query("SELECT t.employeeId, t.dialog FROM Transcript t WHERE t.recordingId = :recordingId")
+    List<Object[]> findEmployeeAndDialogByRecordingId(Integer recordingId);
 }

@@ -127,8 +127,8 @@ function NavBar() {
                 tabIndex={0}
                 className="dropdown-content menu p-2 shadow bg-[#60388B] rounded-box w-52 mr-5"
               >
-                <li>
-                  <Link to="/editProfile">
+                <li className="h-8">
+                  <Link to="/editProfile" className="h-8">
                     <svg
                       class="w-5 h-5"
                       viewBox="0 0 24 24"
@@ -144,31 +144,27 @@ function NavBar() {
                         fill="currentColor"
                       ></path>
                     </svg>
-                    Edit Profile
+                    <p className="text-sm">Edit Profile</p>
                   </Link>
                 </li>
-                <li>
-                  <Link to="/changePassword">
-                    <svg
-                      class="w-5 h-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M7 8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8C17 10.7614 14.7614 13 12 13C9.23858 13 7 10.7614 7 8ZM12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"
-                        fill="currentColor"
-                      ></path>
-                      <path
-                        d="M6.34315 16.3431C4.84285 17.8434 4 19.8783 4 22H6C6 20.4087 6.63214 18.8826 7.75736 17.7574C8.88258 16.6321 10.4087 16 12 16C13.5913 16 15.1174 16.6321 16.2426 17.7574C17.3679 18.8826 18 20.4087 18 22H20C20 19.8783 19.1571 17.8434 17.6569 16.3431C16.1566 14.8429 14.1217 14 12 14C9.87827 14 7.84344 14.8429 6.34315 16.3431Z"
-                        fill="currentColor"
-                      ></path>
+                <li className="h-8">
+                  <Link to="/changePassword" className="h-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
                     </svg>
-                    Change Password
+                    <p className="text-sm">Change Password</p>
                   </Link>
                 </li>
-                <li>
-                  <Link onClick={logOut}>
+                <li className="h-8">
+                  <Link to="/billing" className="h-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+                    </svg>
+                    <p className="text-sm">Payment and usage</p>
+                  </Link>
+                </li>
+                <li className="h-8">
+                  <Link onClick={logOut} className="h-8">
                     <svg
                       class="w-5 h-5"
                       viewBox="0 0 24 24"
@@ -180,7 +176,7 @@ function NavBar() {
                         fill="currentColor"
                       ></path>
                     </svg>
-                    Sign Out
+                    <p className="text-sm">Sign Out</p>
                   </Link>
                 </li>
               </ul>

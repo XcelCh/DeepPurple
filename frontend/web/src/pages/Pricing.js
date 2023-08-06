@@ -1,156 +1,91 @@
-import React, {useEffect, useState} from "react";
-import { ShortLine, Tick } from "../assets"
-import { Link } from 'react-router-dom';
-import AuthService from "../services/auth.service";
+import React from "react";
+import Footer from '../components/Footer';
 
 function Pricing() {
-
-  const user = AuthService.getCurrentUser();
-  const [basicPlan, setBasicPlan] = useState({
-    planName: '',
-    planPrice: 0.0
-  })
-
-  const [proPlan, setProPlan] = useState({
-    planName: '',
-    planPrice: 0.0
-  })
-
-  useEffect (() => {
-
-      const plans = sessionStorage.getItem('plan');
-
-      if (plans) {
-
-        setBasicPlan(JSON.parse(sessionStorage.getItem('plan'))[0]);
-        setProPlan (JSON.parse(sessionStorage.getItem('plan'))[1]);
-      }
-      else {
-
-        fetch('http://localhost:8082/getPricing')
-        .then(response => {
-
-          if(response.ok){
-
-            console.log('Get Price Success.');
-            return response.json();
-          }
-        })
-        .then( data => {
-
-          for (const key in data) {
-
-            if (key === 'Basic') {
-              setBasicPlan({planName:key, planPrice: data[key]});
-            }
-            else if (key === 'Professional') {
-              setProPlan({planName:key, planPrice: data[key]});
-            }
-          }
-          
-        })
-        .catch(error => {
-          console.error(error);
-        })
-      }
-    } , []);
-  
-  
-    useEffect (() => {
-
-      const arrayPlan = [basicPlan, proPlan];
-          sessionStorage.setItem('plan', JSON.stringify(arrayPlan));
-
-          console.log(basicPlan, proPlan);
-    }, [basicPlan, proPlan])
-
-
   
   return (
-    <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
-      <h2 className="text-4xl text-[#351D4F] font-bold dark:text-white ml-40 mr-40 pt-16 text-center">
-        Pricing to suit all sizes of business
-      </h2>
-      <p className="text-md font-semibold text-white text-center ml-40 mr-40 mt-2">
-        Choose a plan that works best for you and your team.
-      </p>
-      <div className="grid grid-cols-2 mt-5 ml-40 mr-40 gap-0 mb-20">
-        {/* BASIC */}
-        <div className="md:mx-auto bg-white rounded-3xl h-full w-80 my-5 border max-w-5xl drop-shadow-lg">
-          <h2 className="text-3xl text-[#351D4F] font-bold mt-5 ml-12">
-            {basicPlan.planName}
-          </h2>
-          <div className="grid grid-cols-2 mb-8">
-            <h2 className="text-6xl text-[#351D4F] font-bold mt-5 text-right">
-              ${basicPlan.planPrice}
-            </h2>
-            <p className="text-sm text-[#83848A] mt-10 ml-2 ">/MO</p>
-          </div>
-          <div className="flex justify-center">
-            <img src={ShortLine}></img>
-          </div>
-            <div className="flex mt-5 justify-center">
-              <img src={Tick} className="mr-5"></img>
-              <p className="text-sm font-bold">Unlimited Text</p>
-            </div>
-            <div className="flex mt-5 justify-center">
-              <img src={Tick} className="mr-5"></img>
-              <p className="text-sm font-bold">Unlimited Text</p>
-            </div>
-            <div className="flex mt-5 justify-center">
-              <img src={Tick} className="mr-5"></img>
-              <p className="text-sm font-bold">Unlimited Text</p>
-            </div>
-            <div className="flex mt-5 justify-center">
-              <img src={Tick} className="mr-5"></img>
-              <p className="text-sm font-bold">Unlimited Text</p>
-            </div>
-          <div className="flex items-center justify-center mt-8">
-            <Link to={user ? "/paymentForm" : "/signUpForm"} state={basicPlan} className="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-white bg-[#3C3988] rounded-lg hover:bg-[#351D4F] focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                Buy now
-                <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-            </Link>
+    <div className="h-full bg-[#ECEAEF]">
+      <div>
+        <p className="text-4xl text-[#7566BB] font-extrabold pt-32 text-center">
+          DeepPurple pricing
+        </p>
+        <p className="text-xl text-[#414141] text-center mt-8">
+          We have a pricing plan that’s perfect for you. Save money with DeepPurple’s transparent <br></br>and innovative approach to pricing.
+        </p>
+      </div>
+      <div>
+        <div className="mt-16 grid w-full gap-16 grid-cols-2 px-32">
+          <div className="">
+            <p className="text-3xl text-[#7566BB] font-semibold mb-2">
+              Unlock customer service analyzer
+            </p>
+            <p className="text-lg text-[#414141]">
+              Activated account can immediately start using this service to
+              review your employees’ performance and gain valuable
+              insights from your customer service recordings.
+            </p>
           </div>
           
+          <div className="">
+            <p className="text-3xl text-[#7566BB] font-semibold mb-2">
+              Only pay for what you use
+            </p>
+            <p className="text-lg text-[#414141]">
+              DeepPurple is priced based on the total duration of audio
+              successfully processed by the service each month. This
+              means you have complete control over your expenses
+              and won't encounter any hidden fees, upfront costs, or
+              termination charges.
+            </p>
+          </div>
         </div>
-        {/* PRO */}
-        <div className="md:mx-auto bg-white rounded-3xl h-full w-80 my-5 border max-w-5xl drop-shadow-lg">
-          <h2 className="text-3xl text-[#351D4F] font-bold mt-5 ml-12">
-            {proPlan.planName}
-          </h2>
-          <div className="grid grid-cols-2 mb-8 ml-14">
-            <h2 className="text-6xl text-[#351D4F] font-bold mt-5 text-right">
-              ${proPlan.planPrice}
-            </h2>
-            <p className="text-sm text-[#83848A] mt-10 ml-2 ">/MO</p>
+        <div className="mt-16 grid w-full gap-16 grid-cols-2 px-32">
+          <div className="">
+            <p className="text-3xl text-[#7566BB] font-semibold mb-2">
+              Get in touch with us
+            </p>
+            <p className="text-lg text-[#414141]">
+              If you have any questions regarding our plans or products,
+              our dedicated team is ready to assist.{' '}
+              <a href="/aboutUs" class="text-[#7566BB] hover:underline">
+                Click here
+              </a>
+              {' '}to send us your inquiries, and we'll be happy to provide the answers you need.
+            </p>
           </div>
-          <div className="flex justify-center">
-            <img src={ShortLine}></img>
-          </div>
-          <div className="flex mt-5 justify-center">
-            <img src={Tick} className="mr-5"></img>
-            <p className="text-sm font-bold">Unlimited Text</p>
-          </div>
-          <div className="flex mt-5 justify-center">
-            <img src={Tick} className="mr-5"></img>
-            <p className="text-sm font-bold">Unlimited Text</p>
-          </div>
-          <div className="flex mt-5 justify-center">
-            <img src={Tick} className="mr-5"></img>
-            <p className="text-sm font-bold">Unlimited Text</p>
-          </div>
-          <div className="flex mt-5 justify-center">
-            <img src={Tick} className="mr-5"></img>
-            <p className="text-sm font-bold">Unlimited Text</p>
+          
+          <div className="mb-32">
+            <p className="text-3xl text-[#7566BB] font-semibold mb-2">
+              Pricing table
+            </p>
+            <div className="relative">
+              <table className="w-full text-sm text-left text-gray-500">
+                <thead className="text-xs text-gray-700 bg-[#7566BB] border-b border-t border-[#83848A]">
+                  <tr>
+                      <th scope="col" className="px-6 py-3 text-lg text-white font-semibold">
+                          Category
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-lg text-white font-semibold">
+                          Pricing
+                      </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-[#83848A]">
+                    <th scope="row" className="px-6 py-2 font-medium text-black">
+                        Customer service analyzer
+                    </th>
+                    <td className="px-6 py-2 text-black font-medium text-black">
+                        $0.024/minute
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          <div className="flex items-center justify-center mt-8">
-            <Link to={user ? "/paymentForm" : "/signUpForm"} state={proPlan} className="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-white bg-[#3C3988] rounded-lg hover:bg-[#351D4F] focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                Buy now
-                <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-            </Link>
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }

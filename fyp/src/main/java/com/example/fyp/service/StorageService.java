@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,9 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import com.example.fyp.entity.Recording;
+import com.example.fyp.entity.Transcript;
 import com.example.fyp.repo.AudioFileRepository;
+import com.example.fyp.repo.TranscriptRepository;
 import com.example.fyp.utils.AudioUtils;
 
 import okio.Path;
@@ -30,6 +33,9 @@ import okio.Path;
 public class StorageService {
 	@Autowired
     private AudioFileRepository repository;
+
+	@Autowired
+	private TranscriptRepository transcriptRepository;
 
     @Value("${application.bucket.name}")
 	private String bucketName;
@@ -111,4 +117,10 @@ public class StorageService {
     	
     	return convertedFile;
     }
+
+	public List<Object[]> getTranscriptsByRecordingId(Integer recordingId) {
+
+        return transcriptRepository.findEmployeeAndDialogByRecordingId(recordingId);
+	}
+
 }
