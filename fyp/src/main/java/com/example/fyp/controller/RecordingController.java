@@ -21,19 +21,31 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
 
+import com.example.fyp.service.AccountDetailsImpl;
+import com.example.fyp.service.AccountServiceImpl;
 
 import com.example.fyp.model.ResponseStatus;
 import com.example.fyp.repo.AudioFileRepository;
+import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.service.RecordingListService;
 import com.example.fyp.service.SummaryAnalysisService;
 import com.example.fyp.model.ResponseStatus;
+import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
 import java.util.Map;
+import com.example.fyp.service.AccountServiceImpl;
+import com.example.fyp.repo.AccountRepository;
 
 @RestController
 @RequestMapping("/recordingList")
 public class RecordingController {
+
+    @Autowired
+    AccountServiceImpl accountServiceImpl;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     private final RecordingListService recordingListService;
 
@@ -51,7 +63,12 @@ public class RecordingController {
         ResponseStatus<List<Map<String, Object>>> response = new ResponseStatus<>();
 
         try {
-            List<Map<String, Object>> recList = recordingListService.getRecordingList();
+            // Retrieve the current authentication token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            Integer account_id = accountRepository.getAccountId(email);
+
+            List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
 
             if (search != null && !search.isEmpty()) {
                 String searchKeyword = "%" + search.toLowerCase() + "%";
@@ -60,6 +77,7 @@ public class RecordingController {
                         .filter(rec -> ((String) rec.get("recordingName")).contains(search))
                         .collect(Collectors.toList());
             }
+
             // RESPONSE DATA
             response.setSuccess(true);
             response.setMessage("Successfully Retrieve All Recordings.");
@@ -97,10 +115,15 @@ public class RecordingController {
 
     // Get User
      @GetMapping("/user/me")
-    public Authentication getCurrentUser() {
+     public Authentication getCurrentUser() {
+
         // Retrieve the current authentication token
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("AUTHENTICATION " + authentication.getName());
+        String email = authentication.getName();
+        Integer account_id = accountRepository.getAccountId(email);
+
+        System.out.println(account_id);
+
         return authentication;
     }
 

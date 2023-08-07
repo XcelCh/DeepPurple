@@ -13,5 +13,10 @@ import com.example.fyp.entity.Account;
 public interface AccountRepository extends JpaRepository<Account, String> {
 
     Optional<Account> findByEmail(String email);
+
+    @Query("SELECT accountId AS accountId FROM Account " +
+    "WHERE email = :email"
+    )
+    Integer getAccountId(String email);
     
 }

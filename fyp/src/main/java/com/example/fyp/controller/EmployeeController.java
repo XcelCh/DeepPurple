@@ -4,12 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.model.ResponseStatus;
 import com.example.fyp.repo.EmployeeRepository;
+import com.example.fyp.service.RecordingListService;
+import com.example.fyp.repo.AccountRepository;
 import com.example.fyp.repo.AudioFileRepository;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,9 +24,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.example.fyp.service.EmployeeService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,26 +41,45 @@ public class EmployeeController {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
     @Autowired
+    private AccountRepository accountRepository;
+    
+    @Autowired
     private EmployeeRepository empRepo;
 
     @Autowired
     private AudioFileRepository recRepo;
 
+    private final EmployeeService employeeService;
+
+    @Autowired
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+
     // Get All Employees
     @GetMapping("/getAllEmployees")
     public ResponseEntity<?> getAllEmployee(@RequestParam(required = false) String search) {
-        ResponseStatus<List<Employee>> response = new ResponseStatus<>();
+        ResponseStatus<List<Map<String, Object>>> response = new ResponseStatus<>();
 
         try {
-            List<Employee> empList = new ArrayList<>();
-            empRepo.findAll().forEach(empList::add);
+            // Retrieve the current authentication token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            Integer account_id = accountRepository.getAccountId(email);
 
-            if (search != null && !search.isEmpty()){
-                String searchKeyword = "%" + search + "%";
-                empList = empList.stream()
-                .filter(emp -> emp.getEmployeeName().toLowerCase().contains(search.toLowerCase()))
-                        .collect(Collectors.toList());
-            }
+            System.out.println("AUTHORIZATION " + account_id);
+
+            List<Map<String, Object>> empList = employeeService.getAllEmployee(account_id);
+            // List<Employee> empList = new ArrayList<>();
+            // empRepo.findAll().forEach(empList::add);
+
+            // if (search != null && !search.isEmpty()) {
+            //     String searchKeyword = "%" + search.toLowerCase() + "%";
+
+            //     empList = empList.stream()
+            //             .filter(emp -> ((String) emp.get("employeeName")).contains(search))
+            //             .collect(Collectors.toList());
+            // }
 
             // RESPONSE DATA
             response.setSuccess(true);
@@ -63,9 +87,11 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (Exception ex) {
+            ex.printStackTrace();
+            
             // RESPONSE DATA
             response.setSuccess(false);
-            response.setMessage("Fail to get All Employees.");
+            response.setMessage("Failed to get All Employees.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

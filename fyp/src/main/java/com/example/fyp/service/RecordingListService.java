@@ -24,8 +24,9 @@ public class RecordingListService {
     @Autowired
     private RecordingRepository recordingRepository;
 
-    public List<Map<String, Object>> getRecordingList() {
-        return recordingRepository.getAllRecordings();
+    public List<Map<String, Object>> getRecordingList(Integer account_id) {
+        return recordingRepository.getAllRecordings(account_id);
     }
+    
 
 }
