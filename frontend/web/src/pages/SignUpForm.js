@@ -31,7 +31,7 @@ function SignUpForm() {
     const [credentialsMessage, setCredentialsMessage] = useState('');
     const [startDate, setStartDate] = useState(new Date());
 
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+]{6,}$/;
     const phonePattern = /^\d{8,}$/;
 
     const handleCheckboxChange = () => {
