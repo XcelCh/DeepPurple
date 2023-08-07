@@ -16,6 +16,7 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import TablePagination from "@mui/material/TablePagination";
+import authHeader from "../services/auth-header";
 
 function EmployeeList() {
   const [empList, setEmpList] = useState([]);
@@ -24,6 +25,7 @@ function EmployeeList() {
   const [currentName, setCurrentName] = useState("");
   const [currentEmployeeId, setCurrentEmployeeId] = useState();
   const [search, setSearch] = useState("");
+  const token = authHeader();
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,7 +44,10 @@ function EmployeeList() {
       });
 
       const response = await fetch(
-        `http://localhost:8082/employeeList/getAllEmployees${params}`
+        `http://localhost:8082/employeeList/getAllEmployees${params}`,
+        {
+          headers: token,
+        }
       );
 
       response.json().then((data) => {
@@ -61,7 +66,10 @@ function EmployeeList() {
      try {
 
        const response = await fetch(
-         `http://localhost:8082/employeeList/getAllEmployees${params}`
+         `http://localhost:8082/employeeList/getAllEmployees${params}`,
+         {
+           headers: token,
+         }
        );
 
        response.json().then((data) => {

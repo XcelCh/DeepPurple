@@ -4,6 +4,7 @@ import { Toggle, Upload, Filter, EmptyRecording } from "../assets/index";
 import Swal from "sweetalert2";
 import DateRange from "../components/DateRange";
 import Pagination from "../components/Pagination";
+import authHeader from "../services/auth-header";
 
 // Icons
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -49,7 +50,10 @@ function RecordingList() {
       });
 
       const response = await fetch(
-        `http://localhost:8082/recordingList/getAllRecordings${params}`
+        `http://localhost:8082/recordingList/getAllRecordings${params}`,
+        {
+          headers: token,
+        }
       );
 
       response.json().then((data) => {
@@ -68,7 +72,9 @@ function RecordingList() {
     try {
 
       const response = await fetch(
-        `http://localhost:8082/recordingList/getAllRecordings${params}`
+        `http://localhost:8082/recordingList/getAllRecordings${params}`, {
+            headers: token,
+          }
       );
 
       response.json().then((data) => {
@@ -79,6 +85,27 @@ function RecordingList() {
       console.error("Error fetching data:", error);
     }
   };
+
+  // testing
+    const token = authHeader();
+    const testingUser = async () => {
+      const params = `?search=${search}`;
+      console.log(params);
+      try {
+        const response = await fetch(
+          `http://localhost:8082/recordingList/user/me`,
+          {
+            headers: token,
+          }
+        );
+
+        response.json().then((data) => {
+          setRecList(data.data);
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
   // Delete Recording
   const handleDelete = (id) => {
@@ -126,6 +153,7 @@ function RecordingList() {
 
   useEffect(() => {
     getRecList();
+    // testingUser();
   }, []);
 
   useEffect(() => {
