@@ -70,7 +70,7 @@ function Billing() {
     };
 
     return (
-        <div className="h-full bg-[#ECEAEF]">
+        <div className="h-full bg-[#F7F2FB]">
             <div className="pt-32 px-32 mb-8">
                 <p className="text-4xl text-[#7566BB] font-bold">
                     Usage and billing

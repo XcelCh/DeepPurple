@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 function Pricing() {
   
   return (
-    <div className="h-full bg-[#ECEAEF]">
+    <div className="h-full bg-[#F7F2FB]">
       <div>
         <p className="text-4xl text-[#7566BB] font-extrabold pt-32 text-center">
           DeepPurple pricing
