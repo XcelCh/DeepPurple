@@ -34,9 +34,6 @@ function SignUpForm() {
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
     const phonePattern = /^\d{8,}$/;
 
-    const basicPlan = JSON.parse(sessionStorage.getItem('plan'))[0];
-    const proPlan = JSON.parse(sessionStorage.getItem('plan'))[1];
-    
     const handleCheckboxChange = () => {
         setShowPassword(!showPassword);
     };
@@ -143,16 +140,17 @@ function SignUpForm() {
             headers : {'Content-Type' : 'application/json'},
             body : JSON.stringify(formData)
         })
-        .then(response => {
+        .then(async response => {
             if (response.ok) {
                 console.log("Account succesfully created.");
 
                 console.log("Logging in the New Account.");
-                AuthService.login(formData.email, formData.password).then(
-                    () => {
+
+                await AuthService.login(formData.email, formData.password)
+                    .then(() => {
                         console.log('Logged In.');
                         
-                    
+                        navigate('/');
                     },
                     (error) => {
                         
@@ -160,7 +158,7 @@ function SignUpForm() {
                     }
                 );
 
-                setPage((currPage) => currPage + 1);
+                
 
                 
             }
@@ -171,20 +169,10 @@ function SignUpForm() {
         .catch(error => {
             console.error(error);
         })
+
+       
     };
 
-    const handleFinalSignup = (e) => {
-        e.preventDefault();
-        const basicRadio = document.getElementById('basic-plan-radio');
-        const proRadio = document.getElementById('pro-plan-radio');
-
-        if(basicRadio.checked){
-            navigate('/paymentForm', {state: basicPlan});
-        } else{
-            navigate('/paymentForm', {state: proPlan});
-        }
-    };
-    
     return (
         <>
             <section>
@@ -318,7 +306,7 @@ function SignUpForm() {
                                         </div>
                                     </form>
                                 </div>
-                            ) : page === 1 ? (
+                            ) : (
                                 <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
                                     {/* <a href="#" className="flex text-2xl font-semibold text-gray-900 dark:text-white">DeepPurple</a> */}
                                     <div className="flex items-center">
@@ -424,83 +412,8 @@ function SignUpForm() {
                                     </div>
                                     </form>
                                 </div> 
-                            ) : (
-                                <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
-                                    <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left">
-                                    Choose a plan
-                                    </h1>
-                                    <h3 className="text-sm font-normal text-gray-900 dark:text-white text-left">
-                                    Select a plan that suits your business.
-                                    </h3>
-                                    <form className="space-y-4 md:space-y-6">
-                                        <div class="grid w-full gap-6 md:grid-cols-2">
-                                            <label for="basic-plan-radio" class="flex items-center">
-                                                <div class="flex items-center w-full pl-2 border border-gray-200 rounded dark:border-gray-700">
-                                                    <input checked id="basic-plan-radio" type="radio" value="" name="plan-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                                    <div class="ml-4 mt-4">
-                                                        <label for="basic-plan-radio" class="text-xl font-semibold">{basicPlan.planName} Plan</label>
-                                                        <div className="flex mt-1 items-center">
-                                                            <img src={Tick} className="w-4 h-4"></img>
-                                                            <p class="text-sm ml-2">Benefit text</p>
-                                                        </div>
-                                                        <div className="flex items-center">
-                                                            <img src={Tick} className="w-4 h-4"></img>
-                                                            <p class="text-sm ml-2">Benefit text</p>
-                                                        </div>
-                                                        <div className="flex items-center">
-                                                            <img src={Tick} className="w-4 h-4"></img>
-                                                            <p class="text-sm ml-2">Benefit text</p>
-                                                        </div>
-                                                        <p class="text-2xl font-bold mt-2 mb-4">${basicPlan.planPrice}/mo</p>
-                                                    </div>
-                                                </div>
-                                            </label>
-                                            <label for="pro-plan-radio" class="flex items-center">
-                                                <div class="flex items-center w-full pl-2 border border-gray-200 rounded dark:border-gray-700">
-                                                    <input id="pro-plan-radio" type="radio" value="" name="plan-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                                    <div class="ml-4 mt-4">
-                                                        <label for="pro-plan-radio" class="text-xl font-semibold">{proPlan.planName} Plan</label>
-                                                        <div className="flex mt-1 items-center">
-                                                            <img src={Tick} className="w-4 h-4"></img>
-                                                            <p class="text-sm ml-2">Benefit text</p>
-                                                        </div>
-                                                        <div className="flex items-center">
-                                                            <img src={Tick} className="w-4 h-4"></img>
-                                                            <p class="text-sm ml-2">Benefit text</p>
-                                                        </div>
-                                                        <div className="flex items-center">
-                                                            <img src={Tick} className="w-4 h-4"></img>
-                                                            <p class="text-sm ml-2">Benefit text</p>
-                                                        </div>
-                                                        <p class="text-2xl font-bold mt-2 mb-4">${proPlan.planPrice}/mo</p>
-                                                    </div>
-                                                </div>
-                                            </label>
-                                        </div>
-                                        <div className="grid grid-cols-2 items-center">
-                                            <div className="flex flex-col items-left">
-                                                <p className="text-sm font-regular">
-                                                    Already have an account?<br/>
-                                                    <Link to="/loginForm" className="font-regular text-blue-600 hover:underline dark:text-primary-500">
-                                                        Sign in
-                                                    </Link>
-                                                    {" "}or{" "}
-                                                    <Link to="/pricing" class="font-regular text-blue-600 hover:underline dark:text-primary-500">
-                                                        View plans
-                                                    </Link>
-                                                </p>
-                                            </div>
-
-                                            <button
-                                                className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                                onClick={handleFinalSignup}
-                                            >
-                                                Proceed to payment  
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            )}
+                            ) 
+                            }
                         </div>
                         <p className="mt-4 text-xs text-[#3C3988] dark:text-gray-400">
                             Copyright © DeepPurple Inc. All rights reserved 2023

@@ -17,9 +17,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<Account> findByAccountId(Integer accountId);
     Optional<Account> findByEmail(String email);
 
-    @Query("SELECT accountId AS accountId FROM Account " +
-    "WHERE email = :email"
-    )
+    @Query("SELECT accountId AS accountId FROM Account WHERE email = :email")
     Integer getAccountId(String email);
     
 }

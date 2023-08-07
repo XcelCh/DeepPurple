@@ -10,7 +10,6 @@ function Starter() {
   const navigate = useNavigate();
   const [companyField, setCompanyField] = useState('');
   const [fetchDone, setFetchDone] = useState(false);
-  
 
 
   useEffect (() => {
@@ -85,7 +84,7 @@ function Starter() {
     if ((companyField.trim() !== "-") && (companyField.trim() !== '')) {
 
       // setNext(true);
-      navigate('/RecordingList')
+      navigate('/RecordingList');
     }
     
   }, [fetchDone])
@@ -178,8 +177,14 @@ function Starter() {
                       className="select select-bordered font-normal  bg-[#9554FE] mt-10 text-[#FFFFFF] select-sm h-11"
                     >
                       <option value="-">Select</option>
+                      <option value="Education">Education</option>
+                      <option value="Entertainment/Media">Entertainment and Media</option>
                       <option value="F&B">F&B</option>
                       <option value="FinTech">Financial Technology</option>
+                      <option value="Healthcare/Pharmaceuticals">Healthcare and Pharmaceuticals</option>
+                      <option value="Retail/E-Commerce">Retail and E-Commerce</option>
+                      <option value="Technology">Technology</option>
+                      <option value="Telecommunications">Telecommunications</option>
                       <option value="other">Other</option>
                     </select>
                     {otherInput == true ? (

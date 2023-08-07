@@ -74,6 +74,7 @@ public class EditProfileController {
 
         Account acc = accountServiceImpl.loadUserDetailsByUsername(userPrincipal.getUsername());
 
+        account.setAccountId(acc.getAccountId());
         account.setProfilePic(acc.getProfilePic());
         account.setPassword(acc.getPassword());
         account.setRoles(acc.getRoles());

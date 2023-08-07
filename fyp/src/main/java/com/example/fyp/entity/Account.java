@@ -28,26 +28,37 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Account {  
     
-    @Id
+
     @JsonIgnore
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accountId;
 
     @NotNull
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
+
+
+    @Column(nullable = false)
     private String fullName;
 
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String gender;
+    
+    @Column(nullable = false)
     private String phoneNum;
+
+    @Column(nullable = false)
     private Date dob;
 
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_email", referencedColumnName = "email"),
+            joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "accountId"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles = new ArrayList<>();
 
