@@ -16,7 +16,7 @@ function NavBar() {
   useEffect(() => {
   // if (user) {
     console.log('nav');
-    setProfilePic(localStorage.getItem("profilepic"));
+    setProfilePic(sessionStorage.getItem("profilepic"));
   }, [user])
   // }  
   

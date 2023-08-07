@@ -16,6 +16,8 @@ function ForgetPasswordForm() {
     const [page, setPage] = useState(0);
     const [message, setMessage] = useState("");
 
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+]{6,}$/;
+
     const navigate = useNavigate();
     
     const handleCheckboxChange = () => {
@@ -100,10 +102,20 @@ function ForgetPasswordForm() {
             return;
         }
 
+        if (!passwordPattern.test(formData.newPassword)) {
+            setMessage('Password must be at least 6 characters and should include a combination of one uppercase, lowercase letter and numbers.');
+            return;
+          }
+
         if (confirmPassword.trim() === '') {
             setMessage('Confirm your new password');
             return;
         }
+
+        if (!passwordPattern.test(confirmPassword)) {
+            setMessage('Password must be at least 6 characters and should include a combination of one uppercase, lowercase letter and numbers.');
+            return;
+          }
 
         if(formData.newPassword != confirmPassword){
             setMessage("Passwords didn't match. Try again.");

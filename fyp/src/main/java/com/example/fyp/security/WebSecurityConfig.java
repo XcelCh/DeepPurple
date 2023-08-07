@@ -86,7 +86,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/register/**").anonymous()
                         .requestMatchers("/profile/**").authenticated()
                         .requestMatchers("/addSubs").authenticated()
-                        .requestMatchers("/starter/**").hasAnyRole("BASIC", "PRO")
+                        .requestMatchers("/starter/**").authenticated()
                         .requestMatchers("/getPricing").permitAll()
                         .requestMatchers("/employeeList/**").permitAll()
                         .requestMatchers("/recordingList/**").permitAll()

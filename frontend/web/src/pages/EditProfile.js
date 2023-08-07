@@ -26,6 +26,8 @@ function EditProfile() {
     const [otherInput, setOtherInput] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
+    const companyFieldArray = ['Education', 'Entertainment/Media', 'F&B', 'FinTech', 
+                              'Healthcare/Pharmaceuticals', 'Retail/E-Commerce', 'Technology', 'Telecommunications'];
     useEffect(() => {
 
       fetch ("http://localhost:8082/profile/editProfile",{
@@ -67,7 +69,7 @@ function EditProfile() {
             console.error(error);
           });
 
-      setProfilePic(localStorage.getItem("profilepic"));
+      setProfilePic(sessionStorage.getItem("profilepic"));
 
     }, [])
 
@@ -141,7 +143,7 @@ function EditProfile() {
 
     useEffect (() => {
 
-      if (formData.companyField !== 'FnB' && formData.companyField !== 'FinTech' && formData.companyField !== '-') {
+      if ((!companyFieldArray.includes(formData.companyField)) && formData.companyField !== '-') {
         setDropdown('other');
         setSelectValue('other');
       }
@@ -191,7 +193,7 @@ function EditProfile() {
                 <input
                   type="text"
                   value={formData.fullName}
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
+                  className="input input-bordered w-full max-w-xs "
                   onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                 />
               </div>
@@ -223,7 +225,7 @@ function EditProfile() {
                 <input
                   type="text"
                   value={formData.phoneNum}
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
+                  className="input input-bordered w-full max-w-xs "
                   onChange={(e) => setFormData({...formData, phoneNum: e.target.value})}
                 />
               </div>
@@ -248,7 +250,7 @@ function EditProfile() {
                 <input
                   type="text"
                   value={formData.email}
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
+                  className="input input-bordered w-full max-w-xs "
                   disabled
                 />
               </div>
@@ -266,8 +268,14 @@ function EditProfile() {
                   className="select select-bordered w-full max-w-xs font-normal"
                 >
                   <option value ="-" selected>-</option>
-                  <option value="FnB">F&B</option>
+                  <option value="Education">Education</option>
+                  <option value="Entertainment/Media">Entertainment and Media</option>
+                  <option value="F&B">F&B</option>
                   <option value="FinTech">Financial Technology</option>
+                  <option value="Healthcare/Pharmaceuticals">Healthcare and Pharmaceuticals</option>
+                  <option value="Retail/E-Commerce">Retail and E-Commerce</option>
+                  <option value="Technology">Technology</option>
+                  <option value="Telecommunications">Telecommunications</option>
                   <option value="other">Other</option>
                 </select>
                 {otherInput == true ? (

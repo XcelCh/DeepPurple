@@ -4,9 +4,12 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,23 +28,37 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Account {  
     
+
+    @JsonIgnore
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accountId;
 
-    @Id
+    @NotNull
+    @Column(unique = true, nullable = false)
     private String email;
+
+
+    @Column(nullable = false)
     private String fullName;
 
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String gender;
+    
+    @Column(nullable = false)
     private String phoneNum;
+
+    @Column(nullable = false)
     private Date dob;
 
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_email", referencedColumnName = "email"),
+            joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "accountId"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles = new ArrayList<>();
 

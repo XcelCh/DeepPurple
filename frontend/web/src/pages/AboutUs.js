@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 function AboutUs() {
   return (
     <>
-      <div className="mb-40 mt-12 py-16">
+      <div className="mb-52 pt-48">
         <img
           className="float-right h-72 max-w-lg ml-auto mr-32"
           src={aboutUs}
@@ -23,7 +23,7 @@ function AboutUs() {
           <br></br> insights of your client’s feeling towards your product.
         </p>
       </div>
-      <h2 className="ml-40 mb-10 text-4xl text-[#351D4F] font-extrabold text-left">
+      <h2 className="ml-40 mb-12 text-4xl text-[#351D4F] font-extrabold text-left">
         The People <br></br> Behind DeepPurple
       </h2>
       {/* Line */}

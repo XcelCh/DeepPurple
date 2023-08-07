@@ -8,10 +8,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.fyp.entity.Account;
+import java.util.List;
+
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, String> {
+public interface AccountRepository extends JpaRepository<Account, Integer> {
 
+    Optional<Account> findByAccountId(Integer accountId);
     Optional<Account> findByEmail(String email);
+
+    @Query("SELECT accountId AS accountId FROM Account WHERE email = :email")
+    Integer getAccountId(String email);
     
 }

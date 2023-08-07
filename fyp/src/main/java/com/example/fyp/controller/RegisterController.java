@@ -79,7 +79,6 @@ public class RegisterController {
     @PostMapping("/createAccount") 
     public ResponseEntity<String> createAccount (@RequestBody Account account) {
 
-        // Set roles here.
 
         Role roleFree = roleRepository.findByDescription("Free");
 

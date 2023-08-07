@@ -9,6 +9,7 @@ function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
 
     useEffect(() => {
@@ -27,6 +28,10 @@ function LoginForm() {
         const password = e.target.value;
         setPassword(password);
     };
+
+    const handleCheckboxChange = () => {
+      setShowPassword(!showPassword);
+  };
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -97,7 +102,7 @@ function LoginForm() {
                   <div class="flex items-center">
                       <label class="relative w-full">
                           <input 
-                          type="password"
+                          type={showPassword ? 'text' : 'password'}
                           name="password"
                           id="password"
                           class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
@@ -110,6 +115,16 @@ function LoginForm() {
                           peer-valid:text-xs peer-valid:-translate-y-5">Password</span>
                       </label>
                   </div>
+                  {/* Show password checkbox */}
+                  <label className="flex items-center">
+                      <input
+                      type="checkbox"
+                      className="form-checkbox h-4 w-4 text-primary-600"
+                      checked={showPassword}
+                      onChange={handleCheckboxChange}
+                      />
+                      <span className="ml-2 text-sm font-normal text-gray-900 dark:text-white text-left">Show password</span>
+                  </label>
                   {message && (
                     <div className="flex items-center text-red-500 text-sm mt-2">
                       <svg

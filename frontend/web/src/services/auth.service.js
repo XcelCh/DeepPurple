@@ -12,7 +12,7 @@ const login = (email, password) => {
 
       console.log(response);
       if (response.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        sessionStorage.setItem("user", JSON.stringify(response.data));
 
 
         await fetch ("http://localhost:8082/profile/getProfilePic", {
@@ -26,7 +26,7 @@ const login = (email, password) => {
           .then((blob) => {
             
             console.log('set');
-            localStorage.setItem("profilepic", URL.createObjectURL(blob));
+            sessionStorage.setItem("profilepic", URL.createObjectURL(blob));
             // navigate('/');
           })
           .catch((error) => {
@@ -40,15 +40,15 @@ const login = (email, password) => {
 };
 
 const logout = () => {
-  localStorage.removeItem("user");
+  sessionStorage.removeItem("user");
 
-  const url = localStorage.getItem("profilepic");
+  const url = sessionStorage.getItem("profilepic");
   URL.revokeObjectURL(url);
-  localStorage.removeItem("profilepic");
+  sessionStorage.removeItem("profilepic");
 };
 
 const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem("user"));
+  return JSON.parse(sessionStorage.getItem("user"));
 };
 
 const AuthService = {

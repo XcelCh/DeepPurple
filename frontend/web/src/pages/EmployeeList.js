@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import {
   ThreeDotsVertical,
   TrashCan,
   Eye,
+  EmptyRecording,
 } from "../assets/index";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,6 +16,7 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import TablePagination from "@mui/material/TablePagination";
+import authHeader from "../services/auth-header";
 
 function EmployeeList() {
   const [empList, setEmpList] = useState([]);
@@ -23,6 +25,7 @@ function EmployeeList() {
   const [currentName, setCurrentName] = useState("");
   const [currentEmployeeId, setCurrentEmployeeId] = useState();
   const [search, setSearch] = useState("");
+  const token = authHeader();
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,25 +35,64 @@ function EmployeeList() {
   const getEmpList = async () => {
     const params = `?search=${search}`;
     try {
+      Swal.fire({
+        title: "Retrieving All Employees",
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+      });
+
       const response = await fetch(
-        `http://localhost:8082/employeeList/getAllEmployees${params}`
+        `http://localhost:8082/employeeList/getAllEmployees${params}`,
+        {
+          headers: token,
+        }
       );
 
       response.json().then((data) => {
         setEmpList(data.data);
       });
+
+      Swal.close(); 
     } catch (error) {
       console.error("Error fetching data:", error);
+      Swal.close(); 
     }
   };
 
-  // Pagination 
+   const searchEmpList = async () => {
+     const params = `?search=${search}`;
+     try {
+
+       const response = await fetch(
+         `http://localhost:8082/employeeList/getAllEmployees${params}`,
+         {
+           headers: token,
+         }
+       );
+
+       response.json().then((data) => {
+         setEmpList(data.data);
+       });
+
+     } catch (error) {
+       console.error("Error fetching data:", error);
+     }
+   };
+  
+
+  // Pagination
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
   const currentPosts = empList.slice(firstPostIndex, lastPostIndex);
 
   useEffect(() => {
     getEmpList();
+  }, []);
+
+  useEffect(() => {
+    searchEmpList();
   }, [search]);
 
   // Delete Employee
@@ -90,43 +132,9 @@ function EmployeeList() {
 
   // Update Employee
   const updateEmployee = (empData, currentEmployeeId) => {
-    let data = {employeeName: empData };
-     fetch(
-       `http://localhost:8082/employeeList/updateEmployeeNameById/${currentEmployeeId}`,
-       {
-         method: "POST",
-         headers: {
-           "Content-Type": "application/json", // Set the content type to indicate JSON data
-         },
-         body: JSON.stringify(data),
-       }
-     )
-       .then((res) => res.json())
-       .then(
-         (result) => {
-           getEmpList();
-           // Success message
-           Swal.fire(
-             "Updated",
-             "The employee name has been updated!",
-             "success"
-           );
-         },
-         (error) => {
-           setError(error);
-           console.log(error);
-           Swal.fire("Fail", "Fail to update employee name", "error");
-         }
-       );
-
-        
-  };
-
-  // Add Employee
-  const addEmployee = (empData) => {
     let data = { employeeName: empData };
     fetch(
-      `http://localhost:8082/employeeList/addEmployee`,
+      `http://localhost:8082/employeeList/updateEmployeeNameById/${currentEmployeeId}`,
       {
         method: "POST",
         headers: {
@@ -142,9 +150,34 @@ function EmployeeList() {
           // Success message
           Swal.fire(
             "Updated",
-            "The employee has been added.",
+            "The employee name has been updated!",
             "success"
           );
+        },
+        (error) => {
+          setError(error);
+          console.log(error);
+          Swal.fire("Fail", "Fail to update employee name", "error");
+        }
+      );
+  };
+
+  // Add Employee
+  const addEmployee = (empData) => {
+    let data = { employeeName: empData };
+    fetch(`http://localhost:8082/employeeList/addEmployee`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Set the content type to indicate JSON data
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          getEmpList();
+          // Success message
+          Swal.fire("Updated", "The employee has been added.", "success");
         },
         (error) => {
           setError(error);
@@ -153,7 +186,6 @@ function EmployeeList() {
         }
       );
   };
-
 
   return (
     <div className="ml-20 mt-16">
@@ -230,7 +262,9 @@ function EmployeeList() {
             {/* row 1 */}
             {currentPosts.map((employee, index) => (
               <tr className="hover">
-                <th className="h-1">{numbering + index}</th>
+                <th className="h-1">
+                  {currentPage * postsPerPage - 4 + index}
+                </th>
                 <td className="h-1">{employee.employeeName}</td>
                 <td className="text-center h-1">{employee.numCallsHandled}</td>
                 <td className="text-center h-1">
@@ -240,7 +274,7 @@ function EmployeeList() {
                   {employee.numPositiveSentiment}
                 </td>
                 <td className="flex justify-center items-center">
-                  <div className="dropdown">
+                  <div className="dropdown dropdown-end">
                     <label
                       tabIndex={0}
                       className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
@@ -249,7 +283,7 @@ function EmployeeList() {
                     </label>
                     <ul
                       tabIndex={0}
-                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
+                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-42 rounded-md border-[#D1D1D1]"
                     >
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                         <a
@@ -290,6 +324,23 @@ function EmployeeList() {
             ))}
           </tbody>
         </table>
+        {currentPosts.length == 0 ? (
+          <>
+            <img src={EmptyRecording} className="mx-auto mt-10"></img>
+            <p className="text-center font-semibold text-lg">
+              You don't have any employees yet
+            </p>
+            <p className="text-center font-semibold text-sm mb-10">
+              Start adding employee by clicking
+              <a
+                href="recordingList/AddRecording"
+                className="underline underline-offset-2 ml-1"
+              >
+                Add Employee
+              </a>
+            </p>
+          </>
+        ) : null}
       </div>
       <div className="join flex justify-end mt-10 mb-10">
         <Pagination

@@ -27,7 +27,7 @@ const Datepicker = ({formData, setFormData}) => {
     const CustomInput = ({value, onClick, onChange}) => {
         
         return (
-            <input type="text" value={value} className="input input-bordered w-full max-w-xs bg-[#FBFBFB]" onClick={onClick} onChange={onChange}>
+            <input type="text" value={value} className="input input-bordered w-full max-w-xs" onClick={onClick} onChange={onChange}>
                 
             </input>
         )

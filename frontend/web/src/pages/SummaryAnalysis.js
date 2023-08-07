@@ -257,7 +257,7 @@ function SummaryAnalysis() {
 
   return (
     <>
-      <div className="">
+      <div className="pt-16 pl-16">
         <div className="flex items-center">
           <p className="text-2xl font-bold text-left ml-4">Analysis Summary</p>
         </div>

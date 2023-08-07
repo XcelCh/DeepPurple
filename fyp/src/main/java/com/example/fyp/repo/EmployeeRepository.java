@@ -3,6 +3,7 @@ package com.example.fyp.repo;
 import com.example.fyp.entity.Employee;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,5 +26,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
 
     @Query("SELECT e.numPositiveSentiment, e.numNegativeSentiment FROM Employee e WHERE e.employeeId = :employeeId")
     Object[] findEmployeeSentimentById(Integer employeeId);
+
+    @Query("SELECT e.employeeName AS employeeName, e.numPositiveSentiment AS numPositiveSentiment, e.numNegativeSentiment AS numNegativeSentiment, e.numCallsHandled AS numCallsHandled FROM Employee e WHERE e.accountId = :account_id")
+    List<Map<String, Object>>getAllEmployee(Integer account_id);
 
 }
