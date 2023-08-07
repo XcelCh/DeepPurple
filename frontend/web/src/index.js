@@ -88,12 +88,21 @@ export default function App() {
             }
           />
 
+          <Route
+            path="recordingList/analysis/:id"
+            element={
+              <Sidebar>
+                <Analysis />
+              </Sidebar>
+            }
+          />
+
           {/* Summary Analysis */}
-          <Route 
+          <Route
             path="summaryAnalysis"
             element={
               <Sidebar>
-                <SummaryAnalysis/>
+                <SummaryAnalysis />
               </Sidebar>
             }
           />

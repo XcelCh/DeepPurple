@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,35 +18,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+
 
 import com.example.fyp.model.ResponseStatus;
 import com.example.fyp.repo.AudioFileRepository;
+import com.example.fyp.service.RecordingListService;
+import com.example.fyp.service.SummaryAnalysisService;
 import com.example.fyp.model.ResponseStatus;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/recordingList")
 public class RecordingController {
+
+    private final RecordingListService recordingListService;
+
+    @Autowired
+    public RecordingController(RecordingListService recordingListService) {
+        this.recordingListService = recordingListService;
+    }
+
     @Autowired
     private AudioFileRepository recRepo;
- 
+
     // Get All Recordings
     @GetMapping("/getAllRecordings")
     public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String search) {
-        ResponseStatus<List<Recording>> response = new ResponseStatus<>();
+        ResponseStatus<List<Map<String, Object>>> response = new ResponseStatus<>();
 
         try {
-            List<Recording> recList = new ArrayList<>();
-            recRepo.findAll().forEach(recList::add);
+            List<Map<String, Object>> recList = recordingListService.getRecordingList();
 
             if (search != null && !search.isEmpty()) {
-                String searchKeyword = "%" + search + "%";
+                String searchKeyword = "%" + search.toLowerCase() + "%";
+
                 recList = recList.stream()
-                        .filter(rec -> rec.getRecordingName().toLowerCase().contains(search.toLowerCase()))
+                        .filter(rec -> ((String) rec.get("recordingName")).contains(search))
                         .collect(Collectors.toList());
             }
-
             // RESPONSE DATA
             response.setSuccess(true);
             response.setMessage("Successfully Retrieve All Recordings.");
@@ -79,6 +93,15 @@ public class RecordingController {
             response.setMessage("Fail to delete Recording with Id " + id);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
+    }
+
+    // Get User
+     @GetMapping("/user/me")
+    public Authentication getCurrentUser() {
+        // Retrieve the current authentication token
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("AUTHENTICATION " + authentication.getName());
+        return authentication;
     }
 
 }

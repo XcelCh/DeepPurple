@@ -191,7 +191,7 @@ function EditProfile() {
                 <input
                   type="text"
                   value={formData.fullName}
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
+                  className="input input-bordered w-full max-w-xs "
                   onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                 />
               </div>
@@ -223,7 +223,7 @@ function EditProfile() {
                 <input
                   type="text"
                   value={formData.phoneNum}
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
+                  className="input input-bordered w-full max-w-xs "
                   onChange={(e) => setFormData({...formData, phoneNum: e.target.value})}
                 />
               </div>
@@ -248,7 +248,7 @@ function EditProfile() {
                 <input
                   type="text"
                   value={formData.email}
-                  className="input input-bordered w-full max-w-xs bg-[#FBFBFB]"
+                  className="input input-bordered w-full max-w-xs "
                   disabled
                 />
               </div>

@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Toggle,
-  Upload,
-  Filter,
-} from "../assets/index";
+import { Toggle, Upload, Filter, EmptyRecording } from "../assets/index";
 import Swal from "sweetalert2";
 import DateRange from "../components/DateRange";
+import Pagination from "../components/Pagination";
 
 // Icons
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -21,25 +18,63 @@ function RecordingList() {
   // Temporary storage
   const [recList, setRecList] = useState([]);
   const [search, setSearch] = useState("");
-  const [formData, setFormData] = useState(({
-    dob: ""
-  }))
+  const [formData, setFormData] = useState({
+    dob: "",
+  });
+  const [currentRecordingId, setCurrentRecordingId] = useState();
 
   // Error Message
   const [error, setError] = useState("");
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostPerPage] = useState(5);
+
+  // Pagination
+  const lastPostIndex = currentPage * postsPerPage;
+  const firstPostIndex = lastPostIndex - postsPerPage;
+  const currentPosts = recList.slice(firstPostIndex, lastPostIndex);
+
   // Get All Recordings
   const getRecList = async () => {
     const params = `?search=${search}`;
+    console.log(params);
     try {
+      Swal.fire({
+        title: "Retrieving All Recordings",
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+      });
+
       const response = await fetch(
         `http://localhost:8082/recordingList/getAllRecordings${params}`
       );
 
       response.json().then((data) => {
         setRecList(data.data);
-        console.log(data.data);
       });
+
+      Swal.close(); // Close the loading dialog
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const searchRecList = async () => {
+    const params = `?search=${search}`;
+    console.log(params);
+    try {
+
+      const response = await fetch(
+        `http://localhost:8082/recordingList/getAllRecordings${params}`
+      );
+
+      response.json().then((data) => {
+        setRecList(data.data);
+      });
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -81,20 +116,24 @@ function RecordingList() {
   // Download Recording
   const handleDownload = (fileName) => {
     const link = document.createElement("a");
-    link.href = `https://localhost8082/${fileName}`
+    link.href = `https://localhost8082/${fileName}`;
     link.download = fileName;
     link.style.display = "none";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
+  };
 
   useEffect(() => {
     getRecList();
   }, []);
 
+  useEffect(() => {
+    searchRecList();
+  }, [search]);
+
   return (
-    <div className="mx-10">
+    <div className="ml-20 mt-16">
       <p className="text-xl font-bold text-left mb-5">Recording List</p>
 
       <div class="grid grid-cols-2 mb-5">
@@ -299,17 +338,18 @@ function RecordingList() {
             </tr>
           </thead>
 
-          <tbody>
-            {/* row 1 */}
-            {recList.map((recording, index) => (
+          <tbody className="bg-white">
+            {currentPosts.map((recording, index) => (
               <tr>
-                <th className="h-1">{numbering + index}</th>
+                <th className="h-1">
+                  {currentPage * postsPerPage - 4 + index}
+                </th>
                 <td className="h-1">{recording.recordingName}</td>
                 <td className="h-1">{recording.uploadDate}</td>
-                <td className="h-1">{recording.recordingDate}</td>
-                <td className="h-1">{recording.employeeId}</td>
-                <td className="h-1">Category</td>
-                <td className="h-1">Sentiment</td>
+                <td className="h-1">{recording.dateRecorded}</td>
+                <td className="h-1">{recording.employeeName}</td>
+                <td className="h-1">{recording.category}</td>
+                <td className="h-1">{recording.sentiment}</td>
                 <td className="flex justify-center items-center">
                   <div className="dropdown dropdown-end">
                     <label
@@ -321,10 +361,16 @@ function RecordingList() {
                     </label>
                     <ul
                       tabIndex={0}
-                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36 rounded-none"
+                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36  rounded-md"
                     >
                       <li className="hover:bg-[#9554FE]">
-                        <a className="text-[#9554FE] hover:text-[#FFFFFF]">
+                        <a
+                          className="text-[#9554FE] hover:text-[#FFFFFF]"
+                          href={`recordingList/analysis/${currentRecordingId}`}
+                          onClick={() => {
+                            setCurrentRecordingId(recording.recordingId);
+                          }}
+                        >
                           <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>{" "}
                           View Analysis
                         </a>
@@ -355,20 +401,31 @@ function RecordingList() {
             ))}
           </tbody>
         </table>
+        {currentPosts.length == 0 ? (
+          <>
+            <img src={EmptyRecording} className="mx-auto mt-10"></img>
+            <p className="text-center font-semibold text-lg">
+              You don't have any recordings yet
+            </p>
+            <p className="text-center font-semibold text-sm mb-10">
+              Start uploading your audio files by clicking{" "}
+              <a
+                href="recordingList/AddRecording"
+                className="underline underline-offset-2"
+              >
+                Upload
+              </a>
+            </p>
+          </>
+        ) : null}
       </div>
       <div className="join flex justify-end mt-10 mb-10">
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          1
-        </button>
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          2
-        </button>
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          3
-        </button>
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          4
-        </button>
+        <Pagination
+          totalPosts={recList.length}
+          postsPerPage={postsPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        ></Pagination>
       </div>
     </div>
   );
