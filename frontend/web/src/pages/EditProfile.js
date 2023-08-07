@@ -67,7 +67,7 @@ function EditProfile() {
             console.error(error);
           });
 
-      setProfilePic(localStorage.getItem("profilepic"));
+      setProfilePic(sessionStorage.getItem("profilepic"));
 
     }, [])
 
