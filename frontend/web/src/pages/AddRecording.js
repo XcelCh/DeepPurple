@@ -162,7 +162,7 @@ function AddRecording() {
               type="text"
               name="phoneNum"
               id="phoneNum"
-              className=" border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-72 duration-200 peer focus:border-indigo-60 bg-white"
+              className=" border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-72 duration-200 peer focus:border-indigo-60 bg-white"
               // value={phoneNum}
               // onChange={(e) => setPhoneNum(e.target.value)}
               placeholder="Enter Employee Name"
@@ -180,7 +180,7 @@ function AddRecording() {
                 type="text"
                 name="phoneNum"
                 id="phoneNum"
-                className=" border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block duration-200 peer focus:border-indigo-60 bg-white"
+                className=" border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block duration-200 peer focus:border-indigo-60 bg-white"
                 // value={phoneNum}
                 // onChange={(e) => setPhoneNum(e.target.value)}
                 placeholder="Enter Delimiter"

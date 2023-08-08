@@ -71,12 +71,12 @@ function LoginForm() {
           <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
             {/* Gradient */}
             {/* Card */}
-            <div class="flex flex-col justify-center items-center w-2/5 h-2/3 bg-white rounded-3xl shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div class="flex flex-col justify-center items-center w-2/5 h-2/3 bg-white rounded-3xl shadow md:mt-0 xl:p-0">
               <div class="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
-                <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left">
+                <h1 class="text-xl font-bold text-gray-900 md:text-2xl text-left">
                   Sign in
                 </h1>
-                <h3 class="text-sm font-normal text-gray-900 dark:text-white text-left">
+                <h3 class="text-sm font-normal text-gray-900 text-left">
                   Welcome back! It's nice to see you again.
                 </h3>
                 <form class="space-y-4 md:space-y-6" onSubmit={handleLogin}>
@@ -87,7 +87,7 @@ function LoginForm() {
                           type="text"
                           name="email"
                           id="email"
-                          class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                          class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                           value={email}
                           onChange={onChangeEmail}
                           required
@@ -105,7 +105,7 @@ function LoginForm() {
                           type={showPassword ? 'text' : 'password'}
                           name="password"
                           id="password"
-                          class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                          class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                           value={password}
                           onChange={onChangePassword}
                           required
@@ -123,7 +123,7 @@ function LoginForm() {
                       checked={showPassword}
                       onChange={handleCheckboxChange}
                       />
-                      <span className="ml-2 text-sm font-normal text-gray-900 dark:text-white text-left">Show password</span>
+                      <span className="ml-2 text-sm font-normal text-gray-900 text-left">Show password</span>
                   </label>
                   {message && (
                     <div className="flex items-center text-red-500 text-sm mt-2">
@@ -144,7 +144,7 @@ function LoginForm() {
                   )}
                   <button
                     type="submit"
-                    class="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    class="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                   >
                     Sign in
                   </button>
@@ -152,18 +152,18 @@ function LoginForm() {
                   <div class="flex flex-col items-left text-sm font-regular ">
                     <p>
                       Excited to join DeepPurple?{" "}
-                      <Link to="/pricing" class="font-regular text-blue-600 hover:underline dark:text-primary-500">
+                      <Link to="/pricing" class="font-regular text-blue-600 hover:underline">
                           View plans
                       </Link>
                     </p>
-                    <Link to="/forgetPasswordForm" class="font-regular text-blue-600 hover:underline dark:text-primary-500">
+                    <Link to="/forgetPasswordForm" class="font-regular text-blue-600 hover:underline">
                       Forgot password?
                     </Link>
                   </div>
                 </form>
               </div>
             </div>
-            <p class="mt-4 text-xs text-[#3C3988] dark:text-gray-400">
+            <p class="mt-4 text-xs text-[#3C3988]">
               Copyright © DeepPurple Inc. All rights reserved 2023
             </p>
           </div>
