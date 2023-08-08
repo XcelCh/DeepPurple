@@ -3,6 +3,7 @@ package com.example.fyp.entity;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +19,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -64,6 +67,13 @@ public class Account {
 
     private String profilePic;
     private String companyField;
+
+    @OneToMany(mappedBy = "account")
+    private List<Usages> usageList;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name= "payment_id", referencedColumnName = "paymentId")
+    private Payment payment;
 
     public Account (String email, String fullName, String gender, String phoneNum, Date dob) {
 

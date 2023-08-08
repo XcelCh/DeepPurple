@@ -80,7 +80,7 @@ public class RegisterController {
     public ResponseEntity<String> createAccount (@RequestBody Account account) {
 
 
-        Role roleFree = roleRepository.findByDescription("Free");
+        Role roleFree = roleRepository.findById(6);
 
         String encodePassword = passwordEncoder.encode(account.getPassword());
         
