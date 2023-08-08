@@ -13,28 +13,134 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 function RecordingList() {
-  // Numbering the table
-  const [numbering, setNumbering] = useState(1);
+  // Get the token
+  const token = authHeader();
 
   // Temporary storage
+  const [originalList, setOriginalList] = useState([]);
   const [recList, setRecList] = useState([]);
+  const [displayList, setDisplayList] = useState([]);
+  const [empList, setEmpList] = useState([]);
   const [search, setSearch] = useState("");
-  const [formData, setFormData] = useState({
-    dob: "",
-  });
+  const [dateRange, setDateRange] = useState([null, null]);
   const [currentRecordingId, setCurrentRecordingId] = useState();
+  const [isChoosing, setIsChoosing] = useState(false);
 
   // Error Message
   const [error, setError] = useState("");
 
+  // Track Select outside the box
+  window.addEventListener("click", function (e) {
+    if (!document.getElementById("filterDropdown").contains(e.target)) {
+      console.log("outside the box");
+    } else {
+      console.log("inside the box");
+    }
+  });
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostPerPage] = useState(5);
-
-  // Pagination
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentPosts = recList.slice(firstPostIndex, lastPostIndex);
+  const currentPosts = displayList.slice(firstPostIndex, lastPostIndex);
+
+  // Filter
+  const [filter, setFilter] = useState({
+    handledBy: "",
+    category: "",
+    overallSentiment: "",
+    empSentiment: "",
+    custSentiment: "",
+  });
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    let filteredRecList = [...originalList];
+
+    console.log(filter);
+    console.log(dateRange);
+    console.log(filteredRecList[0]?.sentiment == "Positive");
+
+    if (filter.category) {
+      filteredRecList = filteredRecList.filter(
+        (rec) => rec?.category == filter.category
+      );
+    }
+
+    if (filter.overallSentiment) {
+      filteredRecList = filteredRecList.filter(
+        (rec) => rec?.sentiment == filter.overallSentiment
+      );
+    }
+
+    if (filter.handledBy) {
+      filteredRecList = filteredRecList.filter(
+        (rec) => rec?.employeeName == filter.handledBy
+      );
+    }
+
+    if (filter.empSentiment) {
+      filteredRecList = filteredRecList.filter(
+        (rec) => rec?.employeeSentiment == filter.empSentiment
+      );
+    }
+
+    if (filter.custSentiment) {
+      filteredRecList = filteredRecList.filter(
+        (rec) => rec?.customerSentiment == filter.custSentiment
+      );
+    }
+
+    // set recording list to the filtered one
+    setRecList(filteredRecList);
+    setDisplayList(filteredRecList);
+  };
+
+  const searchRecList = async () => {
+    try {
+      const searchedRecList = recList.filter((rec) =>
+        rec?.recordingName.toLowerCase().includes(search.toLowerCase())
+      );
+      setDisplayList(searchedRecList);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleReset = () => {
+    console.log("Reset Filter");
+  };
+
+  // Get Employees
+  const getEmpList = async () => {
+    const params = `?search=${search}`;
+    try {
+      Swal.fire({
+        title: "Retrieving All Employees",
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+      });
+
+      const response = await fetch(
+        `http://localhost:8082/employeeList/getAllEmployees${params}`,
+        {
+          headers: token,
+        }
+      );
+
+      response.json().then((data) => {
+        setEmpList(data.data);
+      });
+
+      Swal.close();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      Swal.close();
+    }
+  };
 
   // Get All Recordings
   const getRecList = async () => {
@@ -58,6 +164,8 @@ function RecordingList() {
 
       response.json().then((data) => {
         setRecList(data.data);
+        setOriginalList(data.data);
+        setDisplayList(data.data);
       });
 
       Swal.close(); // Close the loading dialog
@@ -65,47 +173,6 @@ function RecordingList() {
       console.error("Error fetching data:", error);
     }
   };
-
-  const searchRecList = async () => {
-    const params = `?search=${search}`;
-    console.log(params);
-    try {
-
-      const response = await fetch(
-        `http://localhost:8082/recordingList/getAllRecordings${params}`, {
-            headers: token,
-          }
-      );
-
-      response.json().then((data) => {
-        setRecList(data.data);
-      });
-
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  // testing
-    const token = authHeader();
-    const testingUser = async () => {
-      const params = `?search=${search}`;
-      console.log(params);
-      try {
-        const response = await fetch(
-          `http://localhost:8082/recordingList/user/me`,
-          {
-            headers: token,
-          }
-        );
-
-        response.json().then((data) => {
-          setRecList(data.data);
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
 
   // Delete Recording
   const handleDelete = (id) => {
@@ -153,12 +220,20 @@ function RecordingList() {
 
   useEffect(() => {
     getRecList();
-    // testingUser();
+    getEmpList();
   }, []);
 
   useEffect(() => {
     searchRecList();
   }, [search]);
+
+  // useEffect(() => {
+  //   console.log(recList);
+  // });
+
+  useEffect(() => {
+    console.log("ISCHOOSING?? " + isChoosing);
+  }, isChoosing);
 
   return (
     <div className="ml-20 mt-16">
@@ -193,7 +268,10 @@ function RecordingList() {
               className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
             />
 
-            <div className="dropdown mb-4">
+            <div
+              className={`dropdown mb-4 ${isChoosing ? "dropdown-open" : ""}`}
+              id="filterDropdown"
+            >
               <label
                 tabIndex={0}
                 className="absolute top-0 bottom-0 w-6 h-6 text-gray-400 right-3"
@@ -205,20 +283,31 @@ function RecordingList() {
                 className="-top-120 dropdown-content z-[1] menu p-5 drop-shadow-sm bg-[#FFFFFF] rounded-box w-128 disabled:hover text-xs border"
               >
                 {/* Filter Pop up */}
+                {/* Date Recorded */}
+                <div className="grid grid-cols-2 flex items-center mb-5">
+                  <p className="font-bold">Date Recorded</p>
+                  <DateRange
+                    dateRange={dateRange}
+                    setDateRange={setDateRange}
+                    setIsChoosing={setIsChoosing}
+                  ></DateRange>
+                </div>
+
                 {/* Handled By */}
                 <div className="grid grid-cols-2 flex items-center mb-5">
                   <p className="font-bold">Handled by</p>
                   <select
-                    // value={gender}
-                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    onChange={(e) =>
+                      setFilter({ ...filter, handledBy: e.target.value })
+                    }
                     className="select select-bordered font-normal select-xs h-8"
                   >
                     <option value="">Any Employee</option>
-                    <option value="existingEmployee">Existing Employee</option>
-                    <option value="metadata">Metadata</option>
-                    <option value="folderName">Folder Name</option>
-                    <option value="splitFileName">Split File Name</option>
-                    <option value="none">None</option>
+                    {empList.map((emp, index) => (
+                      <option value={emp.employeeName}>
+                        {emp.employeeName}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -226,16 +315,15 @@ function RecordingList() {
                 <div className="grid grid-cols-2 flex items-center mb-5">
                   <p className="font-bold">Category</p>
                   <select
-                    // value={gender}
-                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    onChange={(e) =>
+                      setFilter({ ...filter, category: e.target.value })
+                    }
                     className="select select-bordered font-normal select-xs h-8"
                   >
-                    <option value="">Any Employee</option>
-                    <option value="existingEmployee">Existing Employee</option>
-                    <option value="metadata">Metadata</option>
-                    <option value="folderName">Folder Name</option>
-                    <option value="splitFileName">Split File Name</option>
-                    <option value="none">None</option>
+                    <option value="">Any Category</option>
+                    <option value="Inquiry">Inquiry</option>
+                    <option value="Warranty">Warranty</option>
+                    <option value="Complaint">Complaint</option>
                   </select>
                 </div>
 
@@ -243,51 +331,29 @@ function RecordingList() {
                 <div className="grid grid-cols-2 flex items-center mb-5">
                   <p className="font-bold">Overall Sentiment</p>
                   <select
-                    // value={gender}
-                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    onChange={(e) =>
+                      setFilter({ ...filter, overallSentiment: e.target.value })
+                    }
                     className="select select-bordered font-normal select-xs h-8"
                   >
-                    <option value="">Any Employee</option>
-                    <option value="existingEmployee">Existing Employee</option>
-                    <option value="metadata">Metadata</option>
-                    <option value="folderName">Folder Name</option>
-                    <option value="splitFileName">Split File Name</option>
-                    <option value="none">None</option>
+                    <option value="">Any Sentiment</option>
+                    <option value="Positive">Positive</option>
+                    <option value="Negative">Negative</option>
                   </select>
                 </div>
 
-                {/* Date Recorded */}
+                {/* Employee's Sentiment */}
                 <div className="grid grid-cols-2 flex items-center mb-5">
-                  <p className="font-bold">Date Recorded</p>
-                  <DateRange
-                    formData={formData}
-                    setFormData={setFormData}
-                  ></DateRange>
-                </div>
-
-                {/* Upload Date */}
-                <div className="grid grid-cols-2 flex items-center mb-5">
-                  <p className="font-bold">Upload Date</p>
-                  <DateRange
-                    formData={formData}
-                    setFormData={setFormData}
-                  ></DateRange>
-                </div>
-
-                {/* Employer's Sentiment */}
-                <div className="grid grid-cols-2 flex items-center mb-5">
-                  <p className="font-bold">Employer's Sentiment</p>
+                  <p className="font-bold">Employee's Sentiment</p>
                   <select
-                    // value={gender}
-                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    onChange={(e) =>
+                      setFilter({ ...filter, empSentiment: e.target.value })
+                    }
                     className="select select-bordered font-normal select-xs h-8"
                   >
-                    <option value="">Any Employee</option>
-                    <option value="existingEmployee">Existing Employee</option>
-                    <option value="metadata">Metadata</option>
-                    <option value="folderName">Folder Name</option>
-                    <option value="splitFileName">Split File Name</option>
-                    <option value="none">None</option>
+                    <option value="">Any Sentiment</option>
+                    <option value="Positive">Positive</option>
+                    <option value="Negative">Negative</option>
                   </select>
                 </div>
 
@@ -295,23 +361,26 @@ function RecordingList() {
                 <div className="grid grid-cols-2 flex items-center mb-5">
                   <p className="font-bold">Customer's Sentiment</p>
                   <select
-                    // value={gender}
-                    // onChange={(e) => handleAssignEmployee(e.target.value)}
+                    onChange={(e) =>
+                      setFilter({ ...filter, custSentiment: e.target.value })
+                    }
                     className="select select-bordered font-normal select-xs h-8"
                   >
-                    <option value="">Any Employee</option>
-                    <option value="existingEmployee">Existing Employee</option>
-                    <option value="metadata">Metadata</option>
-                    <option value="folderName">Folder Name</option>
-                    <option value="splitFileName">Split File Name</option>
-                    <option value="none">None</option>
+                    <option value="">Any Sentiment</option>
+                    <option value="Positive">Positive</option>
+                    <option value="Negative">Negative</option>
                   </select>
                 </div>
                 <div className="flex justify-end items-center">
-                  <p className="text-[#9554FE] mr-8 text-xs">Reset</p>
+                  <button
+                    className="text-[#9554FE] mr-8 text-xs"
+                    onClick={handleReset}
+                  >
+                    Reset
+                  </button>
                   <button
                     className="btn btn-sm bg-[#9554FE] normal-case h-5 px-5 border-[#9554FE] text-xs"
-                    // onClick={() => handleSave(data, empId)}
+                    onClick={handleSearch}
                   >
                     Search
                   </button>
@@ -358,7 +427,7 @@ function RecordingList() {
                 Category
               </th>
               <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
-                Sentiment
+                Overall Sentiment
               </th>
               <th className="bg-[#F6F4FC] normal-case text-sm text-center font-semibold">
                 Action

@@ -20,7 +20,7 @@ function TextAnalyze() {
       const sentence = pair[0].trim().replaceAll('"', "");
       const sentence_regex = sentence
         .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-        .replaceAll('\"', "");
+        .replaceAll('"', "");
       const regex = new RegExp(sentence_regex, "gi");
       const highlightColor = pair[1].trim();
       // debug
@@ -87,13 +87,13 @@ function TextAnalyze() {
     setResult("");
     setProcessing(false);
     setPrompt(oriPrompt);
-    setHighlight([])
+    setHighlight([]);
   };
 
   return (
     <div className="bg-gradient-to-tr from-[#D5B4D6] via-[#D3CBEF] via 40% to-[#9487E7] border">
       <div
-        className="md:mx-auto bg-white rounded-t-lg rounded-b-lg my-5 border max-w-5xl min-w-fit"
+        className="md:mx-20 bg-white rounded-t-lg rounded-b-lg my-5 border min-w-fit mt-24"
         style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
       >
         <div className="grid grid-cols-2 gap-4">
@@ -245,5 +245,3 @@ function TextAnalyze() {
 }
 
 export default TextAnalyze;
-
-
