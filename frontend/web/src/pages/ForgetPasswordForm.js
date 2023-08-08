@@ -151,14 +151,13 @@ function ForgetPasswordForm() {
                 <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
                     {/* Gradient */}
                     {/* Card */}
-                    <div className="flex flex-col justify-center items-center w-2/5 h-2/3 bg-white rounded-3xl shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                    <div className="flex flex-col justify-center items-center w-2/5 h-2/3 bg-white rounded-3xl shadow md:mt-0 xl:p-0">
                         {page === 0 ? (
                             <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
-                                {/* <a href="#" className="flex text-2xl font-semibold text-gray-900 dark:text-white">DeepPurple</a> */}
-                                <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left">
+                                <h1 className="text-xl font-bold text-gray-900 md:text-2xl text-left">
                                 Reset password
                                 </h1>
-                                <h3 className="text-sm font-normal text-gray-900 dark:text-white text-left">
+                                <h3 className="text-sm font-normal text-gray-900 text-left">
                                 Forgot your DeepPurple password? Please enter your email below and we will help you reset it.
                                 </h3>
                                 <form className="space-y-4 md:space-y-6">
@@ -169,7 +168,7 @@ function ForgetPasswordForm() {
                                         type="text"
                                         name="email"
                                         id="email"
-                                        class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                                        class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                                         value={formData.email}
                                         onChange={(event) => setFormData({...formData, email: event.target.value})}
                                         required
@@ -199,7 +198,7 @@ function ForgetPasswordForm() {
                                 )}
 
                                 <button
-                                    className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                    className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                                     onClick={handleCheckEmail}
                                 >
                                     Send
@@ -208,7 +207,7 @@ function ForgetPasswordForm() {
                                 <div className="flex flex-col items-left">
                                     <p className="text-sm font-regular">
                                     Remembered your password?{" "}
-                                    <Link to="/loginForm" className="font-regular text-blue-600 hover:underline dark:text-primary-500">
+                                    <Link to="/loginForm" className="font-regular text-blue-600 hover:underline">
                                         Sign in
                                     </Link>
                                     </p>
@@ -217,14 +216,13 @@ function ForgetPasswordForm() {
                             </div>
                         ) : page === 1 ? (
                             <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
-                                {/* <a href="#" className="flex text-2xl font-semibold text-gray-900 dark:text-white">DeepPurple</a> */}
-                                <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left">
+                                <h1 className="text-xl font-bold text-gray-900 md:text-2xl text-left">
                                 Reset password
                                 </h1>
-                                <h3 className="text-sm font-normal text-gray-900 dark:text-white text-left">
+                                <h3 className="text-sm font-normal text-gray-900 text-left">
                                     To help keep your account safe, DeepPurple wants to make sure it's really you trying to sign in.
                                 </h3>
-                                <h3 className="text-sm font-normal text-gray-900 dark:text-white text-left">
+                                <h3 className="text-sm font-normal text-gray-900 text-left">
                                     An email with a verification code was just sent to{" "} <span style={{ fontWeight: "bold" }}>{formData.email}</span>
                                 </h3>
                                 <form className="space-y-4 md:space-y-6">
@@ -235,7 +233,7 @@ function ForgetPasswordForm() {
                                             type="text"
                                             name="code"
                                             id="code"
-                                            class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                                            class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                                             value={formData.otp}
                                             onChange={(event) => setFormData({...formData, otp: event.target.value})}
                                             required
@@ -266,14 +264,14 @@ function ForgetPasswordForm() {
 
                                     <div className="flex flex-col items-left">
                                         <button 
-                                            className="text-sm font-regular text-blue-600 hover:underline dark:text-primary-500"
+                                            className="text-sm font-regular text-blue-600 hover:underline"
                                             onClick={handleCheckEmail}>
                                             Resend verification code
                                         </button>
                                     </div>
 
                                     <button
-                                        className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                        className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                                         onClick={handleOTP}
                                     >
                                         Next
@@ -282,10 +280,10 @@ function ForgetPasswordForm() {
                             </div>
                         ) : (
                             <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
-                                <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left">
+                                <h1 className="text-xl font-bold text-gray-900 md:text-2xl text-left">
                                 Reset password
                                 </h1>
-                                <h3 className="text-sm font-normal text-gray-900 dark:text-white text-left">
+                                <h3 className="text-sm font-normal text-gray-900 text-left">
                                     Create a new, strong password that you don't use for other websites.
                                 </h3>
                                 <form className="space-y-4 md:space-y-6">
@@ -296,7 +294,7 @@ function ForgetPasswordForm() {
                                             type={showPassword ? 'text' : 'password'}
                                             name="password"
                                             id="password"
-                                            class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                                            class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                                             value={formData.newPassword}
                                             onChange={(event) => setFormData({...formData, newPassword: event.target.value})}
                                             required
@@ -312,7 +310,7 @@ function ForgetPasswordForm() {
                                             type={showPassword ? 'text' : 'password'}
                                             name="confirmPassword"
                                             id="confirmPassword"
-                                            class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                                            class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                                             value={confirmPassword}
                                             onChange={(event) => setConfirmPassword(event.target.value)}
                                             required
@@ -348,11 +346,11 @@ function ForgetPasswordForm() {
                                         checked={showPassword}
                                         onChange={handleCheckboxChange}
                                         />
-                                        <span className="ml-2 text-sm font-normal text-gray-900 dark:text-white text-left">Show password</span>
+                                        <span className="ml-2 text-sm font-normal text-gray-900 text-left">Show password</span>
                                     </label>
 
                                     <button
-                                        className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                        className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                                         onClick={handleReset}
                                     >
                                         Next
@@ -361,7 +359,7 @@ function ForgetPasswordForm() {
                             </div>
                         )}
                     </div>
-                    <p className="mt-4 text-xs text-[#3C3988] dark:text-gray-400">
+                    <p className="mt-4 text-xs text-[#3C3988]">
                         Copyright © DeepPurple Inc. All rights reserved 2023
                     </p>
                 </div>

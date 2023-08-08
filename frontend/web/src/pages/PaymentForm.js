@@ -178,13 +178,13 @@ function PaymentForm() {
           <div className="relative h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
             {/* Card */}
             <form class="space-y-4 md:space-y-6 flex flex-col justify-center items-center h-2/3" onSubmit={handlePayment}>
-              <div class="grid grid-cols-3 w-3/5 h-full bg-white rounded-3xl shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+              <div class="grid grid-cols-3 w-3/5 h-full bg-white rounded-3xl shadow md:mt-0 xl:p-0">
                 <div class="col-span-2 border-r border-gray-400 p-6 space-y-4 sm:p-12 mr-8 text-left flex flex-col justify-center">
-                  <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left">
+                  <h1 class="text-xl font-bold text-gray-900 md:text-2xl text-left">
                     Payment details
                   </h1>
                   <div className="grid grid-cols-2 items-center gap-2">
-                    <h3 class="text-sm font-normal text-gray-900 dark:text-white text-left">
+                    <h3 class="text-sm font-normal text-gray-900 text-left">
                       All fields required
                     </h3>
                     <div className="flex justify-end items-center">
@@ -200,7 +200,7 @@ function PaymentForm() {
                               type="text"
                               name="cardholderName"
                               id="cardholderName"
-                              class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                              class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                               value={formData.cardholderName}
                               onBlur={handleCardholderNameBlur}
                               onChange={(event) => {
@@ -242,7 +242,7 @@ function PaymentForm() {
                               type="text"
                               name="cardNumber"
                               id="cardNumber"
-                              class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                              class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                               value={formData.cardNumber}
                               onBlur={handleCardNumberBlur}
                               onChange={restrictCardNumberInput}
@@ -285,7 +285,7 @@ function PaymentForm() {
                               type="text"
                               name="expiryDate"
                               id="expiryDate"
-                              class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                              class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                               value={formData.expiryDate}
                               onKeyDown={handleExpiryDateKeyDown}
                               onBlur={handleExpiryDateBlur}
@@ -301,7 +301,7 @@ function PaymentForm() {
                               type="password"
                               name="securityCode"
                               id="securityCode"
-                              class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                              class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
                               value={formData.securityCode}
                               onBlur={handleSecurityCodeBlur}
                               onChange={restrictSecurityCodeInput}
@@ -357,40 +357,40 @@ function PaymentForm() {
                 {/* Right part */}
                 <div className="pr-6 col-span-1 text-left flex flex-col justify-center">
                   <div>
-                    <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-left mb-4">
+                    <h1 class="text-xl font-bold text-gray-900 md:text-2xl text-left mb-4">
                       Order summary
                     </h1>
                     <hr class="col-span-2 my-2 border-gray-400"></hr>
                   </div>
                   <div>
                     <div className="grid grid-cols-2">
-                      <h3 class="text-base font-semibold text-gray-900 dark:text-white text-left">
+                      <h3 class="text-base font-semibold text-gray-900 text-left">
                         {selectedPlan.planName} plan
                       </h3>
-                      <h3 class="text-base font-semibold text-gray-900 dark:text-white text-right">
+                      <h3 class="text-base font-semibold text-gray-900 text-right">
                         ${selectedPlan.planPrice}/mo
                       </h3>
                     </div>
-                    <h3 class="text-sm font-normal text-gray-500 dark:text-white text-left">
+                    <h3 class="text-sm font-normal text-gray-500 text-left">
                       Monthly charge
                     </h3>
-                    <h3 class="text-sm font-normal text-gray-500 dark:text-white text-left">
+                    <h3 class="text-sm font-normal text-gray-500 text-left">
                       Biling starts: {currentDate}
                     </h3>
                     <hr class="col-span-2 my-2 border-gray-400"></hr>
                   </div>
                   <div className="grid grid-cols-2 mb-4">
-                    <h3 class="text-base font-semibold text-gray-900 dark:text-white text-left">
+                    <h3 class="text-base font-semibold text-gray-900 text-left">
                       Subtotal
                     </h3>
-                    <h3 class="text-base font-semibold text-gray-900 dark:text-white text-right">
+                    <h3 class="text-base font-semibold text-gray-900 text-right">
                       ${selectedPlan.planPrice}
                     </h3>
                   </div>
                   <div class="flex flex-col items-left text-sm text-justify font-regular mb-4">
                     <p>
                       By continuing, you verify that you are at least 18 years old and agree to the DeepPurple Payments{" "}
-                      <Link to="/" class="font-regular text-blue-600 hover:underline dark:text-primary-500">
+                      <Link to="/" class="font-regular text-blue-600 hover:underline">
                           Terms of Service
                       </Link>
                       .
@@ -398,14 +398,14 @@ function PaymentForm() {
                   </div>
                   <button
                     type="submit"
-                    class="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    class="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                   >
                     Buy now
                   </button>
                 </div>
               </div>
             </form>
-            <p class="mt-4 text-xs text-[#3C3988] dark:text-gray-400">
+            <p class="mt-4 text-xs text-[#3C3988]">
               Copyright © DeepPurple Inc. All rights reserved 2023
             </p>
           </div>

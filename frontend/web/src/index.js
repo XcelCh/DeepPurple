@@ -23,6 +23,7 @@ import AddRecording from "./pages/AddRecording";
 import SummaryAnalysis from "./pages/SummaryAnalysis";
 import EmployeeRecordingList from "./pages/EmployeeRecordingList";
 import Billing from "./pages/Billing";
+import CustomerServiceAnalyzer from "./pages/CustomerServiceAnalyzer";
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="starter" element={<Starter />} />
           <Route path="textSentiment" element={<TextAnalyze />} />
           <Route path="billing" element={<Billing />} />
+          <Route path="customerServiceAnalyzer" element={<CustomerServiceAnalyzer />} />
 
           {/* With Sidebar */}
           <Route
