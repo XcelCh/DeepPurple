@@ -50,6 +50,7 @@ import AgentPicture from "./AgentPicture.png";
 import CustomerAnalyzer1 from "./CustomerAnalyzer1.png";
 import CustomerAnalyzer2 from "./CustomerAnalyzer2.png";
 import CustomerAnalyzer3 from "./CustomerAnalyzer3.png";
+import LandingPage1 from "./LandingPage1.png";
 
 export {
   TextIcon,
@@ -103,5 +104,6 @@ export {
   AgentPicture,
   CustomerAnalyzer1,
   CustomerAnalyzer2,
-  CustomerAnalyzer3
+  CustomerAnalyzer3,
+  LandingPage1
 };
