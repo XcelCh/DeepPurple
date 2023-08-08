@@ -11,6 +11,9 @@ module.exports = {
       width: {
         128: "25rem",
       },
+      borderRadius: {
+        '4xl': '3rem', // Adjust the value as needed
+      },
     },
   },
   plugins: [require("daisyui", "flowbite/plugin")],

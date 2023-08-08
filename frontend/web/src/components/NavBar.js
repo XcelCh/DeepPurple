@@ -26,7 +26,7 @@ function NavBar() {
   };
 
   return (
-    <div className="navbar bg-[#60388B] text-[#FFFFFF] flex justify-between fixed z-[1000]">
+    <div className="navbar bg-[#5A3D86] text-[#FFFFFF] flex justify-between fixed z-[1000]">
       <p className="btn btn-ghost normal-case text-xl">
         <Link to="/">DeepPurple</Link>
       </p>

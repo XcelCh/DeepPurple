@@ -47,6 +47,9 @@ import NegativeWordmap from "./NegativeWordmap.svg";
 import RedHeart from "./RedHeart.svg";
 import EmptyRecording from "./EmptyRecording.svg";
 import AgentPicture from "./AgentPicture.png";
+import CustomerAnalyzer1 from "./CustomerAnalyzer1.png";
+import CustomerAnalyzer2 from "./CustomerAnalyzer2.png";
+import CustomerAnalyzer3 from "./CustomerAnalyzer3.png";
 
 export {
   TextIcon,
@@ -97,5 +100,8 @@ export {
   NegativeWordmap,
   RedHeart,
   EmptyRecording,
-  AgentPicture
+  AgentPicture,
+  CustomerAnalyzer1,
+  CustomerAnalyzer2,
+  CustomerAnalyzer3
 };
