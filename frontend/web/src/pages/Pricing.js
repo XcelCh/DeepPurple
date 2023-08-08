@@ -6,7 +6,7 @@ function Pricing() {
   return (
     <div className="h-full bg-[#F7F2FB]">
       <div>
-        <p className="text-4xl text-[#7566BB] font-extrabold pt-32 text-center">
+        <p className="text-4xl text-[#7566BB] font-bold pt-32 text-center">
           DeepPurple pricing
         </p>
         <p className="text-xl text-[#414141] text-center mt-8">
@@ -16,7 +16,7 @@ function Pricing() {
       <div>
         <div className="mt-16 grid w-full gap-16 grid-cols-2 px-32">
           <div className="">
-            <p className="text-3xl text-[#7566BB] font-semibold mb-2">
+            <p className="text-3xl text-[#7566BB] font-bold mb-2">
               Unlock customer service analyzer
             </p>
             <p className="text-lg text-[#414141]">
@@ -27,7 +27,7 @@ function Pricing() {
           </div>
           
           <div className="">
-            <p className="text-3xl text-[#7566BB] font-semibold mb-2">
+            <p className="text-3xl text-[#7566BB] font-bold mb-2">
               Only pay for what you use
             </p>
             <p className="text-lg text-[#414141]">
@@ -41,7 +41,7 @@ function Pricing() {
         </div>
         <div className="mt-16 grid w-full gap-16 grid-cols-2 px-32">
           <div className="">
-            <p className="text-3xl text-[#7566BB] font-semibold mb-2">
+            <p className="text-3xl text-[#7566BB] font-bold mb-2">
               Get in touch with us
             </p>
             <p className="text-lg text-[#414141]">
@@ -55,27 +55,27 @@ function Pricing() {
           </div>
           
           <div className="mb-32">
-            <p className="text-3xl text-[#7566BB] font-semibold mb-2">
+            <p className="text-3xl text-[#7566BB] font-bold mb-2">
               Pricing table
             </p>
             <div className="relative">
               <table className="w-full text-sm text-left text-gray-500">
                 <thead className="text-xs text-gray-700 bg-[#7566BB] border-b border-t border-[#83848A]">
                   <tr>
-                      <th scope="col" className="px-6 py-3 text-lg text-white font-semibold">
+                      <th scope="col" className="px-6 py-3 text-lg text-white font-medium">
                           Category
                       </th>
-                      <th scope="col" className="px-6 py-3 text-lg text-white font-semibold">
+                      <th scope="col" className="px-6 py-3 text-lg text-white font-medium">
                           Pricing
                       </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b border-[#83848A]">
-                    <th scope="row" className="px-6 py-2 font-medium text-black">
+                    <td className="px-6 py-2 text-[#414141]">
                         Customer service analyzer
-                    </th>
-                    <td className="px-6 py-2 text-black font-medium text-black">
+                    </td>
+                    <td className="px-6 py-2 text-[#414141]">
                         $0.024/minute
                     </td>
                   </tr>
