@@ -90,7 +90,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/getPricing").permitAll()
                         .requestMatchers("/employeeList/**").permitAll()
                         .requestMatchers("/recordingList/**").permitAll()
-
+                        .requestMatchers("/customerServiceAnalyzer").permitAll()
                         .requestMatchers("/audio/**").permitAll()
                         .requestMatchers("/analysis/**").permitAll()
                         .requestMatchers("/summaryAnalysis/**").permitAll()
