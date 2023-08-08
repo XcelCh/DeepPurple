@@ -5,8 +5,6 @@ const Pagination = ({totalPosts, postsPerPage, setCurrentPage, currentPage}) => 
     pages.push(i);
   }
 
-  console.log(pages);
-
     return (
       <>
       {

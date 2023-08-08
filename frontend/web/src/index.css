@@ -46,15 +46,14 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-table.table>tbody>tr:hover label,
-table.table>tbody>tr:hover td,
-table.table>tbody>tr:hover th{
-  background-color: #F6F4FC !important;
+table.table > tbody > tr:hover label,
+table.table > tbody > tr:hover td,
+table.table > tbody > tr:hover th {
+  background-color: #f6f4fc !important;
 }
 
 .table {
-  border-radius: 0;
-} 
+}

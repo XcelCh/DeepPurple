@@ -151,9 +151,9 @@ function LoginForm() {
 
                   <div class="flex flex-col items-left text-sm font-regular ">
                     <p>
-                      Excited to join DeepPurple?{" "}
-                      <Link to="/pricing" class="font-regular text-blue-600 hover:underline">
-                          View plans
+                      New to DeepPurple?{" "}
+                      <Link to="/signUpForm" class="font-regular text-blue-600 hover:underline">
+                          Sign Up
                       </Link>
                     </p>
                     <Link to="/forgetPasswordForm" class="font-regular text-blue-600 hover:underline">

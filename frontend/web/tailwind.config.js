@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       width: {
-        128: "25rem",
+        128: "26rem",
       },
       borderRadius: {
         '4xl': '3rem', // Adjust the value as needed
