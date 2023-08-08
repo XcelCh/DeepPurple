@@ -66,8 +66,10 @@ public class RecordingController {
             // Retrieve the current authentication token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
+            System.out.println("EMAIL: " + email);
             Integer account_id = accountRepository.getAccountId(email);
 
+            System.out.println("ACCOUNT ID: " + account_id);
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
 
             if (search != null && !search.isEmpty()) {

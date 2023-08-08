@@ -26,12 +26,12 @@ public interface RecordingRepository extends JpaRepository<Recording, Integer>{
     Integer countRecordings();
 
     @Query("SELECT r.recordingId AS recordingId, r.recordingName AS recordingName, r.uploadDate AS uploadDate, " +
-            "r.recordingDate AS dateRecorded, e.employeeName AS employeeName, r.accountId AS account_id, " +
-    "a.category AS category, a.recordingSentiment AS sentiment " + 
-    "FROM Recording r " +
-    "JOIN Employee e on r.employeeId = e.employeeId " +
-            "JOIN Analysis a on a.recordingId = r.recordingId " + 
-            "WHERE r.accountId = :account_id"
+        "r.recordingDate AS dateRecorded, e.employeeName AS employeeName, r.accountId AS account_id, " +
+        "a.category AS category, a.recordingSentiment AS sentiment, a.employeeSentiment AS employeeSentiment, a.customerSentiment AS customerSentiment " +
+        "FROM Recording r " +
+        "JOIN Employee e on r.employeeId = e.employeeId " +
+        "JOIN Analysis a on a.recordingId = r.recordingId " + 
+        "WHERE r.accountId = :account_id"
     )
     List<Map<String, Object>> getAllRecordings(Integer account_id);
 
