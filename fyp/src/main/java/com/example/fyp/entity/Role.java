@@ -10,7 +10,6 @@ import lombok.Data;
 
 @Data
 @Entity
-// public class Subscription {
     
 public class Role {
     

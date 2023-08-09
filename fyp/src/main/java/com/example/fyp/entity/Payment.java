@@ -3,7 +3,12 @@ package com.example.fyp.entity;
 import java.sql.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +20,7 @@ import lombok.Data;
 @Entity
 public class Payment {
     
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
@@ -25,14 +31,26 @@ public class Payment {
 
     private Date expiryDate;
 
+    @JsonIgnore
     private String securityCode;
 
     private float usageLimit;
 
-    @OneToMany(mappedBy = "payment")
-    private List<Billing> billings;
 
+    
+    // @OneToMany(mappedBy = "payment")
+    // @JsonBackReference
+    // private List<Billing> billings;
+
+    @JsonIgnore
     @OneToOne(mappedBy = "payment")
+    @JsonManagedReference
     private Account account;
     
+    @Override
+    public String toString() {
+        return "Payment{paymentId=" + paymentId + ", cardholderName='" + cardholderName + '\'' + ", cardNumber='" + cardNumber + '\'' +
+               ", expiryDate=" + expiryDate + ", securityCode='" + securityCode + '\'' + 
+               ", usageLimit=" + usageLimit +", accountId=" + account.getAccountId() + '}';
+    }
 }
