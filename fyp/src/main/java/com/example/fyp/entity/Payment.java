@@ -19,11 +19,13 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    private String ccNumber;
+    private String cardholderName;
 
-    private Date expiry;
+    private String cardNumber;
 
-    private int ccv;
+    private Date expiryDate;
+
+    private String securityCode;
 
     private float usageLimit;
 

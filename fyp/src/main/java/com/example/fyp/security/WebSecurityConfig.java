@@ -94,6 +94,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/audio/**").permitAll()
                         .requestMatchers("/analysis/**").permitAll()
                         .requestMatchers("/summaryAnalysis/**").permitAll()
+                        .requestMatchers("/payment/**").authenticated()
                 // .anyRequest().authenticated()
                 );
 
