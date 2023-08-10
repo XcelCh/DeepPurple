@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Unauthorized } from "../assets";
 import { Link } from "react-router-dom";
 
 function UnauthorizedPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="pt-20">
       <img className="mx-auto h-40 mt-20" src={Unauthorized}></img>

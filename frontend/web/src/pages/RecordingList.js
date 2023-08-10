@@ -24,19 +24,9 @@ function RecordingList() {
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
   const [currentRecordingId, setCurrentRecordingId] = useState();
-  const [isChoosing, setIsChoosing] = useState(false);
 
   // Error Message
   const [error, setError] = useState("");
-
-  // Track Select outside the box
-  window.addEventListener("click", function (e) {
-    if (!document.getElementById("filterDropdown").contains(e.target)) {
-      console.log("outside the box");
-    } else {
-      console.log("inside the box");
-    }
-  });
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -57,10 +47,6 @@ function RecordingList() {
   const handleSearch = (event) => {
     event.preventDefault();
     let filteredRecList = [...originalList];
-
-    console.log(filter);
-    console.log(dateRange);
-    console.log(filteredRecList[0]?.sentiment == "Positive");
 
     if (filter.category) {
       filteredRecList = filteredRecList.filter(
@@ -106,6 +92,11 @@ function RecordingList() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const handleFilterUploadDate = () => {
+    console.log(dateRange[0]);
+    console.log(dateRange[1]);
   };
 
   const handleReset = () => {
@@ -232,14 +223,15 @@ function RecordingList() {
   // });
 
   useEffect(() => {
-    console.log("ISCHOOSING?? " + isChoosing);
-  }, isChoosing);
+    console.log(dateRange[0]);
+    console.log(dateRange[1]);
+  }, [dateRange]);
 
   return (
     <div className="ml-20 mt-16">
       <p className="text-xl font-bold text-left mb-5">Recording List</p>
 
-      <div class="grid grid-cols-2 mb-5">
+      <div class="grid grid-cols-3 mb-5">
         <form className="max-w-xs text-sm">
           <div className="relative">
             <svg
@@ -268,10 +260,7 @@ function RecordingList() {
               className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
             />
 
-            <div
-              className={`dropdown mb-4 ${isChoosing ? "dropdown-open" : ""}`}
-              id="filterDropdown"
-            >
+            <div className="dropdown mb-4" id="filterDropdown">
               <label
                 tabIndex={0}
                 className="absolute top-0 bottom-0 w-6 h-6 text-gray-400 right-3"
@@ -283,16 +272,6 @@ function RecordingList() {
                 className="-top-120 dropdown-content z-[1] menu p-5 drop-shadow-sm bg-[#FFFFFF] rounded-box w-128 disabled:hover text-xs border"
               >
                 {/* Filter Pop up */}
-                {/* Date Recorded */}
-                <div className="grid grid-cols-2 flex items-center mb-5">
-                  <p className="font-bold">Date Recorded</p>
-                  <DateRange
-                    dateRange={dateRange}
-                    setDateRange={setDateRange}
-                    setIsChoosing={setIsChoosing}
-                  ></DateRange>
-                </div>
-
                 {/* Handled By */}
                 <div className="grid grid-cols-2 flex items-center mb-5">
                   <p className="font-bold">Handled by</p>
@@ -389,6 +368,15 @@ function RecordingList() {
             </div>
           </div>
         </form>
+
+        {/* Upload Date */}
+        <div className="grid grid-cols-2 flex items-center mb-5">
+          <p className="font-bold">Upload Date</p>
+          <DateRange
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+          ></DateRange>
+        </div>
 
         {/* Upload */}
         <div className="place-self-end">

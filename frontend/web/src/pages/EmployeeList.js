@@ -89,6 +89,7 @@ function EmployeeList() {
 
   useEffect(() => {
     getEmpList();
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -169,6 +170,7 @@ function EmployeeList() {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // Set the content type to indicate JSON data
+        "Authorization" : token.Authorization
       },
       body: JSON.stringify(data),
     })

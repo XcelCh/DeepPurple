@@ -6,7 +6,7 @@ function Footer() {
       <div class="mx-auto w-full max-w-screen-xl p-4 py-24">
           <div class="md:flex md:justify-between items-center">
               <div class="mb-6 md:mb-0">
-                  <a href="https://flowbite.com/" class="flex items-center">
+                  <a href="#" class="flex items-center">
                       <span class="text-2xl font-semibold whitespace-nowrap text-white">DeepPurple</span>
                   </a>
                   <div class="sm:flex sm:items-center sm:justify-between">
@@ -50,26 +50,26 @@ function Footer() {
                   <div>
                       <ul class="text-white font-medium">
                           <li class="mb-6">
-                              <a href="https://flowbite.com/" class="hover:underline">Home</a>
+                              <a href="#" class="hover:underline">Home</a>
                           </li>
                           <li class="mb-6">
-                              <a href="https://tailwindcss.com/" class="hover:underline">About us</a>
+                              <a href="/aboutUs" class="hover:underline">About us</a>
                           </li>
                           <li>
-                              <a href="https://tailwindcss.com/" class="hover:underline">Pricing</a>
+                              <a href="/pricing" class="hover:underline">Pricing</a>
                           </li>
                       </ul>
                   </div>
                   <div>
                       <ul class="text-white font-medium">
                           <li class="mb-6">
-                              <a href="https://github.com/themesberg/flowbite" class="hover:underline ">Text Sentiment Analyzer</a>
+                              <a href="/textSentiment" class="hover:underline ">Text Sentiment Analyzer</a>
                           </li>
                           <li class="mb-6">
-                              <a href="https://discord.gg/4eeurUVvTy" class="hover:underline">Product Reviews Analyzer</a>
+                              <a href="/customerServiceAnalyzer" class="hover:underline">Customer Service Analyzer</a>
                           </li>
                           <li class="mb-6">
-                              <a href="https://discord.gg/4eeurUVvTy" class="hover:underline">User guide</a>
+                              <a href="/userGuide" class="hover:underline">User guide</a>
                           </li>
                       </ul>
                   </div>

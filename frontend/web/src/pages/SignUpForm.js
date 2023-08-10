@@ -8,6 +8,7 @@ import Datepicker from '../components/DatePicker2';
 function SignUpForm() {
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const user = AuthService.getCurrentUser();
         if (user) {
           navigate('/unauthorizedPage');

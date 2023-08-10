@@ -47,7 +47,7 @@ function NavBar() {
                 <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
               </svg>
             </a>
-            <ul className="p-2 bg-[#60388B] shadow-md">
+            <ul className="p-2 bg-[#5A3D86] shadow-md">
               <li>
                 <Link to="/textSentiment">
                   <svg
@@ -125,7 +125,7 @@ function NavBar() {
               </svg>
               <ul
                 tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-[#60388B] rounded-box w-52 mr-5"
+                className="dropdown-content menu p-2 shadow bg-[#5A3D86] rounded-box w-52 mr-5"
               >
                 <li className="h-8">
                   <Link to="/editProfile" className="h-8">
@@ -186,7 +186,7 @@ function NavBar() {
           <Link to="/loginForm">
             <button
               type="button"
-              class="text-[#60388B] bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-sm px-5 py-1.5 text-center mr-8"
+              class="text-[#5A3D86] bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-sm px-5 py-1.5 text-center mr-8"
             >
               Log in
             </button>

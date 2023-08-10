@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Footer from "../components/Footer";
 import accurateImage from "../assets/Accurate.png";
-import clockImage from "../assets/Clock.png";
+import priceImage from "../assets/Price.png";
 import lampImage from "../assets/Lamp.png";
 import landingPage1 from "../assets/LandingPage1.png";
 import landingPage2 from "../assets/LandingPage2.png";
@@ -65,19 +65,16 @@ function LandingPage() {
                     <p className="text-5xl font-bold text-[#7566BB] text-center">Benefits of using DeepPurple</p>
                     <div className="grid grid-cols-3 items-center gap-24 h-full">
                         <div className="flex flex-col items-center justify-center mt-16">
-                            <img src={clockImage} className="w-24 h-24" />
-                            <p className="font-semibold text-[#7566BB] text-3xl mt-2">Save Time</p>
-                            <p className="text-[#414141] text-lg text-center mt-4">
-                                Spend less time doing repetitive tasks. 
-                                Our product streamlines your employee 
-                                performance review process by swiftly
-                                analyzing and extracting key insights.
+                            <img src={priceImage} className="w-16 h-16" />
+                            <p className="font-semibold text-[#7566BB] text-3xl mt-4">Flexible Pricing</p>
+                            <p className="text-[#414141] text-lg text-center mt-2">
+                                Only pay what you use, no down payment or any other hidden fees required. With our flexible pricing, you're billed based on your actual usage.
                             </p>
                         </div>
                         <div className="flex flex-col items-center justify-center mt-16">
-                            <img src={accurateImage} className="w-24 h-24" />
-                            <p className="font-semibold text-[#7566BB] text-3xl mt-2">Accurate Model</p>
-                            <p className="text-[#414141] text-lg text-center mt-4">
+                            <img src={accurateImage} className="w-16 h-16" />
+                            <p className="font-semibold text-[#7566BB] text-3xl mt-4">Accurate Model</p>
+                            <p className="text-[#414141] text-lg text-center mt-2">
                                 The advanced capabilities of GPT-3
                                 enables us to provide you with a
                                 reliable information and suggestions
@@ -85,9 +82,9 @@ function LandingPage() {
                             </p>
                         </div>
                         <div className="flex flex-col items-center justify-center mt-16">
-                            <img src={lampImage} className="w-24 h-24" />
-                            <p className="font-semibold text-[#7566BB] text-3xl mt-2">Product Solution</p>
-                            <p className="text-[#414141] text-lg text-center mt-4">
+                            <img src={lampImage} className="w-16 h-16" />
+                            <p className="font-semibold text-[#7566BB] text-3xl mt-4">Service Solution</p>
+                            <p className="text-[#414141] text-lg text-center mt-2">
                                 DeepPurple shares suggestions
                                 about how to enhance and optimize
                                 employee performance based on their 
@@ -98,7 +95,7 @@ function LandingPage() {
                 </div>
                 <div className="h-full pt-32 px-24"> 
                     <div className="text-5xl font-bold text-[#7566BB] text-center">
-                        <p>Work Smarter with our</p>
+                        <p>Work smarter with our</p>
                         <p>innovative solutions</p>
                     </div>
                     <div>
@@ -109,7 +106,7 @@ function LandingPage() {
                                 className={`${tabStyle} ${activeTab === 'tab1' ? activeTabStyle : ''}`}
                                 onClick={() => handleTabClick('tab1')}
                                 >
-                                Text sentiment analyzer
+                                Text Sentiment Analyzer
                                 </button>
                             </li>
                             <li className="border-b-2">
@@ -117,7 +114,7 @@ function LandingPage() {
                                 className={`${tabStyle} ${activeTab === 'tab2' ? activeTabStyle : ''}`}
                                 onClick={() => handleTabClick('tab2')}
                                 >
-                                Customer service analyzer
+                                Customer Service Analyzer
                                 </button>
                             </li>
                             </ul>
@@ -164,11 +161,7 @@ function LandingPage() {
                                                 <p className="text-3xl font-bold text-[#7566BB]">Customer Service Analyzer</p>
                                             </div>
                                             <p className="text-lg text-[#414141]">
-                                                Introducing the Product Reviews Analyzer, an innovative
-                                                feature that allows you to turn reviews into business
-                                                improvements. Extract key information from hundreds or 
-                                                thousands of reviews and receive actionable recommendation,
-                                                presented in an interactive dashboard!
+                                                Introducing the Customer Service Analyzer – a tool that examines your customer service calls to gauge the feelings of both agents and customers. It helps assess employee performance, identifying top and bottom performers. Powered by the GPT-3 API, it also gives suggestions based on common issues, aiding in improvement. Elevate your customer service game with AI-driven insights.
                                             </p>
                                             <a href="/customerServiceAnalyzer" className="mt-4 text-lg inline-flex items-center text-[#5431CA] hover:underline">
                                                 Find out more
@@ -194,17 +187,13 @@ function LandingPage() {
                                 <div className="flex flex-col mr-16">
                                     <p className="text-3xl font-bold text-[#7566BB] mb-4">Join us now!</p>
                                     <p className="text-lg text-[#414141] mb-4">
-                                        Unlock the full potential of your business with
-                                        our premium services. Sign up now to fulfill
-                                        your needs and experience cutting-edge
-                                        features that will save you time 
-                                        and headache.
+                                        Join us now! Pay only for what you use and experience top-notch services tailored to your needs. Our flexible pricing ensures that you get the most value out of every penny spent. Join today and discover a new way to make the most of your resources.
                                     </p>
                                     <div className="flex items-center inline-block">
                                         <Link to="/pricing">
                                             <button
                                             type="button"
-                                            className="text-[#F7F2FB] bg-[#7566BB] hover:bg-[#5E519A] focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                            className="text-white bg-[#7566BB] hover:bg-[#5E519A] focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
                                             >
                                                 View pricing
                                             </button>

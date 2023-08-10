@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Footer from '../components/Footer';
 
 function Pricing() {
-  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="h-full bg-[#F7F2FB]">
       <div>

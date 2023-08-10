@@ -6,6 +6,7 @@ import AuthService from "../services/auth.service";
 function ChangePassword() {
 
   useEffect(() => {
+      window.scrollTo(0, 0);
       const user = AuthService.getCurrentUser();
       if (!user) {
         navigate('/unauthorizedPage');

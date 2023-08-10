@@ -24,13 +24,15 @@ function AddRecording() {
 
   const handleAssignEmployee = (selected) => {
     setAssignEmployee(selected);
-    console.log(assignEmployee);
   };
 
   const handleEmployee = (selected) => {
     setEmployee(selected);
-    console.log(employee);
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (assignEmployee == "existingEmployee") {
@@ -58,8 +60,7 @@ function AddRecording() {
   const handleUpload = () => {    
     const data = new FormData();
     const audioInput = document.getElementById("audioInput");        
-    data.set("audio2", audioInput.files[0])    
-    console.log(audioInput.files[0]);
+    data.set("audio2", audioInput.files[0])
     fetch("http://localhost:8082/audio/uploadAudio2", {
       method: "POST",
       body: data
