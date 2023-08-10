@@ -21,6 +21,7 @@ function EmployeeRecordingList() {
   const [recList, setRecList] = useState([]);
   const [empName, setEmpName] = useState("");
   const [search, setSearch] = useState("");
+  const [currentRecordingId, setCurrentRecordingId] = useState();
   
   // Error message
   const [error, setError] = useState("");
@@ -97,7 +98,7 @@ function EmployeeRecordingList() {
   }, [search]);
 
   return (
-    <div className="mx-20">
+    <div className="mx-20 pt-16">
       <div className="flex mb-5">
         <Link to="../employeeList">
           <img src={ArrowLeft} className="mr-3"></img>
@@ -193,10 +194,10 @@ function EmployeeRecordingList() {
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                         <a
                           className="text-[#9554FE]"
-                          // href={`/recordingList/${currentEmployeeId}`}
-                          // onClick={() => {
-                          //   setCurrentEmployeeId(employee.employeeId);
-                          // }}
+                          href={`../../recordingList/analysis/${currentRecordingId}`}
+                          onClick={() => {
+                            setCurrentRecordingId(recording.recordingId);
+                          }}
                         >
                           <img src={Eye}></img>{" "}
                           <p className="ml-1">View Analysis</p>

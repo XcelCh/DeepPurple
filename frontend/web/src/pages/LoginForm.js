@@ -71,9 +71,9 @@ function LoginForm() {
           <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
             {/* Gradient */}
             {/* Card */}
-            <div class="flex flex-col justify-center items-center w-2/5 h-2/3 bg-white rounded-3xl shadow md:mt-0 xl:p-0">
-              <div class="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
-                <h1 class="text-xl font-bold text-gray-900 md:text-2xl text-left">
+            <div class="flex flex-col justify-center items-center w-2/5 h-fit bg-white rounded-3xl shadow mt-16">
+              <div class="w-full space-y-4 p-6 px-6 text-left ">
+                <h1 class="text-lg font-bold text-gray-900 md:text-2xl text-left">
                   Sign in
                 </h1>
                 <h3 class="text-sm font-normal text-gray-900 text-left">

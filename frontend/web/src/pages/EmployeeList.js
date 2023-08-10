@@ -169,6 +169,7 @@ function EmployeeList() {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // Set the content type to indicate JSON data
+        "Authorization" : token.Authorization
       },
       body: JSON.stringify(data),
     })
@@ -293,7 +294,7 @@ function EmployeeList() {
                             setCurrentEmployeeId(employee.employeeId);
                           }}
                         >
-                          <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>{" "}
+                          <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>
                           View Calls Handled
                         </a>
                       </li>
@@ -306,7 +307,7 @@ function EmployeeList() {
                             setCurrentEmployeeId(employee.employeeId);
                           }}
                         >
-                          <EditOutlinedIcon></EditOutlinedIcon>Edit Names
+                          <EditOutlinedIcon></EditOutlinedIcon> Edit Names
                         </label>
                       </li>
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
