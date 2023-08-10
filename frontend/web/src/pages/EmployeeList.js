@@ -295,7 +295,7 @@ function EmployeeList() {
                             setCurrentEmployeeId(employee.employeeId);
                           }}
                         >
-                          <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>{" "}
+                          <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>
                           View Calls Handled
                         </a>
                       </li>
@@ -308,7 +308,7 @@ function EmployeeList() {
                             setCurrentEmployeeId(employee.employeeId);
                           }}
                         >
-                          <EditOutlinedIcon></EditOutlinedIcon>Edit Names
+                          <EditOutlinedIcon></EditOutlinedIcon> Edit Names
                         </label>
                       </li>
                       <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">

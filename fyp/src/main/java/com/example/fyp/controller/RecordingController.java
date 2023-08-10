@@ -36,6 +36,9 @@ import com.example.fyp.entity.Recording;
 import java.util.Map;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.repo.AccountRepository;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/recordingList")
@@ -119,14 +122,34 @@ public class RecordingController {
      @GetMapping("/user/me")
      public Authentication getCurrentUser() {
 
-        // Retrieve the current authentication token
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        Integer account_id = accountRepository.getAccountId(email);
+         // Retrieve the current authentication token
+         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+         String email = authentication.getName();
+         Integer account_id = accountRepository.getAccountId(email);
 
-        System.out.println(account_id);
+         System.out.println(account_id);
 
-        return authentication;
-    }
+         return authentication;
+     }
+
+     @GetMapping("/compare-dates")
+     public String compareDates() {
+         Map<String, Object> rec = recordingListService.getRecordingById(15);
+        String dateTimeObject = (String) rec.get("uploadDate");
+        System.out.println("UPLOAD DATESSS" + dateTimeObject);
+
+        //  LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ISO_DATE_TIME);
+        //  String dateOnly = dateTime.toLocalDate().toString();
+
+
+         LocalDateTime dateTime1 = LocalDateTime.of(2023, 8, 8, 0, 0);
+         LocalDateTime dateTime2 = LocalDateTime.of(2023, 7, 31, 0, 0);
+
+         boolean isBefore = dateTime1.isBefore(dateTime2);
+         boolean isAfter = dateTime1.isAfter(dateTime2);
+         boolean isEqual = dateTime1.isEqual(dateTime2);
+
+         return "isBefore: " + isBefore + "\nisAfter: " + isAfter + "\nisEqual: " + isEqual;
+     }
 
 }

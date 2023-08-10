@@ -142,7 +142,11 @@ function Billing() {
         })
     };
 
+<<<<<<< HEAD
     return (
+=======
+    return ( 
+>>>>>>> dc03489303cf957d4d167a444935f67694d6360d
         <>
         {fetchDone ? (
             <div className="h-full bg-[#F7F2FB]">
@@ -336,7 +340,7 @@ function Billing() {
             </div>
         ): null}
         </>
-    );
+        );
 }
 
 export default Billing;

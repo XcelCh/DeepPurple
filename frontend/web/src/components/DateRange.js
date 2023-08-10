@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-datepicker/dist/react-datepicker";
 
-const DateRange = ({ dateRange, setDateRange, setIsChoosing }) => {
+const DateRange = ({ dateRange, setDateRange }) => {
   const [startDate, endDate] = dateRange;
 
   const CustomInput = ({ value, onClick, onChange }) => {
@@ -25,7 +25,6 @@ const DateRange = ({ dateRange, setDateRange, setIsChoosing }) => {
       endDate={endDate}
       onChange={(update) => {
         setDateRange(update);
-        // setIsChoosing(true);
       }}
       isClearable={true}
       customInput={<CustomInput />}
