@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.amazonaws.Response;
@@ -39,7 +40,7 @@ public class PaymentController {
             Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
 
             payment.setSecurityCode(passwordEncoder.encode(payment.getSecurityCode()));
-
+            payment.setUsageLimit(10);
             account.setPayment(payment);
 
             accountServiceImpl.saveAccount(account);
@@ -78,5 +79,26 @@ public class PaymentController {
         }
 
         
+    }
+
+    @PostMapping("/setLimit")
+    public ResponseEntity<String> setLimit(@RequestParam("limit") float limit) {
+
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
+
+            account.getPayment().setUsageLimit(limit);
+            accountServiceImpl.saveAccount(account);
+
+            return ResponseEntity.ok().body("");
+        }
+        catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not Found.");
+        }
+        catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+e);
+        }
     }
 }

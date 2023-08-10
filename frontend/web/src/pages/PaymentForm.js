@@ -154,6 +154,7 @@ function PaymentForm() {
         .then(response => {
           if (response.ok) {
             console.log('Card Successfully added.');
+            navigate('/billing');
           }
           else if (response.status == 401) {
             console.log('Unauthorized.');
