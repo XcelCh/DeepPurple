@@ -180,7 +180,7 @@ function SignUpForm() {
                 {/* Gradient */}
                 <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
                     {/* Gradient */}
-                    <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
+                    <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC] pt-16">
                         {/* Card */}
                         <div className="flex flex-col justify-center items-center w-2/5 h-4/7 bg-white rounded-3xl shadow md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                             {page === 0 ? (

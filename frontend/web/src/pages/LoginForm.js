@@ -73,7 +73,7 @@ function LoginForm() {
             {/* Gradient */}
             {/* Card */}
             <div class="flex flex-col justify-center items-center w-2/5 h-fit bg-white rounded-3xl shadow mt-16">
-              <div class="w-full space-y-4 p-6 px-6 text-left ">
+              <div class="w-full space-y-4 p-16 text-left ">
                 <h1 class="text-lg font-bold text-gray-900 md:text-2xl text-left">
                   Sign in
                 </h1>
