@@ -1,13 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import Footer from "../components/Footer";
 import accurateImage from "../assets/Accurate.png";
 import clockImage from "../assets/Clock.png";
 import lampImage from "../assets/Lamp.png";
+import landingPage1 from "../assets/LandingPage1.png";
+import landingPage2 from "../assets/LandingPage2.png";
+import landingPage3 from "../assets/LandingPage3.png";
+import cardImage from "../assets/Card.png";
 import { Link } from "react-router-dom";
-import {
-    LandingPage1
-} from "../assets/index";
+import 'flowbite';
 
 function LandingPage() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    const [activeTab, setActiveTab] = useState('tab1');
+
+    const tabStyle = 'inline-block p-4 border-b-2 rounded-t-lg cursor-pointer';
+    const activeTabStyle = 'border-[#7566BB] text-[#7566BB]';
+
+    const tabContentStyle = 'hidden';
+    const activeTabContentStyle = 'block';
+
+    const handleTabClick = (tabId) => {
+        setActiveTab(tabId);
+    };
+
     return (
         <>
             <div className="h-full bg-[#F7F2FB]">
@@ -27,7 +46,7 @@ function LandingPage() {
                             <Link to="/signUpForm">
                                 <button
                                 type="button"
-                                className="text-[#414141] bg-white hover:bg-[#7DBC8F] focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                className="text-[#414141] bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
                                 >
                                     Get started
                                 </button>
@@ -36,7 +55,7 @@ function LandingPage() {
                     </div>
                     <div className="absolute z-0" style={{ top: '500px' }}>
                         <img
-                            src={LandingPage1}
+                            src={landingPage1}
                             alt="Landing Page 1"
                             style={{ width: '1300px', height: '500px' }}
                         />
@@ -55,7 +74,7 @@ function LandingPage() {
                                 analyzing and extracting key insights.
                             </p>
                         </div>
-                        <div className="flex flex-col items-center justify-center mt-8">
+                        <div className="flex flex-col items-center justify-center mt-16">
                             <img src={accurateImage} className="w-24 h-24" />
                             <p className="font-semibold text-[#7566BB] text-3xl mt-2">Accurate Model</p>
                             <p className="text-[#414141] text-lg text-center mt-4">
@@ -65,7 +84,7 @@ function LandingPage() {
                                 for informed decision-making.
                             </p>
                         </div>
-                        <div className="flex flex-col items-center justify-center mt-8">
+                        <div className="flex flex-col items-center justify-center mt-16">
                             <img src={lampImage} className="w-24 h-24" />
                             <p className="font-semibold text-[#7566BB] text-3xl mt-2">Product Solution</p>
                             <p className="text-[#414141] text-lg text-center mt-4">
@@ -82,107 +101,124 @@ function LandingPage() {
                         <p>Work Smarter with our</p>
                         <p>innovative solutions</p>
                     </div>
-                    
+                    <div>
+                        <div className="flex items-center justify-center mb-4 mt-4">
+                            <ul className="flex flex-wrap -mb-px text-xl font-medium text-center">
+                            <li className="mr-24 border-b-2">
+                                <button
+                                className={`${tabStyle} ${activeTab === 'tab1' ? activeTabStyle : ''}`}
+                                onClick={() => handleTabClick('tab1')}
+                                >
+                                Text sentiment analyzer
+                                </button>
+                            </li>
+                            <li className="border-b-2">
+                                <button
+                                className={`${tabStyle} ${activeTab === 'tab2' ? activeTabStyle : ''}`}
+                                onClick={() => handleTabClick('tab2')}
+                                >
+                                Customer service analyzer
+                                </button>
+                            </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div className={`${activeTab === 'tab1' ? activeTabContentStyle : tabContentStyle}`}>
+                                <div className="grid grid-cols-2 items-center gap-24 h-full pt-8">
+                                    <div>
+                                        <div className="flex flex-col">
+                                            <div className="mb-6">
+                                                <p className="text-3xl font-bold text-[#7566BB]">Text Sentiment Analyzer</p>
+                                            </div>
+                                            <p className="text-lg text-[#414141]">
+                                                Discover the Text Sentiment Analyzer, a tool that accurately
+                                                analyzes the sentiment and emotion in a text. Use this tool
+                                                to tailor your strategies and enhance customer experiences
+                                                based on real emotions.
+                                                <br></br><br></br>
+                                                Play around with our text sentiment analyzer, below.
+                                            </p>
+                                            <div className="inline-block mt-6">
+                                                <Link to="/textSentiment">
+                                                    <button
+                                                    type="button"
+                                                    className="text-[#F7F2FB] bg-[#7566BB] hover:bg-[#5E519A] focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                                    >
+                                                    Try for free!
+                                                    </button>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <img src={landingPage2}></img>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`${activeTab === 'tab2' ? activeTabContentStyle : tabContentStyle}`}>
+                                <div className="grid grid-cols-2 items-center gap-24 h-full pt-8">
+                                    <div>
+                                        <div className="flex flex-col">
+                                            <div className="mb-6">
+                                                <p className="text-3xl font-bold text-[#7566BB]">Customer Service Analyzer</p>
+                                            </div>
+                                            <p className="text-lg text-[#414141]">
+                                                Introducing the Product Reviews Analyzer, an innovative
+                                                feature that allows you to turn reviews into business
+                                                improvements. Extract key information from hundreds or 
+                                                thousands of reviews and receive actionable recommendation,
+                                                presented in an interactive dashboard!
+                                            </p>
+                                            <a href="/customerServiceAnalyzer" className="mt-4 text-lg inline-flex items-center text-[#5431CA] hover:underline">
+                                                Find out more
+                                                <svg className="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path></svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <img src={landingPage3}></img>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="py-24 px-24">
+                        <div className="border rounded-4xl bg-white grid grid-cols-2 items-center gap-24 shadow shadow-lg">
+                            <div className="">
+                                <img
+                                    src={cardImage}
+                                />
+                            </div>
+                            <div className="">
+                                <div className="flex flex-col mr-16">
+                                    <p className="text-3xl font-bold text-[#7566BB] mb-4">Join us now!</p>
+                                    <p className="text-lg text-[#414141] mb-4">
+                                        Unlock the full potential of your business with
+                                        our premium services. Sign up now to fulfill
+                                        your needs and experience cutting-edge
+                                        features that will save you time 
+                                        and headache.
+                                    </p>
+                                    <div className="flex items-center inline-block">
+                                        <Link to="/pricing">
+                                            <button
+                                            type="button"
+                                            className="text-[#F7F2FB] bg-[#7566BB] hover:bg-[#5E519A] focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                            >
+                                                View pricing
+                                            </button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <Footer />
             </div>
         </>
     );
-//   return (
-//     <>
-//         {/* <NavBar /> */}
-//         {/* Landing Header */}
-//         <div>
-//             {/* First layer gradient */}
-//             <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]"> 
-//                 {/* Second layer gradient */}
-//                 <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
-//                       {/* Content */}
-//                     <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl">We turn words into insights.</h1>
-//                     <p className="mb-6 text-lg font-bold text-center text-white lg:text-xl sm:px-16 xl:px-64">DeepPurple helps you to understand the sentiment and emotion <br></br> of your client - all wrapped up into one software tool <br></br> that will helps you improve your product.</p>
-//                     <Link to="/textSentiment" className="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-[#60388B] bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-blue-300">
-//                         Get started
-//                         <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-//                     </Link>
-//                 </div>
-//             </div>
-//         </div>
-
-//         <div className="bg-gradient-to-b from-[#F6F4FC] via-white via-30% to-[#F6F4FC] to-50%">
-//             {/* Vision */}
-//             <div className="mb-32 py-16">
-//                 <img className="float-right h-72 max-w-lg ml-auto mr-32" src={trainImage} alt="vision image"></img>
-//                 <h2 className="mt-5 ml-32 text-4xl text-[#351D4F] font-extrabold text-left">Ready to get <br></br> more out of your <br></br> business?</h2>
-//                 <p className="ml-32 my-4 text-lg text-[#351D4F] text-left">At DeepPurple, our vision is to revolutionize the way businesses<br></br>grow with their revenue. By leveraging our data-driven insights,<br></br> we aim to help you unlock your full business potential by<br></br>providing innovative solutions and strategies.</p>
-//             </div>
-
-//             {/* Benefits */}
-//             <div className="flex flex-col justify-center items-center py-16">
-//                 <h2 className="text-4xl text-[#351D4F] font-extrabold">Benefits of using DeepPurple</h2>
-//                 <p className="my-2 text-lg text-[#351D4F]">Elevate your business to new heights with DeepPurple.</p>
-//                 <div className="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-16 text-center">
-//                     <a className="block max-w-xs h-96 p-6 bg-[#F6F4FC] border border-gray-200 rounded-lg shadow">
-//                         <img className="mt-11 w-24 h-24 mx-auto mb-3" src={clockImage} alt="clock image"></img>
-//                         <h5 className="mb-2 text-2xl font-extrabold tracking-tight text-[#351D4F] ">Save Time</h5>
-//                         <p className="font-normal text-[#351D4F]">Spend less time doing repetitive tasks. Our product streamlines your review process by swiftly analyzing and extracting key insights.</p>
-//                     </a>
-
-//                     <a className="block max-w-xs p-6 bg-[#FAF2FE] border border-gray-200 rounded-lg shadow">
-//                         <img className="mt-11 w-24 h-24 mx-auto mb-3" src={accurateImage} alt="accurate image"></img>
-//                         <h5 className="mb-2 text-2xl font-extrabold tracking-tight text-[#351D4F]">Accurate Model</h5>
-//                         <p className="font-normal text-[#351D4F]">The advanced capabilities of GPT-3 enables us to provide you with a reliable information and suggestions for informed decision-making.</p>
-//                     </a>
-
-//                     <a className="block max-w-xs p-6 bg-[#F1F3FE] border border-gray-200 rounded-lg shadow">
-//                         <img className="mt-11 w-24 h-24 mx-auto mb-3" src={lampImage} alt="lamp image"></img>
-//                         <h5 className="mb-2 text-2xl font-extrabold tracking-tight text-[#351D4F]">Product Solution</h5>
-//                         <p className="font-normal text-[#351D4F]">DeepPurple shares suggestions about how to enhance and optimize your product based on customer feedbacks.</p>
-//                     </a>
-//                 </div>
-//             </div>
-
-//             {/* Text Sentiment Analyzer */}
-//             <div className="py-32 flex items-center text-left">
-//                 <img className="float-left h-96 max-w-xl mr-48 ml-32" src={firstPlaceholderImage} alt="image description"></img>
-//                 <div>
-//                     <span class="bg-[#351D4F] text-white text-sm font-bold px-5 py-3 rounded-2xl">BASIC FEATURES</span>
-//                     <h2 className="mt-10 mr-32 text-4xl text-[#351D4F] font-extrabold">Text Sentiment Analyzer</h2>
-//                     <p className="mr-32 my-4 text-lg text-[#351D4F]">Discover the Text Sentiment Analyzer, a tool that accurately<br></br>analyzes the sentiment and emotion in a text. Use this tool<br></br>to tailor your strategies and enhance customer experiences<br></br>based on real emotions.<br></br><br></br>Play around with our text sentiment analyzer, below.</p>
-//                     <Link to="/textSentiment">
-//                         <a href="#" className="inline-flex items-center px-5 py-3 font-bold text-center text-white bg-[#351D4F] rounded-xl hover:bg-[#3C3988] focus:ring-4 focus:outline-none focus:ring-gray-200">Try now</a>
-//                     </Link>
-//                 </div>
-//             </div>
-
-//             {/* Product Reviews Analyzer */}
-//             <div className="py-32 flex items-center text-left">
-//                 <div>
-//                     <span class="ml-32 bg-[#351D4F] text-white text-sm font-bold px-5 py-3 rounded-2xl">PREMIUM FEATURES</span>
-//                     <h2 className="mt-10 ml-32 text-4xl text-[#351D4F] font-extrabold text-left">Product Reviews Analyzer</h2>
-//                     <p className="ml-32 my-4 text-lg text-[#351D4F]">Introducing the Product Reviews Analyzer, an innovative<br></br>feature that allows you to turn reviews into business<br></br>improvements. Extract key information from hundreds or<br></br>thousands of reviews and receive actionable recommendation,<br></br>presented in an interactive dashboard!</p><br></br>
-//                     <a href="#" class="ml-32 inline-flex items-center text-[#5431CA] hover:underline">
-//                         Find out more
-//                         <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path></svg>
-//                     </a>
-//                 </div>
-//                 <img className="float-right h-96 max-w-lg ml-auto mr-48" src={secondPlaceholderImage} alt="image description"></img>
-//             </div>
-
-//             {/* Join us now */}
-//             <div className="py-16 flex justify-center">
-//                 <a class="flex w-3/4 items-center text-base font-bold bg-white border border-gray-200 rounded-3xl shadow">
-//                     <img class="float-left rounded-t-lg h-96 mr-24" src={cardImage} alt="card image"></img>
-//                     <div class="text-left">
-//                         <h2 class="mb-2 text-3xl text-[#351D4F] font-extrabold tracking-tight text-gray-900">Join us now!</h2>
-//                         <p class="mb-3 font-normal text-lg text-[#351D4F]">Unlock your business full potential with our premium<br></br>services. Choose from our range of tailored plans<br></br>designed to meet your needs and experience<br></br>cutting-edge features that will enhance your products.</p>
-//                         <a href="#" className="inline-flex items-center px-5 py-3 font-bold text-center text-white bg-[#351D4F] rounded-xl hover:bg-[#3C3988] focus:ring-4 focus:outline-none focus:ring-gray-200">Compare plans</a>
-//                     </div>
-//                 </a>
-//             </div>
-//         </div>
-//         <Footer/>
-
-//     </>
-//   );
 }
 
 export default LandingPage;

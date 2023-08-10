@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Footer from "../components/Footer";
-import {
-    AgentPicture,
-    CustomerAnalyzer1,
-    CustomerAnalyzer2,
-    CustomerAnalyzer3
-} from "../assets/index";
+import agentPicture from "../assets/AgentPicture.png";
+import customerAnalyzer1 from "../assets/CustomerAnalyzer1.png";
+import customerAnalyzer2 from "../assets/CustomerAnalyzer2.png";
+import customerAnalyzer3 from "../assets/CustomerAnalyzer3.png";
 import { Link } from "react-router-dom";
 
 function CustomerServiceAnalyzer() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return(
         <>
             <div className="h-full bg-[#F7F2FB]">
@@ -27,7 +29,7 @@ function CustomerServiceAnalyzer() {
                                 <Link to="/signUpForm">
                                     <button
                                     type="button"
-                                    className="text-[#60388B] bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                    className="text-[#60388B] bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
                                     >
                                     Create account
                                     </button>
@@ -35,13 +37,13 @@ function CustomerServiceAnalyzer() {
                             </div>
                         </div>
                         <div>
-                            <img src={AgentPicture}></img>
+                            <img src={agentPicture}></img>
                         </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-2 items-center gap-24 h-full pt-24 px-24">
                     <div>
-                        <img src={CustomerAnalyzer1}></img>
+                        <img src={customerAnalyzer1}></img>
                     </div>
                     <div>
                         <div className="flex flex-col">
@@ -76,7 +78,7 @@ function CustomerServiceAnalyzer() {
                         </div>
                     </div>
                     <div>
-                        <img src={CustomerAnalyzer2}></img>
+                        <img src={customerAnalyzer2}></img>
                     </div>
                 </div>
                 <div className="py-24 px-24 relative">
@@ -110,7 +112,7 @@ function CustomerServiceAnalyzer() {
                         </div>
                         <div className="col-span-3 absolute top-8 right-16">
                             <img
-                                src={CustomerAnalyzer3}
+                                src={customerAnalyzer3}
                                 alt="Customer Analyzer"
                                 style={{ width: '600px', height: '450px' }}
                             />

@@ -46,11 +46,6 @@ import Heart from "./Heart.svg";
 import NegativeWordmap from "./NegativeWordmap.svg";
 import RedHeart from "./RedHeart.svg";
 import EmptyRecording from "./EmptyRecording.svg";
-import AgentPicture from "./AgentPicture.png";
-import CustomerAnalyzer1 from "./CustomerAnalyzer1.png";
-import CustomerAnalyzer2 from "./CustomerAnalyzer2.png";
-import CustomerAnalyzer3 from "./CustomerAnalyzer3.png";
-import LandingPage1 from "./LandingPage1.png";
 
 export {
   TextIcon,
@@ -100,10 +95,5 @@ export {
   Heart,
   NegativeWordmap,
   RedHeart,
-  EmptyRecording,
-  AgentPicture,
-  CustomerAnalyzer1,
-  CustomerAnalyzer2,
-  CustomerAnalyzer3,
-  LandingPage1
+  EmptyRecording
 };
