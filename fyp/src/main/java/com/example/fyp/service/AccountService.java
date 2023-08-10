@@ -15,4 +15,6 @@ public interface AccountService {
     String validatePasswordResetToken (String passwordToken, String email);
 
     void changePassword (String email, String newPassword);
+
+    public int getAccountId(String email);
 }

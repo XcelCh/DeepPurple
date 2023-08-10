@@ -47,8 +47,8 @@ public class RecordingController {
     @Autowired
     AccountServiceImpl accountServiceImpl;
 
-    @Autowired
-    private AccountRepository accountRepository;
+    // @Autowired
+    // private AccountRepository accountRepository;
 
     private final RecordingListService recordingListService;
 
@@ -70,7 +70,7 @@ public class RecordingController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
             System.out.println("EMAIL: " + email);
-            Integer account_id = accountRepository.getAccountId(email);
+            Integer account_id = accountServiceImpl.getAccountId(email);
 
             System.out.println("ACCOUNT ID: " + account_id);
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
@@ -125,7 +125,7 @@ public class RecordingController {
          // Retrieve the current authentication token
          Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
          String email = authentication.getName();
-         Integer account_id = accountRepository.getAccountId(email);
+         Integer account_id = accountServiceImpl.getAccountId(email);
 
          System.out.println(account_id);
 

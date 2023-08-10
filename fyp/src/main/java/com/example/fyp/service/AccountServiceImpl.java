@@ -86,5 +86,11 @@ public class AccountServiceImpl implements UserDetailsService, AccountService {
         accountRepository.save(account);
     }
 
+    @Override
+    public int getAccountId(String email) {
+
+        return accountRepository.getAccountId(email);
+    }
+
 
 }

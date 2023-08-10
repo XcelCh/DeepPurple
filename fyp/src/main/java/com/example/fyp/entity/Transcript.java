@@ -25,8 +25,10 @@ public class Transcript {
 
     private double startTime;
     private double endTime;
-    private Integer employeeId;
-    private Integer recordingId;
+
+    // private Integer employeeId;
+
+    // private Integer recordingId;
     
     @Transient
     private String employeeName;
@@ -34,12 +36,16 @@ public class Transcript {
     @Column(columnDefinition = "TEXT")
     private String dialog;
     
-    public String getEmployeeName() {
-        return employeeName;
-    }
+    // public String getEmployeeName() {
+    //     return employeeName;
+    // }
 
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
+    // public void setEmployeeName(String employeeName) {
+    //     this.employeeName = employeeName;
+    // }
+
+    @ManyToOne
+    @JoinColumn(name = "analysis_id", referencedColumnName = "analysisId")
+    private Analysis analysis;
 
 }

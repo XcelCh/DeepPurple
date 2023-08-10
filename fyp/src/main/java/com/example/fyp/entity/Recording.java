@@ -1,7 +1,10 @@
 package com.example.fyp.entity;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.CascadeType;
@@ -30,12 +33,8 @@ public class Recording {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer recordingId;
 
-    private Integer employeeId;
-    private Integer accountId;
-
-    // @ManyToOne
-    // @JoinColumn(name = "employee_id")
-    // private Employee employee;
+    // private Integer employeeId;
+    // private Integer accountId;
 
     private String recordingName;
     
@@ -59,7 +58,26 @@ public class Recording {
     private String audioFormat;
     private Integer sampleRate;
     
-    // @OneToOne(mappedBy = "recording", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private Analysis analysis;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "analysis_id", referencedColumnName = "analysisId")
+    @JsonManagedReference
+    private Analysis analysis;
 
+    @ManyToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "employeeId")
+    private Employee employee;
+
+    @ManyToOne
+    @JoinColumn(name ="account_id", referencedColumnName = "accountId")
+    private Account account;
+
+
+    @Override
+    public String toString() {
+        return "Recording{recordingId=" + recordingId + ", recordingName='" + recordingName + '\'' + ", content=" + Arrays.toString(content) +
+                ", uploadDate=" + uploadDate + ", recordingDate=" + recordingDate + ", recordingDuration=" + recordingDuration +
+                ", recordingUrl='" + recordingUrl + '\'' + ", audioFormat='" + audioFormat + '\'' + ", sampleRate=" + sampleRate +
+                ", analysis=" + (analysis != null ? analysis.getAnalysisId() : null) + ", employee=" + (employee != null ? employee.getEmployeeId() : null) +
+                ", account=" + (account != null ? account.getAccountId() : null) + '}';
+    }
 }

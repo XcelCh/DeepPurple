@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import lombok.Data;
@@ -19,7 +21,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer employeeId;
     
-    private Integer accountId;
+    // private Integer accountId;
     
     private String employeeName;
     private Integer numCallsHandled;
@@ -30,8 +32,12 @@ public class Employee {
     // @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     // private List<Recording> recordings;
 
-    public void setAccountId(Integer accountId){
-        this.accountId = accountId;
-    }
+    // public void setAccountId(Integer accountId){
+    //     this.accountId = accountId;
+    // }
+
+    @ManyToOne
+    @JoinColumn(name = "account_id", referencedColumnName = "accountId")
+    private Account account;
 
 }
