@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import visaImage from "../assets/Visa.png";
 import GenericModal from "../components/GenericModal";
 import Footer from '../components/Footer';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 import {
     Chart as ChartJS,
@@ -13,6 +15,8 @@ import {
 } from 'chart.js';
 
 import { Bar } from 'react-chartjs-2';
+import authHeader from "../services/auth-header";
+import AuthService from "../services/auth.service";
 
 ChartJS.register(
     BarElement,
@@ -23,6 +27,56 @@ ChartJS.register(
 )
 
 function Billing() {
+
+    const token = authHeader();
+    const navigate = useNavigate();
+
+    const [cardNum, setCardNum] = useState('');
+    const [expDate, setExpDate] = useState('');
+    const [card, setCard] = useState(false);
+    const [limit, setLimit] = useState(0);
+    const user = AuthService.getCurrentUser();
+
+
+
+    useEffect (() => {
+
+        fetch('http://localhost:8082/payment/getCard', {
+            headers : token
+        })
+        .then(response => {
+            if (response.ok) {
+
+                console.log('Successfully fetch card.');
+                return response.json();
+            }
+            else if(response.status === 401) {
+
+                console.log('Unauthorized.');
+                navigate('/unauthorizedPage');
+
+            }
+        })
+        .then(data => {
+            console.log(data);
+
+            setCardNum(data.cardNumber.substring(14));
+            var month = data.expiryDate.substring(5,7);
+            var year = data.expiryDate.substring(0,4);
+            console.log(month, year);
+            setExpDate(month+'/'+year);
+            setCard(true);
+            setLimit(data.usageLimit);
+        })
+        .catch(error => {
+            console.error(error);
+        })
+    }, [])
+
+
+
+
+
     
     const data = {
         labels: ['01 Aug', '02 Aug', '03 Aug', '04 Aug', '05 Aug', '06 Aug'],
@@ -82,27 +136,33 @@ function Billing() {
             <div>
                 <div className="grid w-full gap-16 grid-cols-2 px-32">
                     <div className="border border-[#A5A5A5] rounded-md p-6 bg-white">
-                        <p className="text-xl font-semibold text-[#414141]">
-                            Usage this month
-                        </p>
-                        <p className="text-md text-[#414141]">
-                            The amount you need to pay for this month.
-                        </p>
-                        <div className="h-4 rounded-full bg-[#F5F5F5] mt-2">
-                            <div className="h-4 rounded-full" style={{ width: `25%`, backgroundColor: `#7566BB` }}></div>
+                    {limit !== 0 ?(
+                        <div>
+                            <p className="text-xl font-semibold text-[#414141]">
+                                Usage this month
+                            </p>
+                            <p className="text-md text-[#414141]">
+                                The amount you need to pay for this month.
+                            </p>
+                            <div className="h-4 rounded-full bg-[#F5F5F5] mt-2">
+                                <div className="h-4 rounded-full" style={{ width: `25%`, backgroundColor: `#7566BB` }}></div>
+                            </div>
+                            <div className="flex justify-end text-md mt-2 text-[#414141] font-light">
+                                <p>$2.11 / ${limit}</p>
+                            </div>
+                            <div className="flex justify-end text-md mt-2">
+                                <label
+                                    htmlFor="setUsageLimitModal"
+                                    className="text-[#7566BB] hover:underline"
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <p className="text-md font-light">Set limits</p>
+                                </label>
+                            </div>
                         </div>
-                        <div className="flex justify-end text-md mt-2 text-[#414141] font-light">
-                            <p>$2.11 / $10.00</p>
-                        </div>
-                        <div className="flex justify-end text-md mt-2">
-                            <label
-                                htmlFor="setUsageLimitModal"
-                                className="text-[#7566BB] hover:underline"
-                                style={{ cursor: 'pointer' }}
-                            >
-                                <p className="text-md font-light">Set limits</p>
-                            </label>
-                        </div>
+                    ) : (
+                        <div>If No Limit is set</div>
+                    )}
                     </div>
                     
                     <div className="border border-[#A5A5A5] rounded-md p-6 bg-white">
@@ -112,28 +172,36 @@ function Billing() {
                         <p className="text-md text-[#414141]">
                             Change how you pay for your plan.
                         </p>
+                        { card ? (
                         <div className="flex items-center space-x-4 border rounded-md border-[#A5A5A5] mt-2 p-2">
                             <img class="h-5 justify-self-end mr-8 ml-4" src={visaImage} alt="Visa image"></img>
                             <div className="flex-1">
                                 <div className="text-md font-semibold text-[#414141]">
-                                    Visa ending in 1234
+                                    Visa ending in {cardNum}
                                 </div>
                                 <div className="text-sm text-[#414141]">
-                                    Expiry 06/2024
+                                    Expiry {expDate}
                                 </div>
                                 <div className="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#414141" class="w-4 h-4">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                                     </svg>
-                                    <p className="text-sm ml-1 text-[#414141]">testing@gmail.com</p>
+                                    <p className="text-sm ml-1 text-[#414141]">
+                                        {user.email}
+                                    </p>
                                 </div>
                             </div>
+                            <Link to= '/paymentForm'>
                             <button
                                 className="bg-[#7566BB] text-white hover:bg-[#5E519A] py-2 px-4 rounded-lg inline-flex items-center font-medium"
                             >
                                 Edit
                             </button>
+                            </Link>
                         </div>
+                        ) : (
+                            <div>If No Card Here</div>
+                        )}
                     </div>
                 </div>
             </div>

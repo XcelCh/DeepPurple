@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -68,11 +70,15 @@ public class Account {
     private String profilePic;
     private String companyField;
 
-    @OneToMany(mappedBy = "account")
-    private List<Usages> usageList;
+    
+    // @OneToMany(mappedBy = "account")
+    // @JsonBackReference
+    // private List<Usages> usageList;
 
+    
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name= "payment_id", referencedColumnName = "paymentId")
+    @JsonBackReference
     private Payment payment;
 
     public Account (String email, String fullName, String gender, String phoneNum, Date dob) {
@@ -86,5 +92,12 @@ public class Account {
 
     public void addRole (Role role) {
         this.roles.add(role);
+    }
+
+    @Override
+    public String toString() {
+        return "Account{accountId=" + accountId + ", email='" + email + '\'' + ", fullName='" + fullName + '\'' +
+               ", gender='" + gender + '\'' + ", phoneNum='" + phoneNum + '\'' + ", dob=" + dob + ", roles=" + roles +
+               ", profilePic='" + profilePic + '\'' + ", companyField='" + companyField + '\'' + ", paymentId=" + payment.getPaymentId() + '}' ;
     }
 }

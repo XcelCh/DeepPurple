@@ -10,10 +10,6 @@ import authHeader from '../services/auth-header';
 
 function PaymentForm() {
     const navigate = useNavigate();
-    const location = useLocation();
-
-    console.log(location.state);
-    const selectedPlan = location.state;
 
     const token = authHeader();
 
@@ -29,6 +25,7 @@ function PaymentForm() {
     const [expiryDateMessage, setExpiryDateMessage] = useState('');
     const [securityCodeMessage, setSecurityCodeMessage] = useState('');
     const [currentDate, setCurrentDate] = useState('');
+    const [inputDate, setInputDate] = useState('');
 
     const namePattern = /^[A-Za-z]+( [A-Za-z]+)*$/;
 
@@ -85,10 +82,13 @@ function PaymentForm() {
           } 
 
           inputValue = month + '/' + year;
+          setFormData({...formData, expiryDate: new Date("20"+year+'/'+month)});
         }
       }
-      setFormData({...formData, expiryDate: inputValue})
+      setInputDate(inputValue);
     }
+
+    
 
     const handleExpiryDateKeyDown = (event) => {
       if (event.key === 'Backspace' && event.target.value.replace(/\D/g, '').length == 2) {
@@ -104,8 +104,6 @@ function PaymentForm() {
       if (!namePattern.test(event.target.value)) {
         setCardholderNameMessage('Enter a valid name.');
       }
-
-
     };
 
     const handleCardNumberBlur = (event) => {
@@ -141,28 +139,32 @@ function PaymentForm() {
       e.preventDefault();
 
       if(cardholderNameMessage != "" || cardNumberMessage != "" || expiryDateMessage != "" || securityCodeMessage != "") {
+ 
+      } 
+      else{
 
-        
-        
-      } else{
+        console.log('passed');
 
-        fetch ('http://localhost:8082/addSubs', {
-          method: 'POST',
-          headers: {'Authorization': token.Authorization,
-                    'Content-Type': 'applicaiton/json'},
-          body: JSON.stringify({subs: selectedPlan.planName})
+        fetch('http://localhost:8082/payment/addCard', {
+          method : 'POST',
+          headers : {'Authorization' : token.Authorization,
+                      'Content-Type' : 'application/json'},
+          body : JSON.stringify(formData)
         })
-        .then (response => {
-
-          if (response.status == 200) {
-            
-            console.log('Subscription Added.');
-            navigate('/');
+        .then(response => {
+          if (response.ok) {
+            console.log('Card Successfully added.');
+          }
+          else if (response.status == 401) {
+            console.log('Unauthorized.');
+            navigate('/unauthorizedPage');
           }
           else if (!response.ok) {
-            console.log(response.status);
-            console.log("Subscription Failed.");
+            throw new Error('Error Detected.');
           }
+        })
+        .catch(error => {
+          console.error(error);
         })
 
       }
@@ -286,7 +288,7 @@ function PaymentForm() {
                               name="expiryDate"
                               id="expiryDate"
                               class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                              value={formData.expiryDate}
+                              value={inputDate}
                               onKeyDown={handleExpiryDateKeyDown}
                               onBlur={handleExpiryDateBlur}
                               onChange={restrictExpiryDateInput}
@@ -355,7 +357,7 @@ function PaymentForm() {
                 </div>
                 
                 {/* Right part */}
-                <div className="pr-6 col-span-1 text-left flex flex-col justify-center">
+                {/* <div className="pr-6 col-span-1 text-left flex flex-col justify-center">
                   <div>
                     <h1 class="text-xl font-bold text-gray-900 md:text-2xl text-left mb-4">
                       Order summary
@@ -387,7 +389,10 @@ function PaymentForm() {
                       ${selectedPlan.planPrice}
                     </h3>
                   </div>
-                  <div class="flex flex-col items-left text-sm text-justify font-regular mb-4">
+                  
+                  
+                </div> */}
+                <div class="flex flex-col items-left text-sm text-justify font-regular mb-4">
                     <p>
                       By continuing, you verify that you are at least 18 years old and agree to the DeepPurple Payments{" "}
                       <Link to="/" class="font-regular text-blue-600 hover:underline">
@@ -396,13 +401,12 @@ function PaymentForm() {
                       .
                     </p>
                   </div>
-                  <button
+                <button
                     type="submit"
                     class="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                   >
-                    Buy now
+                    Add Card
                   </button>
-                </div>
               </div>
             </form>
             <p class="mt-4 text-xs text-[#3C3988]">
