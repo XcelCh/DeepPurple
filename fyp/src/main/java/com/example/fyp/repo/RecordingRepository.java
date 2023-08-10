@@ -35,4 +35,7 @@ public interface RecordingRepository extends JpaRepository<Recording, Integer>{
     )
     List<Map<String, Object>> getAllRecordings(Integer account_id);
 
+    @Query("SELECT r.recordingId AS recordingId, r.uploadDate AS uploadDate "+
+    "FROM Recording r WHERE r.recordingId = :recording_id")
+    Map<String, Object> getRecordingById(Integer recording_id);
 }

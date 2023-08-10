@@ -13,6 +13,9 @@ import com.example.fyp.entity.Recording;
 import com.example.fyp.model.ResponseStatus;
 import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.service.RecordingListService;
+
+import jakarta.persistence.EntityExistsException;
+
 import com.example.fyp.repo.AccountRepository;
 import com.example.fyp.repo.AudioFileRepository;
 
@@ -102,11 +105,22 @@ public class EmployeeController {
         ResponseStatus<Employee> response = new ResponseStatus<>();
 
         try {
+            // Retrieve the current authentication token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            Integer account_id = accountRepository.getAccountId(email);
+
+            System.out.println("AUTHORIZATION " + account_id);
+
+            emp.setAccountId(account_id);
+
+            System.out.println("ACCOUNT ID: " + emp.getAccountId());
+
             Employee empObj = empRepo.save(emp);
 
             // RESPONSE DATA
             response.setSuccess(true);
-            response.setData(empObj);
+            // response.setData(empObj);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (Exception ex) {

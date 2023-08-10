@@ -27,6 +27,10 @@ public class RecordingListService {
     public List<Map<String, Object>> getRecordingList(Integer account_id) {
         return recordingRepository.getAllRecordings(account_id);
     }
+
+    public Map<String, Object> getRecordingById(Integer rec_id){
+        return recordingRepository.getRecordingById(rec_id);
+    }
     
 
 }
