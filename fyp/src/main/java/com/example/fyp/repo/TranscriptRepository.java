@@ -10,15 +10,20 @@ import com.example.fyp.entity.Transcript;
 
 @Repository
 public interface TranscriptRepository extends JpaRepository<Transcript, Integer> {
+
+    @Query("SELECT t FROM Transcript t WHERE t.analysis.recording.recordingId = :recordingId")
     List<Transcript> findByRecordingId(Integer recordingId);
 
+    @Query("SELECT t FROM Transcript t WHERE t.transcriptId = :transcriptId AND t.analysis.recording.recordingId = :recordingId")
     Transcript findByTranscriptIdAndRecordingId(Integer transcriptId, Integer recordingId);
 
-    @Query("SELECT t.dialog " +
-        "FROM Transcript t " +
-        "JOIN Analysis a ON t.recordingId = a.recordingId ")
+    // @Query("SELECT t.dialog " +
+    //     "FROM Transcript t " +
+    //     "JOIN Analysis a ON t.recordingId = a.recordingId ")
+    @Query("SELECT t.dialog FROM Transcript t")
     List<String> getTranscripts();
 
-    @Query("SELECT t.employeeId, t.dialog FROM Transcript t WHERE t.recordingId = :recordingId")
+    // @Query("SELECT t.employeeId, t.dialog FROM Transcript t WHERE t.recordingId = :recordingId")
+    @Query("SELECT t.analysis.recording.employee.employeeId, t.dialog FROM Transcript t WHERE t.analysis.recording.recordingId = :recordingId")
     List<Object[]> findEmployeeAndDialogByRecordingId(Integer recordingId);
 }

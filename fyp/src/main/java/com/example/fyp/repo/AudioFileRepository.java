@@ -9,6 +9,8 @@ public interface AudioFileRepository extends JpaRepository<Recording, Integer> {
 
     Optional<Recording> findByRecordingName(String fileName);
 
-    List<Recording> findByEmployeeId(Integer employeeId);
+    List<Recording> findByEmployee_EmployeeId(Integer employeeId);
+
+    
 }
 

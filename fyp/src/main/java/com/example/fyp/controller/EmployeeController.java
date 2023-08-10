@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
+import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.model.ResponseStatus;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.EmployeeService;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +46,11 @@ import org.slf4j.LoggerFactory;
 public class EmployeeController {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
+    // @Autowired
+    // private AccountRepository accountRepository;
+
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountServiceImpl accountServiceImpl;
     
     @Autowired
     private EmployeeRepository empRepo;
@@ -68,7 +74,7 @@ public class EmployeeController {
             // Retrieve the current authentication token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
-            Integer account_id = accountRepository.getAccountId(email);
+            Integer account_id = accountServiceImpl.getAccountId(email);
 
             System.out.println("AUTHORIZATION " + account_id);
 
@@ -108,13 +114,14 @@ public class EmployeeController {
             // Retrieve the current authentication token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
-            Integer account_id = accountRepository.getAccountId(email);
+            // Integer account_id = accountRepository.getAccountId(email);
+            Account account = accountServiceImpl.loadUserDetailsByUsername(email);
 
-            System.out.println("AUTHORIZATION " + account_id);
+            // System.out.println("AUTHORIZATION " + account_id);
 
-            emp.setAccountId(account_id);
+            emp.setAccount(account);
 
-            System.out.println("ACCOUNT ID: " + emp.getAccountId());
+            System.out.println("ACCOUNT ID: " + emp.getAccount().getAccountId());
 
             Employee empObj = empRepo.save(emp);
 
@@ -185,7 +192,7 @@ public class EmployeeController {
 
         try {
             List<Recording> recList = new ArrayList<>();
-            recRepo.findByEmployeeId(id).forEach(recList::add);
+            recRepo.findByEmployee_EmployeeId(id).forEach(recList::add);
 
              if (search != null && !search.isEmpty()){
                 String searchKeyword = "%" + search + "%";
