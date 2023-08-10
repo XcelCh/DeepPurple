@@ -164,58 +164,60 @@ function ForgetPasswordForm() {
                                 <h3 className="text-sm font-normal text-gray-900 text-left">
                                 Forgot your DeepPurple password? Please enter your email below and we will help you reset it.
                                 </h3>
-                                <form className="space-y-4 md:space-y-6">
-                                {/* Email */}
-                                <div class="flex items-center">
-                                    <label class="relative w-full">
-                                        <input 
-                                        type="text"
-                                        name="email"
-                                        id="email"
-                                        class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                                        value={formData.email}
-                                        onChange={(event) => setFormData({...formData, email: event.target.value})}
-                                        required
-                                        ></input>
-                                        <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
-                                        pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
-                                        peer-valid:text-xs peer-valid:-translate-y-5">Email</span>
-                                    </label>
-                                </div>
-                                
-                                {message && (
-                                    <div className="flex items-center text-red-500 text-sm mt-2">
-                                        <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="currentColor"
-                                        className="w-5 h-5 mr-2"
+                                <form>
+                                    <div>
+                                        {/* Email */}
+                                        <div class="flex items-center mb-4">
+                                            <label class="relative w-full">
+                                                <input 
+                                                type="text"
+                                                name="email"
+                                                id="email"
+                                                class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                                                value={formData.email}
+                                                onChange={(event) => setFormData({...formData, email: event.target.value})}
+                                                required
+                                                ></input>
+                                                <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
+                                                pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
+                                                peer-valid:text-xs peer-valid:-translate-y-5">Email</span>
+                                            </label>
+                                        </div>
+                                        
+                                        {message && (
+                                            <div className="flex items-center text-red-500 text-sm mb-4">
+                                                <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="currentColor"
+                                                className="w-5 h-5 mr-2"
+                                                >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                                    clipRule="evenodd"
+                                                />
+                                                </svg>
+                                                {message}
+                                            </div>
+                                        )}
+
+                                        <button
+                                            className="mb-4 w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                                            onClick={handleCheckEmail}
                                         >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                            clipRule="evenodd"
-                                        />
-                                        </svg>
-                                        {message}
+                                            Send
+                                        </button>
+
+                                        <div className="flex flex-col items-left">
+                                            <p className="text-sm font-regular">
+                                            Remembered your password?{" "}
+                                            <Link to="/loginForm" className="font-regular text-blue-600 hover:underline">
+                                                Sign in
+                                            </Link>
+                                            </p>
+                                        </div>
                                     </div>
-                                )}
-
-                                <button
-                                    className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                                    onClick={handleCheckEmail}
-                                >
-                                    Send
-                                </button>
-
-                                <div className="flex flex-col items-left">
-                                    <p className="text-sm font-regular">
-                                    Remembered your password?{" "}
-                                    <Link to="/loginForm" className="font-regular text-blue-600 hover:underline">
-                                        Sign in
-                                    </Link>
-                                    </p>
-                                </div>
                                 </form>
                             </div>
                         ) : page === 1 ? (
@@ -229,57 +231,59 @@ function ForgetPasswordForm() {
                                 <h3 className="text-sm font-normal text-gray-900 text-left">
                                     An email with a verification code was just sent to{" "} <span style={{ fontWeight: "bold" }}>{formData.email}</span>
                                 </h3>
-                                <form className="space-y-4 md:space-y-6">
-                                    {/* Email */}
-                                    <div class="flex items-center">
-                                        <label class="relative w-full">
-                                            <input 
-                                            type="text"
-                                            name="code"
-                                            id="code"
-                                            class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                                            value={formData.otp}
-                                            onChange={(event) => setFormData({...formData, otp: event.target.value})}
-                                            required
-                                            ></input>
-                                            <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
-                                            pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
-                                            peer-valid:text-xs peer-valid:-translate-y-5">Enter code</span>
-                                        </label>
-                                    </div>
-                                    
-                                    {message && (
-                                        <div className="flex items-center text-red-500 text-sm mt-2">
-                                            <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="currentColor"
-                                            className="w-5 h-5 mr-2"
-                                            >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                                clipRule="evenodd"
-                                            />
-                                            </svg>
-                                            {message}
+                                <form>
+                                    <div>
+                                        {/* Email */}
+                                        <div class="flex items-center mb-4">
+                                            <label class="relative w-full">
+                                                <input 
+                                                type="text"
+                                                name="code"
+                                                id="code"
+                                                class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                                                value={formData.otp}
+                                                onChange={(event) => setFormData({...formData, otp: event.target.value})}
+                                                required
+                                                ></input>
+                                                <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
+                                                pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
+                                                peer-valid:text-xs peer-valid:-translate-y-5">Enter code</span>
+                                            </label>
                                         </div>
-                                    )}
 
-                                    <div className="flex flex-col items-left">
-                                        <button 
-                                            className="text-sm font-regular text-blue-600 hover:underline"
-                                            onClick={handleCheckEmail}>
-                                            Resend verification code
+                                        <div className="flex items-left mb-2">
+                                            <button 
+                                                className="text-sm font-regular text-blue-600 hover:underline"
+                                                onClick={handleCheckEmail}>
+                                                Resend verification code
+                                            </button>
+                                        </div>
+
+                                        {message && (
+                                            <div className="flex items-center text-red-500 text-sm mb-4">
+                                                <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="currentColor"
+                                                className="w-5 h-5 mr-2"
+                                                >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                                    clipRule="evenodd"
+                                                />
+                                                </svg>
+                                                {message}
+                                            </div>
+                                        )}
+
+                                        <button
+                                            className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                                            onClick={handleOTP}
+                                        >
+                                            Next
                                         </button>
                                     </div>
-
-                                    <button
-                                        className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                                        onClick={handleOTP}
-                                    >
-                                        Next
-                                    </button>
                                 </form>
                             </div>
                         ) : (
@@ -290,75 +294,77 @@ function ForgetPasswordForm() {
                                 <h3 className="text-sm font-normal text-gray-900 text-left">
                                     Create a new, strong password that you don't use for other websites.
                                 </h3>
-                                <form className="space-y-4 md:space-y-6">
-                                    {/* Password */}
-                                    <div class="flex items-center">
-                                        <label class="relative w-full">
-                                            <input 
-                                            type={showPassword ? 'text' : 'password'}
-                                            name="password"
-                                            id="password"
-                                            class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                                            value={formData.newPassword}
-                                            onChange={(event) => setFormData({...formData, newPassword: event.target.value})}
-                                            required
-                                            ></input>
-                                            <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
-                                            pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
-                                            peer-valid:text-xs peer-valid:-translate-y-5">Create password</span>
-                                        </label>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <label class="relative w-full">
-                                            <input 
-                                            type={showPassword ? 'text' : 'password'}
-                                            name="confirmPassword"
-                                            id="confirmPassword"
-                                            class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                                            value={confirmPassword}
-                                            onChange={(event) => setConfirmPassword(event.target.value)}
-                                            required
-                                            ></input>
-                                            <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
-                                            pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
-                                            peer-valid:text-xs peer-valid:-translate-y-5">Confirm</span>
-                                        </label>
-                                    </div>
-
-                                    {message && (
-                                        <div className="flex items-center text-red-500 text-sm mt-2">
-                                            <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="currentColor"
-                                            className="w-5 h-5 mr-2"
-                                            >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                                clipRule="evenodd"
-                                            />
-                                            </svg>
-                                            {message}
+                                <form>
+                                    <div>
+                                        {/* Password */}
+                                        <div class="flex items-center mb-4">
+                                            <label class="relative w-full">
+                                                <input 
+                                                type={showPassword ? 'text' : 'password'}
+                                                name="password"
+                                                id="password"
+                                                class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                                                value={formData.newPassword}
+                                                onChange={(event) => setFormData({...formData, newPassword: event.target.value})}
+                                                required
+                                                ></input>
+                                                <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
+                                                pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
+                                                peer-valid:text-xs peer-valid:-translate-y-5">Create password</span>
+                                            </label>
                                         </div>
-                                    )}
+                                        <div class="flex items-center mb-4">
+                                            <label class="relative w-full">
+                                                <input 
+                                                type={showPassword ? 'text' : 'password'}
+                                                name="confirmPassword"
+                                                id="confirmPassword"
+                                                class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
+                                                value={confirmPassword}
+                                                onChange={(event) => setConfirmPassword(event.target.value)}
+                                                required
+                                                ></input>
+                                                <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
+                                                pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
+                                                peer-valid:text-xs peer-valid:-translate-y-5">Confirm</span>
+                                            </label>
+                                        </div>
 
-                                    <label className="flex items-center">
-                                        <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-primary-600"
-                                        checked={showPassword}
-                                        onChange={handleCheckboxChange}
-                                        />
-                                        <span className="ml-2 text-sm font-normal text-gray-900 text-left">Show password</span>
-                                    </label>
+                                        {message && (
+                                            <div className="flex items-center text-red-500 text-sm mb-4">
+                                                <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="currentColor"
+                                                className="w-5 h-5 mr-2"
+                                                >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                                    clipRule="evenodd"
+                                                />
+                                                </svg>
+                                                {message}
+                                            </div>
+                                        )}
 
-                                    <button
-                                        className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                                        onClick={handleReset}
-                                    >
-                                        Next
-                                    </button>
+                                        <label className="flex items-center mb-4">
+                                            <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-primary-600"
+                                            checked={showPassword}
+                                            onChange={handleCheckboxChange}
+                                            />
+                                            <span className="ml-2 text-sm font-normal text-gray-900 text-left">Show password</span>
+                                        </label>
+
+                                        <button
+                                            className="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                                            onClick={handleReset}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
                         )}
