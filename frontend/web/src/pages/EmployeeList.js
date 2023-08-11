@@ -32,16 +32,18 @@ function EmployeeList() {
   const [postsPerPage, setPostPerPage] = useState(5);
 
   // Get All Employees
-  const getEmpList = async () => {
+  const getEmpList = async (showLoading) => {
     const params = `?search=${search}`;
     try {
-      Swal.fire({
-        title: "Retrieving All Employees",
-        didOpen: () => {
-          Swal.showLoading();
-        },
-        allowOutsideClick: () => !Swal.isLoading(),
-      });
+      if (showLoading) {
+        Swal.fire({
+          title: "Retrieving All Employees",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        });
+      }
 
       const response = await fetch(
         `http://localhost:8082/employeeList/getAllEmployees${params}`,
@@ -54,46 +56,29 @@ function EmployeeList() {
         setEmpList(data.data);
       });
 
-      Swal.close(); 
+      if (showLoading) {
+      Swal.close();
+        
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
-      Swal.close(); 
+        if (showLoading) {
+          Swal.close();
+        }
     }
   };
-
-   const searchEmpList = async () => {
-     const params = `?search=${search}`;
-     try {
-
-       const response = await fetch(
-         `http://localhost:8082/employeeList/getAllEmployees${params}`,
-         {
-           headers: token,
-         }
-       );
-
-       response.json().then((data) => {
-         setEmpList(data.data);
-       });
-
-     } catch (error) {
-       console.error("Error fetching data:", error);
-     }
-   };
-  
 
   // Pagination
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentPosts = empList.slice(firstPostIndex, lastPostIndex);
 
   useEffect(() => {
-    getEmpList();
+    getEmpList(true);
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    searchEmpList();
+    getEmpList(false);
   }, [search]);
 
   // Delete Employee
@@ -169,17 +154,17 @@ function EmployeeList() {
     fetch(`http://localhost:8082/employeeList/addEmployee`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json", // Set the content type to indicate JSON data
+        "Content-Type": "text/plain", // Set the content type to indicate JSON data
         "Authorization" : token.Authorization
       },
-      body: JSON.stringify(data),
+      body: empData,
     })
       .then((res) => res.json())
       .then(
         (result) => {
           getEmpList();
           // Success message
-          Swal.fire("Updated", "The employee has been added.", "success");
+          Swal.fire("Added", "The employee has been added.", "success");
         },
         (error) => {
           setError(error);
@@ -262,91 +247,98 @@ function EmployeeList() {
           </thead>
           <tbody>
             {/* row 1 */}
-            {currentPosts.map((employee, index) => (
-              <tr className="hover">
-                <th className="h-1">
-                  {currentPage * postsPerPage - 4 + index}
-                </th>
-                <td className="h-1">{employee.employeeName}</td>
-                <td className="text-center h-1">{employee.numCallsHandled}</td>
-                <td className="text-center h-1">
-                  {employee.numNegativeSentiment}
-                </td>
-                <td className="text-center h-1">
-                  {employee.numPositiveSentiment}
-                </td>
-                <td className="flex justify-center items-center">
-                  <div className="dropdown dropdown-end">
-                    <label
-                      tabIndex={0}
-                      className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
-                    >
-                      <MoreVertIcon style={{ color: "black" }}></MoreVertIcon>
-                    </label>
-                    <ul
-                      tabIndex={0}
-                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-42 rounded-md border-[#D1D1D1]"
-                    >
-                      <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                        <a
-                          className="text-[#9554FE] hover:text-[#FFFFFF]"
-                          href={`/employeeList/recordingList/${currentEmployeeId}`}
-                          onClick={() => {
-                            setCurrentEmployeeId(employee.employeeId);
-                          }}
-                        >
-                          <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>
-                          View Calls Handled
-                        </a>
-                      </li>
-                      <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+            {empList.length > 0 ? (
+              empList
+                .slice(firstPostIndex, lastPostIndex)
+                .map((employee, index) => (
+                  <tr className="hover">
+                    <th className="h-1">
+                      {currentPage * postsPerPage - 4 + index}
+                    </th>
+                    <td className="h-1">{employee.employeeName}</td>
+                    <td className="text-center h-1">
+                      {employee.numCallsHandled}
+                    </td>
+                    <td className="text-center h-1">
+                      {employee.numNegativeSentiment}
+                    </td>
+                    <td className="text-center h-1">
+                      {employee.numPositiveSentiment}
+                    </td>
+                    <td className="flex justify-center items-center">
+                      <div className="dropdown dropdown-end">
                         <label
-                          className="text-[#9554FE] hover:font-bold"
-                          htmlFor="editNameModal"
-                          onClick={() => {
-                            setCurrentName(employee.employeeName);
-                            setCurrentEmployeeId(employee.employeeId);
-                          }}
+                          tabIndex={0}
+                          className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
                         >
-                          <EditOutlinedIcon></EditOutlinedIcon> Edit Names
+                          <MoreVertIcon
+                            style={{ color: "black" }}
+                          ></MoreVertIcon>
                         </label>
-                      </li>
-                      <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                        <a
-                          className="text-[#D55454] hover:text-[#FFFFFF]"
-                          onClick={() => handleDelete(employee.employeeId)}
+                        <ul
+                          tabIndex={0}
+                          className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-42 rounded-md border-[#D1D1D1]"
                         >
-                          <DeleteOutlinedIcon></DeleteOutlinedIcon> Delete
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                          <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                            <a
+                              className="text-[#9554FE] hover:text-[#FFFFFF]"
+                              href={`/employeeList/recordingList/${currentEmployeeId}`}
+                              onClick={() => {
+                                setCurrentEmployeeId(employee.employeeId);
+                              }}
+                            >
+                              <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>
+                              View Calls Handled
+                            </a>
+                          </li>
+                          <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                            <label
+                              className="text-[#9554FE] hover:font-bold"
+                              htmlFor="editNameModal"
+                              onClick={() => {
+                                setCurrentName(employee.employeeName);
+                                setCurrentEmployeeId(employee.employeeId);
+                              }}
+                            >
+                              <EditOutlinedIcon></EditOutlinedIcon> Edit Names
+                            </label>
+                          </li>
+                          <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                            <a
+                              className="text-[#D55454] hover:text-[#FFFFFF]"
+                              onClick={() => handleDelete(employee.employeeId)}
+                            >
+                              <DeleteOutlinedIcon></DeleteOutlinedIcon> Delete
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+            ) : (
+              <>
+                <img src={EmptyRecording} className="mx-auto mt-10"></img>
+                <p className="text-center font-semibold text-lg">
+                  You don't have any employees yet
+                </p>
+                <p className="text-center font-semibold text-sm mb-10">
+                  Start adding employee by clicking
+                  <a
+                    href="recordingList/AddRecording"
+                    className="underline underline-offset-2 ml-1"
+                  >
+                    Add Employee
+                  </a>
+                </p>
+              </>
+            )}
           </tbody>
         </table>
-        {currentPosts.length == 0 ? (
-          <>
-            <img src={EmptyRecording} className="mx-auto mt-10"></img>
-            <p className="text-center font-semibold text-lg">
-              You don't have any employees yet
-            </p>
-            <p className="text-center font-semibold text-sm mb-10">
-              Start adding employee by clicking
-              <a
-                href="recordingList/AddRecording"
-                className="underline underline-offset-2 ml-1"
-              >
-                Add Employee
-              </a>
-            </p>
-          </>
-        ) : null}
       </div>
       <div className="join flex justify-end mt-10 mb-10">
         <Pagination
-          totalPosts={empList.length}
+          totalPosts={empList && empList.length}
           postsPerPage={postsPerPage}
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}
