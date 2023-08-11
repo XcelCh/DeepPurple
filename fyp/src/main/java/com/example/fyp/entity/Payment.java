@@ -40,9 +40,9 @@ public class Payment {
 
 
     
-    // @OneToMany(mappedBy = "payment")
-    // @JsonBackReference
-    // private List<Billing> billings;
+    @OneToMany(mappedBy = "payment")
+    @JsonBackReference
+    private List<Billing> billings;
 
     @JsonIgnore
     @OneToOne(mappedBy = "payment")

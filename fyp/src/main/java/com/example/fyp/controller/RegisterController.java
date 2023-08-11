@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.fyp.controller.dto.CreateAccountDto;
 import com.example.fyp.controller.dto.PasswordResetRequestDto;
 import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Role;
@@ -77,13 +78,15 @@ public class RegisterController {
     }
 
     @PostMapping("/createAccount") 
-    public ResponseEntity<String> createAccount (@RequestBody Account account) {
+    public ResponseEntity<String> createAccount (@RequestBody CreateAccountDto createAccountDto) {
 
+        Account account = new Account(createAccountDto.getEmail(), createAccountDto.getFullName(), createAccountDto.getGender(), 
+                                    createAccountDto.getPhoneNum(), createAccountDto.getDob(), createAccountDto.getCompanyField());
 
         // Change id on reset database
-        Role roleFree = roleRepository.findById(6);
+        Role roleFree = roleRepository.findById(1);
 
-        String encodePassword = passwordEncoder.encode(account.getPassword());
+        String encodePassword = passwordEncoder.encode(createAccountDto.getPassword());
         
         account.setPassword(encodePassword);
         account.addRole(roleFree);

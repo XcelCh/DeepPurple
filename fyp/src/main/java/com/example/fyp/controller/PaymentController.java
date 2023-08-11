@@ -48,7 +48,7 @@ public class PaymentController {
             account.setPayment(payment);
 
             // Change on reset database
-            account.addRole(roleRepository.findById(9));
+            account.addRole(roleRepository.findById(2));
 
             accountServiceImpl.saveAccount(account);
             return ResponseEntity.ok("Card Successfully Saved");

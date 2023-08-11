@@ -38,4 +38,11 @@ public class Usages {
     @JoinColumn(name = "account_id")
     @JsonManagedReference
     private Account account;
+
+    @Override
+    public String toString() {
+        return "Usages{usagesId=" + usagesId + ", minutesUsed=" + minutesUsed + ", rate=" + rate + ", usageDate=" + usageDate +
+                ", billing=" + (billing != null ? billing.getBillingId() : null) + ", account=" + (account != null ? account.getAccountId() : null) +
+                '}';
+    }
 }
