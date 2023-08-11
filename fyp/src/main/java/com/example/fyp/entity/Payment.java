@@ -16,10 +16,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Payment {
     
     @JsonIgnore
@@ -48,6 +52,14 @@ public class Payment {
     @OneToOne(mappedBy = "payment")
     @JsonManagedReference
     private Account account;
+
+    public Payment (String cardholderName, String cardNumber, Date expiryDate, String securityCode) {
+
+        this.cardholderName = cardholderName;
+        this.cardNumber = cardNumber;
+        this.expiryDate = expiryDate;
+        this.securityCode = securityCode;
+    }
     
     @Override
     public String toString() {

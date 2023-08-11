@@ -22,6 +22,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Analysis {   
 
     @Id

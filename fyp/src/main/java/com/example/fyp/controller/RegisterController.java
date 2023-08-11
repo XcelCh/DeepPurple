@@ -78,21 +78,11 @@ public class RegisterController {
     }
 
     @PostMapping("/createAccount") 
-<<<<<<< HEAD
-    public ResponseEntity<String> createAccount (@RequestBody Account account) {
-        
-        System.out.println(account);
-        System.out.println(account);
-        System.out.println(account);
-        System.out.println(account);
-        System.out.println(account);
-=======
     public ResponseEntity<String> createAccount (@RequestBody CreateAccountDto createAccountDto) {
 
         Account account = new Account(createAccountDto.getEmail(), createAccountDto.getFullName(), createAccountDto.getGender(), 
                                     createAccountDto.getPhoneNum(), createAccountDto.getDob(), createAccountDto.getCompanyField());
 
->>>>>>> 1b2d1a5f8bfe99bed7de933c24956dda40b9b6aa
         // Change id on reset database
         Role roleFree = roleRepository.findById(1);
 
