@@ -46,6 +46,7 @@ import Heart from "./Heart.svg";
 import NegativeWordmap from "./NegativeWordmap.svg";
 import RedHeart from "./RedHeart.svg";
 import EmptyRecording from "./EmptyRecording.svg";
+import Empty from "./Empty.svg";
 
 export {
   TextIcon,
@@ -95,5 +96,6 @@ export {
   Heart,
   NegativeWordmap,
   RedHeart,
-  EmptyRecording
+  EmptyRecording,
+  Empty
 };

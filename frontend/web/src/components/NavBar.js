@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { TextIcon, ProductIcon } from '../assets';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import profilePicture from "../assets/Default.png";
 
 import AuthService from "../services/auth.service";
 import authHeader from "../services/auth-header";
@@ -11,14 +12,14 @@ function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = AuthService.getCurrentUser();
-  const [profilePic, setProfilePic] = useState('');
+  // const [profilePic, setProfilePic] = useState('');
 
-  useEffect(() => {
-  // if (user) {
-    console.log('nav');
-    setProfilePic(sessionStorage.getItem("profilepic"));
-  }, [user])
-  // }  
+  // useEffect(() => {
+  // // if (user) {
+  //   console.log('nav');
+  //   setProfilePic(sessionStorage.getItem("profilepic"));
+  // }, [user])
+  // // }  
   
   const logOut = () => {
     AuthService.logout();
@@ -47,7 +48,7 @@ function NavBar() {
                 <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
               </svg>
             </a>
-            <ul className="p-2 bg-[#5A3D86] shadow-md">
+            <ul className="p-2 bg-[#5A3D86] shadow-lg">
               <li>
                 <Link to="/textSentiment">
                   <svg
@@ -106,15 +107,15 @@ function NavBar() {
 
       <div>
         {user ? (
-          <Link to="/">
+          <div>
             <div class="avatar mr-2">
               <div class="w-10 rounded-full">
-                <img src={profilePic} alt="Dog" />
+                <img src={profilePicture} alt="profile" />
               </div>
             </div>
             <div className="dropdown dropdown-end">
               <svg
-                className="fill-current ml-1"
+                className="fill-current ml-1 cursor-pointer"
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
                 height="20"
@@ -125,7 +126,7 @@ function NavBar() {
               </svg>
               <ul
                 tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-[#5A3D86] rounded-box w-52 mr-5"
+                className="dropdown-content menu p-2 shadow shadow-lg bg-[#5A3D86] rounded-box w-52 mr-5"
               >
                 <li className="h-8">
                   <Link to="/editProfile" className="h-8">
@@ -181,7 +182,7 @@ function NavBar() {
                 </li>
               </ul>
             </div>
-          </Link>
+          </div>
         ) : (
           <Link to="/loginForm">
             <button

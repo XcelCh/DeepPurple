@@ -95,6 +95,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/analysis/**").permitAll()
                         .requestMatchers("/summaryAnalysis/**").permitAll()
                         .requestMatchers("/payment/**").authenticated()
+                        .requestMatchers("/sendInquiry").permitAll()
                 // .anyRequest().authenticated()
                 );
 

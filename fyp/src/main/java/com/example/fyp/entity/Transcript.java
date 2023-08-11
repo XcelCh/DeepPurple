@@ -37,6 +37,8 @@ public class Transcript {
 
     @Column(columnDefinition = "TEXT")
     private String dialog;
+
+    private boolean speaker;
     
     // public String getEmployeeName() {
     //     return employeeName;
