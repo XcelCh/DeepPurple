@@ -58,6 +58,7 @@ public class EmployeeController {
     @Autowired
     private AudioFileRepository recRepo;
 
+    @Autowired
     private final EmployeeService employeeService;
 
     @Autowired
@@ -138,7 +139,7 @@ public class EmployeeController {
 
         try {
             // System.out.println(id);
-            empRepo.deleteById(id);
+            employeeService.deleteById(id);
             // int result = employeeService.deleteEmployeeById(id);
 
             // RESPONSE DATA

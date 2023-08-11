@@ -16,7 +16,7 @@ public class EmployeeService {
       return employeeRepository.getAllEmployee(account_id);
     }
     
-    public int deleteEmployeeById(Integer emp_id){
-      return employeeRepository.deleteEmployeeById(emp_id);
+    public void deleteById(Integer emp_id){
+       employeeRepository.deleteById(emp_id);
     }
 }

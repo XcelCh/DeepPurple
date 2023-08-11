@@ -92,13 +92,14 @@ public class Account {
     @JsonBackReference
     private List<Employee> employee;
 
-    public Account (String email, String fullName, String gender, String phoneNum, Date dob) {
+    public Account (String email, String fullName, String gender, String phoneNum, Date dob, String companyField) {
 
         this.email = email;
         this.fullName = fullName;
         this.gender = gender;
         this.phoneNum = phoneNum;
         this.dob = dob;
+        this.companyField = companyField;
     }
 
     public void addRole (Role role) {
@@ -110,7 +111,7 @@ public class Account {
         return "Account{accountId=" + accountId + ", email='" + email + '\'' + ", fullName='" + fullName + '\'' +
                ", gender='" + gender + '\'' + ", phoneNum='" + phoneNum + '\'' + ", dob=" + dob + ", roles=" + roles +
             //    ", profilePic='" + profilePic + '\'' + 
-               ", companyField='" + companyField + '\'' + ", paymentId=" + payment.getPaymentId() + 
+               ", companyField='" + companyField + '\'' + ", paymentId=" + (payment != null ? payment.getPaymentId() : null) + 
                ", recording=" + recording + ", employee=" + employee + '}' ;
     }
 }

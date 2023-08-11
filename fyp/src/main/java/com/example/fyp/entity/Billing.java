@@ -38,5 +38,9 @@ public class Billing {
     @JsonBackReference
     private List<Usages> usageList;
 
-
+    @Override
+    public String toString() {
+        return "Billing{billingId=" + billingId + ", totalAmount=" + totalAmount + ", dateBilled=" + dateBilled +
+                ", payment=" + (payment != null ? payment.getPaymentId() : null) + '}';
+    }
 }
