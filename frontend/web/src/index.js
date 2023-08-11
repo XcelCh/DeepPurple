@@ -82,7 +82,7 @@ export default function App() {
           />
 
           <Route
-            path="analysis"
+            path="employeeList/analysis/:id"
             element={
               <Sidebar>
                 <Analysis />

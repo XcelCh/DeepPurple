@@ -231,7 +231,8 @@ function RecordingList() {
     <div className="ml-20 mt-16">
       <p className="text-xl font-bold text-left mb-5">Recording List</p>
 
-      <div class="grid grid-cols-3 mb-5">
+      <div class="grid grid-cols-2 mb-5 border border-orange-600">
+        <div className="flex gap-3">
         <form className="max-w-xs text-sm">
           <div className="relative">
             <svg
@@ -368,15 +369,17 @@ function RecordingList() {
             </div>
           </div>
         </form>
+        <DateRange
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+        ></DateRange>
+        </div>
 
         {/* Upload Date */}
-        <div className="grid grid-cols-2 flex items-center mb-5">
-          <p className="font-bold">Upload Date</p>
-          <DateRange
-            dateRange={dateRange}
-            setDateRange={setDateRange}
-          ></DateRange>
-        </div>
+        {/* <div className="grid grid-cols-2 flex items-center mb-5">
+          <p className="font-bold">Upload Date</p> */}
+
+        {/* </div> */}
 
         {/* Upload */}
         <div className="place-self-end">

@@ -41,7 +41,8 @@ function Analysis() {
   const [recordingData, setRecordingData] = useState({});
   const [transcriptData, setTranscriptData] = useState([]);
 
-  // const recordingId = 1;
+   const fromEmployeeList = window.location.pathname.startsWith("/employeeList");
+
   const { id } = useParams();
   useEffect(() => {
     Swal.fire({
@@ -72,6 +73,7 @@ function Analysis() {
             setAnalysisData(data.analysis);
             setRecordingData(data.recording);
             setTranscriptData(data.transcripts);
+            
             Swal.close();
           })
           .catch((error) => {
@@ -155,7 +157,7 @@ function Analysis() {
   return (
     <div className="ml-20 mt-16">
       <div className="flex items-center">
-        <Link to="../recordingList">
+        <Link to={fromEmployeeList?'../employeeList':'../recordingList'}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
