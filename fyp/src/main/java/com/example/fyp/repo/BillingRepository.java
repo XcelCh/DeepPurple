@@ -1,9 +1,15 @@
-// package com.example.fyp.repo;
+package com.example.fyp.repo;
 
-// import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-// import com.example.fyp.entity.Billing;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-// public interface BillingRepository extends JpaRepository<Billing, Long> {
-    
-// }
+import com.example.fyp.entity.Billing;
+import com.example.fyp.entity.Transcript;
+
+public interface BillingRepository extends JpaRepository<Billing, Long> {
+    @Query("SELECT b FROM Billing b WHERE b.payment.paymentId = :paymentId")
+    List<Billing> findByPaymentId(Long paymentId);
+
+}

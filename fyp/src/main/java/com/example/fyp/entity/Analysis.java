@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 public class Analysis {   
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer analysisId;
 
     private String category;

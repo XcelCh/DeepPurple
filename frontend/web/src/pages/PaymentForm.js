@@ -150,6 +150,7 @@ function PaymentForm() {
           body : JSON.stringify(formData)
         })
         .then(response => {
+          console.log(response);
           if (response.ok) {
             console.log('Card Successfully added.');
             navigate('/billing');

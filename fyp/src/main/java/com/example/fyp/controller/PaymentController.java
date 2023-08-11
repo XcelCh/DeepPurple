@@ -19,6 +19,7 @@ import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Payment;
 import com.example.fyp.repo.RoleRepository;
 import com.example.fyp.service.AccountServiceImpl;
+import com.example.fyp.service.BillingService;
 
 @RestController
 @RequestMapping("/payment")
@@ -26,6 +27,9 @@ public class PaymentController {
 
     @Autowired
     AccountServiceImpl accountServiceImpl;
+
+    @Autowired
+    BillingService billingService;
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
@@ -42,16 +46,28 @@ public class PaymentController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
+            
+            Payment tempPayment = account.getPayment();
 
-            payment.setSecurityCode(passwordEncoder.encode(payment.getSecurityCode()));
-            payment.setUsageLimit(10);
-            account.setPayment(payment);
+            if(tempPayment == null) {
+                payment.setSecurityCode(passwordEncoder.encode(payment.getSecurityCode()));
+                payment.setUsageLimit(10);
+                account.setPayment(payment);
 
-            // Change on reset database
-            account.addRole(roleRepository.findById(9));
+                // Change on reset database
+                account.addRole(roleRepository.findById(2));
 
-            accountServiceImpl.saveAccount(account);
-            return ResponseEntity.ok("Card Successfully Saved");
+                accountServiceImpl.saveAccount(account);
+                return ResponseEntity.ok("Card Successfully Saved");
+            } else {
+                tempPayment.setSecurityCode(passwordEncoder.encode(payment.getSecurityCode()));
+                tempPayment.setCardholderName(payment.getCardholderName());
+                tempPayment.setCardNumber(payment.getCardNumber());
+                tempPayment.setExpiryDate(payment.getExpiryDate());
+                account.setPayment(tempPayment);
+                accountServiceImpl.saveAccount(account);
+                return ResponseEntity.ok("Card Successfully Updated");
+            }
         }
         catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Account Not Found.");

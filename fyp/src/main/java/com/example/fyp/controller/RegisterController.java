@@ -78,10 +78,14 @@ public class RegisterController {
 
     @PostMapping("/createAccount") 
     public ResponseEntity<String> createAccount (@RequestBody Account account) {
-
-
+        
+        System.out.println(account);
+        System.out.println(account);
+        System.out.println(account);
+        System.out.println(account);
+        System.out.println(account);
         // Change id on reset database
-        Role roleFree = roleRepository.findById(6);
+        Role roleFree = roleRepository.findById(1);
 
         String encodePassword = passwordEncoder.encode(account.getPassword());
         
@@ -89,7 +93,7 @@ public class RegisterController {
         account.addRole(roleFree);
         // account.setProfilePic("default.png");
 
-        accountServiceImpl.saveAccount(account);
+        accountServiceImpl.saveAccount(account);    
 
         return ResponseEntity.ok("Account successfully created.");
     }
