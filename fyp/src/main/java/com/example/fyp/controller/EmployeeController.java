@@ -74,21 +74,18 @@ public class EmployeeController {
             // Retrieve the current authentication token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
+            System.out.println("EMAIL " + email);
             Integer account_id = accountServiceImpl.getAccountId(email);
 
-            System.out.println("AUTHORIZATION " + account_id);
-
             List<Map<String, Object>> empList = employeeService.getAllEmployee(account_id);
-            // List<Employee> empList = new ArrayList<>();
-            // empRepo.findAll().forEach(empList::add);
 
-            // if (search != null && !search.isEmpty()) {
-            //     String searchKeyword = "%" + search.toLowerCase() + "%";
+            if (search != null && !search.isEmpty()) {
+                String searchKeyword = "%" + search.toLowerCase() + "%";
 
-            //     empList = empList.stream()
-            //             .filter(emp -> ((String) emp.get("employeeName")).contains(search))
-            //             .collect(Collectors.toList());
-            // }
+                empList = empList.stream()
+                        .filter(emp -> ((String) emp.get("employeeName")).contains(search))
+                        .collect(Collectors.toList());
+            }
 
             // RESPONSE DATA
             response.setSuccess(true);
@@ -107,27 +104,22 @@ public class EmployeeController {
 
     // Add Employee
     @PostMapping("/addEmployee")
-    public ResponseEntity<?> addEmployee(@RequestBody Employee emp) {
+    public ResponseEntity<?> addEmployee(@RequestBody String empName) {
         ResponseStatus<Employee> response = new ResponseStatus<>();
 
         try {
             // Retrieve the current authentication token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
-            // Integer account_id = accountRepository.getAccountId(email);
             Account account = accountServiceImpl.loadUserDetailsByUsername(email);
 
-            // System.out.println("AUTHORIZATION " + account_id);
-
+            Employee emp = new Employee(empName);
             emp.setAccount(account);
-
-            System.out.println("ACCOUNT ID: " + emp.getAccount().getAccountId());
-
             Employee empObj = empRepo.save(emp);
 
             // RESPONSE DATA
             response.setSuccess(true);
-            // response.setData(empObj);
+            response.setData(empObj);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (Exception ex) {
@@ -145,7 +137,9 @@ public class EmployeeController {
         ResponseStatus response = new ResponseStatus();
 
         try {
+            // System.out.println(id);
             empRepo.deleteById(id);
+            // int result = employeeService.deleteEmployeeById(id);
 
             // RESPONSE DATA
             response.setSuccess(true);
@@ -166,6 +160,7 @@ public class EmployeeController {
     {
         ResponseStatus response = new ResponseStatus();
         Optional<Employee> oldEmpData = empRepo.findById(id);
+        System.out.println("OLD EMP DATA: " + oldEmpData);
 
         if (oldEmpData.isPresent()) {
             Employee updatedEmpData = oldEmpData.get();

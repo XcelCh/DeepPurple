@@ -32,8 +32,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query("SELECT e.numPositiveSentiment, e.numNegativeSentiment FROM Employee e WHERE e.employeeId = :employeeId")
     Object[] findEmployeeSentimentById(Integer employeeId);
 
-    // @Query("SELECT e.employeeName AS employeeName, e.employeeId AS employeeId, e.numPositiveSentiment AS numPositiveSentiment, e.numNegativeSentiment AS numNegativeSentiment, e.numCallsHandled AS numCallsHandled FROM Employee e WHERE e.accountId = :account_id")
-    @Query("SELECT e FROM Employee e WHERE e.account.accountId = :account_id")
-    List<Map<String, Object>>getAllEmployee(Integer account_id);
-
+    @Query("SELECT e.employeeName AS employeeName, e.employeeId AS employeeId, e.numPositiveSentiment AS numPositiveSentiment, e.numNegativeSentiment AS numNegativeSentiment, e.numCallsHandled AS numCallsHandled FROM Employee e WHERE e.account.accountId = :account_id")
+    List<Map<String, Object>> getAllEmployee(Integer account_id);
+   
+    @Modifying
+    @Query("DELETE FROM Employee e WHERE e.employeeId = :employeeId")
+    int deleteEmployeeById(Integer employeeId);
 }

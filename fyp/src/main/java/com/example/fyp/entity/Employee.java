@@ -30,6 +30,11 @@ public class Employee {
     private Integer numPositiveSentiment;
     private Integer numNegativeSentiment;
 
+    // Constructor
+    public Employee (String employeeName){
+        this.employeeName = employeeName;
+    }
+
 
     // @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     // private List<Recording> recordings;
@@ -49,10 +54,12 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{employeeId=" + employeeId + ", employeeName='" + employeeName + '\'' + ", numCallsHandled=" + numCallsHandled +
+        return "Employee{employeeId=" + employeeId + ", employeeName='" + employeeName + '\'' + ", numCallsHandled="
+                + numCallsHandled +
                 ", numPositiveSentiment=" + numPositiveSentiment + ", numNegativeSentiment=" + numNegativeSentiment +
                 ", account=" + (account != null ? account.getAccountId() : null) +
                 ", recording=" + recording + '}';
     }
+    
 
 }
