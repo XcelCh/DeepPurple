@@ -80,6 +80,7 @@ public class RegisterController {
     public ResponseEntity<String> createAccount (@RequestBody Account account) {
 
 
+        // Change id on reset database
         Role roleFree = roleRepository.findById(6);
 
         String encodePassword = passwordEncoder.encode(account.getPassword());

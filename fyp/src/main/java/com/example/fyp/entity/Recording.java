@@ -65,10 +65,12 @@ public class Recording {
 
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "employeeId")
+    @JsonManagedReference
     private Employee employee;
 
     @ManyToOne
     @JoinColumn(name ="account_id", referencedColumnName = "accountId")
+    @JsonManagedReference
     private Account account;
 
 

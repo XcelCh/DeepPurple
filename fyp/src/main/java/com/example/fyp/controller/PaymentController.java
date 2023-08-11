@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.amazonaws.Response;
 import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Payment;
+import com.example.fyp.repo.RoleRepository;
 import com.example.fyp.service.AccountServiceImpl;
 
 @RestController
@@ -28,6 +29,9 @@ public class PaymentController {
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     
     
@@ -42,6 +46,9 @@ public class PaymentController {
             payment.setSecurityCode(passwordEncoder.encode(payment.getSecurityCode()));
             payment.setUsageLimit(10);
             account.setPayment(payment);
+
+            // Change on reset database
+            account.addRole(roleRepository.findById(9));
 
             accountServiceImpl.saveAccount(account);
             return ResponseEntity.ok("Card Successfully Saved");

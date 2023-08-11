@@ -84,6 +84,14 @@ public class Account {
     @JsonBackReference
     private Payment payment;
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Recording> recording;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Employee> employee;
+
     public Account (String email, String fullName, String gender, String phoneNum, Date dob) {
 
         this.email = email;
@@ -101,6 +109,7 @@ public class Account {
     public String toString() {
         return "Account{accountId=" + accountId + ", email='" + email + '\'' + ", fullName='" + fullName + '\'' +
                ", gender='" + gender + '\'' + ", phoneNum='" + phoneNum + '\'' + ", dob=" + dob + ", roles=" + roles +
-               ", profilePic='" + profilePic + '\'' + ", companyField='" + companyField + '\'' + ", paymentId=" + payment.getPaymentId() + '}' ;
+               ", profilePic='" + profilePic + '\'' + ", companyField='" + companyField + '\'' + ", paymentId=" + payment.getPaymentId() + 
+               ", recording=" + recording + ", employee=" + employee + '}' ;
     }
 }

@@ -40,8 +40,9 @@ public class Analysis {
     private String recordingSentiment;
     private double transcriptConfidence;
     
-    // @OneToMany(mappedBy = "analysis")
-    // private List<Transcript> transcripts;
+    @OneToMany(mappedBy = "analysis", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Transcript> transcripts;
 
     @OneToOne(mappedBy = "analysis")
     @JsonBackReference
@@ -53,6 +54,6 @@ public class Analysis {
                 ", employeeSpeakTime=" + employeeSpeakTime + ", customerSpeakTime=" + customerSpeakTime + ", silentTime=" + silentTime +
                 ", customerSentiment='" + customerSentiment + '\'' + ", employeeSentiment='" + employeeSentiment + '\'' +
                 ", recordingSentiment='" + recordingSentiment + '\'' + ", transcriptConfidence=" + transcriptConfidence +
-                ", recording=" + (recording != null ? recording.getRecordingId() : null) + '}';
+                ", transcript=" + transcripts + ", recording=" + (recording != null ? recording.getRecordingId() : null) + '}';
     }
 }

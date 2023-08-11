@@ -2,6 +2,9 @@ package com.example.fyp.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +17,6 @@ import lombok.Data;
 
 @Data
 @Entity
-
 public class Employee {
 
     @Id
@@ -38,6 +40,19 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "account_id", referencedColumnName = "accountId")
+    @JsonManagedReference
     private Account account;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Recording> recording;
+
+    @Override
+    public String toString() {
+        return "Employee{employeeId=" + employeeId + ", employeeName='" + employeeName + '\'' + ", numCallsHandled=" + numCallsHandled +
+                ", numPositiveSentiment=" + numPositiveSentiment + ", numNegativeSentiment=" + numNegativeSentiment +
+                ", account=" + (account != null ? account.getAccountId() : null) +
+                ", recording=" + recording + '}';
+    }
 
 }

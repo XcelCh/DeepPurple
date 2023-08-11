@@ -1,5 +1,7 @@
 package com.example.fyp.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -46,6 +48,15 @@ public class Transcript {
 
     @ManyToOne
     @JoinColumn(name = "analysis_id", referencedColumnName = "analysisId")
+    @JsonManagedReference
     private Analysis analysis;
+
+    @Override
+    public String toString() {
+        return "Transcript{transcriptId=" + transcriptId + ", startTime=" + startTime + ", endTime=" + endTime +
+                ", employeeName='" + employeeName + '\'' + ", dialog='" + dialog + '\'' +
+                ", analysis=" + (analysis != null ? analysis.getAnalysisId() : null) +'}';
+    }
+
 
 }
