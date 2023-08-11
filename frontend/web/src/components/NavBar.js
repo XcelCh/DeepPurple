@@ -12,14 +12,14 @@ function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = AuthService.getCurrentUser();
-  const [profilePic, setProfilePic] = useState('');
+  // const [profilePic, setProfilePic] = useState('');
 
-  useEffect(() => {
-  // if (user) {
-    console.log('nav');
-    setProfilePic(sessionStorage.getItem("profilepic"));
-  }, [user])
-  // }  
+  // useEffect(() => {
+  // // if (user) {
+  //   console.log('nav');
+  //   setProfilePic(sessionStorage.getItem("profilepic"));
+  // }, [user])
+  // // }  
   
   const logOut = () => {
     AuthService.logout();

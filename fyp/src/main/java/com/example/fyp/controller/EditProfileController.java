@@ -70,7 +70,7 @@ public class EditProfileController {
         Account acc = accountServiceImpl.loadUserDetailsByUsername(userPrincipal.getUsername());
 
         account.setAccountId(acc.getAccountId());
-        account.setProfilePic(acc.getProfilePic());
+        // account.setProfilePic(acc.getProfilePic());
         account.setPassword(acc.getPassword());
         account.setRoles(acc.getRoles());
         
@@ -118,24 +118,24 @@ public class EditProfileController {
 
     }
 
-    @GetMapping("/getProfilePic")
-    public ResponseEntity<byte[]> getProfilePicture() throws IOException {
+    // @GetMapping("/getProfilePic")
+    // public ResponseEntity<byte[]> getProfilePicture() throws IOException {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String username = authentication.getName();
-        Account acc = accountServiceImpl.loadUserDetailsByUsername(username);
+    //     String username = authentication.getName();
+    //     Account acc = accountServiceImpl.loadUserDetailsByUsername(username);
 
 
-        String profilePic = "profilepic/" + acc.getProfilePic();
+    //     String profilePic = "profilepic/" + acc.getProfilePic();
 
-        var imgFile = new ClassPathResource(profilePic);
-        byte[] bytes = StreamUtils.copyToByteArray(imgFile.getInputStream());
+    //     var imgFile = new ClassPathResource(profilePic);
+    //     byte[] bytes = StreamUtils.copyToByteArray(imgFile.getInputStream());
 
-        MediaType contentType = profilePic.contains(".png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG;
+    //     MediaType contentType = profilePic.contains(".png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG;
 
-        return ResponseEntity.ok().contentType(contentType).body(bytes);
-    }
+    //     return ResponseEntity.ok().contentType(contentType).body(bytes);
+    // }
 
     @GetMapping("/getCompanyField")
     public ResponseEntity<String> getCompanyField() {

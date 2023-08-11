@@ -17,7 +17,7 @@ function EditProfile() {
       gender: "Gender",
       companyField: "-"
     })
-    const [profilePic, setProfilePic] = useState('');
+    // const [profilePic, setProfilePic] = useState('');
 
     const navigate = useNavigate();
 
@@ -69,7 +69,7 @@ function EditProfile() {
             console.error(error);
           });
 
-      setProfilePic(sessionStorage.getItem("profilepic"));
+      // setProfilePic(sessionStorage.getItem("profilepic"));
 
     }, [])
 
@@ -91,7 +91,7 @@ function EditProfile() {
         'phoneNum': formData.phoneNum,
         'dob': formData.dob,
         'roles': null,
-        'profilePic': null,
+        // 'profilePic': null,
         'companyField': formData.companyField
       }
 

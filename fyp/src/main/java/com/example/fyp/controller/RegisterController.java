@@ -87,7 +87,7 @@ public class RegisterController {
         
         account.setPassword(encodePassword);
         account.addRole(roleFree);
-        account.setProfilePic("default.png");
+        // account.setProfilePic("default.png");
 
         accountServiceImpl.saveAccount(account);
 

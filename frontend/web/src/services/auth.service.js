@@ -8,30 +8,31 @@ const login = (email, password) => {
       email,
       password,
     })
-    .then( async (response) => {
+    // .then( async (response) => {
+    .then((response) => { 
 
       console.log(response);
       if (response.data.accessToken) {
         sessionStorage.setItem("user", JSON.stringify(response.data));
 
 
-        await fetch ("http://localhost:8082/profile/getProfilePic", {
-            headers: {Authorization: 'Bearer ' +response.data.accessToken}
-          })
-          .then((response) => {
-            if (response.ok) {
-              return response.blob();
-            }
-          })
-          .then((blob) => {
+      //   await fetch ("http://localhost:8082/profile/getProfilePic", {
+      //       headers: {Authorization: 'Bearer ' +response.data.accessToken}
+      //     })
+      //     .then((response) => {
+      //       if (response.ok) {
+      //         return response.blob();
+      //       }
+      //     })
+      //     .then((blob) => {
             
-            console.log('set');
-            sessionStorage.setItem("profilepic", URL.createObjectURL(blob));
-            // navigate('/');
-          })
-          .catch((error) => {
-            console.error(error);
-          })
+      //       console.log('set');
+      //       sessionStorage.setItem("profilepic", URL.createObjectURL(blob));
+      //       // navigate('/');
+      //     })
+      //     .catch((error) => {
+      //       console.error(error);
+      //     })
 
       }
 
@@ -42,9 +43,9 @@ const login = (email, password) => {
 const logout = () => {
   sessionStorage.removeItem("user");
 
-  const url = sessionStorage.getItem("profilepic");
-  URL.revokeObjectURL(url);
-  sessionStorage.removeItem("profilepic");
+  // const url = sessionStorage.getItem("profilepic");
+  // URL.revokeObjectURL(url);
+  // sessionStorage.removeItem("profilepic");
 };
 
 const getCurrentUser = () => {

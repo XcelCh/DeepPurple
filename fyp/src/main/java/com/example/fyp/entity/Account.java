@@ -70,7 +70,7 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles = new ArrayList<>();
 
-    private String profilePic;
+    // private String profilePic;
     private String companyField;
 
     
@@ -109,7 +109,8 @@ public class Account {
     public String toString() {
         return "Account{accountId=" + accountId + ", email='" + email + '\'' + ", fullName='" + fullName + '\'' +
                ", gender='" + gender + '\'' + ", phoneNum='" + phoneNum + '\'' + ", dob=" + dob + ", roles=" + roles +
-               ", profilePic='" + profilePic + '\'' + ", companyField='" + companyField + '\'' + ", paymentId=" + payment.getPaymentId() + 
+            //    ", profilePic='" + profilePic + '\'' + 
+               ", companyField='" + companyField + '\'' + ", paymentId=" + payment.getPaymentId() + 
                ", recording=" + recording + ", employee=" + employee + '}' ;
     }
 }
