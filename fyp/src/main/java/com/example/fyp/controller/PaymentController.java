@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.amazonaws.Response;
+import com.example.fyp.controller.dto.CardDto;
 import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Payment;
 import com.example.fyp.repo.RoleRepository;
@@ -40,12 +41,14 @@ public class PaymentController {
     
     
     @PostMapping("/addCard")
-    public ResponseEntity<?> addPayment (@RequestBody Payment payment) {
+    public ResponseEntity<?> addPayment (@RequestBody CardDto cardDto) {
 
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
+
+            Payment payment = new Payment(cardDto.getCardholderName(), cardDto.getCardNumber(), cardDto.getExpiryDate(), cardDto.getSecurityCode());
             
             Payment tempPayment = account.getPayment();
 
