@@ -74,9 +74,9 @@ public class Account {
     private String companyField;
 
     
-    // @OneToMany(mappedBy = "account")
-    // @JsonBackReference
-    // private List<Usages> usageList;
+    @OneToMany(mappedBy = "account")
+    @JsonBackReference
+    private List<Usages> usageList;
 
     
     @OneToOne(cascade = CascadeType.ALL)

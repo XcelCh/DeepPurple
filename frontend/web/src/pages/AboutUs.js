@@ -1,14 +1,98 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import aboutUs from "../assets/AboutUs.png";
 import profilePicture from "../assets/ProfilePicture.png";
 import { Line, Linkedin, Instagram } from "../assets";
 import ProfileCard from "../components/ProfileCard";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 
 function AboutUs() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState ({
+    firstName : '',
+    lastName : '',
+    email : '',
+    notes : ''
+  })
+
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const namePattern = /^(?:[A-Za-z]+){0,10}$/;
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  useEffect (() => {
+
+    setErrorMessage('');
+    console.log(formData.notes.length);
+
+    if(formData.notes.length === 255) {
+      setErrorMessage('Max limit is reached.');
+    }
+  }, [formData.notes])
+
+
+
+
+  const handleSubmit = (e) => {
+
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (formData.firstName === '' || formData.lastName === '' || formData.email === '' || formData.notes === '') {
+      setErrorMessage('Please fill in all of the above fields.');
+      return;
+    }
+
+    if (!namePattern.test(formData.firstName)) {
+      setErrorMessage('Please fill only alphabetical character in the first name field.');
+      return;
+    }
+
+    if (!namePattern.test(formData.lastName)) {
+      setErrorMessage('Please fill only alphabetical character in the last name field.');
+      return;
+    }
+
+    if (!emailPattern.test(formData.email)) {
+      setErrorMessage('Please fill in a valid email address.');
+      return;
+    }
+
+    
+    
+
+    fetch('http://localhost:8082/sendInquiry', {
+      method : 'POST',
+      headers : {'Content-Type' : 'application/json'},
+      body : JSON.stringify(formData)
+    })
+    .then(response => {
+      if(response.ok) {
+
+        console.log('Inquiry Sent.');
+        navigate('/');
+        
+        
+
+      }
+      else if(response.status === 502) {
+
+        console.log('Error Happen.');
+        throw new Error('Error Occured');
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    })
+  }
+
+  // console.log(formData);
+
   return (
     <>
       <div className="bg-[#F7F2FB] h-full">
@@ -93,30 +177,59 @@ function AboutUs() {
           </div>
           <div>
             <p className="mt-4 mb-4 text-white font-bold">QUESTIONS</p>
-            <div className="grid grid-cols-2 mr-40 justify-left gap-2">
-              <input
-                type="text"
-                placeholder="First name"
-                className="input input-bordered input-md max-w-s"
-              />
-              <input
-                type="text"
-                placeholder="Last name"
-                className="input input-bordered input-md max-w-s"
-              />
-            </div>
-            <div className="mr-40">
-              <input
-                type="text"
-                placeholder="Email"
-                className="input input-bordered input-md w-full mt-4 justify-self-stretch"
-              />
-              <textarea
-                className="textarea textarea-bordered w-full h-40 mt-4"
-                placeholder="Notes"
-              ></textarea>
-              <button className="btn bg-[#FFFFFF] text-[#B185E0] mt-4 border-0">Submit</button>
-            </div>
+            <form>
+              <div className="grid grid-cols-2 mr-40 justify-left gap-2">
+                <input
+                  type="text"
+                  placeholder="First name"
+                  className="input input-bordered input-md max-w-s"
+                  value={formData.firstName}
+                  onChange={(event) => setFormData({...formData, firstName : event.target.value})}
+                />
+                <input
+                  type="text"
+                  placeholder="Last name"
+                  className="input input-bordered input-md max-w-s"
+                  value={formData.lastName}
+                  onChange={(event) => setFormData({...formData, lastName : event.target.value})}
+                />
+              </div>
+              <div className="mr-40">
+                <input
+                  type="text"
+                  placeholder="Email"
+                  className="input input-bordered input-md w-full mt-4 justify-self-stretch"
+                  value={formData.email}
+                  onChange={(event) => setFormData({...formData, email : event.target.value})}
+                />
+                <textarea
+                  className="textarea textarea-bordered w-full h-40 mt-4"
+                  placeholder="Notes"
+                  value={formData.notes}
+                  onChange={(event) => setFormData({...formData, notes : event.target.value})}
+                  maxLength={255}
+                ></textarea>
+
+                {errorMessage && (
+                  <div className="flex items-center text-red-500 text-sm mb-4">
+                      <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-5 h-5 mr-2"
+                      >
+                      <path
+                          fillRule="evenodd"
+                          d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                          clipRule="evenodd"
+                      />
+                      </svg>
+                      {errorMessage}
+                  </div>
+                )}
+                <button className="btn bg-[#FFFFFF] text-[#B185E0] mt-4 border-0" onClick={handleSubmit}>Submit</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
