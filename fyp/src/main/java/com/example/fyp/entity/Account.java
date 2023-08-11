@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -47,6 +49,7 @@ public class Account {
     @Column(nullable = false)
     private String fullName;
 
+    @JsonProperty(access = Access.WRITE_ONLY)
     @Column(nullable = false)
     private String password;
 
@@ -81,6 +84,14 @@ public class Account {
     @JsonBackReference
     private Payment payment;
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Recording> recording;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Employee> employee;
+
     public Account (String email, String fullName, String gender, String phoneNum, Date dob) {
 
         this.email = email;
@@ -98,6 +109,7 @@ public class Account {
     public String toString() {
         return "Account{accountId=" + accountId + ", email='" + email + '\'' + ", fullName='" + fullName + '\'' +
                ", gender='" + gender + '\'' + ", phoneNum='" + phoneNum + '\'' + ", dob=" + dob + ", roles=" + roles +
-               ", profilePic='" + profilePic + '\'' + ", companyField='" + companyField + '\'' + ", paymentId=" + payment.getPaymentId() + '}' ;
+               ", profilePic='" + profilePic + '\'' + ", companyField='" + companyField + '\'' + ", paymentId=" + payment.getPaymentId() + 
+               ", recording=" + recording + ", employee=" + employee + '}' ;
     }
 }

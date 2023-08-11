@@ -2,6 +2,8 @@ package com.example.fyp.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,13 +23,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 public class Analysis {   
-    @Id
-    private Integer recordingId;
 
-    // @OneToOne
-    // @MapsId
-    // @JoinColumn(name = "recordingId")
-    // private Recording recording;
+    @Id
+    private Integer analysisId;
 
     private String category;
 
@@ -42,8 +40,20 @@ public class Analysis {
     private String recordingSentiment;
     private double transcriptConfidence;
     
-    // @OneToMany(mappedBy = "analysis")
-    // private List<Transcript> transcripts;
-    
+    @OneToMany(mappedBy = "analysis", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Transcript> transcripts;
 
+    @OneToOne(mappedBy = "analysis")
+    @JsonBackReference
+    private Recording recording;
+    
+    @Override
+    public String toString() {
+        return "Analysis{analysisId=" + analysisId + ", category='" + category + '\'' + ", summary='" + summary + '\'' +
+                ", employeeSpeakTime=" + employeeSpeakTime + ", customerSpeakTime=" + customerSpeakTime + ", silentTime=" + silentTime +
+                ", customerSentiment='" + customerSentiment + '\'' + ", employeeSentiment='" + employeeSentiment + '\'' +
+                ", recordingSentiment='" + recordingSentiment + '\'' + ", transcriptConfidence=" + transcriptConfidence +
+                ", transcript=" + transcripts + ", recording=" + (recording != null ? recording.getRecordingId() : null) + '}';
+    }
 }

@@ -6,6 +6,7 @@ import AuthService from "../services/auth.service";
 function ChangePassword() {
 
   useEffect(() => {
+      window.scrollTo(0, 0);
       const user = AuthService.getCurrentUser();
       if (!user) {
         navigate('/unauthorizedPage');
@@ -120,7 +121,7 @@ function ChangePassword() {
       {/* Gradient */}
       <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
         {/* Gradient */}
-        <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
+        <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC] pt-16">
           {/* Card */}
           <div className="w-1/2">
             <div className="flex flex-col justify-center items-center bg-white rounded-3xl shadow md:mt-0 xl:p-0">
@@ -131,25 +132,28 @@ function ChangePassword() {
                     Update Password
                   </h1>
                   {/* Current password */}
-                  <div className="pb-2">
-                    <p className="text-xs text-[#A5A5A5]">Current Password</p>
-                  </div>
-                  <label class="relative w-full">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      name="currentPassword"
-                      id="currentPassword"
-                      class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                      value={formData.currentPassword}
-                      onChange={(event) =>
-                        setFormData({
-                          ...formData,
-                          currentPassword: event.target.value,
-                        })
-                      }
-                      required
-                      placeholder="Current Password"
-                    ></input>
+                  <div>
+                    <div class="flex items-center">
+                      <label class="relative w-full">
+                        <input 
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        id="password"
+                        class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none focus:border-primary-600 duration-200 peer bg-white"
+                        value={formData.currentPassword}
+                        onChange={(event) =>
+                          setFormData({
+                            ...formData,
+                            currentPassword: event.target.value,
+                          })
+                        }
+                        required
+                        ></input>
+                        <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
+                        pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
+                        peer-valid:text-xs peer-valid:-translate-y-5">Current Password</span>
+                      </label>
+                    </div>
                     {currentMessage && (
                         <div className="flex items-center text-red-500 text-sm mt-2">
                             <svg
@@ -167,27 +171,30 @@ function ChangePassword() {
                             {currentMessage}
                         </div>
                     )}
-                  </label>
-                  {/* New password */}
-                  <div className="pb-2">
-                    <p className="text-xs text-[#A5A5A5]">New Password</p>
                   </div>
-                  <label class="relative w-full">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      name="newPassword"
-                      id="newPassword"
-                      class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                      value={formData.newPassword}
-                      onChange={(event) =>
-                        setFormData({
-                          ...formData,
-                          newPassword: event.target.value,
-                        })
-                      }
-                      required
-                      placeholder="New password"
-                    ></input>
+                  {/* New password */}
+                  <div>
+                    <div class="flex items-center">
+                      <label class="relative w-full">
+                        <input 
+                        type={showPassword ? 'text' : 'password'}
+                        name="newPassword"
+                        id="newPassword"
+                        class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none focus:border-primary-600 duration-200 peer bg-white"
+                        value={formData.newPassword}
+                        onChange={(event) =>
+                          setFormData({
+                            ...formData,
+                            newPassword: event.target.value,
+                          })
+                        }
+                        required
+                        ></input>
+                        <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
+                        pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
+                        peer-valid:text-xs peer-valid:-translate-y-5">New Password</span>
+                      </label>
+                    </div>
                     {newMessage && (
                         <div className="flex items-center text-red-500 text-sm mt-2">
                             <svg
@@ -205,27 +212,31 @@ function ChangePassword() {
                             {newMessage}
                         </div>
                     )}
-                  </label>
-                  {/* Confirm Password */}
-                  <div className="pb-2">
-                    <p className="text-xs text-[#A5A5A5]">Confirm Password</p>
                   </div>
-                  <label class="relative w-full">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      name="confirmPassword"
-                      id="confirmPassword"
-                      class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full duration-200 peer focus:border-indigo-60 bg-white"
-                      value={formData.confirmPassword}
-                      onChange={(event) =>
-                        setFormData({
-                          ...formData,
-                          confirmPassword: event.target.value,
-                        })
-                      }
-                      placeholder="Confirm Password"
-                      required
-                    ></input>
+
+                  {/* Confirm Password */}
+                  <div>
+                    <div class="flex items-center">
+                      <label class="relative w-full">
+                        <input 
+                        type={showPassword ? 'text' : 'password'}
+                        name="newPassword"
+                        id="newPassword"
+                        class="border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-indigo-600 block w-full p-2.5 outline-none focus:border-primary-600 duration-200 peer bg-white"
+                        value={formData.confirmPassword}
+                        onChange={(event) =>
+                          setFormData({
+                            ...formData,
+                            confirmPassword: event.target.value,
+                          })
+                        }
+                        required
+                        ></input>
+                        <span class="absolute left-0 top-2.5 px-1 text-sm text-gray-400 tracking-wide peer-focus:text-indigo-600
+                        pointer-events-none duration-200 peer-focus:text-xs peer-focus:-translate-y-5 bg-white ml-2
+                        peer-valid:text-xs peer-valid:-translate-y-5">Confirm Password</span>
+                      </label>
+                    </div>
                     {confirmMessage && (
                         <div className="flex items-center text-red-500 text-sm mt-2">
                             <svg
@@ -243,7 +254,8 @@ function ChangePassword() {
                             {confirmMessage}
                         </div>
                     )}
-                  </label>
+                  </div>
+                    
                   {/* Show password checkbox */}
                   <label className="flex items-center">
                       <input
@@ -264,6 +276,9 @@ function ChangePassword() {
               </div>
             </div>
           </div>
+          <p class="mt-4 text-xs text-[#3C3988]">
+            Copyright © DeepPurple Inc. All rights reserved 2023
+          </p>
         </div>
       </div>
     </>

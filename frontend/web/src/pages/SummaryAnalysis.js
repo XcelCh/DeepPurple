@@ -93,6 +93,7 @@ function SummaryAnalysis() {
   });
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetch(`http://localhost:8082/summaryAnalysis/getAnalysis`)
       .then(response => {
           // error unauthorized

@@ -12,6 +12,10 @@ function TextAnalyze() {
   const [processing, setProcessing] = useState(false);
   const [highlight, setHighlight] = useState([]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Update Highlight
   useEffect(() => {
     console.log("original prompt: " + oriPrompt);

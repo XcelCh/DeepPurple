@@ -89,6 +89,7 @@ function EmployeeList() {
 
   useEffect(() => {
     getEmpList();
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {

@@ -31,6 +31,7 @@ function PaymentForm() {
 
 
     useEffect(() => {
+      window.scrollTo(0, 0);
       // Get today's date
       const today = new Date();
       const day = today.getDate();
@@ -154,6 +155,7 @@ function PaymentForm() {
         .then(response => {
           if (response.ok) {
             console.log('Card Successfully added.');
+            navigate('/billing');
           }
           else if (response.status == 401) {
             console.log('Unauthorized.');

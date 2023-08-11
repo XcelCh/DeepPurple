@@ -13,6 +13,7 @@ function Starter() {
 
 
   useEffect (() => {
+    window.scrollTo(0, 0);
 
     console.log("1 called");
     fetch ('http://localhost:8082/starter/check', {

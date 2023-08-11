@@ -50,12 +50,7 @@ public class EditProfileController {
         if (authentication != null) {
 
             String username = authentication.getName();
-
             acc = accountServiceImpl.loadUserDetailsByUsername(username);
-
-            acc.setPassword(null);
-            acc.setRoles(null);
-            // System.out.println(acc);
 
             return ResponseEntity.ok().body(acc);
         }

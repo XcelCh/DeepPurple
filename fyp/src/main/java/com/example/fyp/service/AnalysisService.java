@@ -40,10 +40,11 @@ public class AnalysisService {
         Optional<Recording> recording = recordingRepository.findById(recordingId);
         List<Transcript> transcripts = transcriptRepository.findByRecordingId(recordingId);
         if(analysis.isPresent() && recording.isPresent()) {
-            String employeeName = employeeRepository.findEmployeeNameById(recording.get().getEmployeeId());
+            // String employeeName = employeeRepository.findEmployeeNameById(recording.get().getEmployeeId());
+            String employeeName = employeeRepository.findEmployeeNameById(recording.get().getEmployee().getEmployeeId());
             
             for (Transcript transcript : transcripts) {
-                if(transcript.getEmployeeId() != null) {
+                if(transcript.getAnalysis().getRecording().getEmployee().getEmployeeId() != null) {
                     transcript.setEmployeeName(employeeName);
                 } else {
                     transcript.setEmployeeName("Customer");

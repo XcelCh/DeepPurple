@@ -93,6 +93,10 @@ function EmployeeRecordingList() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     getRecList();
     getEmployeeDetail();
   }, [search]);
