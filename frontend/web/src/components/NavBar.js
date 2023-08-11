@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { TextIcon, ProductIcon } from '../assets';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import profilePicture from "../assets/Default.png";
 
 import AuthService from "../services/auth.service";
 import authHeader from "../services/auth-header";
@@ -109,7 +110,7 @@ function NavBar() {
           <Link to="/">
             <div class="avatar mr-2">
               <div class="w-10 rounded-full">
-                <img src={profilePic} alt="Dog" />
+                <img src={profilePicture} alt="profile" />
               </div>
             </div>
             <div className="dropdown dropdown-end">

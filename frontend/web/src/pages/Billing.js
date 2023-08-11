@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import visaImage from "../assets/Visa.png";
+import masterCardImage from "../assets/Mastercard.png";
 import GenericModal from "../components/GenericModal";
 import Footer from '../components/Footer';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { Empty } from "../assets/index";
 
 import {
     Chart as ChartJS,
@@ -37,8 +38,7 @@ function Billing() {
     const [card, setCard] = useState(false);
     const [limit, setLimit] = useState(0);
     const user = AuthService.getCurrentUser();
-
-
+    const [firstDigit, setFirstDigit] = useState('');
 
     useEffect (() => {
         window.scrollTo(0, 0);
@@ -69,17 +69,13 @@ function Billing() {
             setExpDate(month+'/'+year);
             setCard(true);
             setLimit(data.usageLimit);
+            setFirstDigit(data.cardNumber.charAt(0));
         })
         .catch(error => {
             console.error(error);
         })
     }, [])
 
-
-
-
-
-    
     const data = {
         labels: ['01 Aug', '02 Aug', '03 Aug', '04 Aug', '05 Aug', '06 Aug'],
         datasets: [
@@ -195,7 +191,11 @@ function Billing() {
                             </p>
                             { card ? (
                             <div className="flex items-center space-x-4 border rounded-md border-[#A5A5A5] mt-2 p-2">
-                                <img class="h-5 justify-self-end mr-8 ml-4" src={visaImage} alt="Visa image"></img>
+                                {firstDigit === '4' ? (
+                                    <img className="h-5 justify-self-end mr-8 ml-4" src={visaImage} alt="Visa image" />
+                                ) : (
+                                    <img className="h-8 w-12 justify-self-end mr-8 ml-10" src={masterCardImage} alt="MasterCard image" />
+                                )}
                                 <div className="flex-1">
                                     <div className="text-md font-semibold text-[#414141]">
                                         Visa ending in {cardNum}
@@ -288,7 +288,7 @@ function Billing() {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                {/* <tbody>
                                     <tr className="text-[#414141]">
                                         <td className="h-1">1</td>
                                         <td className="h-1">Jan 1, 2023</td>
@@ -319,8 +319,12 @@ function Billing() {
                                         <td className="text-center h-1">$10.00</td>
                                         <td className="text-center h-1">Paid</td>
                                     </tr>
-                                </tbody>
+                                </tbody> */}
                             </table>
+                            <div className="flex flex-col items-center justify-center mt-8">
+                                <img src={Empty}></img>
+                                <p className="font-semibold text-lg">No invoiced found</p>
+                            </div>
                         </div>
                     </div>
                 </div>

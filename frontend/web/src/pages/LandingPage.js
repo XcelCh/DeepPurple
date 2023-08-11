@@ -46,7 +46,7 @@ function LandingPage() {
                             <Link to="/signUpForm">
                                 <button
                                 type="button"
-                                className="text-[#414141] bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                className="text-[#5A3D86] bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
                                 >
                                     Get started
                                 </button>

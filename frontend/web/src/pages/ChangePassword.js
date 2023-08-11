@@ -123,7 +123,7 @@ function ChangePassword() {
         {/* Gradient */}
         <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC] pt-16">
           {/* Card */}
-          <div className="w-1/2">
+          <div className="w-1/3">
             <div className="flex flex-col justify-center items-center bg-white rounded-3xl shadow md:mt-0 xl:p-0">
               <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-16 text-left">
                 {/* Change Password */}
