@@ -30,7 +30,6 @@ public class Usages {
     private float rate;
 
     private Date usageDate;
-
     
     @ManyToOne
     @JoinColumn(name = "billing_id")

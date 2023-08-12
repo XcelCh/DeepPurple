@@ -12,4 +12,6 @@ public interface BillingRepository extends JpaRepository<Billing, Long> {
     @Query("SELECT b FROM Billing b WHERE b.payment.paymentId = :paymentId")
     List<Billing> findByPaymentId(Long paymentId);
 
+    
+
 }

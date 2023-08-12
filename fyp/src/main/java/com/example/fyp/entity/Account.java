@@ -80,7 +80,7 @@ public class Account {
 
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name= "payment_id", referencedColumnName = "paymentId")
+    @JoinColumn(name= "payment_id", referencedColumnName = "paymentId", nullable = true)
     @JsonBackReference
     private Payment payment;
 

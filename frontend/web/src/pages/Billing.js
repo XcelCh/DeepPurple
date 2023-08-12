@@ -38,11 +38,13 @@ function Billing() {
     const [cardNum, setCardNum] = useState('');
     const [expDate, setExpDate] = useState('');
     const [card, setCard] = useState(false);
-    const [limit, setLimit] = useState(0);
+    const [limit, setLimit] = useState(0.0);
     const user = AuthService.getCurrentUser();
     const [firstDigit, setFirstDigit] = useState('');
     const [billingHistory, setBillingHistory] = useState([]);
     const [visible, setVisible] = useState(false)
+    const [limitError, setLimitError] = useState(false)
+    const [totalUsage, setTotalUsage] = useState(0.0);
 
     const openModal = () => {
         setVisible(true);
@@ -76,6 +78,57 @@ function Billing() {
             console.error(error);
         })
     };
+
+    const getTotalUsage = () => {
+        fetch(`http://localhost:8082/payment/getUsage`,
+        {
+            headers: token
+        })
+        .then (response => {
+            if (response.ok) {
+                console.log('Successfully fetch billing history.');
+                return response.json();
+            }
+            else if(response.status === 401) {
+                console.log('Unauthorized.');
+                navigate('/unauthorizedPage');
+
+            }
+        })
+        .then(data => {
+            setTotalUsage(data.body[0][1].toFixed(2));
+        })
+        .catch(error => {
+            console.error(error);
+        })
+    };
+
+    const deleteCard = () => {
+        fetch(`http://localhost:8082/payment/deleteCard`,
+        {
+            method: 'PUT',
+            headers: token
+        })
+        .then (response => {
+            if (response.ok) {
+                console.log('Successfully fetch billing history.');
+                return response.json();
+            }
+            else if(response.status === 401) {
+                console.log('Unauthorized.');
+                navigate('/unauthorizedPage');
+
+            }
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error(error);
+        })
+        setCard(false);
+        closeModal();
+    }
 
     useEffect (() => {
         window.scrollTo(0, 0);
@@ -113,6 +166,7 @@ function Billing() {
         })
 
         getBillingHistory();
+        getTotalUsage();
     }, [])
     
     const data = {
@@ -171,6 +225,10 @@ function Billing() {
                 console.log('Unauthorized;');
                 navigate('/unauthorizedPage');
             }
+            else if(response.status === 400) {
+                setLimitError(true);
+                console.log('Limit can not be lower than current usage.');
+            }
         })
         .catch(error => {
             console.error(error);
@@ -197,28 +255,53 @@ function Billing() {
                                 <p className="text-xl font-semibold text-[#414141]">
                                     Usage this month
                                 </p>
-                                <p className="text-md text-[#414141]">
-                                    The amount you need to pay for this month.
-                                </p>
-                                <div className="h-4 rounded-full bg-[#F5F5F5] mt-2">
-                                    <div className="h-4 rounded-full" style={{ width: `25%`, backgroundColor: `#7566BB` }}></div>
-                                </div>
-                                <div className="flex justify-end text-md mt-2 text-[#414141] font-light">
-                                    <p>$2.11 / ${limit}</p>
-                                </div>
-                                <div className="flex justify-end text-md mt-2">
-                                    <label
-                                        htmlFor="setUsageLimitModal"
-                                        className="text-[#7566BB] hover:underline"
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <p className="text-md font-light">Set limits</p>
-                                    </label>
-                                </div>
+                                { card ? (
+                                    <div>
+                                        <p className="text-md text-[#414141]">
+                                            The amount you need to pay for this month.
+                                        </p>
+                                        <div className="h-4 rounded-full bg-[#F5F5F5] mt-2">
+                                            <div className="h-4 rounded-full" style={{ width: `${(totalUsage / limit) * 100}%`, backgroundColor: `#7566BB` }}></div>
+                                        </div>
+                                        <div className="flex justify-end text-md mt-2 text-[#414141] font-light">
+                                            <p>${totalUsage} / ${limit}</p>
+                                        </div>
+                                        <div className="flex justify-end text-md mt-2">
+                                            <label
+                                                htmlFor="setUsageLimitModal"
+                                                className="text-[#7566BB] hover:underline"
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <p className="text-md font-light">Set limits</p>
+                                            </label>
+                                        </div>
+                                        {limitError && (
+                                            <div className="fixed top-0 left-0 right-0 z-50 pt-32 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full bg-black bg-opacity-50">
+                                                <div className="relative w-2/5 mx-auto">
+                                                    <div className="relative bg-white rounded-lg shadow">
+                                                        <button onClick={() => setLimitError(false)} className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                                                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                            </svg>
+                                                            <span className="sr-only">Close modal</span>
+                                                        </button>
+                                                        <div className="p-8 text-center">
+                                                            <svg className="mx-auto mb-4 text-[#414141] w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                                            </svg>
+                                                            <p className="mb-5 text-lg font-semibold text-[#414141]">Limit can not be lower than current usage!</p>
+                                                            <button onClick={() => setLimitError(false)} className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">Continue</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                ) : (
+                                    <p>You must set up a payment method to set up usage limits</p>
+                                )}
                             </div>
-                        {/* ) : ( */}
-                            {/* <div>If No Limit is set</div> */}
-                        {/* )} */}
                         </div>
                         
                         <div className="border border-[#A5A5A5] rounded-md p-6 bg-white">
@@ -277,7 +360,7 @@ function Billing() {
                                                         Edit payment
                                                     </a>
                                                 </li>
-                                                <li className="hover:bg-[#5E519A] hover:text-[#FFFFFF]">
+                                                <li onClick={openModal} className="hover:bg-[#5E519A] hover:text-[#FFFFFF]">
                                                     <label
                                                     className="text-white hover:font-semibold"
                                                     >
@@ -307,9 +390,6 @@ function Billing() {
                                     </a>
                                 </div>
                             )}
-                            <button onClick={openModal} class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="button">
-                                Toggle modal
-                            </button>
 
                             {visible && (
                                 <div className="fixed top-0 left-0 right-0 z-50 pt-32 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full bg-black bg-opacity-50">
@@ -325,12 +405,12 @@ function Billing() {
                                                 <svg className="mx-auto mb-4 text-[#414141] w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                                 </svg>
-                                                <p className="mb-5 text-lg text-[#414141]">Are you sure you want to remove your payment details?</p>
+                                                <p className="mb-5 text-lg font-semibold text-[#414141]">Are you sure you want to remove your payment details?</p>
                                                 <p className="mb-5 text-md text-[#414141]">You will be billed for your usage of this month before your cards will be completely removed.</p>
-                                                <button onClick={closeModal} className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                                                <button onClick={deleteCard} className="text-white bg-red-600 hover:bg-red-800 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-red-300 rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
                                                     Yes, I'm sure
                                                 </button>
-                                                <button onClick={closeModal} className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">No, cancel</button>
+                                                <button onClick={closeModal} className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">No, cancel</button>
                                             </div>
                                         </div>
                                     </div>
@@ -345,7 +425,7 @@ function Billing() {
                             <p className="text-2xl font-semibold text-[#414141]">
                                 Usage
                             </p>
-                            <p className="text-md text-[#414141]">
+                            <p className="text-md text-[#414141]">  
                                 The chart below provides a visual representation of your usage activity over time.
                             </p>
                             <div className="flex mt-2">
@@ -389,43 +469,49 @@ function Billing() {
                                     <p className="font-semibold text-lg">No invoiced found</p>
                                 </div>
                             ) : (
-                                <table className="table table-auto mx-auto w-full text-md mt-4">
-                                    {/* head */}
-                                    <thead>
-                                        <tr className="border-b border-t text-[#414141]">
-                                            <th className="bg-[#FFFFFF] normal-case text-lg font-medium">
-                                                No
-                                            </th>
-                                            <th className="bg-[#FFFFFF] normal-case text-lg font-medium">
-                                                Billing date
-                                            </th>
-                                            <th className="bg-[#FFFFFF] normal-case text-lg font-medium text-center">
-                                                Amount
-                                            </th>
-                                            <th className="bg-[#FFFFFF] normal-case text-lg font-medium text-center">
-                                                Status
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {billingHistory && billingHistory.map((billing, index) => (
-                                            <tr className="text-[#414141]">
-                                                <th className="h-1">
-                                                    {index+1}
+                                <div>
+                                    <table className="table table-auto mx-auto w-full text-md mt-4">
+                                        {/* head */}
+                                        <thead>
+                                            <tr className="border-b border-t text-[#414141]">
+                                                <th className="bg-[#FFFFFF] normal-case text-lg font-medium" style={{ width: '10%' }}>
+                                                    No
                                                 </th>
-                                                <td className="h-1">
-                                                    {billing.dateBilled.toString()}
-                                                </td>
-                                                <td className="text-center h-1">
-                                                    {billing.totalAmount.toString()}
-                                                </td>
-                                                <td className="text-center h-1">
-                                                    Paid
-                                                </td>
+                                                <th className="bg-[#FFFFFF] normal-case text-lg font-medium" style={{ width: '40%' }}>
+                                                    Billing date
+                                                </th>
+                                                <th className="bg-[#FFFFFF] normal-case text-lg font-medium" style={{ width: '25%' }}>
+                                                    Amount
+                                                </th>
+                                                <th className="bg-[#FFFFFF] normal-case text-lg font-medium" style={{ width: '25%' }}>
+                                                    Status
+                                                </th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                    </table>
+                                    <div style={{ maxHeight: '300px', overflow: 'auto' }}>
+                                        <table className="table table-auto mx-auto w-full text-md">
+                                            <tbody>
+                                                {billingHistory && billingHistory.map((billing, index) => (
+                                                    <tr className="text-[#414141]">
+                                                        <th className="h-1" style={{ width: '10%' }}>
+                                                            {index+1}
+                                                        </th>
+                                                        <td className="h-1" style={{ width: '40%' }}>
+                                                            {billing.dateBilled.toString()}
+                                                        </td>
+                                                        <td className="h-1" style={{ width: '25%' }}>
+                                                            {billing.totalAmount.toString()}
+                                                        </td>
+                                                        <td className="h-1" style={{ width: '25%' }}>
+                                                            Paid
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>

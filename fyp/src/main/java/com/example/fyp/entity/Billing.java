@@ -42,6 +42,13 @@ public class Billing {
     @JsonBackReference
     private List<Usages> usageList;
 
+    public Billing (float totalAmount, Date dateBilled, Payment payment, List<Usages> usageList) {
+        this.totalAmount = totalAmount;
+        this.dateBilled = dateBilled;
+        this.payment = payment;
+        this.usageList = usageList;
+    }
+
     @Override
     public String toString() {
         return "Billing{billingId=" + billingId + ", totalAmount=" + totalAmount + ", dateBilled=" + dateBilled +
