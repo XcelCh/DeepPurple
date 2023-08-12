@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,12 +18,14 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = "payment")
 public class Billing {
     
     @Id
@@ -34,11 +37,11 @@ public class Billing {
     private Date dateBilled;
 
     @ManyToOne
-    @JoinColumn(name = "payment_id")
+    @JoinColumn(name = "payment_id", referencedColumnName = "paymentId")
     @JsonManagedReference
     private Payment payment;
 
-    @OneToMany(mappedBy = "billing")
+    @OneToMany(mappedBy = "billing", cascade = CascadeType.PERSIST)
     @JsonBackReference
     private List<Usages> usageList;
 

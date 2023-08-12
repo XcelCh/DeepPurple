@@ -13,12 +13,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = "analysis")
 public class Transcript {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

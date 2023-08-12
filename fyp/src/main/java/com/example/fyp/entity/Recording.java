@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import io.micrometer.common.lang.Nullable;
@@ -21,6 +22,7 @@ import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -28,6 +30,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(exclude = {"employee", "account"})
 public class Recording {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,9 +61,8 @@ public class Recording {
     private String audioFormat;
     private Integer sampleRate;
     
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "analysis_id", referencedColumnName = "analysisId")
-    @JsonManagedReference
+    @OneToOne(mappedBy = "recording", cascade = CascadeType.ALL)
+    @JsonBackReference
     private Analysis analysis;
 
     @ManyToOne

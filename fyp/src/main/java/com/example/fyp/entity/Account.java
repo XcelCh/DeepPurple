@@ -74,7 +74,7 @@ public class Account {
     private String companyField;
 
     
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST)
     @JsonBackReference
     private List<Usages> usageList;
 

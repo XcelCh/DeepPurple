@@ -3,6 +3,7 @@ package com.example.fyp.entity;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,12 +19,14 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = "recording")
 public class Analysis {   
 
     @Id
@@ -43,12 +46,13 @@ public class Analysis {
     private String recordingSentiment;
     private double transcriptConfidence;
     
-    @OneToMany(mappedBy = "analysis", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "analysis")
     @JsonBackReference
     private List<Transcript> transcripts;
 
-    @OneToOne(mappedBy = "analysis")
-    @JsonBackReference
+    @OneToOne
+    @JoinColumn(name = "recording_id", referencedColumnName = "recordingId")
+    @JsonManagedReference
     private Recording recording;
     
     @Override
