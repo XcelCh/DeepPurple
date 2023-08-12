@@ -39,6 +39,7 @@ import com.example.fyp.repo.AccountRepository;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/recordingList")
@@ -69,10 +70,8 @@ public class RecordingController {
             // Retrieve the current authentication token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
-            System.out.println("EMAIL: " + email);
             Integer account_id = accountServiceImpl.getAccountId(email);
 
-            System.out.println("ACCOUNT ID: " + account_id);
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
 
             if (search != null && !search.isEmpty()) {
@@ -134,22 +133,21 @@ public class RecordingController {
 
      @GetMapping("/compare-dates")
      public String compareDates() {
-         Map<String, Object> rec = recordingListService.getRecordingById(15);
-        String dateTimeObject = (String) rec.get("uploadDate");
-        System.out.println("UPLOAD DATESSS" + dateTimeObject);
+        // upload date
+         Map<String, Object> rec = recordingListService.getRecordingById(1);
+         String uploadDate = rec.get("uploadDate").toString();
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+         LocalDateTime uploadDateFormatted = LocalDateTime.parse(uploadDate, formatter);
 
-        //  LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ISO_DATE_TIME);
-        //  String dateOnly = dateTime.toLocalDate().toString();
+         System.out.println("UPLOAD DATE FORMATTED " + uploadDateFormatted);
 
+         //
+         LocalDateTime dateTime1 = LocalDateTime.of(2023, 8, 31, 0, 0);
 
-         LocalDateTime dateTime1 = LocalDateTime.of(2023, 8, 8, 0, 0);
-         LocalDateTime dateTime2 = LocalDateTime.of(2023, 7, 31, 0, 0);
+         boolean isBefore = dateTime1.isBefore(uploadDateFormatted);
+         boolean isAfter = dateTime1.isAfter(uploadDateFormatted);
 
-         boolean isBefore = dateTime1.isBefore(dateTime2);
-         boolean isAfter = dateTime1.isAfter(dateTime2);
-         boolean isEqual = dateTime1.isEqual(dateTime2);
-
-         return "isBefore: " + isBefore + "\nisAfter: " + isAfter + "\nisEqual: " + isEqual;
+         return "isBefore: " + isBefore + "\nisAfter: " + isAfter;
      }
 
 }
