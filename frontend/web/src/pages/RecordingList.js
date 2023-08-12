@@ -33,7 +33,7 @@ function RecordingList() {
   const [postsPerPage, setPostPerPage] = useState(5);
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentPosts = displayList.slice(firstPostIndex, lastPostIndex);
+  // const currentPosts = displayList.slice(firstPostIndex, lastPostIndex);
 
   // Filter
   const [filter, setFilter] = useState({
@@ -83,10 +83,19 @@ function RecordingList() {
     setDisplayList(filteredRecList);
   };
 
+  const isDateInRange = (date, startDate, endDate) => {
+    const parsedDate = new Date(date);
+    return parsedDate >= startDate && parsedDate < endDate;
+  };
+
   const searchRecList = async () => {
     try {
-      const searchedRecList = recList.filter((rec) =>
-        rec?.recordingName.toLowerCase().includes(search.toLowerCase())
+      const searchedRecList = recList.filter(
+        (rec) =>
+          rec?.recordingName.toLowerCase().includes(search.toLowerCase()) &&
+          (!dateRange[0] ||
+            !dateRange[1] ||
+            isDateInRange(rec?.uploadDate, dateRange[0], dateRange[1]))
       );
       setDisplayList(searchedRecList);
     } catch (error) {
@@ -95,8 +104,8 @@ function RecordingList() {
   };
 
   const handleFilterUploadDate = () => {
-    console.log(dateRange[0]);
-    console.log(dateRange[1]);
+    console.log(new Date(dateRange[0]));
+    console.log(new Date(dateRange[1]));
   };
 
   const handleReset = () => {
@@ -216,163 +225,171 @@ function RecordingList() {
 
   useEffect(() => {
     searchRecList();
-  }, [search]);
+  }, [search, dateRange[1]]);
 
   // useEffect(() => {
   //   console.log(recList);
   // });
 
   useEffect(() => {
-    console.log(dateRange[0]);
-    console.log(dateRange[1]);
+    const recDate = new Date(recList[0]?.uploadDate);
+    console.log("REC DATE: " + recDate);
+
+    console.log(new Date(dateRange[0]) <= recDate);
+    console.log(new Date(dateRange[1]));
   }, [dateRange]);
 
   return (
     <div className="ml-20 mt-16">
       <p className="text-xl font-bold text-left mb-5">Recording List</p>
 
-      <div class="grid grid-cols-2 mb-5 border border-orange-600">
-        <div className="flex gap-3">
-        <form className="max-w-xs text-sm">
-          <div className="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      <div class="grid grid-cols-3 mb-5">
+        <div className="col-span-2 flex gap-3">
+          <form className="max-w-xs text-sm">
+            <div className="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search"
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.keyCode == 13) {
+                    getRecList();
+                  }
+                }}
+                className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
               />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search"
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.keyCode == 13) {
-                  getRecList();
-                }
-              }}
-              className="w-full py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
-            />
 
-            <div className="dropdown mb-4" id="filterDropdown">
-              <label
-                tabIndex={0}
-                className="absolute top-0 bottom-0 w-6 h-6 text-gray-400 right-3"
-              >
-                <img src={Filter} className=""></img>
-              </label>
-              <div
-                tabIndex={0}
-                className="-top-120 dropdown-content z-[1] menu p-5 drop-shadow-sm bg-[#FFFFFF] rounded-box w-128 disabled:hover text-xs border"
-              >
-                {/* Filter Pop up */}
-                {/* Handled By */}
-                <div className="grid grid-cols-2 flex items-center mb-5">
-                  <p className="font-bold">Handled by</p>
-                  <select
-                    onChange={(e) =>
-                      setFilter({ ...filter, handledBy: e.target.value })
-                    }
-                    className="select select-bordered font-normal select-xs h-8"
-                  >
-                    <option value="">Any Employee</option>
-                    {empList.map((emp, index) => (
-                      <option value={emp.employeeName}>
-                        {emp.employeeName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="dropdown mb-4" id="filterDropdown">
+                <label
+                  tabIndex={0}
+                  className="absolute top-0 bottom-0 w-6 h-6 text-gray-400 right-3"
+                >
+                  <img src={Filter} className=""></img>
+                </label>
+                <div
+                  tabIndex={0}
+                  className="-top-120 dropdown-content z-[1] menu p-5 drop-shadow-sm bg-[#FFFFFF] rounded-box w-128 disabled:hover text-xs border"
+                >
+                  {/* Filter Pop up */}
+                  {/* Handled By */}
+                  <div className="grid grid-cols-2 flex items-center mb-5">
+                    <p className="font-bold">Handled by</p>
+                    <select
+                      onChange={(e) =>
+                        setFilter({ ...filter, handledBy: e.target.value })
+                      }
+                      className="select select-bordered font-normal select-xs h-8"
+                    >
+                      <option value="">Any Employee</option>
+                      {empList &&
+                        empList.map((emp, index) => (
+                          <option value={emp.employeeName}>
+                            {emp.employeeName}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
 
-                {/* Category */}
-                <div className="grid grid-cols-2 flex items-center mb-5">
-                  <p className="font-bold">Category</p>
-                  <select
-                    onChange={(e) =>
-                      setFilter({ ...filter, category: e.target.value })
-                    }
-                    className="select select-bordered font-normal select-xs h-8"
-                  >
-                    <option value="">Any Category</option>
-                    <option value="Inquiry">Inquiry</option>
-                    <option value="Warranty">Warranty</option>
-                    <option value="Complaint">Complaint</option>
-                  </select>
-                </div>
+                  {/* Category */}
+                  <div className="grid grid-cols-2 flex items-center mb-5">
+                    <p className="font-bold">Category</p>
+                    <select
+                      onChange={(e) =>
+                        setFilter({ ...filter, category: e.target.value })
+                      }
+                      className="select select-bordered font-normal select-xs h-8"
+                    >
+                      <option value="">Any Category</option>
+                      <option value="Inquiry">Inquiry</option>
+                      <option value="Warranty">Warranty</option>
+                      <option value="Complaint">Complaint</option>
+                    </select>
+                  </div>
 
-                {/* Overall Sentiment */}
-                <div className="grid grid-cols-2 flex items-center mb-5">
-                  <p className="font-bold">Overall Sentiment</p>
-                  <select
-                    onChange={(e) =>
-                      setFilter({ ...filter, overallSentiment: e.target.value })
-                    }
-                    className="select select-bordered font-normal select-xs h-8"
-                  >
-                    <option value="">Any Sentiment</option>
-                    <option value="Positive">Positive</option>
-                    <option value="Negative">Negative</option>
-                  </select>
-                </div>
+                  {/* Overall Sentiment */}
+                  <div className="grid grid-cols-2 flex items-center mb-5">
+                    <p className="font-bold">Overall Sentiment</p>
+                    <select
+                      onChange={(e) =>
+                        setFilter({
+                          ...filter,
+                          overallSentiment: e.target.value,
+                        })
+                      }
+                      className="select select-bordered font-normal select-xs h-8"
+                    >
+                      <option value="">Any Sentiment</option>
+                      <option value="Positive">Positive</option>
+                      <option value="Negative">Negative</option>
+                    </select>
+                  </div>
 
-                {/* Employee's Sentiment */}
-                <div className="grid grid-cols-2 flex items-center mb-5">
-                  <p className="font-bold">Employee's Sentiment</p>
-                  <select
-                    onChange={(e) =>
-                      setFilter({ ...filter, empSentiment: e.target.value })
-                    }
-                    className="select select-bordered font-normal select-xs h-8"
-                  >
-                    <option value="">Any Sentiment</option>
-                    <option value="Positive">Positive</option>
-                    <option value="Negative">Negative</option>
-                  </select>
-                </div>
+                  {/* Employee's Sentiment */}
+                  <div className="grid grid-cols-2 flex items-center mb-5">
+                    <p className="font-bold">Employee's Sentiment</p>
+                    <select
+                      onChange={(e) =>
+                        setFilter({ ...filter, empSentiment: e.target.value })
+                      }
+                      className="select select-bordered font-normal select-xs h-8"
+                    >
+                      <option value="">Any Sentiment</option>
+                      <option value="Positive">Positive</option>
+                      <option value="Negative">Negative</option>
+                    </select>
+                  </div>
 
-                {/* Customer's Sentiment */}
-                <div className="grid grid-cols-2 flex items-center mb-5">
-                  <p className="font-bold">Customer's Sentiment</p>
-                  <select
-                    onChange={(e) =>
-                      setFilter({ ...filter, custSentiment: e.target.value })
-                    }
-                    className="select select-bordered font-normal select-xs h-8"
-                  >
-                    <option value="">Any Sentiment</option>
-                    <option value="Positive">Positive</option>
-                    <option value="Negative">Negative</option>
-                  </select>
-                </div>
-                <div className="flex justify-end items-center">
-                  <button
-                    className="text-[#9554FE] mr-8 text-xs"
-                    onClick={handleReset}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="btn btn-sm bg-[#9554FE] normal-case h-5 px-5 border-[#9554FE] text-xs"
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </button>
+                  {/* Customer's Sentiment */}
+                  <div className="grid grid-cols-2 flex items-center mb-5">
+                    <p className="font-bold">Customer's Sentiment</p>
+                    <select
+                      onChange={(e) =>
+                        setFilter({ ...filter, custSentiment: e.target.value })
+                      }
+                      className="select select-bordered font-normal select-xs h-8"
+                    >
+                      <option value="">Any Sentiment</option>
+                      <option value="Positive">Positive</option>
+                      <option value="Negative">Negative</option>
+                    </select>
+                  </div>
+                  <div className="flex justify-end items-center">
+                    <button
+                      className="text-[#9554FE] mr-8 text-xs"
+                      onClick={handleReset}
+                    >
+                      Reset
+                    </button>
+                    <button
+                      className="btn btn-sm bg-[#9554FE] normal-case h-5 px-5 border-[#9554FE] text-xs"
+                      onClick={handleSearch}
+                    >
+                      Search
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </form>
-        <DateRange
-          dateRange={dateRange}
-          setDateRange={setDateRange}
-        ></DateRange>
+          </form>
+
+            <DateRange
+              dateRange={dateRange}
+              setDateRange={setDateRange}
+            ></DateRange>
         </div>
 
         {/* Upload Date */}
@@ -427,69 +444,81 @@ function RecordingList() {
           </thead>
 
           <tbody className="bg-white">
-            {currentPosts.map((recording, index) => (
-              <tr>
-                <th className="h-1">
-                  {currentPage * postsPerPage - 4 + index}
-                </th>
-                <td className="h-1">{recording.recordingName}</td>
-                <td className="h-1">{recording.uploadDate}</td>
-                <td className="h-1">{recording.dateRecorded}</td>
-                <td className="h-1">{recording.employeeName}</td>
-                <td className="h-1">{recording.category}</td>
-                <td className="h-1">{recording.sentiment}</td>
-                <td className="flex justify-center items-center">
-                  <div className="dropdown dropdown-end">
-                    <label
-                      tabIndex={0}
-                      className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
-                    >
-                      {/* <img src={ThreeDotsVertical} className="mt-2"></img> */}
-                      <MoreVertIcon style={{ color: "black" }}></MoreVertIcon>
-                    </label>
-                    <ul
-                      tabIndex={0}
-                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36  rounded-md"
-                    >
-                      <li className="hover:bg-[#9554FE]">
-                        <a
-                          className="text-[#9554FE] hover:text-[#FFFFFF]"
-                          href={`recordingList/analysis/${currentRecordingId}`}
-                          onClick={() => {
-                            setCurrentRecordingId(recording.recordingId);
-                          }}
-                        >
-                          <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>{" "}
-                          View Analysis
-                        </a>
-                      </li>
-                      <li className="hover:bg-[#9554FE]">
-                        <a
-                          className="text-[#D55454] hover:text-[#FFFFFF]"
-                          onClick={() => handleDelete(recording.recordingId)}
-                        >
-                          <DeleteOutlinedIcon></DeleteOutlinedIcon> Delete
-                        </a>
-                      </li>
-                      <li className="hover:bg-[#9554FE]">
-                        <a
-                          onClick={() =>
-                            handleDownload(recording.recordingName)
-                          }
-                          className="text-[#9554FE] hover:text-[#FFFFFF]"
-                        >
-                          <FileDownloadOutlinedIcon></FileDownloadOutlinedIcon>{" "}
-                          Download
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {displayList && displayList.length > 0
+              ? displayList
+                  .slice(firstPostIndex, lastPostIndex)
+                  .map((recording, index) => (
+                    <tr>
+                      <th className="h-1">
+                        {currentPage * postsPerPage - 4 + index}
+                      </th>
+                      <td className="h-1">{recording.recordingName}</td>
+                      <td className="h-1">
+                        {recording.uploadDate.substring(0, 10)}
+                      </td>
+                      <td className="h-1">
+                        {recording.dateRecorded.substring(0, 10)}
+                      </td>
+                      <td className="h-1">{recording.employeeName}</td>
+                      <td className="h-1">{recording.category}</td>
+                      <td className="h-1">{recording.sentiment}</td>
+                      <td className="flex justify-center items-center">
+                        <div className="dropdown dropdown-end">
+                          <label
+                            tabIndex={0}
+                            className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
+                          >
+                            {/* <img src={ThreeDotsVertical} className="mt-2"></img> */}
+                            <MoreVertIcon
+                              style={{ color: "black" }}
+                            ></MoreVertIcon>
+                          </label>
+                          <ul
+                            tabIndex={0}
+                            className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36  rounded-md"
+                          >
+                            <li className="hover:bg-[#9554FE]">
+                              <a
+                                className="text-[#9554FE] hover:text-[#FFFFFF]"
+                                href={`recordingList/analysis/${currentRecordingId}`}
+                                onClick={() => {
+                                  setCurrentRecordingId(recording.recordingId);
+                                }}
+                              >
+                                <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>{" "}
+                                View Analysis
+                              </a>
+                            </li>
+                            <li className="hover:bg-[#9554FE]">
+                              <a
+                                className="text-[#D55454] hover:text-[#FFFFFF]"
+                                onClick={() =>
+                                  handleDelete(recording.recordingId)
+                                }
+                              >
+                                <DeleteOutlinedIcon></DeleteOutlinedIcon> Delete
+                              </a>
+                            </li>
+                            <li className="hover:bg-[#9554FE]">
+                              <a
+                                onClick={() =>
+                                  handleDownload(recording.recordingName)
+                                }
+                                className="text-[#9554FE] hover:text-[#FFFFFF]"
+                              >
+                                <FileDownloadOutlinedIcon></FileDownloadOutlinedIcon>{" "}
+                                Download
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+              : null}
           </tbody>
         </table>
-        {currentPosts.length == 0 ? (
+        {!displayList ? (
           <>
             <img src={EmptyRecording} className="mx-auto mt-10"></img>
             <p className="text-center font-semibold text-lg">
@@ -509,7 +538,7 @@ function RecordingList() {
       </div>
       <div className="join flex justify-end mt-10 mb-10">
         <Pagination
-          totalPosts={recList.length}
+          totalPosts={recList && recList.length}
           postsPerPage={postsPerPage}
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}

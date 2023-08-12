@@ -245,7 +245,7 @@ function EmployeeList() {
           </thead>
           <tbody>
             {/* row 1 */}
-            {empList.length > 0
+            {empList && empList.length > 0
               ? empList
                   .slice(firstPostIndex, lastPostIndex)
                   .map((employee, index) => (
@@ -319,7 +319,7 @@ function EmployeeList() {
               : null}
           </tbody>
         </table>
-        {!empList.length > 0 ? (
+        {!empList? (
           <>
             <img src={EmptyRecording} className="mx-auto mt-10"></img>
             <p className="text-center font-semibold text-lg">
