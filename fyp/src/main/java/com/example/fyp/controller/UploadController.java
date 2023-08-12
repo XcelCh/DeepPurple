@@ -1,8 +1,12 @@
 package com.example.fyp.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +28,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.fyp.entity.Employee;
+import com.example.fyp.entity.Recording;
 import com.example.fyp.model.DetailEmotion;
 import com.example.fyp.model.RecordingAnalysisAnswer;
 import com.example.fyp.model.TextSentimentAnswer;
 import com.example.fyp.model.promptModel;
+import com.example.fyp.model.ResponseStatus;
+import com.example.fyp.repo.RecordingRepository;
+import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.service.StorageService;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
@@ -39,6 +48,12 @@ public class UploadController {
 
 	@Autowired
 	private StorageService service;
+	
+	@Autowired
+	private RecordingRepository recRepo;
+	
+	@Autowired
+	private EmployeeRepository empRepo;
 
 	@PostMapping("/uploadAudio")
 	public ResponseEntity<?> uploadAudio(@RequestParam("audio") MultipartFile file) throws IOException {
@@ -61,7 +76,7 @@ public class UploadController {
 	}
 	
 	@GetMapping("/download/{fileName}")
-	public ResponseEntity<ByteArrayResource> downloadFile(String fileName){
+	public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName){
 		byte[] data = service.downloadFile(fileName);
 		ByteArrayResource resource = new ByteArrayResource(data);
 		return ResponseEntity
@@ -73,9 +88,83 @@ public class UploadController {
 	}
 	
 	@DeleteMapping("/delete/{fileName}")
-	public ResponseEntity<String> deleteFile(@PathVariable String fileName){
-		return new ResponseEntity<>(service.deleteFile(fileName), HttpStatus.OK);
+	public ResponseEntity<String> deleteFile(@PathVariable String fileName){			
+		//get the recording object that is about to be deleted
+		Optional<Recording> recordingToDelete = recRepo.findByRecordingName(fileName);
+		
+		//check if there are any employees assigned to the recording
+		if(recordingToDelete.get().getEmployee().getEmployeeId() != null) {
+			//get the employee details of the recording
+			Integer empID = recordingToDelete.get().getEmployee().getEmployeeId();
+			Optional<Employee> emp = empRepo.findById(empID);
+			emp.get().decrementNumCallsHandled();
+		}		
+		
+		return new ResponseEntity<>(service.deleteFile(fileName), HttpStatus.OK);	
 	}
+	
+	@PostMapping("/updateAudioEmployee")
+	public ResponseEntity<?> updateRecordingEmployee(@RequestParam String currentDate, @RequestParam String employeeId, @RequestParam String employeeName) {  
+		ResponseStatus response = new ResponseStatus();  
+		Integer empID = Integer.parseInt(employeeId);
+		  
+		  List<Recording> recList = new ArrayList<>();
+		  recRepo.findAll().forEach(recList::add);    
+		  
+		  Optional<Employee> emp = empRepo.findById(empID);		  		 
+	         
+		  try {
+		    LocalDateTime currTime = LocalDateTime.parse(currentDate);
+		    
+		    for (Recording rec : recList) {
+	            if (rec.getUploadDate().isAfter(currTime)) {
+	                rec.setEmployee(emp.get());
+	                emp.get().incrementNumCallsHandled();
+	            }
+	        }
+	        	        
+            recRepo.saveAll(recList); 
+            // RESPONSE DATA
+            response.setSuccess(true);
+            response.setData(recList);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+	            
+	        } catch (Exception e)  {
+	         // RESPONSE DATA
+	            response.setSuccess(false);
+	            response.setMessage("Fail to get All Employees.");
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	        }
+	  	  
+	 }
+	 
+	 @GetMapping("/getRecordings")
+	 public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String currentDate) {
+        ResponseStatus<List<Recording>> response = new ResponseStatus<>();
+
+        try {
+            List<Recording> recList = new ArrayList<>();
+            recRepo.findAll().forEach(recList::add);            
+            
+            if (currentDate != null && !currentDate.isEmpty()){
+                LocalDateTime currTime = LocalDateTime.parse(currentDate);
+                recList = recList.stream()                  
+                .filter(rec -> rec.getUploadDate().isAfter(currTime))
+                        .collect(Collectors.toList());
+            }
+
+            // RESPONSE DATA
+            response.setSuccess(true);
+            response.setData(recList);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        } catch (Exception ex) {
+            // RESPONSE DATA
+            response.setSuccess(false);
+            response.setMessage("Fail to get All Employees.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
 
 

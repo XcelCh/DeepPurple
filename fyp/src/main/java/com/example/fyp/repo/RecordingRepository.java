@@ -2,6 +2,7 @@ package com.example.fyp.repo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -39,5 +40,7 @@ public interface RecordingRepository extends JpaRepository<Recording, Integer>{
 
     @Query("SELECT r.recordingId AS recordingId, r.uploadDate AS uploadDate "+
     "FROM Recording r WHERE r.recordingId = :recording_id")
-    Map<String, Object> getRecordingById(Integer recording_id);
+    Map<String, Object> getRecordingById(Integer recording_id);        
+
+    Optional<Recording> findByRecordingName(String fileName);    
 }

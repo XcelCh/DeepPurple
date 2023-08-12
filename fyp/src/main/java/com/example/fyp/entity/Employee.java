@@ -66,4 +66,12 @@ public class Employee {
     }
     
 
+    public void incrementNumCallsHandled() {
+    	this.numCallsHandled++;
+    }
+
+    public void decrementNumCallsHandled() {
+    	this.numCallsHandled--;
+    }
+
 }
