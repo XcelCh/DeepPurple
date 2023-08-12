@@ -75,7 +75,6 @@ public class EmployeeController {
             // Retrieve the current authentication token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
-            System.out.println("EMAIL " + email);
             Integer account_id = accountServiceImpl.getAccountId(email);
 
             List<Map<String, Object>> empList = employeeService.getAllEmployee(account_id);
@@ -138,9 +137,7 @@ public class EmployeeController {
         ResponseStatus response = new ResponseStatus();
 
         try {
-            // System.out.println(id);
             employeeService.deleteById(id);
-            // int result = employeeService.deleteEmployeeById(id);
 
             // RESPONSE DATA
             response.setSuccess(true);
@@ -157,26 +154,26 @@ public class EmployeeController {
 
     // Update Employee Name by Id
     @PostMapping("/updateEmployeeNameById/{id}")
-    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer id, @RequestBody Employee newEmpData)
+    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer id, @RequestBody String empName)
     {
         ResponseStatus response = new ResponseStatus();
         Optional<Employee> oldEmpData = empRepo.findById(id);
-        System.out.println("OLD EMP DATA: " + oldEmpData);
+        System.out.println("OLD EMP DATA: " + id);
 
         if (oldEmpData.isPresent()) {
             Employee updatedEmpData = oldEmpData.get();
-            updatedEmpData.setEmployeeName(newEmpData.getEmployeeName());
+            updatedEmpData.setEmployeeName(empName);
 
             Employee empObj = empRepo.save(updatedEmpData);
 
             // RESPONSE DATA
             response.setSuccess(true);
-            response.setMessage("Successfully change the name to " + newEmpData.getEmployeeName());
+            response.setMessage("Successfully change the name to " + empName);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         // RESPONSE DATA
         response.setSuccess(false);
-        response.setMessage("Fail to change the name to " + newEmpData.getEmployeeName());
+        response.setMessage("Fail to change the name to " + empName);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
