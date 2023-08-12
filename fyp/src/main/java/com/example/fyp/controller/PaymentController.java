@@ -158,7 +158,7 @@ public class PaymentController {
     public ResponseEntity<?> deleteCard() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
+            Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());   
             Integer accountId = account.getAccountId();
             Long paymentId = account.getPayment().getPaymentId();
 

@@ -110,7 +110,7 @@ function TextAnalyze() {
             {result === "" && processing === false ? (
               <textarea
                 placeholder="Input your text here ..."
-                className=" mt-2 textarea textarea-bordered textarea-md w-full max-w-full h-96"
+                className=" mt-2 textarea textarea-bordered textarea-md w-full max-w-full h-96" 
                 value={oriPrompt}
                 onChange={handleChange}
               ></textarea>
