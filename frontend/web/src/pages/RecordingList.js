@@ -386,10 +386,10 @@ function RecordingList() {
             </div>
           </form>
 
-            <DateRange
-              dateRange={dateRange}
-              setDateRange={setDateRange}
-            ></DateRange>
+          <DateRange
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+          ></DateRange>
         </div>
 
         {/* Upload Date */}
@@ -410,7 +410,7 @@ function RecordingList() {
         </div>
       </div>
 
-      <div className="max-h-screen border border-dashed bg-[#F6F4FC]">
+      <div className="max-h-screen border border-dashed border-[#83848A] bg-[#F6F4FC]">
         {/* table */}
         <table className="table table-auto mx-auto w-full text-xs">
           {/* head */}
@@ -443,7 +443,7 @@ function RecordingList() {
             </tr>
           </thead>
 
-          <tbody className="bg-white">
+          <tbody>
             {displayList && displayList.length > 0
               ? displayList
                   .slice(firstPostIndex, lastPostIndex)
@@ -518,14 +518,14 @@ function RecordingList() {
               : null}
           </tbody>
         </table>
-        {!displayList ? (
+        {!displayList.length ? (
           <>
             <img src={EmptyRecording} className="mx-auto mt-10"></img>
             <p className="text-center font-semibold text-lg">
               You don't have any recordings yet
             </p>
             <p className="text-center font-semibold text-sm mb-10">
-              Start uploading your audio files by clicking{" "}
+              Start uploading your audio files by clicking
               <a
                 href="recordingList/AddRecording"
                 className="underline underline-offset-2"

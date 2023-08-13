@@ -10,18 +10,30 @@ import {
   TrashCan,
   Download,
   Eye,
+  EmptyRecording,
 } from "../assets/index";
 import { RxCross2 } from "react-icons/rx";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import Swal from "sweetalert2";
+import authHeader from "../services/auth-header";
+import Pagination from "../components/Pagination";
 
-const today = new Date();    
+const today = new Date();
 var dateTimeString;
 
-dateTimeString = today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2) + 'T'
-                + ('0' + today.getHours()).slice(-2) + ':' + ('0' + today.getMinutes()).slice(-2) + ':' + ('0' + today.getSeconds()).slice(-2);
-
+dateTimeString =
+  today.getFullYear() +
+  "-" +
+  ("0" + (today.getMonth() + 1)).slice(-2) +
+  "-" +
+  ("0" + today.getDate()).slice(-2) +
+  "T" +
+  ("0" + today.getHours()).slice(-2) +
+  ":" +
+  ("0" + today.getMinutes()).slice(-2) +
+  ":" +
+  ("0" + today.getSeconds()).slice(-2);
 
 function AddRecording() {
   const [empList, setEmpList] = useState([]);
@@ -36,44 +48,55 @@ function AddRecording() {
   const [showDelimiter, setShowDelimiter] = useState(false);
   const [error, setError] = useState("");
 
- // Get All Recordings
- const getRecList = async () => {  
-  const params = `?currentDate=${dateTimeString}`;
-  try {
-    const response = await fetch(
-      `http://localhost:8082/audio/getRecordings${params}`
-    );
+  const token = authHeader();
 
-    response.json().then((data) => {
-      setRecList(data.data);
-      console.log(recList);
-    });
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostPerPage] = useState(5);
+  const lastPostIndex = currentPage * postsPerPage;
+  const firstPostIndex = lastPostIndex - postsPerPage;
+
+  // Get All Recordings
+  const getRecList = async () => {
+    const params = `?currentDate=${dateTimeString}`;
+    try {
+      const response = await fetch(
+        `http://localhost:8082/audio/getRecordings${params}`
+      );
+
+      response.json().then((data) => {
+        setRecList(data.data);
+        console.log(recList);
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
- }; 
+  };
 
- useEffect(() => {
-  getRecList();
- }, []);
+  useEffect(() => {
+    getRecList();
+  }, []);
 
- // Get All Employees
- const getEmpList = async () => {
+  // Get All Employees
+  const getEmpList = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8082/employeeList/getAllEmployees`
+        `http://localhost:8082/employeeList/getAllEmployees`,
+        {
+          headers: token,
+        }
       );
 
       response.json().then((data) => {
         setEmpList(data.data);
         console.log(empList);
       });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  useEffect(() => {    
+  useEffect(() => {
     getEmpList();
   }, [assignEmployee]);
 
@@ -101,7 +124,6 @@ function AddRecording() {
     }
   }, [selectedEmployee]);
 
-
   const handleAssignEmployee = (selected) => {
     setAssignEmployee(selected);
     console.log(assignEmployee);
@@ -109,131 +131,128 @@ function AddRecording() {
 
   const handleSelectedEmployee = (value) => {
     var val = decodeValue(value);
-    const params = `?currentDate=${dateTimeString}&employeeId=${val.id}&employeeName=${val.name}`;    
+    const params = `?currentDate=${dateTimeString}&employeeId=${val.id}&employeeName=${val.name}`;
     let name = val.name;
-    let data = val.id;   
+    let data = val.id;
     Swal.fire({
-      title: 'Updating Employee..',      
+      title: "Updating Employee..",
       didOpen: () => {
-        Swal.showLoading()
-        return fetch(`http://localhost:8082/audio/updateAudioEmployee${params}`, {
-          method: "POST",
-          body: data
-        })
-        .then (response => {
-    
-          if (response.ok && recList.length !== 0) {
-            Swal.close();
-            getRecList()
-            // Success message
-            Swal.fire(            
-              "Updated",
-              "The employee name has been updated!",
-              "success"
-            )
-          } else{
-            throw new error;
-          }  
-        })
-        .catch (error => {    
-          setError(error)
-          console.error(error)          
-          Swal.fire("Fail", "Fail to assign employee", "error")
-        })
+        Swal.showLoading();
+        return fetch(
+          `http://localhost:8082/audio/updateAudioEmployee${params}`,
+          {
+            method: "POST",
+            body: data,
+          }
+        )
+          .then((response) => {
+            if (response.ok && recList.length !== 0) {
+              Swal.close();
+              getRecList();
+              // Success message
+              Swal.fire(
+                "Updated",
+                "The employee name has been updated!",
+                "success"
+              );
+            } else {
+              throw new error();
+            }
+          })
+          .catch((error) => {
+            setError(error);
+            console.log(error);
+            Swal.fire("Fail", "Fail to assign employee", "error");
+          });
       },
-      allowOutsideClick: () => !Swal.isLoading()
-    })
-
-  }
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+  };
 
   const handleEmployee = (selected) => {
     setEmployee(selected);
     console.log(employee);
   };
 
-  const handleUpload = () => {    
+  const handleUpload = () => {
     const data = new FormData();
-    const audioInput = document.getElementById("audioInput");        
-    data.set("audio2", audioInput.files[0])    
+    const audioInput = document.getElementById("audioInput");
+    data.set("audio2", audioInput.files[0]);
     console.log(audioInput.files[0]);
     Swal.fire({
-      title: 'Uploading Files..',      
-      didOpen: () => {
-        Swal.showLoading()
-        return fetch("http://localhost:8082/audio/uploadAudio2", {
-          method: "POST",
-          body: data
-        })
-        .then (response => {
-    
-          if (response.ok) {
-            Swal.close();
-            getRecList()
-            // Success message
-            Swal.fire(            
-              "Updated",
-              "The recording has been added.",
-              "success"
-            )
-          } else{
-            throw new error;
-          }     
-        })
-        .catch (error => {      
-          setError(error)
-          console.error(error)
-          Swal.fire("Fail", "Fail to add recording.", "error")
-        })
-      },
-      allowOutsideClick: () => !Swal.isLoading()
-    })
-  };
-
-  const handleUploadMultipleTest = () => {    
-    const audioInput = document.getElementById("audioInputMultiple");
-    const selectedFolder = audioInput.files[0];
-    const folderFiles = selectedFolder.webkitEntries || selectedFolder.entries || [];
-    const totalFiles = audioInput.files.length;
-    let uploadedFilesCount = 0;
-  
-    Swal.fire({
-      title: 'Uploading Files..',
+      title: "Uploading Files..",
       didOpen: () => {
         Swal.showLoading();
-  
-        // Define a helper function to upload each file sequentially
-        const uploadFile = (file) => {
-          const data = new FormData();
-          data.set("audio2", file);
-  
-          return fetch("http://localhost:8082/audio/uploadAudio2", {
-            method: "POST",
-            body: data
-          })
-          .then(response => {
+        return fetch("http://localhost:8082/audio/uploadAudio2", {
+          method: "POST",
+          body: data,
+        })
+          .then((response) => {
             if (response.ok) {
-              uploadedFilesCount++;
-              if (uploadedFilesCount === totalFiles) {
-                Swal.close();
-                getRecList();
-                // Success message for all files uploaded
-                Swal.fire(
-                  "Updated",
-                  "All recordings have been added.",
-                  "success"
-                );
-              }
+              Swal.close();
+              getRecList();
+              // Success message
+              Swal.fire("Updated", "The recording has been added.", "success");
             } else {
-              throw new Error();
+              throw new error();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             setError(error);
             console.error(error);
             Swal.fire("Fail", "Fail to add recording.", "error");
           });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+  };
+
+  const handleUploadMultipleTest = () => {
+    const audioInput = document.getElementById("audioInputMultiple");
+    const selectedFolder = audioInput.files[0];
+    const folderFiles =
+      selectedFolder.webkitEntries || selectedFolder.entries || [];
+    const totalFiles = audioInput.files.length;
+    let uploadedFilesCount = 0;
+
+    Swal.fire({
+      title: "Uploading Files..",
+      didOpen: () => {
+        Swal.showLoading();
+
+        // Define a helper function to upload each file sequentially
+        const uploadFile = (file) => {
+          const data = new FormData();
+          data.set("audio2", file);
+
+          return fetch("http://localhost:8082/audio/uploadAudio2", {
+            method: "POST",
+            body: data,
+          })
+            .then((response) => {
+              if (response.ok) {
+                uploadedFilesCount++;
+                if (uploadedFilesCount === totalFiles) {
+                  Swal.close();
+                  getRecList();
+                  // Success message for all files uploaded
+                  Swal.fire(
+                    "Updated",
+                    "All recordings have been added.",
+                    "success"
+                  );
+                }
+              } else {
+                throw new Error();
+              }
+            })
+            .catch((error) => {
+              setError(error);
+              console.error(error);
+              Swal.fire("Fail", "Fail to add recording.", "error");
+            });
         };
-  
+
         // Upload each file one by one
         const filesArray = [];
         for (const entry of folderFiles) {
@@ -249,10 +268,9 @@ function AddRecording() {
           }
         }
       },
-      allowOutsideClick: () => !Swal.isLoading()
+      allowOutsideClick: () => !Swal.isLoading(),
     });
   };
-  
 
   const handleDelete = (recName) => {
     Swal.fire({
@@ -268,26 +286,29 @@ function AddRecording() {
         // Deleting
         fetch(`http://localhost:8082/audio/delete/${recName}`, {
           method: "DELETE",
-        })          
-        .then(response => {
-
-          if(response.ok){
-            getRecList();
-            // Success message       
-            Swal.fire("Deleted!", "The recording has been deleted!", "success");        
-          }            
         })
-        .catch (error => {      
-          setError(error)
-          console.error(error)
-          Swal.fire("Fail", "Fail to delete recording.", "error")
-        })
+          .then((response) => {
+            if (response.ok) {
+              getRecList();
+              // Success message
+              Swal.fire(
+                "Deleted!",
+                "The recording has been deleted!",
+                "success"
+              );
+            }
+          })
+          .catch((error) => {
+            setError(error);
+            console.error(error);
+            Swal.fire("Fail", "Fail to delete recording.", "error");
+          });
       }
     });
-  }
+  };
 
   // const handleFileDelimiter = () => {
-  //   const audioInput = document.getElementById("audioInput");        
+  //   const audioInput = document.getElementById("audioInput");
   //   data.set("audio2", audioInput.files[0]);
   // }
 
@@ -302,19 +323,19 @@ function AddRecording() {
 
   const decodeValue = (value) => {
     // Split the value using the pipe delimiter and return an object with id and name
-    const [id, name] = value.split('|');
+    const [id, name] = value.split("|");
     return { id, name };
   };
 
   return (
-    <div className="mx-20">
+    <div className="pt-16 mx-20">
       <div className="flex mb-5">
         <Link to="../RecordingList">
           <img src={ArrowLeft} className="mr-3"></img>
         </Link>
         <p className="text-xl font-bold text-left mr-3">Add Recording</p>
       </div>
-      
+
       <div className="dropdown mb-5">
         <label
           tabIndex={0}
@@ -335,14 +356,28 @@ function AddRecording() {
             </a> */}
             <form>
               <UploadFileIcon />
-              <input className="hidden" type="file" id="audioInput" accept="audio/*" onChange={handleUpload}/>
+              <input
+                className="hidden"
+                type="file"
+                id="audioInput"
+                accept="audio/*"
+                onChange={handleUpload}
+              />
               <label for="audioInput">Select file</label>
-            </form>            
+            </form>
           </li>
           <li className="hover:bg-[#9554FE] ">
             <a className="text-[#9554FE] hover:text-[#FFFFFF]">
               <DriveFolderUploadIcon />
-              <input className="hidden" type="file" id="audioInputMultiple" accept="audio/*" onChange={handleUploadMultipleTest} webkitdirectory="" multiple/>                             
+              <input
+                className="hidden"
+                type="file"
+                id="audioInputMultiple"
+                accept="audio/*"
+                onChange={handleUploadMultipleTest}
+                webkitdirectory=""
+                multiple
+              />
               <label for="audioInputMultiple">Select folder</label>
             </a>
           </li>
@@ -372,13 +407,20 @@ function AddRecording() {
           <div className="grid grid-cols-2 flex w-2/5 items-center mb-5">
             <p>Employee</p>
             <select
-              // value={gender}              
+              // value={gender}
               onChange={(e) => handleSelectedEmployee(e.target.value)}
               className="select select-bordered font-normal select-sm h-11"
             >
-              {empList.map((emp) => {                
-                return <option value={encodeValue(emp.employeeId, emp.employeeName)}>{emp.employeeName}</option> 
-              })}
+              {empList &&
+                empList.map((emp) => {
+                  return (
+                    <option
+                      value={encodeValue(emp.employeeId, emp.employeeName)}
+                    >
+                      {emp.employeeName}
+                    </option>
+                  );
+                })}
               <option value="other">Other</option>
             </select>
           </div>
@@ -434,8 +476,8 @@ function AddRecording() {
         ) : null}
       </div>
 
-      <div className="max-h-screen">
-        <table className="table mx-auto w-full border border-dashed border-[#83848A] text-sm">
+      <div className="max-h-screen border border-dashed border-[#83848A]  bg-[#F6F4FC]">
+        <table className="table mx-auto w-full text-sm">
           {/* head */}
           <thead>
             <tr>
@@ -450,32 +492,50 @@ function AddRecording() {
             </tr>
           </thead>
           <tbody>
-            {recList.map((recording, index) => (
-              <tr className="hover">
-              <th>{numbering + index}</th>
-              <td>{recording.recordingName}</td>
-              <td>{recording.employeeName}</td>
-              <td>
-                <RxCross2 onClick={() => handleDelete(recording.recordingName)}/>
-              </td>
-            </tr>
-            ))}
+            {recList && recList.length > 0
+              ? recList
+                  .slice(firstPostIndex, lastPostIndex)
+                  .map((recording, index) => (
+                    <tr className="hover">
+                      <th>{currentPage * postsPerPage - 4 + index}</th>
+                      <td>{recording.recordingName}</td>
+                      <td>{recording.employeeName}</td>
+                      <td>
+                        <RxCross2
+                          onClick={() => handleDelete(recording.recordingName)}
+                        />
+                      </td>
+                    </tr>
+                  ))
+              : null}
           </tbody>
         </table>
+        {!recList.length ? (
+          <>
+            <img src={EmptyRecording} className="mx-auto mt-10"></img>
+            <p className="text-center font-semibold text-lg">
+              You don't have any recordings yet
+            </p>
+            <p className="text-center font-semibold text-sm mb-10">
+              Start uploading your audio files by clicking
+              <a
+                href="recordingList/AddRecording"
+                className="underline underline-offset-2"
+              >
+                Upload
+              </a>
+            </p>
+          </>
+        ) : null}
       </div>
+
       <div className="join flex justify-end mt-10 mb-10">
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          1
-        </button>
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          2
-        </button>
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          3
-        </button>
-        <button className="join-item btn btn-sm bg-[#F6F4FC] text-black hover:bg-[#9554FE] hover:text-[#FFFFFF] border-[#9554FE] rounded">
-          4
-        </button>
+        <Pagination
+          totalPosts={recList && recList.length}
+          postsPerPage={postsPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        ></Pagination>
       </div>
       <div className="flex justify-end">
         <button className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]">

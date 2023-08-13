@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { ThreeDotsVertical, TrashCan, Eye } from "../assets/index";
+import { ThreeDotsVertical, TrashCan, Eye, EmptyRecording } from "../assets/index";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
@@ -22,7 +22,11 @@ function EmployeeRecordingList() {
   const [empName, setEmpName] = useState("");
   const [search, setSearch] = useState("");
   const [currentRecordingId, setCurrentRecordingId] = useState();
-
+  
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostPerPage] = useState(5);
+ 
   // Error message
   const [error, setError] = useState("");
 
@@ -101,6 +105,10 @@ function EmployeeRecordingList() {
     getEmployeeDetail();
   }, [search]);
 
+  // Pagination
+  const lastPostIndex = currentPage * postsPerPage;
+  const firstPostIndex = lastPostIndex - postsPerPage;
+
   return (
     <div className="mx-20 pt-16">
       <div className="flex mb-5">
@@ -175,66 +183,102 @@ function EmployeeRecordingList() {
           </thead>
           <tbody>
             {/* row 1 */}
-            {recList.map((recording, index) => (
-              <tr className="hover">
-                <th className="h-1">{numbering + index}</th>
-                <td className="h-1">{recording.recordingName}</td>
-                <td className="text-center h-1">{recording.uploadDate}</td>
-                <td className="text-center h-1">{recording.recordingDate}</td>
-                <td className="text-center h-1">category</td>
-                <td className="text-center h-1">sentiment</td>
-                <td className="flex justify-center items-center">
-                  <div className="dropdown">
-                    <label
-                      tabIndex={0}
-                      className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
-                    >
-                      <MoreVertIcon style={{ color: "black" }}></MoreVertIcon>
-                    </label>
-                    <ul
-                      tabIndex={0}
-                      className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
-                    >
-                      <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                        <a
-                          className="text-[#9554FE]"
-                          href={`../analysis/${currentRecordingId}`}
-                          onClick={() => {
-                            setCurrentRecordingId(recording.recordingId);
-                          }}
-                        >
-                          <img src={Eye}></img>{" "}
-                          <p className="ml-1">View Analysis</p>
-                        </a>
-                      </li>
-                      <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                        <label
-                          className="text-[#D55454]"
-                          onClick={() => handleDelete(recording.recordingId)}
-                        >
-                          <img src={TrashCan} className="ml-1"></img>{" "}
-                          <p className="ml-1">Delete</p>
-                        </label>
-                      </li>
-                      <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                        <a
-                          className="text-[#D55454]"
-                          // onClick={() => handleDelete(employee.employeeId)}
-                        >
-                          <FileDownloadOutlinedIcon></FileDownloadOutlinedIcon>{" "}
-                          Download
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {recList && recList.length > 0
+              ? recList
+                  .slice(firstPostIndex, lastPostIndex)
+                  .map((recording, index) => (
+                    <tr className="hover">
+                      <th className="h-1">
+                        {currentPage * postsPerPage - 4 + index}
+                      </th>
+                      <td className="h-1">{recording.recordingName}</td>
+                      <td className="text-center h-1">
+                        {recording.uploadDate}
+                      </td>
+                      <td className="text-center h-1">
+                        {recording.recordingDate}
+                      </td>
+                      <td className="text-center h-1">category</td>
+                      <td className="text-center h-1">sentiment</td>
+                      <td className="flex justify-center items-center">
+                        <div className="dropdown">
+                          <label
+                            tabIndex={0}
+                            className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
+                          >
+                            <MoreVertIcon
+                              style={{ color: "black" }}
+                            ></MoreVertIcon>
+                          </label>
+                          <ul
+                            tabIndex={0}
+                            className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
+                          >
+                            <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                              <a
+                                className="text-[#9554FE]"
+                                href={`../analysis/${currentRecordingId}`}
+                                onClick={() => {
+                                  setCurrentRecordingId(recording.recordingId);
+                                }}
+                              >
+                                <img src={Eye}></img>{" "}
+                                <p className="ml-1">View Analysis</p>
+                              </a>
+                            </li>
+                            <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                              <label
+                                className="text-[#D55454]"
+                                onClick={() =>
+                                  handleDelete(recording.recordingId)
+                                }
+                              >
+                                <img src={TrashCan} className="ml-1"></img>{" "}
+                                <p className="ml-1">Delete</p>
+                              </label>
+                            </li>
+                            <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                              <a
+                                className="text-[#D55454]"
+                                // onClick={() => handleDelete(employee.employeeId)}
+                              >
+                                <FileDownloadOutlinedIcon></FileDownloadOutlinedIcon>{" "}
+                                Download
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+              : null}
           </tbody>
         </table>
+        {!recList.length ? (
+          <>
+            <img src={EmptyRecording} className="mx-auto mt-10"></img>
+            <p className="text-center font-semibold text-lg">
+              You don't have any recordings yet
+            </p>
+            <p className="text-center font-semibold text-sm mb-10">
+              Start adding recording by clicking
+              <a
+                href="recordingList/AddRecording"
+                className="underline underline-offset-2 ml-1"
+              >
+                Add Recording
+              </a>
+            </p>
+          </>
+        ) : null}
       </div>
       <div className="join flex justify-end mt-10 mb-10">
-        <Pagination></Pagination>
+         <Pagination
+          totalPosts={recList && recList.length}
+          postsPerPage={postsPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        ></Pagination>
       </div>
     </div>
   );

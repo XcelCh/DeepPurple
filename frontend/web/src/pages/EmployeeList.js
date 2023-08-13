@@ -81,6 +81,10 @@ function EmployeeList() {
     getEmpList(false);
   }, [search]);
 
+  useEffect(() => {
+    console.log(empList);
+  });
+
   // Delete Employee
   const handleDelete = (id) => {
     Swal.fire({
@@ -218,7 +222,7 @@ function EmployeeList() {
         </div>
       </div>
 
-      <div className="max-h-screen border border-dashed bg-[#F6F4FC]">
+      <div className="max-h-screen border border-dashed border-[#83848A] bg-[#F6F4FC]">
         <table className="table table-auto mx-auto w-full text-xs">
           {/* head */}
           <thead>
@@ -319,7 +323,7 @@ function EmployeeList() {
               : null}
           </tbody>
         </table>
-        {!empList? (
+        {!empList.length ? (
           <>
             <img src={EmptyRecording} className="mx-auto mt-10"></img>
             <p className="text-center font-semibold text-lg">
@@ -327,12 +331,12 @@ function EmployeeList() {
             </p>
             <p className="text-center font-semibold text-sm mb-10">
               Start adding employee by clicking
-              <a
-                href="recordingList/AddRecording"
+              <label
+                htmlFor="addEmployeeModal"
                 className="underline underline-offset-2 ml-1"
               >
                 Add Employee
-              </a>
+              </label>
             </p>
           </>
         ) : null}
