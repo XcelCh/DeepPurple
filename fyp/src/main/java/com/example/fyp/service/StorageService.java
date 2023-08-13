@@ -118,9 +118,9 @@ public class StorageService {
     	return convertedFile;
     }
 
-	public List<Object[]> getTranscriptsByRecordingId(Integer recordingId) {
+	public List<Object[]> getTranscriptsByAnalysisId(Integer analysisId) {
 
-        return transcriptRepository.findEmployeeAndDialogByRecordingId(recordingId);
+        return transcriptRepository.findEmployeeAndDialogByAnalysisId(analysisId);
 	}
 
 }

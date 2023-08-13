@@ -9,6 +9,9 @@ public class RecordingAnalysisAnswer {
     private String employeeSentiment;
     private String callSentiment;
     private Vector<DetailEmotion> emotions;  
+    private String mainIssue;
+    private String employeePerformance;
+    private String negativeEmotions;
 
     public String getCategory() {
         return category;
@@ -34,6 +37,18 @@ public class RecordingAnalysisAnswer {
         return emotions;
     }
 
+    public String getMainIssue() {
+        return mainIssue;
+    }
+
+    public String getEmployeePerformance() {
+        return employeePerformance;
+    }
+
+    public String getNegativeEmotions() {
+        return negativeEmotions;
+    }
+
     public void setCategory(String category) {
         this.category = category;
     }
@@ -54,8 +69,20 @@ public class RecordingAnalysisAnswer {
         this.callSentiment = callSentiment;
     }
 
-    public void getEmotions(Vector<DetailEmotion> emotions) {
+    public void setEmotions(Vector<DetailEmotion> emotions) {
         this.emotions = emotions;
+    }
+
+    public void setMainIssue(String mainIssue) {
+        this.mainIssue = mainIssue;
+    }
+
+    public void setEmployeePerformance(String employeePerformance) {
+        this.employeePerformance = employeePerformance;
+    }
+
+    public void setNegativeEmotions(String negativeEmotions) {
+        this.negativeEmotions = negativeEmotions;
     }
 
 }

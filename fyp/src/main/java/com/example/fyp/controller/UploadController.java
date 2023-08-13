@@ -184,11 +184,11 @@ public class UploadController {
         OpenAiService openAiService = new OpenAiService(apiKey);              
         
 		// Merge all the transcripts and prefix with Agent / Customer
-		List<Object[]> unformattedTranscripts = service.getTranscriptsByRecordingId(13);
+		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(3);
 		String formattedTranscripts = "";
 		
 		for (Object[] innerArray : unformattedTranscripts) {
-			if((Integer) innerArray[0] == 1) {
+			if((boolean) innerArray[0]) {
 				formattedTranscripts += "Agent: " + (String) innerArray[1] + "\n";
 			} else {
 				formattedTranscripts += "Customer: " + (String) innerArray[1] + "\n";
@@ -253,7 +253,7 @@ public class UploadController {
 
 
 		// Customer sentiment
-		prompt = "Decide if the customer's sentiment is positive or negative based on this conversation (positive means the customer is not in emotional state, otherwise negative): " + formattedTranscripts;
+		prompt = "Decide if the customer's sentiment is positive or negative based on this conversation (negative if the customer shows many signs of frustration / bad emotions, otherwise positive): " + formattedTranscripts;
         CompletionRequest customerSentimentRequest = CompletionRequest.builder()
 																	.model(currentModel)
 																	.prompt(prompt)
@@ -276,7 +276,7 @@ public class UploadController {
 
 
 		// Employee sentiment
-		prompt = "Decide if the agent's sentiment is positive or negative based on this conversation (positive means the agent is not in emotional state, otherwise negative): " + formattedTranscripts;
+		prompt = "Decide if the agent's sentiment is positive or negative based on this conversation (negative if the agent's hospitality is below customer service standards, otherwise positive): " + formattedTranscripts;
         CompletionRequest employeeSentimentRequest = CompletionRequest.builder()
 																.model(currentModel)
 																.prompt(prompt)
@@ -319,6 +319,55 @@ public class UploadController {
         }
 
 		ans.setCallSentiment(callSentiment);
+
+		// Main issue
+		prompt = "Describe the main issue into just a few words based on this conversation: " + formattedTranscripts;
+        CompletionRequest mainIssueRequest = CompletionRequest.builder()
+															.model(currentModel)
+															.prompt(prompt)
+															.echo(true)
+															.maxTokens(60)
+															.build();
+        response = openAiService.createCompletion(mainIssueRequest).getChoices().get(0).getText();
+		String mainIssue = response.substring(prompt.length()).trim();
+
+		ans.setMainIssue(mainIssue);
+
+		// Employee performance
+		prompt = "This is a telecommunication company and you are tasked to provide an objective assessment of the agent's performance using the following parameters:\n" + //
+				"\n" + //
+				"- Fluency: rating/100\n" + //
+				"- Hospitality: rating/100\n" + //
+				"- Problem Solving: rating/100\n" + //
+				"- Knowledge and Expertise: rating/100" + //
+				"based on the following conversation: " + formattedTranscripts + //
+				". You do not need to explain anything. Just respond with the format given. You are not forced to gives a very high marks.";
+        CompletionRequest employeePerformanceRequest = CompletionRequest.builder()
+															.model(currentModel)
+															.prompt(prompt)
+															.echo(true)
+															.maxTokens(60)
+															.build();
+        response = openAiService.createCompletion(employeePerformanceRequest).getChoices().get(0).getText();
+		String employeePerformance = response.substring(prompt.length()).trim();
+
+		ans.setEmployeePerformance(employeePerformance);
+
+		// Employee performance
+		prompt = "List down the sentences spoken by our agent that you think can be improved in terms of good hospitality and manner. Answer in the following format: \n" + 
+				"'- [bad sentence]|[corrected sentence]|[explanation]'\n" +
+				"Based on this conversation:\n" + formattedTranscripts + "\n" +
+				"Don't include grammar, contractions, and spelling errors.";
+        CompletionRequest negativeEmotionsRequest = CompletionRequest.builder()
+															.model(currentModel)
+															.prompt(prompt)
+															.echo(true)
+															.maxTokens(200)
+															.build();
+        response = openAiService.createCompletion(negativeEmotionsRequest).getChoices().get(0).getText();
+		String negativeEmotions = response.substring(prompt.length()).trim();
+
+		ans.setNegativeEmotions(negativeEmotions);
 
 		return ans;
     }
