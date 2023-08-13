@@ -166,9 +166,6 @@ public class UploadController {
         }
     }
 
-
-
-
 	// For GPT analysis
 	@Value("${apiKey}")
     private String apiKeyContent;

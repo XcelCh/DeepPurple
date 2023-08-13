@@ -210,7 +210,8 @@ function RecordingList() {
   // Download Recording
   const handleDownload = (fileName) => {
     const link = document.createElement("a");
-    link.href = `https://localhost8082/${fileName}`;
+    link.href = `http://localhost:8082/audio/download/${fileName}`;
+    
     link.download = fileName;
     link.style.display = "none";
     document.body.appendChild(link);
@@ -231,13 +232,6 @@ function RecordingList() {
   //   console.log(recList);
   // });
 
-  useEffect(() => {
-    const recDate = new Date(recList[0]?.uploadDate);
-    console.log("REC DATE: " + recDate);
-
-    console.log(new Date(dateRange[0]) <= recDate);
-    console.log(new Date(dateRange[1]));
-  }, [dateRange]);
 
   return (
     <div className="ml-20 mt-16">

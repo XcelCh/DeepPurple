@@ -51,5 +51,6 @@ public interface RecordingRepository extends JpaRepository<Recording, Integer>{
     "FROM Recording r WHERE r.recordingId = :recording_id")
     Map<String, Object> getRecordingById(Integer recording_id);        
 
-    Optional<Recording> findByRecordingName(String fileName);    
+    Optional<Recording> findByRecordingName(String fileName);
+    
 }

@@ -59,8 +59,11 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
             Integer account_id = accountServiceImpl.getAccountId(email);
+            System.out.println("ACCOUNT ID: " + account_id);
 
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
+
+            System.out.println("RECORDING: " + recList);
 
             if (search != null && !search.isEmpty()) {
                 String searchKeyword = "%" + search.toLowerCase() + "%";
@@ -117,25 +120,6 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
         System.out.println(account_id);
 
         return authentication;
-    }
-
-    @GetMapping("/compare-dates")
-    public String compareDates() {
-        // upload date
-        Map<String, Object> rec = recordingListService.getRecordingById(1);
-        String uploadDate = rec.get("uploadDate").toString();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDateTime uploadDateFormatted = LocalDateTime.parse(uploadDate, formatter);
-
-        System.out.println("UPLOAD DATE FORMATTED " + uploadDateFormatted);
-
-        //
-        LocalDateTime dateTime1 = LocalDateTime.of(2023, 8, 31, 0, 0);
-
-        boolean isBefore = dateTime1.isBefore(uploadDateFormatted);
-        boolean isAfter = dateTime1.isAfter(uploadDateFormatted);
-
-        return "isBefore: " + isBefore + "\nisAfter: " + isAfter;
     }
 
     @Override

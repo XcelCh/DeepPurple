@@ -41,7 +41,7 @@ function Analysis() {
   const [recordingData, setRecordingData] = useState({});
   const [transcriptData, setTranscriptData] = useState([]);
 
-   const fromEmployeeList = window.location.pathname.startsWith("/employeeList");
+  const fromEmployeeList = window.location.pathname.startsWith("/employeeList");
 
   const { id } = useParams();
   useEffect(() => {

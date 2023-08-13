@@ -199,7 +199,7 @@ function AddRecording() {
           })
           .catch((error) => {
             setError(error);
-            console.error(error);
+            console.log(error);
             Swal.fire("Fail", "Fail to add recording.", "error");
           });
       },
