@@ -163,11 +163,20 @@ public class PaymentController {
             Long paymentId = account.getPayment().getPaymentId();
 
             Date today = new Date(System.currentTimeMillis());
-            System.out.println("Printing usages");
-            for(Usages u : usageRepository.findUnbilledUsage(accountId)) {
-                System.out.println(u);
+            
+            List<Usages> usages = usageRepository.findUnbilledUsage(accountId);
+            Float totalUnbilled = usageRepository.findTotalUnbilledUsage(accountId);
+
+            if (totalUnbilled  == null) {
+                return paymentService.deletePaymentById(paymentId);
             }
-            Billing billing = new Billing(usageRepository.findTotalUnbilledUsage(accountId), today, account.getPayment(), usageRepository.findUnbilledUsage(accountId));
+
+            Billing billing = new Billing(usageRepository.findTotalUnbilledUsage(accountId), today, account.getPayment(), usages);
+
+            for (Usages u : usages) {
+                u.setBilling(billing);
+            }
+
             billingRepository.save(billing);
 
             return paymentService.deletePaymentById(paymentId);

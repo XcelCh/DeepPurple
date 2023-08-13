@@ -38,6 +38,6 @@ public interface UsageRepository extends JpaRepository<Usages, Long>{
            "FROM Usages u " +
            "WHERE u.account.accountId = :accountId " +
            "AND u.billing.billingId IS NULL")
-    float findTotalUnbilledUsage(Integer accountId);
+    Float findTotalUnbilledUsage(Integer accountId);
 
 }
