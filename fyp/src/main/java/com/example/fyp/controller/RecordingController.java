@@ -1,14 +1,17 @@
 package com.example.fyp.controller;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,44 +21,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.Authentication;
-
-import com.example.fyp.service.AccountDetailsImpl;
-import com.example.fyp.service.AccountServiceImpl;
 
 import com.example.fyp.model.ResponseStatus;
 import com.example.fyp.repo.AudioFileRepository;
-import com.example.fyp.repo.RecordingRepository;
-import com.example.fyp.service.RecordingListService;
-import com.example.fyp.service.SummaryAnalysisService;
-import com.example.fyp.model.ResponseStatus;
-import com.example.fyp.entity.Account;
-import com.example.fyp.entity.Employee;
-import com.example.fyp.entity.Recording;
-import java.util.Map;
 import com.example.fyp.service.AccountServiceImpl;
-import com.example.fyp.repo.AccountRepository;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDate;
+import com.example.fyp.service.RecordingListService;
+import com.example.fyp.service.RecordingService;
 
 @RestController
 @RequestMapping("/recordingList")
-public class RecordingController {
-
-    @Autowired
-    AccountServiceImpl accountServiceImpl;
+public class RecordingController implements Function<List<Integer>, ResponseEntity<String>>{
 
     // @Autowired
     // private AccountRepository accountRepository;
 
     private final RecordingListService recordingListService;
+    private final RecordingService recordingService;
+    private final AccountServiceImpl accountServiceImpl;
 
     @Autowired
-    public RecordingController(RecordingListService recordingListService) {
+    public RecordingController(RecordingListService recordingListService, RecordingService recordingService, AccountServiceImpl accountServiceImpl){
         this.recordingListService = recordingListService;
+        this.recordingService = recordingService;
+        this.accountServiceImpl = accountServiceImpl;
     }
 
     @Autowired
@@ -118,36 +106,47 @@ public class RecordingController {
     }
 
     // Get User
-     @GetMapping("/user/me")
-     public Authentication getCurrentUser() {
+    @GetMapping("/user/me")
+    public Authentication getCurrentUser() {
 
-         // Retrieve the current authentication token
-         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-         String email = authentication.getName();
-         Integer account_id = accountServiceImpl.getAccountId(email);
+        // Retrieve the current authentication token
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Integer account_id = accountServiceImpl.getAccountId(email);
 
-         System.out.println(account_id);
+        System.out.println(account_id);
 
-         return authentication;
-     }
+        return authentication;
+    }
 
-     @GetMapping("/compare-dates")
-     public String compareDates() {
+    @GetMapping("/compare-dates")
+    public String compareDates() {
         // upload date
-         Map<String, Object> rec = recordingListService.getRecordingById(1);
-         String uploadDate = rec.get("uploadDate").toString();
-         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-         LocalDateTime uploadDateFormatted = LocalDateTime.parse(uploadDate, formatter);
+        Map<String, Object> rec = recordingListService.getRecordingById(1);
+        String uploadDate = rec.get("uploadDate").toString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime uploadDateFormatted = LocalDateTime.parse(uploadDate, formatter);
 
-         System.out.println("UPLOAD DATE FORMATTED " + uploadDateFormatted);
+        System.out.println("UPLOAD DATE FORMATTED " + uploadDateFormatted);
 
-         //
-         LocalDateTime dateTime1 = LocalDateTime.of(2023, 8, 31, 0, 0);
+        //
+        LocalDateTime dateTime1 = LocalDateTime.of(2023, 8, 31, 0, 0);
 
-         boolean isBefore = dateTime1.isBefore(uploadDateFormatted);
-         boolean isAfter = dateTime1.isAfter(uploadDateFormatted);
+        boolean isBefore = dateTime1.isBefore(uploadDateFormatted);
+        boolean isAfter = dateTime1.isAfter(uploadDateFormatted);
 
-         return "isBefore: " + isBefore + "\nisAfter: " + isAfter;
+        return "isBefore: " + isBefore + "\nisAfter: " + isAfter;
+    }
+
+     @Override
+     @PostMapping("analyzeLambda")
+     public ResponseEntity<String> apply(@RequestBody List<Integer> ids){
+         try {
+             return recordingService.analyze(ids);
+         } catch (Exception e){
+             e.printStackTrace();
+             return ResponseEntity.ok("Error");
+         }
      }
 
 }

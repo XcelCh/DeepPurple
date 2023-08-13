@@ -1,8 +1,5 @@
 package com.example.fyp.service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Recording;
@@ -20,6 +16,7 @@ import com.example.fyp.repo.AnalysisRepository;
 import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.repo.TranscriptRepository;
+import com.example.fyp.utils.Container;
 
 @Service
 public class AnalysisService {
@@ -67,5 +64,18 @@ public class AnalysisService {
         transcript.setDialog(dialog);
         transcriptRepository.save(transcript);
     }
-
+    
+    public Analysis processAnalysis(Recording rec, Container c){
+        return analysisRepository.save(new Analysis(null,
+                        null, 
+                        null, 
+                        c.getData()[1], 
+                        c.getData()[2], 
+                        c.getData()[4],
+                        null, 
+                        null, 
+                        null,
+                        c.getData()[0] / c.getData()[3],
+                        null, rec));
+    }
 }

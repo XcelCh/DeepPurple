@@ -1,8 +1,10 @@
 package com.example.fyp.entity;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
+
+import javax.sound.sampled.AudioFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -17,8 +19,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -75,6 +77,30 @@ public class Recording {
     @JsonManagedReference
     private Account account;
 
+    @Transient byte[] bytes;
+    @Transient File tempFilePath;
+    @Transient AudioFormat format;
+
+    public String displayFormat(){
+        String endian;
+
+        if (format.isBigEndian())
+            endian = "Big endian";
+        else
+            endian = "Little endian";
+
+        return String.format("Filename: %s%n" +
+                             "Channel: %d%n" +
+                             "Frame rate: %.1fhz%n" +
+                             "Frame size: %d%n" +
+                             "Sample rate: %.1fhz%n" +
+                             "Sample size in bits: %d%n" +
+                             "Encoding: %s%n" +
+                             "Endianness: %s%n" +
+                             "Length: %.2f%n", 
+                             recordingName, format.getChannels(), format.getFrameRate(), format.getFrameSize(), 
+                             format.getSampleRate(), format.getSampleSizeInBits(), format.getEncoding(), endian, recordingDuration);
+    }
 
     @Override
     public String toString() {
