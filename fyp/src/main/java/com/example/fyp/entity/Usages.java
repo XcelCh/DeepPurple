@@ -27,16 +27,13 @@ public class Usages {
     private Long usagesId;
 
     private float minutesUsed;
-
     private float rate;
-
     private Date usageDate;
     
     @ManyToOne
     @JoinColumn(name = "billing_id")
     @JsonManagedReference
     private Billing billing;
-
     
     @ManyToOne
     @JoinColumn(name = "account_id")

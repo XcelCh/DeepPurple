@@ -44,7 +44,6 @@ public class Account {
     @Column(unique = true, nullable = false)
     private String email;
 
-
     @Column(nullable = false)
     private String fullName;
 
@@ -61,7 +60,6 @@ public class Account {
     @Column(nullable = false)
     private Date dob;
 
-
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
@@ -69,11 +67,9 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles = new ArrayList<>();
 
-    // private String profilePic;
     private String companyField;
 
-    
-    @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST, orphanRemoval = true)
     @JsonBackReference
     private List<Usages> usageList;
 
@@ -83,11 +79,11 @@ public class Account {
     @JsonBackReference
     private Payment payment;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Recording> recording;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Employee> employee;
 
@@ -103,6 +99,28 @@ public class Account {
 
     public void addRole (Role role) {
         this.roles.add(role);
+    }
+
+    public Account deleteAll(List<Usages> usageList, List<Recording> recordings, List<Employee> employees) {
+
+        for (Usages u : usageList) {
+            usageList.remove(u);
+            u.setAccount(null);
+        }
+
+        for (Recording r : recordings) {
+            r.deleteRecording(r.getAnalysis());
+            recordings.remove(r);
+            r.setAccount(null);
+        }
+
+        for (Employee e : employees) {
+            e.deleteEmployee(e.getRecording());
+            employees.remove(e);
+            e.setAccount(null);
+        }
+
+        return this;
     }
 
     @Override
