@@ -1,12 +1,11 @@
 package com.example.fyp.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +21,9 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import com.example.fyp.entity.Recording;
-import com.example.fyp.entity.Transcript;
 import com.example.fyp.repo.AudioFileRepository;
 import com.example.fyp.repo.TranscriptRepository;
 import com.example.fyp.utils.AudioUtils;
-
-import okio.Path;
 
 @Service
 public class StorageService {

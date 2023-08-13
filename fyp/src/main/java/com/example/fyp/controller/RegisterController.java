@@ -1,40 +1,28 @@
 package com.example.fyp.controller;
 
-import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.fyp.controller.dto.CreateAccountDto;
 import com.example.fyp.controller.dto.PasswordResetRequestDto;
 import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Role;
-import com.example.fyp.repo.AccountRepository;
 import com.example.fyp.repo.RoleRepository;
-import com.example.fyp.service.AccountDetailsImpl;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.EmailServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/register")
