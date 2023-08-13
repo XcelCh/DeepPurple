@@ -11,6 +11,7 @@ function TextAnalyze() {
   const [filter, setFilter] = useState("");
   const [processing, setProcessing] = useState(false);
   const [highlight, setHighlight] = useState([]);
+  // const [limitReached, setLimitReached] = useState();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -47,8 +48,13 @@ function TextAnalyze() {
 
   // Change prompt content
   const handleChange = (event) => {
-    setPrompt(event.target.value);
-    setOriPrompt(event.target.value);
+    if (event.target.value.length < 1200) {
+      setPrompt(event.target.value);
+      setOriPrompt(event.target.value);
+      setError("");
+    } else {
+      setError("Sorry, the text cannot exceed 1200 characters.");
+    }
   };
 
   // Analyze button
@@ -113,6 +119,7 @@ function TextAnalyze() {
                 className=" mt-2 textarea textarea-bordered textarea-md w-full max-w-full h-96"
                 value={oriPrompt}
                 onChange={handleChange}
+                maxLength={1200}
               ></textarea>
             ) : (
               <div
