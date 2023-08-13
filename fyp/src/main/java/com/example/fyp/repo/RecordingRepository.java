@@ -37,11 +37,16 @@ public interface RecordingRepository extends JpaRepository<Recording, Integer>{
     // )
 
     @Query("SELECT r.recordingId AS recordingId, r.recordingName AS recordingName, r.uploadDate AS uploadDate, " +
-        "r.recordingDate AS dateRecorded, r.employee.employeeName AS employeeName, r.account.accountId AS account_id, " +
-        "r.analysis.category AS category, r.analysis.recordingSentiment AS sentiment, r.analysis.employeeSentiment AS employeeSentiment, r.analysis.customerSentiment AS customerSentiment " +
-        "FROM Recording r " +
-        "WHERE r.account.accountId = :account_id"
-    )
+            "r.recordingDate AS dateRecorded, r.employee.employeeName AS employeeName, r.account.accountId AS account_id, "
+            +
+            "r.analysis.category AS category, r.analysis.recordingSentiment AS sentiment, "
+            +
+            "r.analysis.employeeSentiment AS employeeSentiment, r.analysis.customerSentiment AS customerSentiment "
+            +
+            "FROM Recording r " +
+            "LEFT JOIN r.analysis a " +
+            "LEFT JOIN r.employee e " +
+            "WHERE r.account.accountId = :account_id")
     List<Map<String, Object>> getAllRecordings(Integer account_id);
 
     // @Query("SELECT r FROM Recording r WHERE r.account.accountId = :account_id")

@@ -117,7 +117,7 @@ function RecordingList() {
     const params = `?search=${search}`;
     try {
       Swal.fire({
-        title: "Retrieving All Employees",
+        title: "Retrieving All Recording",
         didOpen: () => {
           Swal.showLoading();
         },
