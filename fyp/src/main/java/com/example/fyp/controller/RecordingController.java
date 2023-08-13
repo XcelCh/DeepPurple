@@ -138,15 +138,15 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
         return "isBefore: " + isBefore + "\nisAfter: " + isAfter;
     }
 
-     @Override
-     @PostMapping("analyzeLambda")
-     public ResponseEntity<String> apply(@RequestBody List<Integer> ids){
-         try {
-             return recordingService.analyze(ids);
-         } catch (Exception e){
-             e.printStackTrace();
-             return ResponseEntity.ok("Error");
-         }
-     }
+    @Override
+    @PostMapping("analyzeLambda")
+    public ResponseEntity<String> apply(@RequestBody List<Integer> ids){
+        try {
+            return recordingService.analyze(ids);
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.ok("Error");
+        }
+    }
 
 }
