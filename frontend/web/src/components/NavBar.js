@@ -23,7 +23,7 @@ function NavBar() {
   
   const logOut = () => {
     AuthService.logout();
-    navigate("/");
+    window.location.href = "/";
   };
 
   return (

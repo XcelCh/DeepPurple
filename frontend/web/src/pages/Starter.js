@@ -157,16 +157,16 @@ function Starter() {
       {fetchDone ? (
       <div className="h-screen bg-gradient-to-tr from-[#D6B4CE] via-[#D3CBEF] via-55% to-[#9487E7]">
         {/* Gradient */}
-        <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC]">
+        <div className="h-screen w-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#A59CE2]/0 to-[#F8F4FC] pt-16">
           {/* FIRST PAGE */}
           {next == false ? (
             <>
               {/* Card */}
               <div className="flex flex-col justify-center bg-white rounded-3xl shadow px-20 py-12 pt-20">
-                <h1 className="text-xl font-bold text-gray-900 md:text-2xl text-left mb-2">
+                <h1 className="text-2xl font-bold text-gray-900 text-left mb-2">
                   What is Your Company's Industry/Field?
                 </h1>
-                <h3 className="text-sm font-normal text-[#83848A] text-left text-center">
+                <h3 className="text-md font-normal text-[#83848A] text-left text-center">
                   Select the option that is most relevant or choose <br></br>
                   “Other” and enter your own.
                 </h3>
@@ -175,7 +175,7 @@ function Starter() {
                     <select
                       // value={gender}
                       onChange={(e) => handleDropdown(e.target.value)}
-                      className="select select-bordered font-normal  bg-[#9554FE] mt-10 text-[#FFFFFF] select-sm h-11"
+                      className="select select-bordered font-normal bg-[#7566BB] hover:bg-[#5E519A] mt-10 text-[#FFFFFF] select-md h-11"
                     >
                       <option value="-">Select</option>
                       <option value="Education">Education</option>
@@ -221,7 +221,7 @@ function Starter() {
                 </div>
                 <div className="flex justify-end">
                   <button
-                    className="btn btn-sm bg-[#9554FE] normal-case h-11"
+                    className="btn btn-sm bg-[#7566BB] hover:bg-[#5E519A] normal-case h-11"
                     onClick={handleNext}
                   >
                     Next <img src={ArrowButton} className="ml-2"></img>
@@ -236,13 +236,13 @@ function Starter() {
               <h1 className="text-xl font-bold text-gray-900 md:text-2xl mb-2 text-center mb-10">
                 Start by Uploading Your Call Records
               </h1>
-              <h3 className="text-md font-normal text-[#83848A] text-center mb-10">
+              <h3 className="text-md font-normal text-[#83848A] text-center mb-4">
                 Upload your call recordings for analysis and automatically{" "}
                 <br></br>
                 assign to the respective employee.
               </h3>
               <Link to="/RecordingList" className="mx-auto">
-                <button className="btn btn-sm bg-[#9554FE] normal-case h-11 w-72  ">
+                <button className="btn btn-sm bg-[#7566BB] hover:bg-[#5E519A] normal-case h-11 w-72">
                   Start
                 </button>
               </Link>

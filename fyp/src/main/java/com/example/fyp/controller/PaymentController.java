@@ -1,5 +1,8 @@
 package com.example.fyp.controller;
 
+import java.sql.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,8 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,10 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.amazonaws.Response;
 import com.example.fyp.controller.dto.CardDto;
 import com.example.fyp.entity.Account;
+import com.example.fyp.entity.Billing;
 import com.example.fyp.entity.Payment;
+import com.example.fyp.entity.Usages;
+import com.example.fyp.repo.BillingRepository;
 import com.example.fyp.repo.RoleRepository;
+import com.example.fyp.repo.UsageRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.BillingService;
+import com.example.fyp.service.PaymentService;
+import com.example.fyp.service.UsageService;
 
 @RestController
 @RequestMapping("/payment")
@@ -31,6 +42,15 @@ public class PaymentController {
 
     @Autowired
     BillingService billingService;
+
+    @Autowired
+    PaymentService paymentService;
+
+    @Autowired
+    UsageRepository usageRepository;
+
+    @Autowired
+    BillingRepository billingRepository;
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
@@ -113,11 +133,17 @@ public class PaymentController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
+            Integer accountId = account.getAccountId();
 
-            account.getPayment().setUsageLimit(limit);
-            accountServiceImpl.saveAccount(account);
+            float currentUsage = ((Number) usageRepository.getSumOfUsageByAccountId(accountId).get(0)[1]).floatValue();
+            if(limit > currentUsage) {
+                account.getPayment().setUsageLimit(limit);
+                accountServiceImpl.saveAccount(account);
 
-            return ResponseEntity.ok().body("");
+                return ResponseEntity.ok().body("Limit set successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limit can not be lower than current usage.");
+            }
         }
         catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not Found.");
@@ -127,4 +153,41 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+e);
         }
     }
+
+    @PutMapping("/deleteCard")
+    public ResponseEntity<?> deleteCard() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());   
+            Integer accountId = account.getAccountId();
+            Long paymentId = account.getPayment().getPaymentId();
+
+            Date today = new Date(System.currentTimeMillis());
+            
+            List<Usages> usages = usageRepository.findUnbilledUsage(accountId);
+            Float totalUnbilled = usageRepository.findTotalUnbilledUsage(accountId);
+
+            if (totalUnbilled  == null) {
+                return paymentService.deletePaymentById(paymentId);
+            }
+
+            Billing billing = new Billing(usageRepository.findTotalUnbilledUsage(accountId), today, account.getPayment(), usages);
+
+            for (Usages u : usages) {
+                u.setBilling(billing);
+            }
+
+            billingRepository.save(billing);
+
+            return paymentService.deletePaymentById(paymentId);
+        }
+        catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not Found.");
+        }
+        catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+e);
+        }
+    }
+
 }

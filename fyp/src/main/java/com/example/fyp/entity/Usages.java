@@ -13,12 +13,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"billing", "account"})
 public class Usages {
     
     @Id
@@ -30,7 +32,6 @@ public class Usages {
     private float rate;
 
     private Date usageDate;
-
     
     @ManyToOne
     @JoinColumn(name = "billing_id")

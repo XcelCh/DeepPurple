@@ -74,13 +74,13 @@ public class Account {
     private String companyField;
 
     
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST)
     @JsonBackReference
     private List<Usages> usageList;
 
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name= "payment_id", referencedColumnName = "paymentId")
+    @JoinColumn(name= "payment_id", referencedColumnName = "paymentId", nullable = true)
     @JsonBackReference
     private Payment payment;
 
