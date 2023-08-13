@@ -24,6 +24,7 @@ import SummaryAnalysis from "./pages/SummaryAnalysis";
 import EmployeeRecordingList from "./pages/EmployeeRecordingList";
 import Billing from "./pages/Billing";
 import CustomerServiceAnalyzer from "./pages/CustomerServiceAnalyzer";
+import UserGuide from "./pages/UserGuide";
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="textSentiment" element={<TextAnalyze />} />
           <Route path="billing" element={<Billing />} />
           <Route path="customerServiceAnalyzer" element={<CustomerServiceAnalyzer />} />
+          <Route path="userGuide" element={<UserGuide />} />
 
           {/* With Sidebar */}
           <Route
