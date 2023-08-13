@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.fyp.entity.Billing;
-import com.example.fyp.entity.Transcript;
 import com.example.fyp.repo.BillingRepository;
 
 @Service

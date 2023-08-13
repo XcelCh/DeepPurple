@@ -1,32 +1,21 @@
 package com.example.fyp.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
+import java.util.Vector;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+// additional
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.fyp.model.DetailEmotion;
+import com.example.fyp.model.TextSentimentAnswer;
 import com.example.fyp.model.promptModel;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
-
-// additional
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import com.example.fyp.model.TextSentimentAnswer;
-import com.example.fyp.model.DetailEmotion;
-
-import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.util.*;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.beans.factory.annotation.Value;
 
 
 @RestController
@@ -130,9 +119,9 @@ public class SentimentController {
     public TextSentimentAnswer inputSentence(ModelMap model, @ModelAttribute promptModel prompt){        	
         while(true) {
             try {        		
-                TextSentimentAnswer response = textAnalyzer(prompt.prompt());     
+                TextSentimentAnswer response = textAnalyzer(prompt.getPrompt());     
                 return response;
-            } catch(RuntimeException e) {            			
+            } catch(RuntimeException e) {
                 System.out.println("Runtime Exception occurred : "+ e.getMessage());            		      		            			
             }	
         }        		

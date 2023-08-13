@@ -1,23 +1,16 @@
 package com.example.fyp.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
-
-import com.example.fyp.controller.dto.ChangeTranscriptDto;
-import com.example.fyp.entity.Account;
-import com.example.fyp.entity.Analysis;
-import com.example.fyp.service.AnalysisService;
-import com.example.fyp.repo.AnalysisRepository;
-import com.example.fyp.repo.RecordingRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.fyp.controller.dto.ChangeTranscriptDto;
+import com.example.fyp.service.AnalysisService;
 
 
 @RestController

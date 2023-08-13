@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.amazonaws.Response;
 import com.example.fyp.controller.dto.CardDto;
 import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Billing;
@@ -31,7 +29,6 @@ import com.example.fyp.repo.UsageRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.BillingService;
 import com.example.fyp.service.PaymentService;
-import com.example.fyp.service.UsageService;
 
 @RestController
 @RequestMapping("/payment")

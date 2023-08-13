@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### API KEY ###
+application.properties
+deeppurple-391609-4c6969e0e424.json

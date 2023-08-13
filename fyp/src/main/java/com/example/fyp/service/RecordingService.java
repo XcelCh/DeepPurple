@@ -79,12 +79,15 @@ public class RecordingService extends AudioFileWriter{
         double intervalSeconds = 0.25;
         double amplitudeThreshold = 0.01;
         for (Recording recording : recordings){
+            Container c = new Container(new double[6]);
+
             System.out.println("Inside recording");
             recording.setTempFilePath(readFromS3ObjectToFile(recording.getRecordingName(), recording.getRecordingUrl()));
 
             AudioInputStream audio = AudioSystem.getAudioInputStream(recording.getTempFilePath());
             recording.setBytes(audio.readAllBytes());
             recording.setFormat(audio.getFormat());
+            recording.setSampleRate((int) (recording.getFormat().getSampleRate()));
 
             recording.setRecordingDuration((double) (audio.getFrameLength() / recording.getFormat().getFrameRate()));
             System.out.println(recording.displayFormat());
@@ -123,7 +126,6 @@ public class RecordingService extends AudioFileWriter{
                     System.out.println("Left right split completed successfully!");
                     Queue<Diarization> orderedDiarization;
 
-                    Container c = new Container(new double[6]);
                     // Need to update
                     // Index 0 means left and index 1 means right
                     for (int j = 0; j < leftRightSplit.length; j++) {
@@ -137,11 +139,6 @@ public class RecordingService extends AudioFileWriter{
                         System.out.println("Finish processed one split");
                     }
                     c.getData()[4] += recording.getRecordingDuration() - c.getData()[5];
-
-                    Analysis analysis = analysisService.processAnalysis(recording, c);
-                    recording.setAnalysis(analysis);
-                    recordingRepository.save(recording);
-                    transcriptService.persistTranscriptions(analysis, c);
                 
                 } else {
                     List<List<SpeechRecognitionResult>> transcriptions = new ArrayList<>();
@@ -150,7 +147,7 @@ public class RecordingService extends AudioFileWriter{
                     for (byte[] bytes : splittedAudioBytes)
                         transcriptions.add(transcriptService.transcribeSpeech(bytes));
 
-                    Container c = transcriptService.processTranscription(transcriptions, diarizations, splits);
+                    c = transcriptService.processTranscription(transcriptions, diarizations, splits);
 
                     c.getData()[4] = recording.getRecordingDuration() - c.getData()[4];
                 }
@@ -165,15 +162,13 @@ public class RecordingService extends AudioFileWriter{
                     
                     System.out.println("Left right split completed successfully!");
 
-                    Container c = new Container(null, new double[6]);
+                    c = new Container(null, new double[6]);
                     Queue<Diarization> orderedDiarization;
                     orderedDiarization = diarizationService.diarizeNonML(transcriptService.transcribeSpeech(leftRightSplit[0][0]), transcriptService.transcribeSpeech(leftRightSplit[0][1]));
                     
                     c = transcriptService.processTranscription(orderedDiarization, 0, c);
                     
                     c.getData()[4] += recording.getRecordingDuration() - c.getData()[5];
-
-                    analysisService.processAnalysis(recording, c);
 
                 // Need to be copied (mono < 60 secs)
                 } else {
@@ -182,13 +177,16 @@ public class RecordingService extends AudioFileWriter{
                     
                     transcriptions.add(transcriptService.transcribeSpeech(audioBytes[0]));
 
-                    Container c = transcriptService.processTranscription(transcriptions, diarizations, new ArrayList<Double>());
+                    c = transcriptService.processTranscription(transcriptions, diarizations, new ArrayList<Double>());
 
                     c.getData()[4] = recording.getRecordingDuration() - c.getData()[4];
-
-                    analysisService.processAnalysis(recording, c);
                 }
             }
+            Analysis analysis = analysisService.processAnalysis(recording, c);
+            recording.setAnalysis(analysis);
+            recordingRepository.save(recording);
+            transcriptService.persistTranscriptions(analysis, c);
+
             audio.close();
         }
         System.out.println("Finish analyzing");
