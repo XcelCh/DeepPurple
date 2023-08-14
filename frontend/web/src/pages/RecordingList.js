@@ -33,7 +33,7 @@ function RecordingList() {
   const [postsPerPage, setPostPerPage] = useState(5);
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
-  // const currentPosts = displayList.slice(firstPostIndex, lastPostIndex);
+  const [empIdList, setEmpIdList] = useState([]);
 
   // Filter
   const [filter, setFilter] = useState({
@@ -166,6 +166,7 @@ function RecordingList() {
         setRecList(data.data);
         setOriginalList(data.data);
         setDisplayList(data.data);
+
       });
 
       Swal.close(); // Close the loading dialog
@@ -173,6 +174,36 @@ function RecordingList() {
       console.error("Error fetching data:", error);
     }
   };
+
+  // Change Employee
+   const handleChangeEmployee = (recordingId, employeeId, index) => {
+     fetch(
+       `http://localhost:8082/recordingList/updateRecordingEmployeeById/${recordingId}`,
+       {
+         method: "POST",
+         headers: {
+           "Content-Type": "text/plain", // Set the content type to indicate JSON data
+         },
+         body: employeeId,
+       }
+     )
+       .then((res) => res.json())
+       .then(
+         (result) => {
+           console.log(result);
+           getRecList();
+         },
+         (error) => {
+           setError(error);
+         }
+       );
+
+     // update employee id list
+     const updatedEmpIdList = [...empIdList];
+     console.log(updatedEmpIdList);
+     updatedEmpIdList[index] = employeeId;
+     setEmpIdList(updatedEmpIdList);
+   };
 
   // Delete Recording
   const handleDelete = (id) => {
@@ -211,7 +242,7 @@ function RecordingList() {
   const handleDownload = (fileName) => {
     const link = document.createElement("a");
     link.href = `http://localhost:8082/audio/download/${fileName}`;
-    
+
     link.download = fileName;
     link.style.display = "none";
     document.body.appendChild(link);
@@ -228,10 +259,14 @@ function RecordingList() {
     searchRecList();
   }, [search, dateRange[1]]);
 
-  // useEffect(() => {
-  //   console.log(recList);
-  // });
+  useEffect(() => {
+    // console.log(recList);
+    console.log(empIdList);
+  });
 
+  useEffect(() => {
+    setEmpIdList(displayList.map((rec) => rec.employeeId));
+  }, [displayList]);
 
   return (
     <div className="ml-20 mt-16">
@@ -453,7 +488,23 @@ function RecordingList() {
                       <td className="h-1">
                         {recording.dateRecorded.substring(0, 10)}
                       </td>
-                      <td className="h-1">{recording.employeeName}</td>
+                      <td className="h-1">
+                        <select
+                          value={empIdList[index]}
+                          onChange={(e) => handleChangeEmployee(recording.recordingId, e.target.value, index)}
+                          className="select select-bordered font-normal select-sm h-11"
+                        >
+                          {empList &&
+                            empList.map((emp) => (
+                              <option
+                                key={emp.employeeId}
+                                value={emp.employeeId}
+                              >
+                                {emp.employeeName}
+                              </option>
+                            ))}
+                        </select>
+                      </td>
                       <td className="h-1">{recording.category}</td>
                       <td className="h-1">{recording.sentiment}</td>
                       <td className="flex justify-center items-center">
@@ -462,7 +513,6 @@ function RecordingList() {
                             tabIndex={0}
                             className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
                           >
-                            {/* <img src={ThreeDotsVertical} className="mt-2"></img> */}
                             <MoreVertIcon
                               style={{ color: "black" }}
                             ></MoreVertIcon>
@@ -508,10 +558,12 @@ function RecordingList() {
                         </div>
                       </td>
                     </tr>
+                    // );
                   ))
               : null}
           </tbody>
         </table>
+
         {!displayList.length ? (
           <>
             <img src={EmptyRecording} className="mx-auto mt-10"></img>

@@ -202,39 +202,39 @@ public class UploadController {
 		// return categoryRaw;
 
 		// Category
-		String prompt = "Decide if this conversation category is Inquiry, Complaint, or Warranty: " + formattedTranscripts;
-        CompletionRequest categoryRequest = CompletionRequest.builder()
-                                                            .model(currentModel)
-                                                            .prompt(prompt)
-                                                            .echo(true)
-                                                            .maxTokens(60)
-                                                            .build();
-        String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
-		String categoryRaw = response.substring(prompt.length()).trim();
-        String category;
+		// String prompt = "Decide if this conversation category is Inquiry, Complaint, or Warranty: " + formattedTranscripts;
+        // CompletionRequest categoryRequest = CompletionRequest.builder()
+        //                                                     .model(currentModel)
+        //                                                     .prompt(prompt)
+        //                                                     .echo(true)
+        //                                                     .maxTokens(60)
+        //                                                     .build();
+        // String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
+		// String categoryRaw = response.substring(prompt.length()).trim();
+        // String category;
 
-        if (categoryRaw.toLowerCase().indexOf("inquiry") != -1 ) {
-            category = "Inquiry";
-        } else if (categoryRaw.toLowerCase().indexOf("complaint") != -1){
-            category = "Complaint";
-        } else if (categoryRaw.toLowerCase().indexOf("warranty") != -1){
-            category = "Warranty";
-        } else{
-            category = "Not found";
-        }
+        // if (categoryRaw.toLowerCase().indexOf("inquiry") != -1 ) {
+        //     category = "Inquiry";
+        // } else if (categoryRaw.toLowerCase().indexOf("complaint") != -1){
+        //     category = "Complaint";
+        // } else if (categoryRaw.toLowerCase().indexOf("warranty") != -1){
+        //     category = "Warranty";
+        // } else{
+        //     category = "Not found";
+        // }
 
-		ans.setCategory(category);
+		// ans.setCategory(category);
 
 
 		// Summary
-		prompt = "Summarize this customer service conversation into 1 paragraph: " + formattedTranscripts;
+		String prompt = "Summarize this customer service conversation into 1 paragraph: " + formattedTranscripts;
         CompletionRequest summaryRequest = CompletionRequest.builder()
                                                             .model(currentModel)
                                                             .prompt(prompt)
                                                             .echo(true)
                                                             .maxTokens(60)
                                                             .build();
-        response = openAiService.createCompletion(summaryRequest).getChoices().get(0).getText();
+        String response = openAiService.createCompletion(summaryRequest).getChoices().get(0).getText();
 		String summary = response.substring(prompt.length()).trim();
 
 		ans.setSummary(summary);

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,8 +23,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.fyp.entity.Employee;
+import com.example.fyp.entity.Recording;
 import com.example.fyp.model.ResponseStatus;
 import com.example.fyp.repo.AudioFileRepository;
+import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.RecordingListService;
 import com.example.fyp.service.RecordingService;
@@ -48,6 +52,9 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
 
     @Autowired
     private AudioFileRepository recRepo;
+
+     @Autowired
+    private EmployeeRepository empRepo;
 
     // Get All Recordings
     @GetMapping("/getAllRecordings")
@@ -108,19 +115,29 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
         }
     }
 
-    // Get User
-    @GetMapping("/user/me")
-    public Authentication getCurrentUser() {
+    // Update Recording's employee
+    @PostMapping("/updateRecordingEmployeeById/{rec_id}")
+    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer rec_id, @RequestBody String emp_id)
+    {
+        ResponseStatus response = new ResponseStatus();
+        // Integer emp_ids = 6;
+        System.out.println("REC ID: " + rec_id);
+        System.out.println("EMP_ID: " + emp_id);
 
-        // Retrieve the current authentication token
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        Integer account_id = accountServiceImpl.getAccountId(email);
+        Employee employee = empRepo.findById(Integer.parseInt(emp_id)).get();
+        Recording recording = recRepo.findById(rec_id).get();
+        recording.setEmployee(employee);
 
-        System.out.println(account_id);
+        Recording recObj = recRepo.save(recording);
+        
+        // RESPONSE DATA
+        response.setSuccess(true);
+        response.setMessage("Succesfully change the employee to employee id " + emp_id);
 
-        return authentication;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
 
     @Override
     @PostMapping("analyzeLambda")
