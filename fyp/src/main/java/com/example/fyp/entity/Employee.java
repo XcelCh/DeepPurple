@@ -29,34 +29,24 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer employeeId;
     
-    // private Integer accountId;
-    
     private String employeeName;
     private Integer numCallsHandled;
     private Integer numPositiveSentiment;
     private Integer numNegativeSentiment;
-
-    // Constructor
-    public Employee (String employeeName){
-        this.employeeName = employeeName;
-    }
-
-
-    // @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Recording> recordings;
-
-    // public void setAccountId(Integer accountId){
-    //     this.accountId = accountId;
-    // }
-
+    
     @ManyToOne
     @JoinColumn(name = "account_id", referencedColumnName = "accountId")
     @JsonManagedReference
     private Account account;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Recording> recording;
+
+    // Constructor
+    public Employee (String employeeName){
+        this.employeeName = employeeName;
+    }
 
     @Override
     public String toString() {
@@ -67,13 +57,23 @@ public class Employee {
                 ", recording=" + recording + '}';
     }
     
-
     public void incrementNumCallsHandled() {
     	this.numCallsHandled++;
     }
 
     public void decrementNumCallsHandled() {
     	this.numCallsHandled--;
+    }
+
+    public Employee deleteEmployee(List<Recording> recordings) {
+
+        for (Recording r : recordings) {
+            r.deleteRecording(r.getAnalysis());
+            recordings.remove(r);
+            r.setEmployee(null);
+        }
+
+        return this;
     }
 
 }

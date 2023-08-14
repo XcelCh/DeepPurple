@@ -43,7 +43,7 @@ public class Analysis {
     private String recordingSentiment;
     private double transcriptConfidence;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "analysis")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "analysis", orphanRemoval = true)
     @JsonBackReference
     private List<Transcript> transcripts;
 
@@ -59,5 +59,15 @@ public class Analysis {
                 ", customerSentiment='" + customerSentiment + '\'' + ", employeeSentiment='" + employeeSentiment + '\'' +
                 ", recordingSentiment='" + recordingSentiment + '\'' + ", transcriptConfidence=" + transcriptConfidence +
                 ", transcript=" + transcripts + ", recording=" + (recording != null ? recording.getRecordingId() : null) + '}';
+    }
+
+    public Analysis deleteAnalysis(List<Transcript> transcripts) {
+
+        for (Transcript t : transcripts) {
+            transcripts.remove(t);
+            t.setAnalysis(null);
+        }
+
+        return this;
     }
 }

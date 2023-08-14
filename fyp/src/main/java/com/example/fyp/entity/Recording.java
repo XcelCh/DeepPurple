@@ -38,9 +38,6 @@ public class Recording {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer recordingId;
 
-    // private Integer employeeId;
-    // private Integer accountId;
-
     private String recordingName;
     
     @Nullable
@@ -63,7 +60,7 @@ public class Recording {
     private String audioFormat;
     private Integer sampleRate;
     
-    @OneToOne(mappedBy = "recording", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "recording", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private Analysis analysis;
 
@@ -77,9 +74,14 @@ public class Recording {
     @JsonManagedReference
     private Account account;
 
-    @Transient byte[] bytes;
-    @Transient File tempFilePath;
-    @Transient AudioFormat format;
+    @Transient 
+    byte[] bytes;
+
+    @Transient 
+    File tempFilePath;
+
+    @Transient 
+    AudioFormat format;
 
     public String displayFormat(){
         String endian;
@@ -109,5 +111,15 @@ public class Recording {
                 ", recordingUrl='" + recordingUrl + '\'' + ", audioFormat='" + audioFormat + '\'' + ", sampleRate=" + sampleRate +
                 ", analysis=" + (analysis != null ? analysis.getAnalysisId() : null) + ", employee=" + (employee != null ? employee.getEmployeeId() : null) +
                 ", account=" + (account != null ? account.getAccountId() : null) + '}';
+    }
+
+    public Recording deleteRecording(Analysis analysis) {
+
+        analysis.deleteAnalysis(analysis.getTranscripts());
+        
+        this.setAnalysis(null);
+        analysis.setRecording(null);
+
+        return this;
     }
 }

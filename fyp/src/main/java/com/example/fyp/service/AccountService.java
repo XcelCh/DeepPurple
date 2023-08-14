@@ -16,5 +16,7 @@ public interface AccountService {
 
     void changePassword (String email, String newPassword);
 
-    public int getAccountId(String email);
+    int getAccountId(String email);
+
+    void deleteAccount(Account account);
 }

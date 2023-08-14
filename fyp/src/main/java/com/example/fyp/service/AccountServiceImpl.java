@@ -91,5 +91,12 @@ public class AccountServiceImpl implements UserDetailsService, AccountService {
         return accountRepository.getAccountId(email);
     }
 
+    @Override
+    public void deleteAccount(Account account) {
+
+        account.deleteAll(account.getUsageList(), account.getRecording(), account.getEmployee());
+        accountRepository.deleteById(account.getAccountId());
+    }
+
 
 }
