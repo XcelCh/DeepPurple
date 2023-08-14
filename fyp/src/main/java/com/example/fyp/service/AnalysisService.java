@@ -7,8 +7,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.entity.Transcript;
@@ -66,16 +68,59 @@ public class AnalysisService {
     }
     
     public Analysis processAnalysis(Recording rec, Container c){
-        return analysisRepository.save(new Analysis(null,
-                        null, 
-                        null, 
-                        c.getData()[1], 
-                        c.getData()[2], 
-                        c.getData()[4],
-                        null, 
-                        null, 
-                        null,
-                        c.getData()[0] / c.getData()[3],
-                        null, rec));
+
+        // return analysisRepository.save(new Analysis(null,null, null, c.getData()[1], c.getData()[2], c.getData()[4],
+        //                 null, null, null,c.getData()[0] / c.getData()[3], null, rec));
+
+        Analysis analysis = new Analysis();
+        analysis.setEmployeeSpeakTime(c.getData()[1]);
+        analysis.setCustomerSpeakTime(c.getData()[2]);
+        analysis.setSilentTime(c.getData()[4]);
+        analysis.setTranscriptConfidence(c.getData()[0] / c.getData()[3]);
+        analysis.setRecording(rec);
+
+        return analysisRepository.save(analysis);
+    }
+
+
+
+    public Analysis findAnalysisById(Integer id) {
+
+        Analysis analysis = analysisRepository.findById(id)
+            .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + id));
+
+        return analysis;
+    }
+
+    public double getScore(String employeePerformance, String skill) {
+
+        int index = employeePerformance.toLowerCase().indexOf(skill);
+
+        String score = "";
+
+        if (employeePerformance.length() >= index+skill.length()+2) {
+
+            score = employeePerformance.substring(index+skill.length(), index+skill.length()+2);
+        }
+        else {
+            score = employeePerformance.substring(index+skill.length(), index+skill.length()+1);
+        }
+
+        if (!score.matches("^\\d{2}$")) {
+
+            score = score.substring(0, 1);
+        } 
+        else if (score.equals("10")) {
+
+            if (employeePerformance.substring(index+skill.length()+2, index+skill.length()+3).equals("0")) {
+                score = "100";
+            }
+        }
+
+        return Double.parseDouble(score);
+    }
+
+    public void saveAnalysis(Analysis analysis) {
+        analysisRepository.save(analysis);
     }
 }

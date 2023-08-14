@@ -22,12 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
-import com.example.fyp.model.RecordingAnalysisAnswer;
 import com.example.fyp.model.ResponseStatus;
+import com.example.fyp.repo.AnalysisRepository;
 import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.repo.RecordingRepository;
+import com.example.fyp.service.AnalysisService;
 import com.example.fyp.service.StorageService;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
@@ -48,6 +50,9 @@ public class UploadController {
 	
 	@Autowired
 	private EmployeeRepository empRepo;
+
+	@Autowired
+	private AnalysisService analysisService;
 
 	@PostMapping("/uploadAudio")
 	public ResponseEntity<?> uploadAudio(@RequestParam("audio") MultipartFile file) throws IOException {
@@ -165,17 +170,18 @@ public class UploadController {
     private String apiKeyContent;
 
 	@GetMapping("/analyze")
-    private RecordingAnalysisAnswer recordAnalyzer() throws RuntimeException{
+    private Analysis recordAnalyzer(Integer analysisId) throws RuntimeException{
         String apiKey = apiKeyContent;
 
         String currentModel = "text-davinci-003";
-        RecordingAnalysisAnswer ans = new RecordingAnalysisAnswer();
+
+		Analysis analysis = analysisService.findAnalysisById(analysisId);
 
         // Set up OpenAI API
         OpenAiService openAiService = new OpenAiService(apiKey);              
         
 		// Merge all the transcripts and prefix with Agent / Customer
-		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(9);
+		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(analysisId);
 
 		String formattedTranscripts = "";
 		
@@ -229,7 +235,7 @@ public class UploadController {
             category = "Not found";
         }
 
-		ans.setCategory(category);
+		analysis.setCategory(category);
 
 
 		// Summary
@@ -243,7 +249,7 @@ public class UploadController {
         response = openAiService.createCompletion(summaryRequest).getChoices().get(0).getText();
 		String summary = response.substring(prompt.length()).trim();
 
-		ans.setSummary(summary);
+		analysis.setSummary(summary);
 
 		// Customer sentiment
 		prompt = "Decide if the customer's sentiment is positive or negative based on this conversation (negative if the customer shows many signs of frustration / bad emotions, otherwise positive): " + formattedTranscripts;
@@ -265,7 +271,7 @@ public class UploadController {
 			customerSentiment = "Not found";
 		}
 
-		ans.setCustomerSentiment(customerSentiment);
+		analysis.setCustomerSentiment(customerSentiment);
 
 
 		// Employee sentiment
@@ -288,7 +294,7 @@ public class UploadController {
             employeeSentiment = "Not found";
         }
 
-		ans.setEmployeeSentiment(employeeSentiment);
+		analysis.setEmployeeSentiment(employeeSentiment);
 
 		// Call sentiment
 		prompt = "Decide if the call sentiment is positive or negative based on this conversation (positive means the call's objectives are achieved, otherwise negative): " + formattedTranscripts;
@@ -310,7 +316,7 @@ public class UploadController {
             callSentiment = "Not found";
         }
 
-		ans.setCallSentiment(callSentiment);
+		analysis.setRecordingSentiment(callSentiment);
 
 		// Main issue
 		prompt = "Describe the main issue into just a few words based on this conversation: " + formattedTranscripts;
@@ -323,7 +329,7 @@ public class UploadController {
         response = openAiService.createCompletion(mainIssueRequest).getChoices().get(0).getText();
 		String mainIssue = response.substring(prompt.length()).trim();
 
-		ans.setMainIssue(mainIssue);
+		analysis.setMainIssue(mainIssue);
 
 		// Employee performance
 		prompt = "This is a telecommunication company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n" + //
@@ -345,7 +351,18 @@ public class UploadController {
         response = openAiService.createCompletion(employeePerformanceRequest).getChoices().get(0).getText();
 		String employeePerformance = response.substring(prompt.length()).trim();
 
-		ans.setEmployeePerformance(employeePerformance);
+		// System.out.println(employeePerformance);
+		double fluency = analysisService.getScore(employeePerformance, "fluency: ");
+		double hospitality = analysisService.getScore(employeePerformance, "hospitality: ");
+		double problem = analysisService.getScore(employeePerformance, "problem solving: ");
+		double personalization = analysisService.getScore(employeePerformance, "personalization: ");
+		double average = (fluency + hospitality + problem + personalization)/4;
+
+		analysis.setFluency(fluency);
+		analysis.setHospitality(hospitality);
+		analysis.setProblemSolving(problem);
+		analysis.setPersonalization(personalization);
+		analysis.setAveragePerformance(average);
 
 		// Negative Emotions
 		prompt = "List down 3 short sentences spoken by our agent which is prefixed with 'Agent:' in the conversation that you think can be improved in terms of good hospitality and manner. Answer in the following format: \n" + 
@@ -364,9 +381,11 @@ public class UploadController {
         response = openAiService.createCompletion(negativeEmotionsRequest).getChoices().get(0).getText();
 		String negativeEmotions = response.substring(prompt.length()).trim();
 
-		ans.setNegativeEmotions(negativeEmotions);
+		analysis.setNegativeEmotion(negativeEmotions);
 
-		return ans;
+		analysisService.saveAnalysis(analysis);
+
+		return analysis;
     }
 	
 }

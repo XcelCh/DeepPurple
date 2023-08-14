@@ -42,6 +42,13 @@ public class Analysis {
     private String employeeSentiment;
     private String recordingSentiment;
     private double transcriptConfidence;
+    private String negativeEmotion;
+    private String mainIssue;
+    private double fluency;
+    private double hospitality;
+    private double problemSolving;
+    private double personalization;
+    private double averagePerformance;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "analysis", orphanRemoval = true)
     @JsonBackReference
