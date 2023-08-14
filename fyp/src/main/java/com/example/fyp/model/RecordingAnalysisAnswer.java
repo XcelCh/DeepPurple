@@ -8,7 +8,6 @@ public class RecordingAnalysisAnswer {
     private String customerSentiment;
     private String employeeSentiment;
     private String callSentiment;
-    private Vector<DetailEmotion> emotions;  
     private String mainIssue;
     private String employeePerformance;
     private String negativeEmotions;
@@ -33,9 +32,6 @@ public class RecordingAnalysisAnswer {
         return callSentiment;
     }
 
-    public Vector<DetailEmotion> getEmotions() {
-        return emotions;
-    }
 
     public String getMainIssue() {
         return mainIssue;
@@ -69,9 +65,6 @@ public class RecordingAnalysisAnswer {
         this.callSentiment = callSentiment;
     }
 
-    public void setEmotions(Vector<DetailEmotion> emotions) {
-        this.emotions = emotions;
-    }
 
     public void setMainIssue(String mainIssue) {
         this.mainIssue = mainIssue;
