@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import aboutUs from "../assets/AboutUs.png";
 import profilePicture from "../assets/ProfilePicture.png";
+import Gui from "../assets/Gui.jpg";
+import Bryant from "../assets/Bryant.jpeg";
+import Patricia from "../assets/Patricia.JPG";
 import { Line, Linkedin, Instagram } from "../assets";
 import ProfileCard from "../components/ProfileCard";
 import Footer from "../components/Footer";
@@ -125,12 +128,12 @@ function AboutUs() {
         <div className="flex justify-center mt-10">
           <div className="grid grid-cols-3 gap-20">
             <ProfileCard
-              image={profilePicture}
+              image={Gui}
               name="Gui Hendro"
               position="Project Leader"
             ></ProfileCard>
             <ProfileCard
-              image={profilePicture}
+              image={Patricia}
               name="Patricia Natasha"
               position="Technical Lead"
             ></ProfileCard>
@@ -140,7 +143,7 @@ function AboutUs() {
               position="Documentation Leader"
             ></ProfileCard>
             <ProfileCard
-              image={profilePicture}
+              image={Bryant}
               name="Jonathan Bryant Indramadi"
               position="Developer"
             ></ProfileCard>

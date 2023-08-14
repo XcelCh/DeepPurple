@@ -201,7 +201,7 @@ function AddRecording() {
             setError(error);
             console.log(error);
             Swal.fire("Fail", "Fail to add recording.", "error");
-          });
+          }); 
       },
       allowOutsideClick: () => !Swal.isLoading(),
     });
@@ -327,6 +327,27 @@ function AddRecording() {
     return { id, name };
   };
 
+
+  const analyzeRecordings = () => {
+    const ids = recList.map(recording => recording.recordingId);
+    fetch("http://localhost:8082/recordingList/analyzeLambda", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(ids),
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          console.log("called get data");
+        },
+        (error) => {
+          setError(error);
+        }
+      );
+  }
+
   return (
     <div className="pt-16 mx-20">
       <div className="flex mb-5">
@@ -383,7 +404,7 @@ function AddRecording() {
           </li>
         </ul>
       </div>
-
+            
       <p className="font-bold mb-1">Configuration</p>
       <div className="grid grid-cols-2 flex w-2/5 items-center mb-5">
         <p>Assign employee by</p>
@@ -538,7 +559,7 @@ function AddRecording() {
         ></Pagination>
       </div>
       <div className="flex justify-end">
-        <button className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]">
+        <button onClick={analyzeRecordings} className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]">
           <img src={Analyze} className="mr-2 h-5"></img>
           <p className="mr-2 text-md">Analyze</p>
         </button>
