@@ -175,7 +175,7 @@ public class UploadController {
         OpenAiService openAiService = new OpenAiService(apiKey);              
         
 		// Merge all the transcripts and prefix with Agent / Customer
-		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(4);
+		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(9);
 
 		String formattedTranscripts = "";
 		
@@ -331,9 +331,11 @@ public class UploadController {
 				"- Fluency: rating/100\n" + //
 				"- Hospitality: rating/100\n" + //
 				"- Problem Solving: rating/100\n" + //
-				"- Knowledge and Expertise: rating/100" + //
+				"- Personalization: rating/100" + //
 				" Based on the following conversation: " + formattedTranscripts + //
-				". You do not need to explain anything. Just respond with the format given.";
+				". Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range and should not be overly high. An average score around 80 is expected.\r\n" + //
+				"[You do not need to explain anything. Just respond with the format given.]";
+				
         CompletionRequest employeePerformanceRequest = CompletionRequest.builder()
 															.model(currentModel)
 															.prompt(prompt)
@@ -357,7 +359,8 @@ public class UploadController {
 															.prompt(prompt)
 															.echo(true)
 															.maxTokens(1500)
-															.build();
+				.build();
+															
         response = openAiService.createCompletion(negativeEmotionsRequest).getChoices().get(0).getText();
 		String negativeEmotions = response.substring(prompt.length()).trim();
 
