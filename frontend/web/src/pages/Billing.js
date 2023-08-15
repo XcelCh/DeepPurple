@@ -421,7 +421,7 @@ function Billing() {
                         </div>
                     </div>
                 </div>
-                <div className="mt-8">
+                {/* <div className="mt-8">
                     <div className="px-32">
                         <div className="border border-[#A5A5A5] rounded-md p-8 bg-white">
                             <p className="text-2xl font-semibold text-[#414141]">
@@ -458,7 +458,7 @@ function Billing() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <div className="mt-8 mb-16">
                     <div className="px-32">
                         <div className="border border-[#A5A5A5] rounded-md p-8 bg-white">
