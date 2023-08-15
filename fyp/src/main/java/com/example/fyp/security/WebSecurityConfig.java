@@ -107,6 +107,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/summaryAnalysis/**").permitAll()
                         .requestMatchers("/payment/**").authenticated()
                         .requestMatchers("/sendInquiry").permitAll()
+                        .requestMatchers("/check").hasRole("CARD")
                 );
 
         // Set the authentiction provider
