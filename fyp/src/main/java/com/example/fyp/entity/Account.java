@@ -109,6 +109,10 @@ public class Account {
         this.roles.add(role);
     }
 
+    public void deleteRole(Role role) {
+        this.roles.remove(role);
+    }
+
     public void addUsage (Usages usage) {
         this.usageList.add(usage);
     }
