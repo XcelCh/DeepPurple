@@ -83,6 +83,14 @@ public class PaymentController {
                 tempPayment.setCardNumber(payment.getCardNumber());
                 tempPayment.setExpiryDate(payment.getExpiryDate());
                 account.setPayment(tempPayment);
+
+                // If Account role is only 1, means that user deleted its payment, add 1 more roles upon adding card
+                if (account.getRoles().size() == 1) {
+
+                    // Add roles upon adding a payment
+                    account.addRole(roleRepository.findById(2));
+                }
+
                 accountServiceImpl.saveAccount(account);
                 return ResponseEntity.ok("Card Successfully Updated");
             }
@@ -165,6 +173,10 @@ public class PaymentController {
             List<Usages> usages = usageService.findUnbilledUsage(accountId);
             Float totalUnbilled = usageService.getTotalUnbilledUsage(accountId);
 
+            // Remove role from user that has delete card
+            account.deleteRole(roleRepository.findById(2));
+            accountServiceImpl.saveAccount(account);
+
             // If outstanding payment = 0, delete the card
             if (totalUnbilled  == 0) {
                 return paymentService.deletePaymentById(paymentId);
@@ -178,6 +190,7 @@ public class PaymentController {
             }
 
             billingService.saveBilling(billing);
+
             return paymentService.deletePaymentById(paymentId);
         }
         catch (UsernameNotFoundException e) {
