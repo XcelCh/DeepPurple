@@ -19,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.fyp.service.AccountServiceImpl;
 
+// Custom Filter class to check for JWT token in the request header
 public class AuthTokenValidationFilter extends OncePerRequestFilter {
   
   @Autowired
@@ -29,6 +30,7 @@ public class AuthTokenValidationFilter extends OncePerRequestFilter {
 
   private static final Logger logger = LoggerFactory.getLogger(AuthTokenValidationFilter.class);
 
+  // Filter function to validate the token and set authentication
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
@@ -48,12 +50,13 @@ public class AuthTokenValidationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     } catch (Exception e) {
-      logger.error("Cannot set user authentication: {}", e);
+        logger.error("Cannot set user authentication: {}", e);
     }
 
     filterChain.doFilter(request, response);
   }
 
+  // Method to parse the request header and get the JWT Token
   private String parseJwt(HttpServletRequest request) {
     String headerAuth = request.getHeader("Authorization");
 

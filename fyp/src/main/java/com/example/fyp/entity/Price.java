@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+// Price Entity to store price per minutes of the feature
 @Data
 @Entity
 public class Price {
@@ -17,5 +18,4 @@ public class Price {
     private Integer priceId;
 
     private double priceRate;
-    
 }

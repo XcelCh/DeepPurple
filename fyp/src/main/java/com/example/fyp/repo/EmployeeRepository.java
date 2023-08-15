@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.fyp.entity.Employee;
 
+// Employee Repository for Employee Entity to access the database
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 

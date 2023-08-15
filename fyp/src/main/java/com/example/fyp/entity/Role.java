@@ -8,9 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+// Role Entity to define roles for user
 @Data
 @Entity
-    
 public class Role {
     
     @JsonIgnore
@@ -20,5 +20,4 @@ public class Role {
 
     @JsonIgnore
     private String name;
-
 }

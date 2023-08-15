@@ -18,6 +18,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+// Entity class for Employee Entity
 @Data
 @Entity
 @AllArgsConstructor
@@ -34,20 +35,23 @@ public class Employee {
     private Integer numPositiveSentiment;
     private Integer numNegativeSentiment;
     
+    // ManyToOne relationship with Account Entity
     @ManyToOne
     @JoinColumn(name = "account_id", referencedColumnName = "accountId")
     @JsonManagedReference
     private Account account;
 
+    // OneToMany relationship with Recording Entity
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Recording> recording;
 
-    // Constructor
+    // Custom Constructor for Employee Entity
     public Employee (String employeeName){
         this.employeeName = employeeName;
     }
 
+    // ToString method for Employee Entity
     @Override
     public String toString() {
         return "Employee{employeeId=" + employeeId + ", employeeName='" + employeeName + '\'' + ", numCallsHandled="
@@ -57,14 +61,17 @@ public class Employee {
                 ", recording=" + recording + '}';
     }
     
+    // Method to increment number of calls handled
     public void incrementNumCallsHandled() {
     	this.numCallsHandled++;
     }
 
+    // Method to decrement number of call handled
     public void decrementNumCallsHandled() {
     	this.numCallsHandled--;
     }
 
+    // Method to delete related entities when deleting Employee Record
     public Employee deleteEmployee(List<Recording> recordings) {
 
         for (Recording r : recordings) {
@@ -75,5 +82,4 @@ public class Employee {
 
         return this;
     }
-
 }

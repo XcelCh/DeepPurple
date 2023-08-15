@@ -21,6 +21,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+// Payment Entity
 @Data
 @Entity
 @NoArgsConstructor
@@ -34,9 +35,7 @@ public class Payment {
     private Long paymentId;
 
     private String cardholderName;
-
     private String cardNumber;
-
     private Date expiryDate;
 
     @JsonProperty(access = Access.WRITE_ONLY)
@@ -44,17 +43,18 @@ public class Payment {
 
     private float usageLimit;
 
-
-    
+    // OneToMany relationship with Billing Entity
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Billing> billings;
 
+    // OneToOne relationship with Account Entity
     @JsonIgnore
     @OneToOne(mappedBy = "payment")
     @JsonManagedReference
     private Account account;
 
+    // Custom Constructor 
     public Payment (String cardholderName, String cardNumber, Date expiryDate, String securityCode) {
 
         this.cardholderName = cardholderName;
@@ -63,6 +63,7 @@ public class Payment {
         this.securityCode = securityCode;
     }
     
+    // ToString method for Payment Entity
     @Override
     public String toString() {
         return "Payment{paymentId=" + paymentId + ", cardholderName='" + cardholderName + '\'' + ", cardNumber='" + cardNumber + '\'' +

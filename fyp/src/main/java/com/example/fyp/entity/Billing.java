@@ -19,6 +19,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+// Billing Entity
 @Data
 @Entity
 @AllArgsConstructor
@@ -31,18 +32,20 @@ public class Billing {
     private Long billingId;
 
     private float totalAmount;
-
     private Date dateBilled;
 
+    // ManyToOne relationship with Payment Entity
     @ManyToOne
     @JoinColumn(name = "payment_id", referencedColumnName = "paymentId")
     @JsonManagedReference
     private Payment payment;
 
-    @OneToMany(mappedBy = "billing", cascade = CascadeType.PERSIST)
+    // OneToMany relationship with Usages Entity
+    @OneToMany(mappedBy = "billing", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Usages> usageList;
 
+    // Custom Constructor for Billing Entity
     public Billing (float totalAmount, Date dateBilled, Payment payment, List<Usages> usageList) {
         this.totalAmount = totalAmount;
         this.dateBilled = dateBilled;
@@ -50,6 +53,7 @@ public class Billing {
         this.usageList = usageList;
     }
 
+    // ToString method for Billing Entity
     @Override
     public String toString() {
         return "Billing{billingId=" + billingId + ", totalAmount=" + totalAmount + ", dateBilled=" + dateBilled +

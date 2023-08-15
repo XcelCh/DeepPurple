@@ -1,5 +1,6 @@
 package com.example.fyp.security.payload.response;
 
+// Class to build the JWT response
 public class JwtResponse {
   private String token;
   private String type = "Bearer";
