@@ -1,6 +1,6 @@
 package com.example.fyp.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,16 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-// Role Entity to define roles for user
+// Price Entity to store price per minutes of the feature
 @Data
 @Entity
-public class Role {
-    
-    @JsonIgnore
+public class Price {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer priceId;
 
-    @JsonIgnore
-    private String name;
+    private double priceRate;
 }

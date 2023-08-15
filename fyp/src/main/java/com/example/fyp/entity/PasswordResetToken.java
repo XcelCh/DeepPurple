@@ -12,6 +12,7 @@ import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// PasswordResetToken Entity
 @Data
 @NoArgsConstructor
 @Entity
@@ -22,30 +23,30 @@ public class PasswordResetToken {
     private Long token_id;
 
     private String token;
-
     private Date expirationTime;
-    
     private static final int EXPIRATION_TIME = 5;
 
+    // OneToOne relationship with Account Entity
     @OneToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
+    // Custom Constructor for PasswordResetToken
     public PasswordResetToken(String token, Account account) {
 
-        // super();
         this.token = token;
         this.account = account;
         this.expirationTime = this.getTokenExpirationTime();
     }
 
+    // Custom Constructor 
     public PasswordResetToken(String token) {
 
-        // super();
         this.token = token;
         this.expirationTime = this.getTokenExpirationTime();
     }
 
+    // Method to return the token expiration time
     public Date getTokenExpirationTime() {
 
         Calendar calendar = Calendar.getInstance();
@@ -54,5 +55,4 @@ public class PasswordResetToken {
 
         return new Date(calendar.getTime().getTime());
     }
-
 }

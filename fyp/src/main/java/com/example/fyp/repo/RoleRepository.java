@@ -5,12 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.fyp.entity.Role;
 
+// Role Repository for Role Entity to access to the Database
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Integer>  {
 
-    // Role findByName(String name);
-
     Role findById(int id);
-    // Role findByDescription(String description);
-    
 }

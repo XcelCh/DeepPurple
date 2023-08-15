@@ -22,12 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
-import com.example.fyp.model.RecordingAnalysisAnswer;
 import com.example.fyp.model.ResponseStatus;
+import com.example.fyp.repo.AnalysisRepository;
 import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.repo.RecordingRepository;
+import com.example.fyp.service.AnalysisService;
 import com.example.fyp.service.StorageService;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
@@ -48,6 +50,12 @@ public class UploadController {
 	
 	@Autowired
 	private EmployeeRepository empRepo;
+
+	@Autowired
+	private AnalysisRepository analysisRepo;
+
+	@Autowired
+	private AnalysisService analysisService;
 
 	@PostMapping("/uploadAudio")
 	public ResponseEntity<?> uploadAudio(@RequestParam("audio") MultipartFile file) throws IOException {
@@ -162,20 +170,37 @@ public class UploadController {
 
 	// For GPT analysis
 	@Value("${apiKey}")
-    private String apiKeyContent;
+	private String apiKeyContent;
 
-	@GetMapping("/analyze")
-    private RecordingAnalysisAnswer recordAnalyzer() throws RuntimeException{
+	// Get Analysis
+	@GetMapping("/getAnalysis/{analysis_id}")
+	private ResponseEntity<?> getAnalysis(@PathVariable Integer analysis_id) {
+		ResponseStatus response = new ResponseStatus();
+		Optional<Analysis> analysis = analysisRepo.findById(analysis_id);
+
+		response.setSuccess(true);
+		response.setData(analysis);
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
+	// Analyze
+	@PostMapping("/analyze")
+	private Analysis recordAnalyzer(Integer analysisId) throws RuntimeException {
+
+		System.out.println("ANALYSIS ID: " + analysisId);
+
         String apiKey = apiKeyContent;
 
         String currentModel = "text-davinci-003";
-        RecordingAnalysisAnswer ans = new RecordingAnalysisAnswer();
+
+		Analysis analysis = analysisService.findAnalysisById(analysisId);
 
         // Set up OpenAI API
         OpenAiService openAiService = new OpenAiService(apiKey);              
         
 		// Merge all the transcripts and prefix with Agent / Customer
-		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(4);
+		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(analysisId);
 
 		String formattedTranscripts = "";
 		
@@ -208,161 +233,178 @@ public class UploadController {
 		// return categoryRaw;
 
 		// Category
-		// String prompt = "Decide if this conversation category is Inquiry, Complaint, or Warranty: " + formattedTranscripts;
-        // CompletionRequest categoryRequest = CompletionRequest.builder()
-        //                                                     .model(currentModel)
-        //                                                     .prompt(prompt)
-        //                                                     .echo(true)
-        //                                                     .maxTokens(60)
-        //                                                     .build();
-        // String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
-		// String categoryRaw = response.substring(prompt.length()).trim();
-        // String category;
+		String prompt = "Decide if this conversation category is Inquiry, Complaint, or Warranty: " + formattedTranscripts;
+        CompletionRequest categoryRequest = CompletionRequest.builder()
+                                                            .model(currentModel)
+                                                            .prompt(prompt)
+                                                            .echo(true)
+                                                            .maxTokens(60)
+                                                            .build();
+        String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
+		String categoryRaw = response.substring(prompt.length()).trim();
+        String category;
 
-        // if (categoryRaw.toLowerCase().indexOf("inquiry") != -1 ) {
-        //     category = "Inquiry";
-        // } else if (categoryRaw.toLowerCase().indexOf("complaint") != -1){
-        //     category = "Complaint";
-        // } else if (categoryRaw.toLowerCase().indexOf("warranty") != -1){
-        //     category = "Warranty";
-        // } else{
-        //     category = "Not found";
-        // }
+        if (categoryRaw.toLowerCase().indexOf("inquiry") != -1 ) {
+            category = "Inquiry";
+        } else if (categoryRaw.toLowerCase().indexOf("complaint") != -1){
+            category = "Complaint";
+        } else if (categoryRaw.toLowerCase().indexOf("warranty") != -1){
+            category = "Warranty";
+        } else{
+            category = "Not found";
+        }
 
-		// ans.setCategory(category);
+		analysis.setCategory(category);
 
 
 		// Summary
-		// String prompt = "Summarize this customer service conversation into 1 paragraph: " + formattedTranscripts;
-        // CompletionRequest summaryRequest = CompletionRequest.builder()
-        //                                                     .model(currentModel)
-        //                                                     .prompt(prompt)
-        //                                                     .echo(true)
-        //                                                     .maxTokens(60)
-        //                                                     .build();
-        // String response = openAiService.createCompletion(summaryRequest).getChoices().get(0).getText();
-		// String summary = response.substring(prompt.length()).trim();
+		prompt = "Summarize this customer service conversation into 1 paragraph: " + formattedTranscripts;
+        CompletionRequest summaryRequest = CompletionRequest.builder()
+                                                            .model(currentModel)
+                                                            .prompt(prompt)
+                                                            .echo(true)
+                                                            .maxTokens(60)
+                                                            .build();
+        response = openAiService.createCompletion(summaryRequest).getChoices().get(0).getText();
+		String summary = response.substring(prompt.length()).trim();
 
-		// ans.setSummary(summary);
+		analysis.setSummary(summary);
 
 		// Customer sentiment
-		// String prompt = "Decide if the customer's sentiment is positive or negative based on this conversation (negative if the customer shows many signs of frustration / bad emotions, otherwise positive): " + formattedTranscripts;
-        // CompletionRequest customerSentimentRequest = CompletionRequest.builder()
-		// 															.model(currentModel)
-		// 															.prompt(prompt)
-		// 															.echo(true)
-		// 															.maxTokens(60)
-		// 															.build();
-        // String response = openAiService.createCompletion(customerSentimentRequest).getChoices().get(0).getText();
-		// String customerSentimentRaw = response.substring(prompt.length()).trim();
-        // String customerSentiment;
+		prompt = "Decide if the customer's sentiment is positive or negative based on this conversation (negative if the customer shows many signs of frustration / bad emotions, otherwise positive): " + formattedTranscripts;
+        CompletionRequest customerSentimentRequest = CompletionRequest.builder()
+																	.model(currentModel)
+																	.prompt(prompt)
+																	.echo(true)
+																	.maxTokens(60)
+																	.build();
+        response = openAiService.createCompletion(customerSentimentRequest).getChoices().get(0).getText();
+		String customerSentimentRaw = response.substring(prompt.length()).trim();
+        String customerSentiment;
 
-        // if (customerSentimentRaw.toLowerCase().indexOf("positive") != -1 ) {
-        //     customerSentiment = "Positive";
-        // } else if (customerSentimentRaw.toLowerCase().indexOf("negative") != -1){
-        //     customerSentiment = "Negative";
-        // } else{
-        //     customerSentiment = "Not found";
-        // }
+		if (customerSentimentRaw.toLowerCase().indexOf("positive") != -1 ) {
+			customerSentiment = "Positive";
+		} else if (customerSentimentRaw.toLowerCase().indexOf("negative") != -1){
+			customerSentiment = "Negative";
+		} else{
+			customerSentiment = "Not found";
+		}
 
-		// ans.setCustomerSentiment(customerSentiment);
+		analysis.setCustomerSentiment(customerSentiment);
 
 
 		// Employee sentiment
-		// String prompt = "Decide if the agent's sentiment is positive or negative based on this conversation (positive if the agent's being polite and understanding when talking to the customer, otherwise negative): " + formattedTranscripts;
-        // CompletionRequest employeeSentimentRequest = CompletionRequest.builder()
-		// 														.model(currentModel)
-		// 														.prompt(prompt)
-		// 														.echo(true)
-		// 														.maxTokens(1000)
-		// 														.build();
-        // String response = openAiService.createCompletion(employeeSentimentRequest).getChoices().get(0).getText();
-		// String employeeSentimentRaw = response.substring(prompt.length()).trim();
-        // String employeeSentiment;
+		prompt = "Decide if the agent's sentiment is positive or negative based on this conversation (positive if the agent's being polite and understanding when talking to the customer, otherwise negative): " + formattedTranscripts;
+        CompletionRequest employeeSentimentRequest = CompletionRequest.builder()
+																.model(currentModel)
+																.prompt(prompt)
+																.echo(true)
+																.maxTokens(1000)
+																.build();
+        response = openAiService.createCompletion(employeeSentimentRequest).getChoices().get(0).getText();
+		String employeeSentimentRaw = response.substring(prompt.length()).trim();
+        String employeeSentiment;
 
-        // if (employeeSentimentRaw.toLowerCase().indexOf("positive") != -1 ) {
-        //     employeeSentiment = "Positive";
-        // } else if (employeeSentimentRaw.toLowerCase().indexOf("negative") != -1){
-        //     employeeSentiment = "Negative";
-        // } else{
-        //     employeeSentiment = "Not found";
-        // }
+        if (employeeSentimentRaw.toLowerCase().indexOf("positive") != -1 ) {
+            employeeSentiment = "Positive";
+        } else if (employeeSentimentRaw.toLowerCase().indexOf("negative") != -1){
+            employeeSentiment = "Negative";
+        } else{
+            employeeSentiment = "Not found";
+        }
 
-		// ans.setEmployeeSentiment(employeeSentiment);
-
+		analysis.setEmployeeSentiment(employeeSentiment);
 
 		// Call sentiment
-		// String prompt = "Decide if the call sentiment is positive or negative based on this conversation (positive means the call's objectives are achieved, otherwise negative): " + formattedTranscripts;
-        // CompletionRequest callSentimentRequest = CompletionRequest.builder()
-		// 														.model(currentModel)
-		// 														.prompt(prompt)
-		// 														.echo(true)
-		// 														.maxTokens(60)
-		// 														.build();
-        // String response = openAiService.createCompletion(callSentimentRequest).getChoices().get(0).getText();
-		// String callSentimentRaw = response.substring(prompt.length()).trim();
-        // String callSentiment;
+		prompt = "Decide if the call sentiment is positive or negative based on this conversation (positive means the call's objectives are achieved, otherwise negative): " + formattedTranscripts;
+        CompletionRequest callSentimentRequest = CompletionRequest.builder()
+																.model(currentModel)
+																.prompt(prompt)
+																.echo(true)
+																.maxTokens(60)
+																.build();
+        response = openAiService.createCompletion(callSentimentRequest).getChoices().get(0).getText();
+		String callSentimentRaw = response.substring(prompt.length()).trim();
+        String callSentiment;
 
-        // if (callSentimentRaw.toLowerCase().indexOf("positive") != -1 ) {
-        //     callSentiment = "Positive";
-        // } else if (callSentimentRaw.toLowerCase().indexOf("negative") != -1){
-        //     callSentiment = "Negative";
-        // } else{
-        //     callSentiment = "Not found";
-        // }
+        if (callSentimentRaw.toLowerCase().indexOf("positive") != -1 ) {
+            callSentiment = "Positive";
+        } else if (callSentimentRaw.toLowerCase().indexOf("negative") != -1){
+            callSentiment = "Negative";
+        } else{
+            callSentiment = "Not found";
+        }
 
-		// ans.setCallSentiment(callSentiment);
+		analysis.setRecordingSentiment(callSentiment);
 
 		// Main issue
-		// prompt = "Describe the main issue into just a few words based on this conversation: " + formattedTranscripts;
-        // CompletionRequest mainIssueRequest = CompletionRequest.builder()
-		// 													.model(currentModel)
-		// 													.prompt(prompt)
-		// 													.echo(true)
-		// 													.maxTokens(60)
-		// 													.build();
-        // response = openAiService.createCompletion(mainIssueRequest).getChoices().get(0).getText();
-		// String mainIssue = response.substring(prompt.length()).trim();
+		prompt = "Describe the main issue into just a few words based on this conversation: " + formattedTranscripts;
+        CompletionRequest mainIssueRequest = CompletionRequest.builder()
+															.model(currentModel)
+															.prompt(prompt)
+															.echo(true)
+															.maxTokens(60)
+															.build();
+        response = openAiService.createCompletion(mainIssueRequest).getChoices().get(0).getText();
+		String mainIssue = response.substring(prompt.length()).trim();
 
-		// ans.setMainIssue(mainIssue);
-
-		// Employee performance
-		// prompt = "This is a telecommunication company and you are tasked to provide an objective assessment of the agent's performance using the following parameters:\n" + //
-		// 		"\n" + //
-		// 		"- Fluency: rating/100\n" + //
-		// 		"- Hospitality: rating/100\n" + //
-		// 		"- Problem Solving: rating/100\n" + //
-		// 		"- Knowledge and Expertise: rating/100" + //
-		// 		"based on the following conversation: " + formattedTranscripts + //
-		// 		". You do not need to explain anything. Just respond with the format given. You are not forced to gives a very high marks.";
-        // CompletionRequest employeePerformanceRequest = CompletionRequest.builder()
-		// 													.model(currentModel)
-		// 													.prompt(prompt)
-		// 													.echo(true)
-		// 													.maxTokens(60)
-		// 													.build();
-        // response = openAiService.createCompletion(employeePerformanceRequest).getChoices().get(0).getText();
-		// String employeePerformance = response.substring(prompt.length()).trim();
-
-		// ans.setEmployeePerformance(employeePerformance);
+		analysis.setMainIssue(mainIssue);
 
 		// Employee performance
-		// prompt = "List down the sentences spoken by our agent that you think can be improved in terms of good hospitality and manner. Answer in the following format: \n" + 
-		// 		"'- [bad sentence]|[corrected sentence]|[explanation]'\n" +
-		// 		"Based on this conversation:\n" + formattedTranscripts + "\n" +
-		// 		"Don't include grammar, contractions, and spelling errors.";
-        // CompletionRequest negativeEmotionsRequest = CompletionRequest.builder()
-		// 													.model(currentModel)
-		// 													.prompt(prompt)
-		// 													.echo(true)
-		// 													.maxTokens(200)
-		// 													.build();
-        // response = openAiService.createCompletion(negativeEmotionsRequest).getChoices().get(0).getText();
-		// String negativeEmotions = response.substring(prompt.length()).trim();
+		prompt = "This is a telecommunication company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n" + //
+				"\n" + //
+				"- Fluency: rating/100\n" + //
+				"- Hospitality: rating/100\n" + //
+				"- Problem Solving: rating/100\n" + //
+				"- Personalization: rating/100" + //
+				" Based on the following conversation: " + formattedTranscripts + //
+				". Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range and should not be overly high. An average score around 80 is expected.\r\n" + //
+				"[You do not need to explain anything. Just respond with the format given.]";
+				
+        CompletionRequest employeePerformanceRequest = CompletionRequest.builder()
+															.model(currentModel)
+															.prompt(prompt)
+															.echo(true)
+															.maxTokens(1000)
+															.build();
+        response = openAiService.createCompletion(employeePerformanceRequest).getChoices().get(0).getText();
+		String employeePerformance = response.substring(prompt.length()).trim();
 
-		// ans.setNegativeEmotions(negativeEmotions);
+		// System.out.println(employeePerformance);
+		double fluency = analysisService.getScore(employeePerformance, "fluency: ");
+		double hospitality = analysisService.getScore(employeePerformance, "hospitality: ");
+		double problem = analysisService.getScore(employeePerformance, "problem solving: ");
+		double personalization = analysisService.getScore(employeePerformance, "personalization: ");
+		double average = (fluency + hospitality + problem + personalization)/4;
 
-		return ans;
+		analysis.setFluency(fluency);
+		analysis.setHospitality(hospitality);
+		analysis.setProblemSolving(problem);
+		analysis.setPersonalization(personalization);
+		analysis.setAveragePerformance(average);
+
+		// Negative Emotions
+		prompt = "List down 3 short sentences spoken by our agent which is prefixed with 'Agent:' in the conversation that you think can be improved in terms of good hospitality and manner. Answer in the following format: \n" + 
+				"'1|[old sentence spoken by agent]|[explanation why the old sentence can be improved or impolite]|[improved sentence]'\n" +
+				"'2|[old sentence spoken by agent]|[explanation]|[improved sentence]'\n" +
+				"'3|[old sentence spoken by agent]|[explanation]|[improved sentence]'\n" +
+				"Pleae follow the format. Based on this conversation:\n" + formattedTranscripts + "\n";
+
+        CompletionRequest negativeEmotionsRequest = CompletionRequest.builder()
+															.model(currentModel)
+															.prompt(prompt)
+															.echo(true)
+															.maxTokens(1500)
+				.build();
+															
+        response = openAiService.createCompletion(negativeEmotionsRequest).getChoices().get(0).getText();
+		String negativeEmotions = response.substring(prompt.length()).trim();
+
+		analysis.setNegativeEmotion(negativeEmotions);
+
+		analysisService.saveAnalysis(analysis);
+
+		return analysis;
     }
 	
 }

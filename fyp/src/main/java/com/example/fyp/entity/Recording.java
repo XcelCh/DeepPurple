@@ -27,6 +27,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+// Analysis Entity 
 @Data
 @Entity
 @AllArgsConstructor
@@ -34,6 +35,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @EqualsAndHashCode(exclude = {"employee", "account"})
 public class Recording {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer recordingId;
@@ -60,20 +62,24 @@ public class Recording {
     private String audioFormat;
     private Integer sampleRate;
     
+    // OneToOne relationship with Analysis Entity
     @OneToOne(mappedBy = "recording", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private Analysis analysis;
 
+    // ManyToOne relationship with Employee Entity
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "employeeId")
     @JsonManagedReference
     private Employee employee;
 
+    // ManyToOne relationship with Account Entity
     @ManyToOne
     @JoinColumn(name ="account_id", referencedColumnName = "accountId")
     @JsonManagedReference
     private Account account;
 
+    // Transient attributes which will not be store in database
     @Transient 
     byte[] bytes;
 
@@ -83,6 +89,7 @@ public class Recording {
     @Transient 
     AudioFormat format;
 
+    // Display Format of the Recording which consist of its details
     public String displayFormat(){
         String endian;
 
@@ -104,6 +111,7 @@ public class Recording {
                              format.getSampleRate(), format.getSampleSizeInBits(), format.getEncoding(), endian, recordingDuration);
     }
 
+    // ToString method of Recording Entity
     @Override
     public String toString() {
         return "Recording{recordingId=" + recordingId + ", recordingName='" + recordingName + '\'' + ", content=" + Arrays.toString(content) +
@@ -113,10 +121,10 @@ public class Recording {
                 ", account=" + (account != null ? account.getAccountId() : null) + '}';
     }
 
+    // Delete method which deletes related entities 
     public Recording deleteRecording(Analysis analysis) {
 
         analysis.deleteAnalysis(analysis.getTranscripts());
-        
         this.setAnalysis(null);
         analysis.setRecording(null);
 

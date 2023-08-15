@@ -18,9 +18,8 @@ import com.example.fyp.security.jwt.JwtUtils;
 import com.example.fyp.security.payload.response.JwtResponse;
 import com.example.fyp.service.AccountDetailsImpl;
 
-// @CrossOrigin(origins = "*", maxAge = 3600)
+// Controller to authenticate user from login page
 @RestController
-
 @RequestMapping("/api/auth")
 public class AuthController {
       
@@ -36,6 +35,7 @@ public class AuthController {
   @Autowired
   JwtUtils jwtUtils;
 
+  // Signin endpoint which generate and return JWT Token upon successful authentication
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
 
@@ -47,8 +47,6 @@ public class AuthController {
 
     AccountDetailsImpl accountDetails = (AccountDetailsImpl) authentication.getPrincipal();
 
-    return ResponseEntity.ok(new JwtResponse(jwt,
-        accountDetails.getUsername()));
+    return ResponseEntity.ok(new JwtResponse(jwt, accountDetails.getUsername()));
   }
-
 }

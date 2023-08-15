@@ -14,6 +14,7 @@ import com.example.fyp.entity.Account;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.BillingService;
 
+// Controller to handle Billing related
 @RestController
 @RequestMapping("/payment")
 public class BillingController {
@@ -24,6 +25,7 @@ public class BillingController {
     @Autowired
     BillingService billingService;
 
+    // Get billing history of the user by the getBillingHistory endpoint  
     @GetMapping("/getBillingHistory")
     public ResponseEntity<?> getBillingHistory () {
 
@@ -35,18 +37,12 @@ public class BillingController {
             Long paymentId = account.getPayment().getPaymentId();
 
             return ResponseEntity.ok().body(billingService.getBillingByPaymentId(paymentId));
-
-
         }
         catch (UsernameNotFoundException e) {
-
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Account Not Found.");
         }
         catch (Exception e) {
-
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+e);
         }
-
-        
     }
 }

@@ -8,10 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.example.fyp.entity.Account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+// Account Details class implements UserDetails interface which handles in authenticating user
 public class AccountDetailsImpl implements UserDetails {
-  private static final long serialVersionUID = 1L;
 
-  // private String username;
+  private static final long serialVersionUID = 1L;
   private String email;
   private Collection<? extends GrantedAuthority> authorities;
 
@@ -35,10 +35,6 @@ public class AccountDetailsImpl implements UserDetails {
   public String getUsername() {
     return email;
   }
-
-  // public String getEmail() {
-  //   return email;
-  // }
 
   @Override
   public String getPassword() {

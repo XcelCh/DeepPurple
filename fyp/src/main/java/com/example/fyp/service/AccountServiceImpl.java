@@ -15,6 +15,7 @@ import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Role;
 import com.example.fyp.repo.AccountRepository;
 
+// Implements the Account Service and UserDetailsService class to communicate with Account database and contains Account related functions
 @Service
 public class AccountServiceImpl implements UserDetailsService, AccountService {
 
@@ -24,21 +25,19 @@ public class AccountServiceImpl implements UserDetailsService, AccountService {
     @Autowired
     private PasswordResetTokenServiceImpl passwordResetTokenService;
 
+    // Load Account from database by email and build into AccountDetailsImpl object for authentication
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         
         Account account = accountRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + email));
 
-        
-        System.out.println(account.getRoles());
-
         Collection<? extends GrantedAuthority> authorities = (mapRolesToAuthorities(account.getRoles()));
 
         return AccountDetailsImpl.build(account, authorities);
-        
     }
 
+    // Map Roles to SimpleGrantedAuthority for roles authentication in Springboot
     private Collection <? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
 
         return roles.stream()
@@ -46,6 +45,7 @@ public class AccountServiceImpl implements UserDetailsService, AccountService {
                     .collect(Collectors.toList());
     }
 
+    // Load Account details from database by email
     @Override
     public Account loadUserDetailsByUsername(String email) throws UsernameNotFoundException {
 
@@ -55,48 +55,48 @@ public class AccountServiceImpl implements UserDetailsService, AccountService {
         return account;
     }
 
+    // Save account into the database
     @Override
     public void saveAccount(Account account) {
 
-        Account savedAccount = accountRepository.save(account);
-        System.out.println(savedAccount);
+        accountRepository.save(account);
     }
 
+    // Generate password reset token / OTP using Account and passwordToken
     @Override
     public void generatePasswordResetToken (Account account, String passwordToken) {
 
         passwordResetTokenService.generatePasswordResetToken(account, passwordToken);
-
     }
 
+    // Validate the password token / OTP with token associated with the email
     @Override
     public String validatePasswordResetToken (String passwordToken, String email) {
 
         return passwordResetTokenService.validatePasswordResetToken(passwordToken, email);
     }
 
+    // Change password for the current Account 
     @Override
     public void changePassword (String email, String newPassword) {
 
-
         Account account = loadUserDetailsByUsername(email);
         account.setPassword(newPassword);
-
         accountRepository.save(account);
     }
 
+    // Get AccountId from database
     @Override
     public int getAccountId(String email) {
 
         return accountRepository.getAccountId(email);
     }
 
+    // Delete Account from database and all asoociated entities with the specific Account
     @Override
     public void deleteAccount(Account account) {
 
         account.deleteAll(account.getUsageList(), account.getRecording(), account.getEmployee());
         accountRepository.deleteById(account.getAccountId());
     }
-
-
 }

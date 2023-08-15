@@ -38,9 +38,6 @@ import com.example.fyp.service.EmployeeService;
 public class EmployeeController {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
-    // @Autowired
-    // private AccountRepository accountRepository;
-
     @Autowired
     private AccountServiceImpl accountServiceImpl;
     

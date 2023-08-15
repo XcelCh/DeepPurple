@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -19,26 +20,39 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.sound.sampled.spi.AudioFileWriter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
+import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Diarization;
 import com.example.fyp.entity.Recording;
+import com.example.fyp.entity.Usages;
 import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.utils.Container;
 import com.google.cloud.speech.v1.SpeechRecognitionResult;
 
+// Service Class for Recording Entity handles communication to the database and handles related functions
 @Service
 public class RecordingService extends AudioFileWriter{
+
     private final RecordingRepository recordingRepository;
     private final TranscriptService transcriptService;
     private final AnalysisService analysisService;
     private final DiarizationService diarizationService;
     private final AmazonS3 s3Client;
+
+    @Autowired
+    PriceService priceService;
+
+    @Autowired
+    UsageService usageService;
+
+    @Autowired
+    AccountServiceImpl accountServiceImpl;
 
     @Value("${application.bucket.name}")
 	private String bucketName;
@@ -71,15 +85,20 @@ public class RecordingService extends AudioFileWriter{
     //     return ResponseEntity.ok("OK");
     // }
 
-    public ResponseEntity<String> analyze(List<Integer> ids) throws UnsupportedAudioFileException, IOException, Exception{
+    // Check if limit of the user is enough to analyze the recording uploaded
+    public boolean checkLimit (List<Integer> ids, Float limitLeft, Account account) throws UnsupportedAudioFileException, IOException, Exception {
+
+
+        double price = priceService.getPrice(1);
+
         System.out.println("Now fetching");
         List<Recording> recordings = (List<Recording>) (recordingRepository.findAllById(ids));
         System.out.println("Finish fetching");
-        
-        double intervalSeconds = 0.25;
-        double amplitudeThreshold = 0.01;
-        for (Recording recording : recordings){
-            Container c = new Container(new double[6]);
+
+        double totalDuration = 0;
+
+        // For loop the recording uploaded to be analyze
+        for (Recording recording : recordings) {
 
             System.out.println("Inside recording");
             recording.setTempFilePath(readFromS3ObjectToFile(recording.getRecordingName(), recording.getRecordingUrl()));
@@ -90,6 +109,33 @@ public class RecordingService extends AudioFileWriter{
             recording.setSampleRate((int) (recording.getFormat().getSampleRate()));
 
             recording.setRecordingDuration((double) (audio.getFrameLength() / recording.getFormat().getFrameRate()));
+
+            // Add total duration
+            totalDuration += recording.getRecordingDuration();
+
+            audio.close();
+        }
+
+        // If price of analyzing uploads larger than limit left return false
+        double charge = (totalDuration/60) * price;
+        if (charge > limitLeft ) {
+
+            return false;
+        }
+
+        // If limit left is sufficient, call the analyze function to analyze the recordings
+        return analyze(recordings, totalDuration, price, account);
+    }
+
+    public boolean analyze(List<Recording> recordings, double totalDuration, double price, Account account) throws UnsupportedAudioFileException, IOException, Exception{
+
+        double intervalSeconds = 0.25;
+        double amplitudeThreshold = 0.01;
+        for (Recording recording : recordings){
+            Container c = new Container(new double[6]);
+
+            AudioInputStream audio = AudioSystem.getAudioInputStream(recording.getTempFilePath());
+            
             System.out.println(recording.displayFormat());
 
             convertToLinearPCM(recording);
@@ -188,10 +234,17 @@ public class RecordingService extends AudioFileWriter{
             transcriptService.persistTranscriptions(analysis, c);
 
             audio.close();
+
         }
+
+        // Save record of Usages object into the database after analyzing 
+        Usages usage = new Usages(null, (totalDuration/60), price, new Date(System.currentTimeMillis()), null, account);
+        account.addUsage(usage);
+        accountServiceImpl.saveAccount(account);
+
         System.out.println("Finish analyzing");
 
-        return ResponseEntity.ok("OK");
+        return true;
     }
 
     private File readFromS3ObjectToFile(String fileName, String filePath) {    

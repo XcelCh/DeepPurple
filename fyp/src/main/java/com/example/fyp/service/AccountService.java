@@ -4,6 +4,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.example.fyp.entity.Account;
 
+// Interface class for Account Service class which handles the communication to database and Account related functions
 public interface AccountService {
     
     Account loadUserDetailsByUsername(String email) throws UsernameNotFoundException;

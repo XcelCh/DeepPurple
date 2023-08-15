@@ -28,6 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// Create an entity Account
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,6 +36,7 @@ import lombok.NoArgsConstructor;
 public class Account {  
     
 
+    // Attribute of the Account Entity
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +62,7 @@ public class Account {
     @Column(nullable = false)
     private Date dob;
 
+    // Join table of a ManyToMany relationship with Role Entity
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
@@ -69,24 +72,28 @@ public class Account {
 
     private String companyField;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    // A back reference of a OneToMany relationship between Usages Entity.
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Usages> usageList;
-
     
+    // A OneToOne relationship with Payment Entity.
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name= "payment_id", referencedColumnName = "paymentId", nullable = true)
     @JsonBackReference
     private Payment payment;
 
+    // A back reference of a OneToMany relationship between Recording Entity.
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Recording> recording;
 
+    // A back reference of a OneToMany relationship between Employee Entity.
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Employee> employee;
 
+    // Custom Constructor to create an Account object
     public Account (String email, String fullName, String gender, String phoneNum, Date dob, String companyField) {
 
         this.email = email;
@@ -97,10 +104,16 @@ public class Account {
         this.companyField = companyField;
     }
 
+    // Function to add Role object to the collection.
     public void addRole (Role role) {
         this.roles.add(role);
     }
 
+    public void addUsage (Usages usage) {
+        this.usageList.add(usage);
+    }
+
+    // Delete Account function will delete all related entity
     public Account deleteAll(List<Usages> usageList, List<Recording> recordings, List<Employee> employees) {
 
         for (Usages u : usageList) {
@@ -123,6 +136,7 @@ public class Account {
         return this;
     }
 
+    // To String Method of the Account
     @Override
     public String toString() {
         return "Account{accountId=" + accountId + ", email='" + email + '\'' + ", fullName='" + fullName + '\'' +

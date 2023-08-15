@@ -19,6 +19,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+// Analysis Entity to store analysis data from GPT
 @Data
 @Entity
 @AllArgsConstructor
@@ -42,16 +43,28 @@ public class Analysis {
     private String employeeSentiment;
     private String recordingSentiment;
     private double transcriptConfidence;
+
+    @Column(columnDefinition = "TEXT")
+    private String negativeEmotion;
+    private String mainIssue;
+    private double fluency;
+    private double hospitality;
+    private double problemSolving;
+    private double personalization;
+    private double averagePerformance;
     
+    // OneToMany relationship with Transcript Entity
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "analysis", orphanRemoval = true)
     @JsonBackReference
     private List<Transcript> transcripts;
 
+    // OneToOne relationship with Recording Entity
     @OneToOne
     @JoinColumn(name = "recording_id", referencedColumnName = "recordingId")
     @JsonManagedReference
     private Recording recording;
     
+    // To String method of Analysis Entity
     @Override
     public String toString() {
         return "Analysis{analysisId=" + analysisId + ", category='" + category + '\'' + ", summary='" + summary + '\'' +
@@ -61,6 +74,7 @@ public class Analysis {
                 ", transcript=" + transcripts + ", recording=" + (recording != null ? recording.getRecordingId() : null) + '}';
     }
 
+    // Delete Function where deleting analysis will remove related entity such as Transcript
     public Analysis deleteAnalysis(List<Transcript> transcripts) {
 
         for (Transcript t : transcripts) {

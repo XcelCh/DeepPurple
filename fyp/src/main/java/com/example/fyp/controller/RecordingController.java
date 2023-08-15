@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,28 +24,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.model.ResponseStatus;
 import com.example.fyp.repo.AudioFileRepository;
 import com.example.fyp.repo.EmployeeRepository;
+
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.RecordingListService;
 import com.example.fyp.service.RecordingService;
+import com.example.fyp.service.UsageService;
 
 @RestController
 @RequestMapping("/recordingList")
-public class RecordingController implements Function<List<Integer>, ResponseEntity<String>>{
-
-    // @Autowired
-    // private AccountRepository accountRepository;
+public class RecordingController implements Function<List<Integer>, ResponseEntity<String>> {
 
     private final RecordingListService recordingListService;
     private final RecordingService recordingService;
     private final AccountServiceImpl accountServiceImpl;
 
     @Autowired
-    public RecordingController(RecordingListService recordingListService, RecordingService recordingService, AccountServiceImpl accountServiceImpl){
+    public RecordingController(RecordingListService recordingListService, RecordingService recordingService,
+            AccountServiceImpl accountServiceImpl) {
         this.recordingListService = recordingListService;
         this.recordingService = recordingService;
         this.accountServiceImpl = accountServiceImpl;
@@ -53,8 +55,11 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
     @Autowired
     private AudioFileRepository recRepo;
 
-     @Autowired
+    @Autowired
     private EmployeeRepository empRepo;
+
+    @Autowired
+    private UsageService usageService;
 
     // Get All Recordings
     @GetMapping("/getAllRecordings")
@@ -117,9 +122,9 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
 
     // Update Recording's employee
     @PostMapping("/updateRecordingEmployeeById/{rec_id}")
-    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer rec_id, @RequestBody String emp_id)
-    {
+    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer rec_id, @RequestBody String emp_id) {
         ResponseStatus response = new ResponseStatus();
+
         // Integer emp_ids = 6;
         System.out.println("REC ID: " + rec_id);
         System.out.println("EMP_ID: " + emp_id);
@@ -129,7 +134,7 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
         recording.setEmployee(employee);
 
         Recording recObj = recRepo.save(recording);
-        
+
         // RESPONSE DATA
         response.setSuccess(true);
         response.setMessage("Succesfully change the employee to employee id " + emp_id);
@@ -137,16 +142,32 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-
-
-    @Override
     @PostMapping("analyzeLambda")
     public ResponseEntity<String> apply(@RequestBody List<Integer> ids){
         try {
-            return recordingService.analyze(ids);
-        } catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.ok("Error");
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());  
+
+            Float limit = account.getPayment().getUsageLimit();
+            Float totalUnbilled = usageService.getTotalUnbilledUsage(account.getAccountId());
+            Float limitLeft = limit - totalUnbilled;
+
+            boolean check = recordingService.checkLimit(ids, limitLeft, account);
+
+            if(check == false) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limit Exceeded");
+            }
+            else  {
+                return ResponseEntity.status(HttpStatus.OK).body("Analyze Complete");
+            }
         }
+
+        catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not Found.");
+         }
+         catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+ e);
+         }
     }
 }

@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+// Custom Access Denied Class to handle User with not specified roles
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler{
 

@@ -7,6 +7,7 @@ import com.example.fyp.entity.Account;
 
 import jakarta.mail.MessagingException;
 
+// Email Interface class contains function for sending email
 public interface EmailService {
 
     String sendSimpleMail (EmailDetailsDto emailDetailsDto);

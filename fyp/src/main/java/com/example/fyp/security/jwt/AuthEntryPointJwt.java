@@ -11,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-// To Handle authentication failure
+// To Handle Authentication failure
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 

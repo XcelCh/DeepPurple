@@ -15,28 +15,22 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+// Transcript Entity
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = "analysis")
 public class Transcript {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer transcriptId;
 
-    // @Id
-    // @ManyToOne
-    // @JoinColumn(name = "recording_id")
-    // private Analysis analysis;
-
     private double startTime;
     private double endTime;
-
-    // private Integer employeeId;
-
-    // private Integer recordingId;
     
+    // Transient variable which will not be store in database
     @Transient
     private String employeeName;
 
@@ -45,25 +39,17 @@ public class Transcript {
 
     private boolean speaker;
     
-    // public String getEmployeeName() {
-    //     return employeeName;
-    // }
-
-    // public void setEmployeeName(String employeeName) {
-    //     this.employeeName = employeeName;
-    // }
-
+    // ManyToOne relationship with Analysis Entity
     @ManyToOne
     @JoinColumn(name = "analysis_id", referencedColumnName = "analysisId")
     @JsonManagedReference
     private Analysis analysis;
 
+    // ToString method of Transcript Entity
     @Override
     public String toString() {
         return "Transcript{transcriptId=" + transcriptId + ", startTime=" + startTime + ", endTime=" + endTime +
                 ", employeeName='" + employeeName + '\'' + ", dialog='" + dialog + '\'' +
                 ", analysis=" + (analysis != null ? analysis.getAnalysisId() : null) +'}';
     }
-
-
 }
