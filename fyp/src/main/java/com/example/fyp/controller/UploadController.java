@@ -52,6 +52,9 @@ public class UploadController {
 	private EmployeeRepository empRepo;
 
 	@Autowired
+	private AnalysisRepository analysisRepo;
+
+	@Autowired
 	private AnalysisService analysisService;
 
 	@PostMapping("/uploadAudio")
@@ -167,10 +170,26 @@ public class UploadController {
 
 	// For GPT analysis
 	@Value("${apiKey}")
-    private String apiKeyContent;
+	private String apiKeyContent;
 
-	@GetMapping("/analyze")
-    private Analysis recordAnalyzer(Integer analysisId) throws RuntimeException{
+	// Get Analysis
+	@GetMapping("/getAnalysis/{analysis_id}")
+	private ResponseEntity<?> getAnalysis(@PathVariable Integer analysis_id) {
+		ResponseStatus response = new ResponseStatus();
+		Optional<Analysis> analysis = analysisRepo.findById(analysis_id);
+
+		response.setSuccess(true);
+		response.setData(analysis);
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
+	// Analyze
+	@PostMapping("/analyze")
+	private Analysis recordAnalyzer(Integer analysisId) throws RuntimeException {
+
+		System.out.println("ANALYSIS ID: " + analysisId);
+
         String apiKey = apiKeyContent;
 
         String currentModel = "text-davinci-003";

@@ -34,7 +34,7 @@ import com.example.fyp.service.RecordingService;
 
 @RestController
 @RequestMapping("/recordingList")
-public class RecordingController implements Function<List<Integer>, ResponseEntity<String>>{
+public class RecordingController implements Function<List<Integer>, ResponseEntity<String>> {
 
     // @Autowired
     // private AccountRepository accountRepository;
@@ -44,7 +44,8 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
     private final AccountServiceImpl accountServiceImpl;
 
     @Autowired
-    public RecordingController(RecordingListService recordingListService, RecordingService recordingService, AccountServiceImpl accountServiceImpl){
+    public RecordingController(RecordingListService recordingListService, RecordingService recordingService,
+            AccountServiceImpl accountServiceImpl) {
         this.recordingListService = recordingListService;
         this.recordingService = recordingService;
         this.accountServiceImpl = accountServiceImpl;
@@ -53,7 +54,7 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
     @Autowired
     private AudioFileRepository recRepo;
 
-     @Autowired
+    @Autowired
     private EmployeeRepository empRepo;
 
     // Get All Recordings
@@ -117,9 +118,9 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
 
     // Update Recording's employee
     @PostMapping("/updateRecordingEmployeeById/{rec_id}")
-    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer rec_id, @RequestBody String emp_id)
-    {
+    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer rec_id, @RequestBody String emp_id) {
         ResponseStatus response = new ResponseStatus();
+
         // Integer emp_ids = 6;
         System.out.println("REC ID: " + rec_id);
         System.out.println("EMP_ID: " + emp_id);
@@ -129,7 +130,7 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
         recording.setEmployee(employee);
 
         Recording recObj = recRepo.save(recording);
-        
+
         // RESPONSE DATA
         response.setSuccess(true);
         response.setMessage("Succesfully change the employee to employee id " + emp_id);
@@ -137,14 +138,12 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-
-
     @Override
     @PostMapping("analyzeLambda")
-    public ResponseEntity<String> apply(@RequestBody List<Integer> ids){
+    public ResponseEntity<String> apply(@RequestBody List<Integer> ids) {
         try {
             return recordingService.analyze(ids);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.ok("Error");
         }

@@ -183,7 +183,8 @@ function RecordingList() {
          method: "POST",
          headers: {
            "Content-Type": "text/plain", // Set the content type to indicate JSON data
-         },
+        "Authorization":token },
+         
          body: employeeId,
        }
      )
@@ -220,6 +221,7 @@ function RecordingList() {
         // Deleting
         fetch(`http://localhost:8082/recordingList/deleteRecordingById/${id}`, {
           method: "DELETE",
+          headers: token,
         })
           .then((res) => res.json())
           .then(

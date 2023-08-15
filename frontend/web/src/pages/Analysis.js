@@ -14,6 +14,7 @@ import {
 } from "../assets/index";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import authHeader from "../services/auth-header";
 
 import {
   Chart as ChartJS,
@@ -30,6 +31,7 @@ import Swal from "sweetalert2";
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 function Analysis() {
+  const token = authHeader();
   const navigate = useNavigate();
   const [isEdited, setIsEdited] = useState(false);
   const updateIsEdited = (value) => {
@@ -44,45 +46,51 @@ function Analysis() {
   const fromEmployeeList = window.location.pathname.startsWith("/employeeList");
 
   const { id } = useParams();
+
   useEffect(() => {
-    Swal.fire({
-      title: "Retrieving Recording Analysis...",
-      didOpen: () => {
-        Swal.showLoading();
-        fetch(`http://localhost:8082/analysis/${id}`)
-          .then((response) => {
-            // error unauthorized
-            if (response.status == 401) {
-              navigate("/");
-              console.log("401 Unauthorized");
-            } else if (response.status == 200) {
-              console.log("Success");
-              return response.json();
-            }
-          })
-          .then((data) => {
-            if (data.recording) {
-              data.recording.uploadDate = data.recording.uploadDate.replace(
-                "T",
-                " "
-              );
-              data.recording.recordingDate =
-                data.recording.recordingDate.replace("T", " ");
-            }
-            setEmployeeName(data.employeeName);
-            setAnalysisData(data.analysis);
-            setRecordingData(data.recording);
-            setTranscriptData(data.transcripts);
-            
-            Swal.close();
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      },
-      allowOutsideClick: () => !Swal.isLoading(),
-    });
+    getAnalysis(true);
   }, []);
+  
+   useEffect(() => {
+     console.log(analysisData);
+   }, []);
+
+
+  // Get Analysis
+  const getAnalysis = async (showLoading) => {
+    try {
+      if (showLoading) {
+        Swal.fire({
+          title: "Retrieving Analysis",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        });
+      }
+
+      const response = await fetch(
+        `http://localhost:8082/audio/getAnalysis/${id}`,
+        {
+          headers: token,
+        }
+      );
+
+      response.json().then((data) => {
+        setAnalysisData(data.data);
+      });
+
+      if (showLoading) {
+        Swal.close();
+      }
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      if (showLoading) {
+        Swal.close();
+      }
+    }
+  };
 
   const calculateTime = (secs) => {
     if (secs < 60) {
@@ -157,7 +165,7 @@ function Analysis() {
   return (
     <div className="ml-20 mt-16">
       <div className="flex items-center">
-        <Link to={fromEmployeeList?'../employeeList':'../recordingList'}>
+        <Link to={fromEmployeeList ? "../employeeList" : "../recordingList"}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -176,7 +184,7 @@ function Analysis() {
         <p className="text-2xl font-bold text-left ml-4">Recording Analysis</p>
       </div>
       <p className="text-xl font-bold text-left ml-12 mt-4">
-        {recordingData.recordingName}
+        {analysisData.recording?.recordingName}
       </p>
       <div class="grid w-full gap-6 grid-cols-9 mt-8">
         <div class="flex items-center">
@@ -198,7 +206,9 @@ function Analysis() {
           </div>
           <div className="w-3/4 flex flex-col ml-4 border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">Agent</div>
-            <div className="flex-grow">{employeeName}</div>
+            <div className="flex-grow">
+              {analysisData.recording?.employee.employeeName}
+            </div>
           </div>
         </div>
         <div class="flex items-center col-span-2">
@@ -220,9 +230,11 @@ function Analysis() {
           </div>
           <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">
-              Upload Data and Time
+              Upload Date and Time
             </div>
-            <div className="flex-grow">{recordingData.uploadDate}</div>
+            <div className="flex-grow">
+              {analysisData.recording?.uploadDate}
+            </div>
           </div>
         </div>
         <div class="flex items-center col-span-2">
@@ -244,7 +256,9 @@ function Analysis() {
           </div>
           <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">Date Recorded</div>
-            <div className="flex-grow">{recordingData.recordingDate}</div>
+            <div className="flex-grow">
+              {analysisData.recording?.recordingDate}
+            </div>
           </div>
         </div>
         <div class="flex items-center col-span-2">
@@ -267,7 +281,7 @@ function Analysis() {
           <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">Call Duration</div>
             <div className="flex-grow">
-              {calculateTime(recordingData.recordingDuration)}
+              {calculateTime(analysisData.recording?.recordingDuration)}
             </div>
           </div>
         </div>
@@ -449,9 +463,19 @@ function Analysis() {
                       {analysisData.transcriptConfidence}%
                     </p>
                   </div>
-                  <p className="inline-block px-3 rounded-full bg-[#3CAA1E] text-white">
-                    High
-                  </p>
+                  {analysisData.transcriptConfidence < 50 ? (
+                    <p className="inline-block px-3 rounded-full bg-[#D32F2F] text-white">
+                      Low
+                    </p>
+                  ) : analysisData.transcriptConfidence < 71 ? (
+                    <p className="inline-block px-3 rounded-full bg-[#FBC02D] text-white">
+                      Medium
+                    </p>
+                  ) : (
+                    <p className="inline-block px-3 rounded-full bg-[#3CAA1E] text-white">
+                      High
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-2 items-center">
@@ -462,7 +486,7 @@ function Analysis() {
                     </div>
                     <div className="w-full">
                       <p className="text-lg font-bold">Audio Format</p>
-                      <p>{recordingData.audioFormat}</p>
+                      <p>{analysisData.recording?.audioFormat}</p>
                     </div>
                   </div>
                 </div>
@@ -473,7 +497,7 @@ function Analysis() {
                     </div>
                     <div className="w-full">
                       <p className="text-lg font-bold">Sample Rate</p>
-                      <p>{recordingData.sampleRate} Hz</p>
+                      <p>{analysisData.recording?.sampleRate} Hz</p>
                     </div>
                   </div>
                 </div>
