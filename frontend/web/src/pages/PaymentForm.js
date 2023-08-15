@@ -358,7 +358,7 @@ function PaymentForm() {
                     type="submit"
                     class="w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                   >
-                    Add Card
+                    Continue
                   </button>
                 </form>
               </div>
