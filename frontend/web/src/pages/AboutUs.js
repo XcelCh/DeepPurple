@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import aboutUs from "../assets/AboutUs.png";
 import profilePicture from "../assets/ProfilePicture.png";
 import Gui from "../assets/Gui.jpg";
+import Alvin from "../assets/Alvin.jpg";
 import Bryant from "../assets/Bryant.jpeg";
 import Patricia from "../assets/Patricia.JPG";
+import Excel from "../assets/Excel.jpeg";
+import Raymond from "../assets/Raymond.jpeg";
 import { Line, Linkedin, Instagram } from "../assets";
 import ProfileCard from "../components/ProfileCard";
 import Footer from "../components/Footer";
@@ -131,29 +134,34 @@ function AboutUs() {
               image={Gui}
               name="Gui Hendro"
               position="Project Leader"
+              linkedin="https://www.linkedin.com/in/gui-hendro-295b78217/"
             ></ProfileCard>
             <ProfileCard
               image={Patricia}
               name="Patricia Natasha"
               position="Technical Lead"
+              linkedin="https://www.linkedin.com/in/patricia-natasha/"
             ></ProfileCard>
             <ProfileCard
-              image={profilePicture}
+              image={Excel}
               name="Excel Chendrawan"
               position="Documentation Leader"
+              linkedin="https://www.linkedin.com/in/excel-chendrawan-5863a7222/"
             ></ProfileCard>
             <ProfileCard
               image={Bryant}
               name="Jonathan Bryant Indramadi"
               position="Developer"
+              linkedin="https://www.linkedin.com/in/jonathanbryantindramadi/"
             ></ProfileCard>
             <ProfileCard
-              image={profilePicture}
+              image={Raymond}
               name="Raymond Halim"
               position="Developer"
+              linkedin="https://www.linkedin.com/in/raymond-halim-a4352522a/"
             ></ProfileCard>
             <ProfileCard
-              image={profilePicture}
+              image={Alvin}
               name="Teo Wei Jie Alvin"
               position="Developer"
             ></ProfileCard>
