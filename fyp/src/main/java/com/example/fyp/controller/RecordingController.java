@@ -157,9 +157,6 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
 
             boolean check = recordingService.checkLimit(ids, limitLeft, account);
 
-            // boolean check = true;
-            // recordingService.analyze(ids);
-
             if(check == false) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limit Exceeded");
             }

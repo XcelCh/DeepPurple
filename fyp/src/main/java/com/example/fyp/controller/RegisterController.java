@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 
+// Controller to handle Registeration of Account related
 @RestController
 @RequestMapping("/register")
 public class RegisterController {
@@ -40,6 +41,7 @@ public class RegisterController {
     @Autowired
     private RoleRepository roleRepository;
     
+    // Check if email already exists when creating account by checkEmail endpoint
     @PostMapping("/checkEmail")
     public ResponseEntity<String> checkEmail(@RequestBody String body) {
 
@@ -48,43 +50,39 @@ public class RegisterController {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(body);
             String email = jsonNode.get("email").asText();
-
             Account acc = accountServiceImpl.loadUserDetailsByUsername(email);
 
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Account already exists with that email.");
-            
-           
+        
+        // If UsernameNotFoundException caught, means there is no existing email
         } catch (UsernameNotFoundException e) {
-
             return ResponseEntity.status(HttpStatus.OK).body("There is no Account with that email.");
 
         } catch (Exception e) {
-
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid JSON payload.");
         }
-
     }
 
+    // Create account method when receiving details by the createAccount endpoint
     @PostMapping("/createAccount") 
     public ResponseEntity<String> createAccount (@RequestBody CreateAccountDto createAccountDto) {
 
         Account account = new Account(createAccountDto.getEmail(), createAccountDto.getFullName(), createAccountDto.getGender(), 
                                     createAccountDto.getPhoneNum(), createAccountDto.getDob(), createAccountDto.getCompanyField());
 
-        // Change id on reset database
+        // Set the FREE Role to the Account
         Role roleFree = roleRepository.findById(1);
 
         String encodePassword = passwordEncoder.encode(createAccountDto.getPassword());
-        
         account.setPassword(encodePassword);
         account.addRole(roleFree);
-        // account.setProfilePic("default.png");
 
         accountServiceImpl.saveAccount(account);    
 
         return ResponseEntity.ok("Account successfully created.");
     }
 
+    // Generate OTP for password reset and send it to the user by email
     @PostMapping("/generatePasswordOTP")
     public ResponseEntity<?> generatePasswordOTP (@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
 
@@ -94,9 +92,8 @@ public class RegisterController {
             Random random = new Random();
             String passwordToken = String.valueOf(random.nextInt(900000) + 100000);
 
+            // Send to email containing the OTP
             emailServiceImpl.sendOTPEmail(account, passwordToken);
-
-            System.out.println(passwordToken);
 
             accountServiceImpl.generatePasswordResetToken(account, passwordToken);
 
@@ -112,35 +109,31 @@ public class RegisterController {
         }
     }
 
+    // Validate the OTP received from user with the database
     @PostMapping("/validateOTP")
     public ResponseEntity<String> validateOTP (@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
 
-        
         try {
-
             String result = accountServiceImpl.validatePasswordResetToken(passwordResetRequestDto.getOtp(), passwordResetRequestDto.getEmail());
 
-            System.out.println(passwordResetRequestDto.getOtp() + result);
-
+            // If OTP has expired, return expired response
             if (result.equals("expired")) {
                 
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP has expired.");
             }
-
             return ResponseEntity.ok("OTP Successfully verified.");
-
         }
         catch (EntityNotFoundException e) {
             
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Invalid OTP.");
         }
         catch (Exception e) {
-
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error found in verifying.");
         }
     }
 
+    // After successful validation of OTP, reset the password with the password given by user
     @PostMapping("/resetPassword")
     public ResponseEntity<String> resetPassword (@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
 
@@ -152,6 +145,4 @@ public class RegisterController {
 
         return ResponseEntity.ok("Password Successfully reset.");
     }
-
-
 }
