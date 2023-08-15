@@ -3,6 +3,7 @@ package com.example.fyp.controller;
 import java.sql.Date;
 import java.util.List;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.amazonaws.services.xray.model.Http;
 import com.example.fyp.controller.dto.CardDto;
 import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Billing;
@@ -29,6 +31,7 @@ import com.example.fyp.repo.UsageRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.BillingService;
 import com.example.fyp.service.PaymentService;
+import com.example.fyp.service.UsageService;
 
 @RestController
 @RequestMapping("/payment")
@@ -44,9 +47,6 @@ public class PaymentController {
     PaymentService paymentService;
 
     @Autowired
-    UsageRepository usageRepository;
-
-    @Autowired
     BillingRepository billingRepository;
 
     @Autowired
@@ -55,6 +55,8 @@ public class PaymentController {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    UsageService usageService;
     
     
     @PostMapping("/addCard")
@@ -132,7 +134,7 @@ public class PaymentController {
             Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
             Integer accountId = account.getAccountId();
 
-            float currentUsage = ((Number) usageRepository.getSumOfUsageByAccountId(accountId).get(0)[1]).floatValue();
+            float currentUsage = usageService.getTotalUnbilledUsage(accountId);
             if(limit > currentUsage) {
                 account.getPayment().setUsageLimit(limit);
                 accountServiceImpl.saveAccount(account);
@@ -161,14 +163,14 @@ public class PaymentController {
 
             Date today = new Date(System.currentTimeMillis());
             
-            List<Usages> usages = usageRepository.findUnbilledUsage(accountId);
-            Float totalUnbilled = usageRepository.findTotalUnbilledUsage(accountId);
+            List<Usages> usages = usageService.findUnbilledUsage(accountId);
+            Float totalUnbilled = usageService.getTotalUnbilledUsage(accountId);
 
-            if (totalUnbilled  == null) {
+            if (totalUnbilled  == 0) {
                 return paymentService.deletePaymentById(paymentId);
             }
 
-            Billing billing = new Billing(usageRepository.findTotalUnbilledUsage(accountId), today, account.getPayment(), usages);
+            Billing billing = new Billing(totalUnbilled, today, account.getPayment(), usages);
 
             for (Usages u : usages) {
                 u.setBilling(billing);
@@ -186,5 +188,4 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+e);
         }
     }
-
 }

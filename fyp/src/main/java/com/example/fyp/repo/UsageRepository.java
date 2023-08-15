@@ -17,14 +17,14 @@ public interface UsageRepository extends JpaRepository<Usages, Long>{
     //        "GROUP BY u.account.accountId, u.usageDate")
     // List<Object[]> getSumOfUsageByAccountId(Integer accountId);
 
-    @Query("SELECT u.account.accountId, SUM(u.minutesUsed * u.rate) " +
-           "FROM Usages u " +
-           "WHERE u.account.accountId = :accountId " +
-           "AND u.billing.billingId = null " +
-           "AND YEAR(u.usageDate) = YEAR(CURRENT_DATE) " +
-           "AND MONTH(u.usageDate) = MONTH(CURRENT_DATE) " +
-           "GROUP BY u.account.accountId")
-    List<Object[]> getSumOfUsageByAccountId(Integer accountId);
+//     @Query("SELECT u.account.accountId, SUM(u.minutesUsed * u.rate) " +
+//            "FROM Usages u " +
+//            "WHERE u.account.accountId = :accountId " +
+//            "AND u.billing.billingId = null " +
+//            "AND YEAR(u.usageDate) = YEAR(CURRENT_DATE) " +
+//            "AND MONTH(u.usageDate) = MONTH(CURRENT_DATE) " +
+//            "GROUP BY u.account.accountId")
+//     List<Object[]> getSumOfUsageByAccountId(Integer accountId);
 
     @Query("SELECT u " +
            "FROM Usages u " +

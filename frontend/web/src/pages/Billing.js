@@ -96,7 +96,7 @@ function Billing() {
             }
         })
         .then(data => {
-            setTotalUsage(data.body[0][1].toFixed(2));
+            setTotalUsage(data);
         })
         .catch(error => {
             console.error(error);

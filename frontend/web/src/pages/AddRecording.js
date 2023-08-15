@@ -18,6 +18,7 @@ import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import Swal from "sweetalert2";
 import authHeader from "../services/auth-header";
 import Pagination from "../components/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const today = new Date();
 var dateTimeString;
@@ -47,8 +48,10 @@ function AddRecording() {
   const [showOtherTB, setShowOtherTB] = useState(false);
   const [showDelimiter, setShowDelimiter] = useState(false);
   const [error, setError] = useState("");
+  const [limitError, setLimitError] = useState(false);
 
   const token = authHeader();
+  const navigate = useNavigate();
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -327,25 +330,42 @@ function AddRecording() {
     return { id, name };
   };
 
-
   const analyzeRecordings = () => {
+
+
+  
     const ids = recList.map(recording => recording.recordingId);
     fetch("http://localhost:8082/recordingList/analyzeLambda", {
       method: "POST",
-      headers: {
+      headers: {"Authorization": token.Authorization,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(ids),
     })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log("called get data");
-        },
-        (error) => {
-          setError(error);
-        }
-      );
+      .then(response => {
+          if(response.status === 400) {
+            console.log("Limit Exceeded.");
+            setLimitError(true);
+            throw new Error("Limit Exceeded");
+          } 
+          else if (response.ok) {
+
+            console.log("Analyze Complete.");
+            navigate('/RecordingList');
+          }
+          else if (response.status === 401) {
+
+            console.log("Unauthorized");
+            navigate('/');
+          }
+          else {
+            console.log("error happened.");
+            throw new Error("Error Happened.");
+          }
+        })
+      .catch (error => {
+        console.error(error);
+      });
   }
 
   return (
@@ -549,6 +569,29 @@ function AddRecording() {
           </>
         ) : null}
       </div>
+
+      {limitError && (
+        <div className="fixed top-0 left-0 right-0 z-50 pt-32 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full bg-black bg-opacity-50">
+            <div className="relative w-2/5 mx-auto">
+                <div className="relative bg-white rounded-lg shadow">
+                    <button onClick={() => setLimitError(false)} className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                        <span className="sr-only">Close modal</span>
+                    </button>
+                    <div className="p-8 text-center">
+                        <svg className="mx-auto mb-4 text-[#414141] w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        </svg>
+                        <p className="mb-5 text-lg font-semibold text-[#414141]">Limit is not sufficient to analyse!</p>
+                        <p className="mb-5 text-lg font-semibold text-[#414141]">Increase limit to use the feature!</p>
+                        <button onClick={() => setLimitError(false)} className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      )}
 
       <div className="join flex justify-end mt-10 mb-10">
         <Pagination

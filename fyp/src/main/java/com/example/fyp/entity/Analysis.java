@@ -42,6 +42,8 @@ public class Analysis {
     private String employeeSentiment;
     private String recordingSentiment;
     private double transcriptConfidence;
+
+    @Column(columnDefinition = "TEXT")
     private String negativeEmotion;
     private String mainIssue;
     private double fluency;

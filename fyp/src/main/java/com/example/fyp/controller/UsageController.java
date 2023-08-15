@@ -33,7 +33,7 @@ public class UsageController {
 
             Integer accountId = account.getAccountId();
 
-            return ResponseEntity.ok().body(usageService.getTotalUsage(accountId));
+            return ResponseEntity.ok().body(usageService.getTotalUnbilledUsage(accountId));
 
 
         }
