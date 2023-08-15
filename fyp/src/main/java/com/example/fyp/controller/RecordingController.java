@@ -40,9 +40,6 @@ import com.example.fyp.service.UsageService;
 @RequestMapping("/recordingList")
 public class RecordingController implements Function<List<Integer>, ResponseEntity<String>> {
 
-    // @Autowired
-    // private AccountRepository accountRepository;
-
     private final RecordingListService recordingListService;
     private final RecordingService recordingService;
     private final AccountServiceImpl accountServiceImpl;

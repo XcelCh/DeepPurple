@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -23,7 +22,6 @@ import javax.sound.sampled.spi.AudioFileWriter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -31,16 +29,16 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Diarization;
-import com.example.fyp.entity.Price;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.entity.Usages;
-import com.example.fyp.repo.PriceRepository;
 import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.utils.Container;
 import com.google.cloud.speech.v1.SpeechRecognitionResult;
 
+// Service Class for Recording Entity handles communication to the database and handles related functions
 @Service
 public class RecordingService extends AudioFileWriter{
+
     private final RecordingRepository recordingRepository;
     private final TranscriptService transcriptService;
     private final AnalysisService analysisService;
@@ -90,6 +88,7 @@ public class RecordingService extends AudioFileWriter{
     // Check if limit of the user is enough to analyze the recording uploaded
     public boolean checkLimit (List<Integer> ids, Float limitLeft, Account account) throws UnsupportedAudioFileException, IOException, Exception {
 
+
         double price = priceService.getPrice(1);
 
         System.out.println("Now fetching");
@@ -98,6 +97,7 @@ public class RecordingService extends AudioFileWriter{
 
         double totalDuration = 0;
 
+        // For loop the recording uploaded to be analyze
         for (Recording recording : recordings) {
 
             System.out.println("Inside recording");
@@ -109,6 +109,8 @@ public class RecordingService extends AudioFileWriter{
             recording.setSampleRate((int) (recording.getFormat().getSampleRate()));
 
             recording.setRecordingDuration((double) (audio.getFrameLength() / recording.getFormat().getFrameRate()));
+
+            // Add total duration
             totalDuration += recording.getRecordingDuration();
 
             audio.close();
@@ -121,13 +123,11 @@ public class RecordingService extends AudioFileWriter{
             return false;
         }
 
+        // If limit left is sufficient, call the analyze function to analyze the recordings
         return analyze(recordings, totalDuration, price, account);
-        // return true;
-
     }
 
     public boolean analyze(List<Recording> recordings, double totalDuration, double price, Account account) throws UnsupportedAudioFileException, IOException, Exception{
-
 
         double intervalSeconds = 0.25;
         double amplitudeThreshold = 0.01;
@@ -236,6 +236,8 @@ public class RecordingService extends AudioFileWriter{
             audio.close();
 
         }
+
+        // Save record of Usages object into the database after analyzing 
         Usages usage = new Usages(null, (totalDuration/60), price, new Date(System.currentTimeMillis()), null, account);
         account.addUsage(usage);
         accountServiceImpl.saveAccount(account);

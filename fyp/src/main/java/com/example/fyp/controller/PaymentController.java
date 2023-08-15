@@ -23,7 +23,6 @@ import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Billing;
 import com.example.fyp.entity.Payment;
 import com.example.fyp.entity.Usages;
-import com.example.fyp.repo.BillingRepository;
 import com.example.fyp.repo.RoleRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.BillingService;
@@ -43,9 +42,6 @@ public class PaymentController {
 
     @Autowired
     PaymentService paymentService;
-
-    @Autowired
-    BillingRepository billingRepository;
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
@@ -181,7 +177,7 @@ public class PaymentController {
                 u.setBilling(billing);
             }
 
-            billingRepository.save(billing);
+            billingService.saveBilling(billing);
             return paymentService.deletePaymentById(paymentId);
         }
         catch (UsernameNotFoundException e) {

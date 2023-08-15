@@ -121,6 +121,11 @@ public class RegisterController {
                 
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP has expired.");
             }
+            // If OTP entered does not match the email associated with it in records, return invalid.
+            else if (result.equals("Email does not match.")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP is invalid.");
+            }
+            
             return ResponseEntity.ok("OTP Successfully verified.");
         }
         catch (EntityNotFoundException e) {
