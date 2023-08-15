@@ -11,7 +11,6 @@ import AuthService from "../services/auth.service";
 
 function CustomerServiceAnalyzer() {
     const token = authHeader();
-    const [cardExist, setCardExist] = useState(false);
     const navigate = useNavigate();
     const user = AuthService.getCurrentUser();
     useEffect(() => {
