@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
@@ -29,7 +33,10 @@ import com.example.fyp.model.ResponseStatus;
 import com.example.fyp.repo.AnalysisRepository;
 import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.repo.RecordingRepository;
+import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.AnalysisService;
+import com.example.fyp.service.RecordingListService;
+import com.example.fyp.service.RecordingService;
 import com.example.fyp.service.StorageService;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
@@ -37,6 +44,16 @@ import com.theokanning.openai.service.OpenAiService;
 @RestController
 @RequestMapping("/audio")
 public class UploadController {
+	
+	private final RecordingListService recordingListService;		
+    private final AccountServiceImpl accountServiceImpl;
+    
+    @Autowired
+    public UploadController(RecordingListService recordingListService, AccountServiceImpl accountServiceImpl) {
+        this.recordingListService = recordingListService;
+       
+        this.accountServiceImpl = accountServiceImpl;
+    }
 
 	@Autowired
 	private StorageService service;
@@ -54,23 +71,13 @@ public class UploadController {
 	private AnalysisService analysisService;
 
 	@PostMapping("/uploadAudio")
-	public ResponseEntity<?> uploadAudio(@RequestParam("audio") MultipartFile file) throws IOException {
-		String uploadImage = service.uploadImage(file);
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(uploadImage);
-	}
-
-	@GetMapping("/{fileName}")
-	public ResponseEntity<?> downloadAudio(@PathVariable String fileName){
-		byte[] imageData=service.downloadImage(fileName);
-		return ResponseEntity.status(HttpStatus.OK)
-				.contentType(MediaType.valueOf("mp3/wav"))
-				.body(imageData);
-	}
-
-	@PostMapping("/uploadAudio2")
-	public ResponseEntity<String> uploadFile(@RequestParam("audio2") MultipartFile file) {
-		return new ResponseEntity<>(service.uploadFile(file), HttpStatus.OK);
+	public ResponseEntity<String> uploadFile(@RequestParam("audio") MultipartFile file) {
+		// Retrieve the current authentication token
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();        
+        Account account = accountServiceImpl.loadUserDetailsByUsername(email);
+        
+		return new ResponseEntity<>(service.uploadFile(file, account), HttpStatus.OK);
 	}
 	
 	@GetMapping("/download/{fileName}")
@@ -85,84 +92,154 @@ public class UploadController {
 				.body(resource);
 	}
 	
-	@DeleteMapping("/delete/{fileName}")
-	public ResponseEntity<String> deleteFile(@PathVariable String fileName){			
+	@DeleteMapping("/deleteFile")
+	public ResponseEntity<String> deleteFile(@RequestParam String fileName, @RequestParam String recID){			
 		//get the recording object that is about to be deleted
-		Optional<Recording> recordingToDelete = recRepo.findByRecordingName(fileName);
+		Integer recording_id = Integer.parseInt(recID);
+		Optional<Recording> recordingToDelete = recRepo.findById(recording_id);
 		
 		//check if there are any employees assigned to the recording
-		if(recordingToDelete.get().getEmployee().getEmployeeId() != null) {
+		if(recordingToDelete.get().getEmployee() != null) {
 			//get the employee details of the recording
 			Integer empID = recordingToDelete.get().getEmployee().getEmployeeId();
 			Optional<Employee> emp = empRepo.findById(empID);
 			emp.get().decrementNumCallsHandled();
 		}		
 		
-		return new ResponseEntity<>(service.deleteFile(fileName), HttpStatus.OK);	
+		recRepo.delete(recordingToDelete.get());
+		
+		return new ResponseEntity<>(service.deleteFile((recordingToDelete.get().getTimeStamp()+"_"+fileName)), HttpStatus.OK);	
 	}
 	
 	@PostMapping("/updateAudioEmployee")
 	public ResponseEntity<?> updateRecordingEmployee(@RequestParam String currentDate, @RequestParam String employeeId, @RequestParam String employeeName) {  
+		// Retrieve the current authentication token
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String email = authentication.getName();        
+	    Integer account_id = accountServiceImpl.getAccountId(email);
+		
 		ResponseStatus response = new ResponseStatus();  
 		Integer empID = Integer.parseInt(employeeId);
-		  
-		  List<Recording> recList = new ArrayList<>();
-		  recRepo.findAll().forEach(recList::add);    
-		  
-		  Optional<Employee> emp = empRepo.findById(empID);		  		 
-	         
-		  try {
-		    LocalDateTime currTime = LocalDateTime.parse(currentDate);
-		    
-		    for (Recording rec : recList) {
-	            if (rec.getUploadDate().isAfter(currTime)) {
-	                rec.setEmployee(emp.get());
-	                emp.get().incrementNumCallsHandled();
+		
+	  
+		List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);		   
+	  
+		Optional<Employee> emp = empRepo.findById(empID);		  		 
+         
+		try {
+			LocalDateTime currTime = LocalDateTime.parse(currentDate);
+	    
+			for (Map<String, Object> rec : recList) {		
+	            if (((LocalDateTime) rec.get("uploadDate")).isAfter(currTime)) {
+					System.out.println(rec.get("recordingName"));
+	            	if(((Employee) rec.get("employee")) != null) {
+	            		if(((Integer)((Employee) rec.get("employee")).getEmployeeId()) == emp.get().getEmployeeId()) {
+	            			//skip if recording already assigned to same employee
+	            			continue;
+	            		}	            		
+	            		((Employee) rec.get("employee")).decrementNumCallsHandled();
+	            	}
+    	       
+	            Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
+	            	
+                (r.get()).setEmployee(emp.get());                
+                (r.get()).setEmployeeName(employeeName);
+                emp.get().incrementNumCallsHandled();
+                recRepo.save(r.get());
 	            }
-	        }
-	        	        
-            recRepo.saveAll(recList); 
-            // RESPONSE DATA
-            response.setSuccess(true);
-            response.setData(recList);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-	            
-	        } catch (Exception e)  {
-	         // RESPONSE DATA
-	            response.setSuccess(false);
-	            response.setMessage("Fail to get All Employees.");
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-	        }
+			}
+        	        			
+			empRepo.save(emp.get());
+			// RESPONSE DATA
+			response.setSuccess(true);
+			response.setData(recList);
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+            
+    	} catch (Exception e)  {
+    		// RESPONSE DATA
+    		response.setSuccess(false);
+    		response.setMessage("Fail to get All Employees.");
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
 	  	  
 	 }
-	 
-	 @GetMapping("/getRecordings")
-	 public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String currentDate) {
-        ResponseStatus<List<Recording>> response = new ResponseStatus<>();
+	
+	@PostMapping("/updateRecordingEmployeeByDelimiter")
+	public ResponseEntity<?> updateRecordingEmployeeByDelimiter(@RequestParam String recordingID, @RequestParam String empName) {
+		ResponseStatus response = new ResponseStatus();
+		Integer recID = Integer.parseInt(recordingID);
+				
+		Optional<Recording> recToUpdate = recRepo.findById(recID);
+		Optional<Employee> empToUpdate = empRepo.findByEmployeeName(empName);		
+		
+		try {
+			if(recToUpdate.get().getEmployee() != null) {
+				//check for double assignment
+				if(recToUpdate.get().getEmployee().getEmployeeId() == empToUpdate.get().getEmployeeId()) {
+					response.setSuccess(false);
+					response.setMessage("Employee already assigned to this recording!");
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+				}
+				
+				recToUpdate.get().getEmployee().decrementNumCallsHandled();
+			}
+			
+			recToUpdate.get().setEmployee(empToUpdate.get());	
+			recToUpdate.get().setEmployeeName(empName);
+			empToUpdate.get().incrementNumCallsHandled();			
+			
+			recRepo.save(recToUpdate.get());
+			empRepo.save(empToUpdate.get());
+			// RESPONSE DATA
+            response.setSuccess(true);            
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+			
+		} catch (Exception e) {
+			response.setSuccess(false);
+            response.setMessage("Fail to update Employee.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+		
+		
+	}
+	
+	@GetMapping("/getRecordings")
+    public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String currentDate) {
+        ResponseStatus<List<Map<String, Object>>> response = new ResponseStatus<>();
 
         try {
-            List<Recording> recList = new ArrayList<>();
-            recRepo.findAll().forEach(recList::add);            
-            
-            if (currentDate != null && !currentDate.isEmpty()){
-                LocalDateTime currTime = LocalDateTime.parse(currentDate);
-                recList = recList.stream()                  
-                .filter(rec -> rec.getUploadDate().isAfter(currTime))
+            // Retrieve the current authentication token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            Integer account_id = accountServiceImpl.getAccountId(email);
+            System.out.println("ACCOUNT ID: " + account_id);
+
+            List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
+
+            System.out.println("RECORDING: " + recList);
+
+            if (currentDate != null && !currentDate.isEmpty()) {
+            	LocalDateTime currTime = LocalDateTime.parse(currentDate);
+
+                recList = recList.stream()
+                        .filter(rec -> ((LocalDateTime) rec.get("uploadDate")).isAfter(currTime))
                         .collect(Collectors.toList());
             }
 
             // RESPONSE DATA
             response.setSuccess(true);
+            response.setMessage("Successfully Retrieve All Recordings.");
             response.setData(recList);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (Exception ex) {
             // RESPONSE DATA
             response.setSuccess(false);
-            response.setMessage("Fail to get All Employees.");
+            response.setMessage("Fail to get All Recordings.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+	 	 
 
 	// For GPT analysis
 	@Value("${apiKey}")

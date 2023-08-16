@@ -27,8 +27,8 @@ import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.model.ResponseStatus;
-import com.example.fyp.repo.AudioFileRepository;
 import com.example.fyp.repo.EmployeeRepository;
+import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.RecordingListService;
 import com.example.fyp.service.RecordingService;
@@ -52,7 +52,7 @@ public class RecordingController{
     }
 
     @Autowired
-    private AudioFileRepository recRepo;
+    private RecordingRepository recRepo;
 
     @Autowired
     private EmployeeRepository empRepo;

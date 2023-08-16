@@ -43,6 +43,9 @@ public class Recording {
     private String recordingName;
     
     @Nullable
+    private long timeStamp;
+    
+    @Nullable
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] content;
@@ -58,7 +61,7 @@ public class Recording {
 
     @Nullable
     private String recordingUrl;
-
+    private String employeeName;
     private String audioFormat;
     private Integer sampleRate;
     

@@ -49,6 +49,7 @@ public class Employee {
     // Custom Constructor for Employee Entity
     public Employee (String employeeName){
         this.employeeName = employeeName;
+        this.numCallsHandled = 0;
     }
 
     // ToString method for Employee Entity

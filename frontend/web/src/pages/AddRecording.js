@@ -16,6 +16,7 @@ import { RxCross2 } from "react-icons/rx";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import Swal from "sweetalert2";
+import GenericModal from "../components/GenericModal";
 import authHeader from "../services/auth-header";
 import Pagination from "../components/Pagination";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +40,7 @@ dateTimeString =
 function AddRecording() {
   const [empList, setEmpList] = useState([]);
   const [recList, setRecList] = useState([]);
+  const [analyzed, setAnalyzed] = useState(false);
 
   const [numbering, setNumbering] = useState(1);
   const [assignEmployee, setAssignEmployee] = useState("");
@@ -46,7 +48,11 @@ function AddRecording() {
   const [employee, setEmployee] = useState("");
   const [showEmployee, setShowEmployee] = useState(true);
   const [showOtherTB, setShowOtherTB] = useState(false);
+  const [employeeNameToAssign, setEmployeeNameToAssign] = useState("");
+  const [employeeIdToAssign, setEmployeeIdToAssign] = useState("");
   const [showDelimiter, setShowDelimiter] = useState(false);
+  const [delimiter, setDelimiter] = useState("");
+  const [delimitedFields, setDelimitedFields] = useState([]);
   const [error, setError] = useState("");
   const [limitError, setLimitError] = useState(false);
 
@@ -60,49 +66,57 @@ function AddRecording() {
   const firstPostIndex = lastPostIndex - postsPerPage;
 
   // Get All Recordings
-  const getRecList = async () => {
-    const params = `?currentDate=${dateTimeString}`;
-    try {
-      const response = await fetch(
-        `http://localhost:8082/audio/getRecordings${params}`
-      );
+ const getRecList = async () => {  
+  const params = `?currentDate=${dateTimeString}`;
+  try {
+    const response = await fetch(
+      `http://localhost:8082/audio/getRecordings${params}`,
+      {
+        headers: token,
+      }     
+    );
 
-      response.json().then((data) => {
+    response.json().then((data) => {
+      if(data.data != null) {        
         setRecList(data.data);
-        console.log(recList);
-      });
+      }
+      
+      console.log(recList);
+    });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+ }; 
 
-  useEffect(() => {
-    getRecList();
-  }, []);
+ useEffect(() => {
+  getRecList();
+ }, []);
 
-  // Get All Employees
-  const getEmpList = async () => {
+ // Get All Employees
+ const getEmpList = async () => {
     try {
       const response = await fetch(
         `http://localhost:8082/employeeList/getAllEmployees`,
         {
-          headers: token,
+          headers : token,
         }
       );
 
       response.json().then((data) => {
-        setEmpList(data.data);
+        if(data.data != null) {
+          setEmpList(data.data);
+        }        
         console.log(empList);
       });
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
   };
-
-  useEffect(() => {
+  useEffect(() => {    
     getEmpList();
   }, [assignEmployee]);
 
+  //toggle assign employee options
   useEffect(() => {
     if (assignEmployee == "existingEmployee") {
       setShowEmployee(true);
@@ -127,155 +141,184 @@ function AddRecording() {
     }
   }, [selectedEmployee]);
 
+
   const handleAssignEmployee = (selected) => {
     setAssignEmployee(selected);
     console.log(assignEmployee);
   };
 
   const handleSelectedEmployee = (value) => {
+    if(value == "other"){
+      setShowOtherTB(true);
+      return;
+    }
     var val = decodeValue(value);
-    const params = `?currentDate=${dateTimeString}&employeeId=${val.id}&employeeName=${val.name}`;
+    const params = `?currentDate=${dateTimeString}&employeeId=${val.id}&employeeName=${val.name}`;    
     let name = val.name;
-    let data = val.id;
+    let data = val.id;       
     Swal.fire({
-      title: "Updating Employee..",
+      title: 'Updating Employee..',      
       didOpen: () => {
-        Swal.showLoading();
-        return fetch(
-          `http://localhost:8082/audio/updateAudioEmployee${params}`,
-          {
-            method: "POST",
-            body: data,
-          }
-        )
-          .then((response) => {
-            if (response.ok && recList.length !== 0) {
-              Swal.close();
-              getRecList();
-              // Success message
-              Swal.fire(
-                "Updated",
-                "The employee name has been updated!",
-                "success"
-              );
-            } else {
-              throw new error();
-            }
-          })
-          .catch((error) => {
-            setError(error);
-            console.log(error);
-            Swal.fire("Fail", "Fail to assign employee", "error");
-          });
+        Swal.showLoading()
+        return fetch(`http://localhost:8082/audio/updateAudioEmployee${params}`, {
+          method: "POST",
+          headers: token,
+          body: data          
+        })
+        .then (response => {
+    
+          if (response.ok && recList.length !== 0) {
+            Swal.close();
+            getRecList()
+            // Success message
+            Swal.fire(            
+              "Updated",
+              "The employee name has been updated!",
+              "success"
+            )
+          } else{
+            throw new error;
+          }  
+        })
+        .catch (error => {    
+          setError(error)
+          console.error(error)          
+          Swal.fire("Fail", "Fail to assign employee", "error")
+        })
       },
-      allowOutsideClick: () => !Swal.isLoading(),
-    });
-  };
+      allowOutsideClick: () => !Swal.isLoading()
+    })
 
-  const handleEmployee = (selected) => {
-    setEmployee(selected);
-    console.log(employee);
-  };
+  }
 
-  const handleUpload = () => {
+  //if user chooses 'other' for assigning existing employee, 
+  //create new employee then immediately assign that new employee.
+  const handleAddAndAssign = async (value) =>{
+    var empId = "";
+    var empName = "";
+    await fetch(`http://localhost:8082/employeeList/addEmployee`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain", // Set the content type to indicate JSON data
+      "Authorization" : token.Authorization
+    },
+    body: value,
+  })
+    .then((res) => res.json())
+    .then(
+      (result) => {               
+        empId = result.data.employeeId;
+        empName = result.data.employeeName;
+        getEmpList();
+        // Success message
+        console.log("New employee to assign added!")             
+      },
+      (error) => {
+        setError(error);
+        console.log(error);        
+      }
+    );   
+
+    const param = encodeValue(empId, empName);
+    handleSelectedEmployee(param);
+  }
+
+  //handle singular file upload
+  const handleUpload = () => {    
     const data = new FormData();
-    const audioInput = document.getElementById("audioInput");
-    data.set("audio2", audioInput.files[0]);
+    const audioInput = document.getElementById("audioInput");        
+    data.set("audio", audioInput.files[0])    
     console.log(audioInput.files[0]);
     Swal.fire({
-      title: "Uploading Files..",
+      title: 'Uploading Files..',      
       didOpen: () => {
-        Swal.showLoading();
-        return fetch("http://localhost:8082/audio/uploadAudio2", {
+        Swal.showLoading()
+        return fetch("http://localhost:8082/audio/uploadAudio", {
           method: "POST",
-          body: data,
+          headers: token,
+          body: data
         })
-          .then((response) => {
-            if (response.ok) {
-              Swal.close();
-              getRecList();
-              // Success message
-              Swal.fire("Updated", "The recording has been added.", "success");
-            } else {
-              throw new error();
-            }
-          })
-          .catch((error) => {
-            setError(error);
-            console.log(error);
-            Swal.fire("Fail", "Fail to add recording.", "error");
-          }); 
+        .then (response => {
+    
+          if (response.ok) {
+            Swal.close();
+            getRecList()
+            // Success message
+            Swal.fire(            
+              "Updated",
+              "The recording has been added.",
+              "success"
+            )
+          } else{
+            throw new error;
+          }     
+        })
+        .catch (error => {      
+          setError(error)
+          console.error(error)
+          Swal.fire("Fail", "Fail to add recording.", "error")
+        })
       },
-      allowOutsideClick: () => !Swal.isLoading(),
-    });
+      allowOutsideClick: () => !Swal.isLoading()
+    })
   };
 
-  const handleUploadMultipleTest = () => {
-    const audioInput = document.getElementById("audioInputMultiple");
-    const selectedFolder = audioInput.files[0];
-    const folderFiles =
-      selectedFolder.webkitEntries || selectedFolder.entries || [];
+  const handleUploadMultipleTest = () => {    
+    const audioInput = document.getElementById("audioInputMultiple");           
     const totalFiles = audioInput.files.length;
     let uploadedFilesCount = 0;
-
+  
     Swal.fire({
-      title: "Uploading Files..",
+      title: 'Uploading Files..',
       didOpen: () => {
         Swal.showLoading();
-
+  
         // Define a helper function to upload each file sequentially
         const uploadFile = (file) => {
           const data = new FormData();
-          data.set("audio2", file);
-
-          return fetch("http://localhost:8082/audio/uploadAudio2", {
+          data.set("audio", file);
+  
+          return fetch("http://localhost:8082/audio/uploadAudio", {
             method: "POST",
-            body: data,
+            headers: token,
+            body: data
           })
-            .then((response) => {
-              if (response.ok) {
-                uploadedFilesCount++;
-                if (uploadedFilesCount === totalFiles) {
-                  Swal.close();
-                  getRecList();
-                  // Success message for all files uploaded
-                  Swal.fire(
-                    "Updated",
-                    "All recordings have been added.",
-                    "success"
-                  );
-                }
-              } else {
-                throw new Error();
+          .then(response => {
+            if (response.ok) {
+              uploadedFilesCount++;
+              if (uploadedFilesCount === totalFiles) {
+                Swal.close();
+                getRecList();
+                // Success message for all files uploaded
+                Swal.fire(
+                  "Updated",
+                  "All recordings have been added.",
+                  "success"
+                );
               }
-            })
-            .catch((error) => {
-              setError(error);
-              console.error(error);
-              Swal.fire("Fail", "Fail to add recording.", "error");
-            });
+            } else {
+              throw new Error();
+            }
+          })
+          .catch(error => {
+            setError(error);
+            console.error(error);
+            Swal.fire("Fail", "Fail to add recording.", "error");
+          });
         };
-
+  
         // Upload each file one by one
-        const filesArray = [];
-        for (const entry of folderFiles) {
-          if (entry.isFile) {
-            console.log(entry);
-            entry.file((file) => {
-              filesArray.push(file);
-              if (filesArray.length === folderFiles.length) {
-                // Call your file processing function here
-                uploadFile(filesArray);
-              }
-            });
-          }
+        for(let i = 0; i < totalFiles; i++){
+          uploadFile(audioInput.files[i]);
         }
+        
       },
-      allowOutsideClick: () => !Swal.isLoading(),
+      allowOutsideClick: () => !Swal.isLoading()
     });
   };
+  
 
-  const handleDelete = (recName) => {
+  const handleDelete = (recName, recId) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -286,38 +329,144 @@ function AddRecording() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        const params = `?fileName=${recName}&recID=${recId}`;
         // Deleting
-        fetch(`http://localhost:8082/audio/delete/${recName}`, {
+        fetch(`http://localhost:8082/audio/deleteFile${params}`, {
           method: "DELETE",
+        })          
+        .then(response => {
+
+          if(response.ok){
+            getRecList();
+            // Success message       
+            Swal.fire("Deleted!", "The recording has been deleted!", "success");        
+          }            
         })
-          .then((response) => {
-            if (response.ok) {
-              getRecList();
-              // Success message
-              Swal.fire(
-                "Deleted!",
-                "The recording has been deleted!",
-                "success"
-              );
-            }
-          })
-          .catch((error) => {
-            setError(error);
-            console.error(error);
-            Swal.fire("Fail", "Fail to delete recording.", "error");
-          });
+        .catch (error => {      
+          setError(error)
+          console.error(error)
+          Swal.fire("Fail", "Fail to delete recording.", "error")
+        })
       }
     });
+  }
+
+  
+  const handleFileDelimiter = () => {    
+    const audioInput = document.getElementById("audioInput");
+    const audioInputMultiple = document.getElementById("audioInputMultiple");
+    var initSize = 0;     
+    if(audioInput.files.length != 0 && delimiter != ""){      
+      initSize = audioInput.files[0].name.split(delimiter).length;     
+      console.log(audioInput.files[0].name.split(delimiter));
+    } else if(audioInputMultiple.files.length != 0) {
+      initSize = audioInputMultiple.files[0].name.split(delimiter).length;     
+    } else {
+      initSize = 0;
+    }
+    
+    var fields = [];
+    for(let i = 1; i <= initSize; i++) {
+      fields.push(i);
+    }
+
+    setDelimitedFields(fields);
+  }
+
+  useEffect(() => {    
+    handleFileDelimiter();    
+  }, [delimiter]);
+
+
+// Add Employee
+const addEmployee = async (empData) => {
+  await fetch(`http://localhost:8082/employeeList/addEmployee`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain", // Set the content type to indicate JSON data
+      "Authorization" : token.Authorization
+    },
+    body: empData,
+  })
+    .then((res) => res.json())
+    .then(
+      (result) => {       
+        setEmployeeIdToAssign(result.data.employeeId);
+        setEmployeeNameToAssign(result.data.employeeName);
+        getEmpList();
+        // Success message
+        Swal.fire("Added", "The employee has been added.", "success");        
+      },
+      (error) => {
+        setError(error);
+        console.log(error);
+        Swal.fire("Fail", "Fail to add employee.", "error");
+      }
+    );
   };
 
-  // const handleFileDelimiter = () => {
-  //   const audioInput = document.getElementById("audioInput");
-  //   data.set("audio2", audioInput.files[0]);
-  // }
+  const updateEmployeeDelimiter = async (recID, empName) => {
+    const params = `?recordingID=${recID}&empName=${empName}`;
+    const data = recID;
+    await fetch(`http://localhost:8082/audio/updateRecordingEmployeeByDelimiter${params}`, {
+      method: "POST",
+      body: data,
+    })
+    .then (response => {
+      if(response.ok) {
+        console.log("success");
+        getRecList()
+        //Swal.fire("Updated", "Employees have been assigned.", "success");
+      }
+    })
+    .catch (error => {
+      console.log(error);
+      Swal.fire("Fail", "Fail to assign employee.", "error");
+    })
+  }
 
-  // useEffect(() => {
 
-  // }, []);
+  const handleSelectColumn = (col) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirm",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          var addedEmployees = [];
+          if(recList.length != 0 && delimiter != "") {
+            for(let i = 0; i < recList.length; i++) {
+              var name = "";
+              console.log(recList);
+              if(recList[i].recordingName.split(delimiter).length >= col-1) {
+                name = recList[i].recordingName.split(delimiter)[col-1];
+              } else {
+                continue;
+              }
+              var filteredName = empList.filter((emp) => emp.employeeName.toLowerCase() == (name.toLowerCase()));
+              if(filteredName.length == 0 && !(addedEmployees.includes(name))) {
+                console.log("adding new emp " + name);
+                await addEmployee(name);
+                addedEmployees.push(name);
+              }
+              await updateEmployeeDelimiter(recList[i].recordingId, name);
+            }
+          }
+
+          Swal.close();
+          Swal.fire("Updated", "Employees have been assigned.", "success");
+        } catch (error) {
+         console.log(error); 
+         Swal.fire("Fail", "Some error has occured!", "error");
+        }        
+      }
+    });    
+  }      
 
   const encodeValue = (id, name) => {
     // Using a pipe "|" as the delimiter to separate id and name
@@ -326,7 +475,7 @@ function AddRecording() {
 
   const decodeValue = (value) => {
     // Split the value using the pipe delimiter and return an object with id and name
-    const [id, name] = value.split("|");
+    const [id, name] = value.split('|');
     return { id, name };
   };
 
@@ -416,7 +565,6 @@ function AddRecording() {
                 id="audioInputMultiple"
                 accept="audio/*"
                 onChange={handleUploadMultipleTest}
-                webkitdirectory=""
                 multiple
               />
               <label for="audioInputMultiple">Select folder</label>
@@ -435,7 +583,6 @@ function AddRecording() {
         >
           <option value="">Select</option>
           <option value="existingEmployee">Existing Employee</option>
-          <option value="metadata">Metadata</option>
           <option value="folderName">Folder Name</option>
           <option value="splitFileName">Split File Name</option>
           <option value="none">None</option>
@@ -469,19 +616,13 @@ function AddRecording() {
 
         {showOtherTB == true ? (
           <div className="ml-10 flex items-center mb-5 ">
-            <p className="w-1/2 mr-0 my-0">Employee Name</p>
-            <input
-              type="text"
-              name="phoneNum"
-              id="phoneNum"
-              className=" border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block p-2.5 outline-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-72 duration-200 peer focus:border-indigo-60 bg-white"
-              // value={phoneNum}
-              // onChange={(e) => setPhoneNum(e.target.value)}
-              placeholder="Enter Employee Name"
-              onInput={(e) => handleEmployee(e.target.value)}
-              required
-            ></input>
-          </div>
+          <label
+          htmlFor="addEmployeeModal"
+          className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]"
+        >            
+          <p className="mr-2 text-md">Add & Assign Employee</p>
+        </label>
+        </div>
         ) : null}
 
         {/* Split File Name */}
@@ -497,21 +638,19 @@ function AddRecording() {
                 // value={phoneNum}
                 // onChange={(e) => setPhoneNum(e.target.value)}
                 placeholder="Enter Delimiter"
+                onChange={(e) => setDelimiter(e.target.value)}
                 required
               ></input>
             </div>
             <select
               // value={gender}
-              onChange={(e) => handleEmployee(e.target.value)}
+              onChange={(e) => handleSelectColumn(e.target.value)}
               className="select select-bordered font-normal select-sm h-11 ml-5 w-72"
             >
-              <option value="">Employee Name</option>
-              <option value="excel">Excel</option>
-              <option value="raymond">Raymond</option>
-              <option value="gui">Gui</option>
-              <option value="alvin">Alvin</option>
-              <option value="bryant">Bryant</option>
-              <option value="other">Other</option>
+              <option value="">Select Column</option>
+              {delimitedFields.map((column) => {
+                return <option value={column}>Column {column}</option>
+              })}   
             </select>
           </>
         ) : null}
@@ -543,7 +682,7 @@ function AddRecording() {
                       <td>{recording.employeeName}</td>
                       <td>
                         <RxCross2
-                          onClick={() => handleDelete(recording.recordingName)}
+                          onClick={() => handleDelete(recording.recordingName, recording.recordingId)}
                         />
                       </td>
                     </tr>
@@ -560,7 +699,7 @@ function AddRecording() {
             <p className="text-center font-semibold text-sm mb-10">
               Start uploading your audio files by clicking
               <a
-                href="recordingList/AddRecording"
+                href="/AddRecording"
                 className="underline underline-offset-2"
               >
                 Upload
@@ -607,6 +746,14 @@ function AddRecording() {
           <p className="mr-2 text-md">Analyze</p>
         </button>
       </div>
+      <GenericModal
+        cardTitle="Add & Assign Employee"
+        fieldName="Employee Name"
+        placeholderContent="Enter Employee Name"
+        buttonContent="Add and Assign"
+        id="addEmployeeModal"
+        handleSave={handleAddAndAssign}
+      ></GenericModal>
     </div>
   );
 }
