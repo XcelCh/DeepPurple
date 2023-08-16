@@ -85,7 +85,26 @@ function RecordingList() {
 
   const isDateInRange = (date, startDate, endDate) => {
     const parsedDate = new Date(date);
-    return parsedDate >= startDate && parsedDate < endDate;
+
+    const parsedDateOnly = new Date(
+      parsedDate.getFullYear(),
+      parsedDate.getMonth(),
+      parsedDate.getDate()
+    );
+
+    const parsedStartDateOnly = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate()
+    );
+
+    const parsedEndDateOnly = new Date(
+      endDate.getFullYear(),
+      endDate.getMonth(),
+      endDate.getDate()
+    );
+
+    return parsedDateOnly >= parsedStartDateOnly && parsedDateOnly <= parsedEndDateOnly;
   };
 
   const searchRecList = async () => {
@@ -241,7 +260,7 @@ function RecordingList() {
   };
 
   // Download Recording
-  const handleDownload = (fileName) => {
+  const handleDownload = (fileName, timeStamp) => {
     const link = document.createElement("a");
     link.href = `http://localhost:8082/audio/download/${fileName}`;
 

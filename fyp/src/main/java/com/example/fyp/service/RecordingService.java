@@ -101,7 +101,7 @@ public class RecordingService extends AudioFileWriter{
         for (Recording recording : recordings) {
 
             System.out.println("Inside recording");
-            recording.setTempFilePath(readFromS3ObjectToFile(recording.getRecordingName(), recording.getRecordingUrl()));
+            recording.setTempFilePath(readFromS3ObjectToFile(recording.getTimeStamp()+"_"+recording.getRecordingName(), recording.getRecordingUrl()));
 
             AudioInputStream audio = AudioSystem.getAudioInputStream(recording.getTempFilePath());
             recording.setBytes(audio.readAllBytes());

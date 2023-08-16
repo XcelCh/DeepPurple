@@ -480,41 +480,94 @@ const addEmployee = async (empData) => {
   };
 
   const analyzeRecordings = () => {
+    const ids = recList.map((recording) => recording.recordingId);
+    console.log("click analyze...");
 
-
-  
-    const ids = recList.map(recording => recording.recordingId);
+    // make transcription + analysis id
     fetch("http://localhost:8082/recordingList/analyzeLambda", {
       method: "POST",
-      headers: {"Authorization": token.Authorization,
+      headers: {
+        Authorization: token.Authorization,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(ids),
     })
-      .then(response => {
-          if(response.status === 400) {
-            console.log("Limit Exceeded.");
-            setLimitError(true);
-            throw new Error("Limit Exceeded");
-          } 
-          else if (response.ok) {
+      .then((response) => {
+        console.log("first done");
+        if (response.status === 400) {
+          console.log("Limit Exceeded.");
+          setLimitError(true);
+          throw new Error("Limit Exceeded");
+        } else if (response.ok) {
+          console.log("Analyze Complete.");
+          // Perform operations related to the first fetch's success
 
-            console.log("Analyze Complete.");
-            navigate('/RecordingList');
-          }
-          else if (response.status === 401) {
-
-            console.log("Unauthorized");
-            navigate('/');
-          }
-          else {
-            console.log("error happened.");
-            throw new Error("Error Happened.");
-          }
-        })
-      .catch (error => {
+          // Second Fetch
+          return fetch("http://localhost:8082/audio/analyze", {
+            method: "POST",
+            headers: {
+              Authorization: token.Authorization,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(ids),
+          });
+        } else if (response.status === 401) {
+          console.log("Unauthorized");
+          navigate("/");
+        } else {
+          console.log("error happened.");
+          throw new Error("Error Happened.");
+        }
+      })
+      .then((secondResponse) => {
+        console.log("second done");
+        if (secondResponse.status === 400) {
+          console.log("Limit Exceeded.");
+          setLimitError(true);
+          throw new Error("Limit Exceeded");
+        } else if (secondResponse.ok) {
+          console.log("Second Fetch Complete.");
+          navigate("/RecordingList");
+        } else if (secondResponse.status === 401) {
+          console.log("Unauthorized");
+          navigate("/");
+        } else {
+          console.log("error happened.");
+          throw new Error("Error Happened.");
+        }
+      })
+      .catch((error) => {
         console.error(error);
       });
+    
+    // Analyze
+    // fetch("http://localhost:8082/audio/analyze", {
+    //   method: "POST",
+    //   headers: {
+    //     Authorization: token.Authorization,
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(ids),
+    // })
+    //   .then((response) => {
+    //     if (response.status === 400) {
+    //       console.log("Limit Exceeded.");
+    //       setLimitError(true);
+    //       throw new Error("Limit Exceeded");
+    //     } else if (response.ok) {
+    //       console.log("Analyze Complete.");
+    //       navigate("/RecordingList");
+    //     } else if (response.status === 401) {
+    //       console.log("Unauthorized");
+    //       navigate("/");
+    //     } else {
+    //       console.log("error happened.");
+    //       throw new Error("Error Happened.");
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   }
 
   return (

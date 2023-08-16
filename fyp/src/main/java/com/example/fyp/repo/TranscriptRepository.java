@@ -21,6 +21,6 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Integer>
     @Query("SELECT t.dialog FROM Transcript t")
     List<String> getTranscripts();
 
-    @Query("SELECT t.speaker, t.dialog FROM Transcript t WHERE t.analysis.analysisId = :analysisId")
+    @Query("SELECT t.speaker, t.dialog, t.startTime, t.endTime FROM Transcript t WHERE t.analysis.analysisId = :analysisId")
     List<Object[]> findEmployeeAndDialogByAnalysisId(Integer analysisId);
 }
