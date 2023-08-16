@@ -64,13 +64,17 @@ public class UploadController {
 				.body(uploadImage);
 	}
 
-	@GetMapping("/{fileName}")
-	public ResponseEntity<?> downloadAudio(@PathVariable String fileName){
-		byte[] imageData=service.downloadImage(fileName);
-		return ResponseEntity.status(HttpStatus.OK)
-				.contentType(MediaType.valueOf("mp3/wav"))
-				.body(imageData);
-	}
+	// @GetMapping("/{fileName}")
+	// public ResponseEntity<?> downloadAudio(@PathVariable String fileName) {
+	// 	System.out.println("FILE NAME: " + fileName);
+	// 	System.out.
+	// 	// byte[] imageData=service.downloadImage(fileName);
+	// 	// return ResponseEntity.status(HttpStatus.OK)
+	// 	// 		.contentType(MediaType.valueOf("mp3/wav"))
+	// 	// 		.body(imageData);
+
+	// 	return ResponseEntity.status(HttpStatus.OK).body("yes");
+	// }
 
 	@PostMapping("/uploadAudio2")
 	public ResponseEntity<String> uploadFile(@RequestParam("audio2") MultipartFile file) {
@@ -171,18 +175,6 @@ public class UploadController {
 	// For GPT analysis
 	@Value("${apiKey}")
 	private String apiKeyContent;
-
-	// Get Analysis
-	@GetMapping("/getAnalysis/{analysis_id}")
-	private ResponseEntity<?> getAnalysis(@PathVariable Integer analysis_id) {
-		ResponseStatus response = new ResponseStatus();
-		Optional<Analysis> analysis = analysisRepo.findById(analysis_id);
-
-		response.setSuccess(true);
-		response.setData(analysis);
-
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-	}
 
 	// Analyze
 	@PostMapping("/analyze")

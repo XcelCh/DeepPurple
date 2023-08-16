@@ -15,7 +15,12 @@ import {
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import authHeader from "../services/auth-header";
-
+import Card from "../components/Card";
+import Fluency from "@mui/icons-material/Abc";
+import Hospitality from "@mui/icons-material/VolunteerActivismOutlined";
+import ProblemSolving from "@mui/icons-material/TipsAndUpdatesOutlined";
+import Personalization from "@mui/icons-material/SettingsSuggestOutlined";
+import Average from "@mui/icons-material/FunctionsOutlined";
 import {
   Chart as ChartJS,
   BarElement,
@@ -32,28 +37,32 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 function Analysis() {
   const token = authHeader();
-  const navigate = useNavigate();
-  const [isEdited, setIsEdited] = useState(false);
-  const updateIsEdited = (value) => {
-    setIsEdited(value);
-  };
-
-  const [employeeName, setEmployeeName] = useState("");
+  // const navigate = useNavigate();
+  // const [isEdited, setIsEdited] = useState(false);
+  // const updateIsEdited = (value) => {
+  //   setIsEdited(value);
+  // };
+  const [analysisId, setAnalysisId] = useState();
   const [analysisData, setAnalysisData] = useState({});
-  const [recordingData, setRecordingData] = useState({});
+  const [suggestions, setSuggestions] = useState([]);
   const [transcriptData, setTranscriptData] = useState([]);
 
   const fromEmployeeList = window.location.pathname.startsWith("/employeeList");
 
-  const { id } = useParams();
+  // recording id
+  const { rec_id } = useParams();
 
   useEffect(() => {
     getAnalysis(true);
+    getSuggestions(true);
+    getTranscriptions(true);
   }, []);
-  
-   useEffect(() => {
-     console.log(analysisData);
-   }, []);
+
+  useEffect(() => {
+    console.log(analysisData);
+    // console.log(suggestions);
+    // console.log(transcriptData);
+  }, [analysisData, suggestions]);
 
 
   // Get Analysis
@@ -70,7 +79,7 @@ function Analysis() {
       }
 
       const response = await fetch(
-        `http://localhost:8082/audio/getAnalysis/${id}`,
+        `http://localhost:8082/analysis/getAnalysis/${rec_id}`,
         {
           headers: token,
         }
@@ -83,7 +92,76 @@ function Analysis() {
       if (showLoading) {
         Swal.close();
       }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      if (showLoading) {
+        Swal.close();
+      }
+    }
+  };
 
+  // Get Suggestions
+  const getSuggestions = async (showLoading) => {
+    try {
+      if (showLoading) {
+        Swal.fire({
+          title: "Retrieving suggestions...",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        });
+      }
+
+      const response = await fetch(
+        `http://localhost:8082/analysis/getSuggestions/${rec_id}`,
+        {
+          headers: token,
+        }
+      );
+
+      response.json().then((data) => {
+        setSuggestions(data.data);
+      });
+
+      if (showLoading) {
+        Swal.close();
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      if (showLoading) {
+        Swal.close();
+      }
+    }
+  };
+
+  // Get Transcriptions
+  const getTranscriptions = async (showLoading) => {
+    try {
+      if (showLoading) {
+        Swal.fire({
+          title: "Retrieving transcriptions...",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        });
+      }
+
+      const response = await fetch(
+        `http://localhost:8082/analysis/getTranscription/${rec_id}`,
+        {
+          headers: token,
+        }
+      );
+
+      response.json().then((data) => {
+        setTranscriptData(data.data);
+      });
+
+      if (showLoading) {
+        Swal.close();
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       if (showLoading) {
@@ -94,15 +172,20 @@ function Analysis() {
 
   const calculateTime = (secs) => {
     if (secs < 60) {
-      return `${secs} ${secs === 1 ? "second" : "seconds"}`;
+      return `${secs.toFixed(2)} ${secs === 1 ? "second" : "seconds"}`;
     } else {
       const minutes = Math.floor(secs / 60);
+
       const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+
       const seconds = Math.floor(secs % 60);
+
       if (seconds === 0) {
         return `${returnedMinutes} ${minutes > 1 ? "minutes " : "minute "}`;
       }
+
       const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+
       return `${returnedMinutes} ${
         minutes > 1 ? "minutes " : "minute "
       } ${returnedSeconds} ${seconds === 1 ? "second" : "seconds"}`;
@@ -186,6 +269,7 @@ function Analysis() {
       <p className="text-xl font-bold text-left ml-12 mt-4">
         {analysisData.recording?.recordingName}
       </p>
+      {/* First Part */}
       <div class="grid w-full gap-6 grid-cols-9 mt-8">
         <div class="flex items-center">
           <div className="w-1/4 flex flex-col items-center">
@@ -233,7 +317,7 @@ function Analysis() {
               Upload Date and Time
             </div>
             <div className="flex-grow">
-              {analysisData.recording?.uploadDate}
+              {analysisData.recording?.uploadDate.replace("T", " ")}
             </div>
           </div>
         </div>
@@ -257,7 +341,7 @@ function Analysis() {
           <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">Date Recorded</div>
             <div className="flex-grow">
-              {analysisData.recording?.recordingDate}
+              {analysisData.recording?.recordingDate.replace("T", " ")}
             </div>
           </div>
         </div>
@@ -292,6 +376,59 @@ function Analysis() {
           <div className="w-3/4 flex flex-col">
             <div className="flex-grow font-bold text-lg">Category</div>
             <div className="flex-grow">{analysisData.category}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Second Part */}
+      <div class="grid w-full gap-6 grid-cols-9 mt-8">
+        <div class="flex items-center">
+          <div className="w-1/4 flex flex-col items-center">
+            <Fluency></Fluency>
+          </div>
+          <div className="w-3/4 flex flex-col ml-4 border-r border-gray-400 h-1/2 justify-center">
+            <div className="flex-grow font-bold text-lg">Fluency</div>
+            <div className="flex-grow">{analysisData.fluency}/100</div>
+          </div>
+        </div>
+        <div class="flex items-center col-span-2">
+          <div className="w-1/4 flex flex-col items-center">
+            <Hospitality></Hospitality>
+          </div>
+          <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
+            <div className="flex-grow font-bold text-lg">Hospitality</div>
+            <div className="flex-grow">{analysisData.hospitality}/100</div>
+          </div>
+        </div>
+        <div class="flex items-center col-span-2">
+          <div className="w-1/4 flex flex-col items-center">
+            <ProblemSolving></ProblemSolving>
+          </div>
+          <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
+            <div className="flex-grow font-bold text-lg">Problem Solving</div>
+            <div className="flex-grow">{analysisData.problemSolving}/100</div>
+          </div>
+        </div>
+        <div class="flex items-center col-span-2">
+          <div className="w-1/4 flex flex-col items-center">
+            <Personalization></Personalization>
+          </div>
+          <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
+            <div className="flex-grow font-bold text-lg">Personalization</div>
+            <div className="flex-grow">{analysisData.personalization}/100</div>
+          </div>
+        </div>
+        <div class="flex items-center col-span-2">
+          <div className="w-1/4 flex flex-col items-center">
+            <Average></Average>
+          </div>
+          <div className="w-3/4 flex flex-col">
+            <div className="flex-grow font-bold text-lg">
+              Average Performance
+            </div>
+            <div className="flex-grow">
+              {analysisData.averagePerformance}/100
+            </div>
           </div>
         </div>
       </div>
@@ -444,8 +581,14 @@ function Analysis() {
         <p className="text-xl font-bold">Recording Playback</p>
         <div className="mt-4 grid w-full gap-4 grid-cols-5 items-center">
           <div className="grid w-full p-4 border rounded-lg col-span-3">
-            <p className="text-xl font-bold mb-2">Sample Recording 1</p>
-            <AudioPlayer initialParagraphs={transcriptData} />
+            <p className="text-xl font-bold mb-2">
+              {analysisData.recording?.recordingName}
+            </p>
+            <AudioPlayer
+              initialParagraphs={transcriptData}
+              employeeName={analysisData.recording?.employee.employeeName}
+              recordingName={analysisData.recording?.recordingName}
+            />
           </div>
 
           <div className="col-span-2">
@@ -506,56 +649,38 @@ function Analysis() {
           </div>
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 mb-12">
         <div className="mt-4 grid w-full gap-4 grid-cols-5">
           <div className="grid w-full rounded-lg col-span-3">
             <div className="p-2">
               <TranscriptCard
-                updateIsEdited={updateIsEdited}
                 initialParagraphs={transcriptData}
-                updateInitialParagraphs={setTranscriptData}
+                employeeName={analysisData.recording?.employee.employeeName}
               />
-            </div>
-            <div className="flex mt-2 justify-end items-center pr-4">
-              <button
-                disabled={!isEdited}
-                className={`inline-flex items-center justify-center w-1/5 mr-2 px-4 py-2 text-white rounded-lg focus:outline-none ${
-                  isEdited ? "bg-[#3C3988] hover:bg-[#351D4F]" : "bg-[#83848A]"
-                }`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-                  />
-                </svg>
-                <p className="ml-2">Re-analyze</p>
-              </button>
             </div>
           </div>
 
           <div className="col-span-2">
             <div className="m-4">
-              <p className="text-xl font-bold">Transcript Emotion Classifier</p>
+              <p className="text-xl font-bold">Improvement Suggestions</p>
               <div className="h-96 mt-2">
-                <div className="tabs">
-                  <a
-                    className={`tab tab-lifted bg-[#E5E6E6] font-bold tab-active`}
-                  >
-                    All
-                  </a>
-                </div>
-                <div className="border-x-2 border-b-2 border-t-2 p-2 mr-2 rounded-b-lg rounded-r-lg">
-                  <img src={EmptySentiment} className="mx-auto"></img>
-                </div>
+                {suggestions &&
+                  suggestions.map((elem) => {
+                    return (
+                      <Card
+                        color="#9554FE"
+                        title={elem.title}
+                        content={elem.explanation}
+                        improvedSentence = {elem.improvedSentence}
+                        contentStyle={{ backgroundColor: "#FF0000" }}
+                      />
+                    );
+                  })}
+                {!suggestions.length ? (
+                  <div className="border-x-2 border-b-2 border-t-2 p-2 mr-2 rounded-b-lg rounded-r-lg">
+                    <img src={EmptySentiment} className="mx-auto"></img>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

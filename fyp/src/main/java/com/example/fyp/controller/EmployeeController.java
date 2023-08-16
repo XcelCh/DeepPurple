@@ -103,16 +103,25 @@ public class EmployeeController {
             // Retrieve the current authentication token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
+            Integer account_id = accountServiceImpl.getAccountId(email);
             Account account = accountServiceImpl.loadUserDetailsByUsername(email);
 
-            Employee emp = new Employee(empName);
-            emp.setAccount(account);
-            Employee empObj = empRepo.save(emp);
+            // check if employee name is existed
+            boolean empExisted = employeeService.empIsExisted(empName, account_id);
+            
+            if (empExisted == true){
+                response.setSuccess(false);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            } else {
+                // add to database
+                Employee emp = new Employee(empName);
+                emp.setAccount(account);
+                Employee empObj = empRepo.save(emp);
 
-            // RESPONSE DATA
-            response.setSuccess(true);
-            response.setData(empObj);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+                response.setSuccess(true);
+                response.setData(empObj);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            }
 
         } catch (Exception ex) {
             // RESPONSE DATA

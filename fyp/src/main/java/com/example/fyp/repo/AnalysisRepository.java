@@ -15,5 +15,8 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
 
     @Query("SELECT COUNT(a) FROM Analysis a WHERE a.recordingSentiment = :recordingSentiment")
     Integer countByRecordingSentiment(@Param("recordingSentiment") String recordingSentiment);
+
+    @Query("SELECT a.analysisId FROM Analysis a WHERE a.recording.recordingId = :recordingId")
+    Integer getAnalysisId(@Param("recordingId") Integer recordingId);
     
 }

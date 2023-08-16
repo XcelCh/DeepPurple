@@ -93,7 +93,7 @@ export default function App() {
           />
 
           <Route
-            path="recordingList/analysis/:id"
+            path="recordingList/analysis/:rec_id"
             element={
               <Sidebar>
                 <Analysis />

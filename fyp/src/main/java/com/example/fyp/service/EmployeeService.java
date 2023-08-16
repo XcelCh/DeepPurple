@@ -16,7 +16,15 @@ public class EmployeeService {
       return employeeRepository.getAllEmployee(account_id);
     }
     
-    public void deleteById(Integer emp_id){
-       employeeRepository.deleteById(emp_id);
+    public void deleteById(Integer emp_id) {
+      employeeRepository.deleteById(emp_id);
+    }
+    
+    public boolean empIsExisted(String empName, Integer account_id) {
+      if (employeeRepository.countEmployeeByName(empName, account_id) > 0){
+        return true;
+      }else{
+        return false;
+      }
     }
 }

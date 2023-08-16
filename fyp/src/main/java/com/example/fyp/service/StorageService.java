@@ -54,7 +54,7 @@ public class StorageService {
     }
 
     public byte[] downloadImage(String fileName){
-        Optional<Recording> dbAudioData = repository.findByRecordingName(fileName);
+		Optional<Recording> dbAudioData = repository.findByRecordingName(fileName);
         byte[] audio=AudioUtils.decompressAudio(dbAudioData.get().getContent());
         return audio;
     }       

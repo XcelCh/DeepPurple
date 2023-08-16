@@ -38,12 +38,13 @@ public class AnalysisService {
         Optional<Analysis> analysis = analysisRepository.findById(recordingId);
         Optional<Recording> recording = recordingRepository.findById(recordingId);
         List<Transcript> transcripts = transcriptRepository.findByRecordingId(recordingId);
-        if(analysis.isPresent() && recording.isPresent()) {
+        if (analysis.isPresent() && recording.isPresent()) {
             // String employeeName = employeeRepository.findEmployeeNameById(recording.get().getEmployeeId());
-            String employeeName = employeeRepository.findEmployeeNameById(recording.get().getEmployee().getEmployeeId());
-            
+            String employeeName = employeeRepository
+                    .findEmployeeNameById(recording.get().getEmployee().getEmployeeId());
+
             for (Transcript transcript : transcripts) {
-                if(transcript.getAnalysis().getRecording().getEmployee().getEmployeeId() != null) {
+                if (transcript.getAnalysis().getRecording().getEmployee().getEmployeeId() != null) {
                     transcript.setEmployeeName(employeeName);
                 } else {
                     transcript.setEmployeeName("Customer");
@@ -56,9 +57,15 @@ public class AnalysisService {
             hmap.put("employeeName", employeeName);
             hmap.put("transcripts", transcripts);
             return new ResponseEntity<HashMap<String, Object>>(hmap, HttpStatus.OK);
-        } else{
+        } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public Integer getAnalysisId(Integer recordingId) {
+        Integer analysisId = analysisRepository.getAnalysisId(recordingId);
+        System.out.println("ANALYSIS ID: " + analysisId);
+        return analysisId;
     }
 
     public void updateDialogByTranscriptAndRecordingId(Integer transcriptId, Integer recordingId, String dialog) {

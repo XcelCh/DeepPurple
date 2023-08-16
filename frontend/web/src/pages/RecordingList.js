@@ -480,21 +480,21 @@ function RecordingList() {
                   .slice(firstPostIndex, lastPostIndex)
                   .map((recording, index) => (
                     <tr>
-                      <th className="h-1">
+                      <th>
                         {currentPage * postsPerPage - 4 + index}
                       </th>
-                      <td className="h-1">{recording.recordingName}</td>
-                      <td className="h-1">
+                      <td>{recording.recordingName}-[{recording.recordingId}]</td>
+                      <td>
                         {recording.uploadDate.substring(0, 10)}
                       </td>
-                      <td className="h-1">
+                      <td>
                         {recording.dateRecorded.substring(0, 10)}
                       </td>
-                      <td className="h-1">
+                      <td>
                         <select
                           value={empIdList[index]}
                           onChange={(e) => handleChangeEmployee(recording.recordingId, e.target.value, index)}
-                          className="select select-bordered font-normal select-sm h-11"
+                          className="select select-bordered font-normal select-sm h-8"
                         >
                           {empList &&
                             empList.map((emp) => (
@@ -507,13 +507,13 @@ function RecordingList() {
                             ))}
                         </select>
                       </td>
-                      <td className="h-1">{recording.category}</td>
-                      <td className="h-1">{recording.sentiment}</td>
+                      <td className="">{recording.category}</td>
+                      <td className="">{recording.sentiment}</td>
                       <td className="flex justify-center items-center">
-                        <div className="dropdown dropdown-end">
+                        <div className="dropdown dropdown-end mt-2">
                           <label
                             tabIndex={0}
-                            className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
+                            className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
                           >
                             <MoreVertIcon
                               style={{ color: "black" }}
@@ -562,7 +562,7 @@ function RecordingList() {
                     </tr>
                     // );
                   ))
-              : null}
+              :null}
           </tbody>
         </table>
 

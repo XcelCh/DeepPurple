@@ -164,9 +164,14 @@ function EmployeeList() {
       .then((res) => res.json())
       .then(
         (result) => {
+          console.log(result);
           getEmpList();
           // Success message
-          Swal.fire("Added", "The employee has been added.", "success");
+          if (result.success == true) {
+              Swal.fire("Added", "The employee has been added.", "success");
+          } else {
+             Swal.fire("Fail", "Fail to add employee.", "error");
+          }
         },
         (error) => {
           setError(error);
