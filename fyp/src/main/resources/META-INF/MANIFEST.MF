@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: Maven JAR Plugin 3.3.0
+Build-Jdk-Spec: 17
+Implementation-Title: fyp
+Implementation-Version: 0.0.1-SNAPSHOT
+Main-Class: org.springframework.boot.loader.wrapper.ThinJarWrapper
+Start-Class: com.example.fyp.FypApplication
+Spring-Boot-Version: 3.0.9
+Spring-Boot-Classes: 

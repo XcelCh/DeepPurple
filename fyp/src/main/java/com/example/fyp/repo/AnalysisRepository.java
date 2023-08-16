@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.fyp.entity.Analysis;
 
+// Analysis Repository for Analysis Entity to access to the Database
 @Repository
 public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
 

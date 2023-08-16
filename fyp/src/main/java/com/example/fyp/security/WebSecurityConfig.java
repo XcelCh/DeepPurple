@@ -24,9 +24,11 @@ import com.example.fyp.service.AccountServiceImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+// Configuration class that controls the whole Security related to the web
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
+
     @Autowired
     AccountServiceImpl accountService;
 
@@ -36,11 +38,13 @@ public class WebSecurityConfig {
     @Autowired
     private CustomAccessDeniedHandler customAccessDeniedHandler;
 
+    // Declare the JWT Validation filter as a bean
     @Bean
     public AuthTokenValidationFilter authenticationJwtTokenFilter() {
         return new AuthTokenValidationFilter();
     }
 
+    // Declare DaoAuthenticationProvider as a bean use to validate username and password on login
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -51,20 +55,24 @@ public class WebSecurityConfig {
         return authProvider;
     }
 
+    // Declare the authentication manager 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    // Declare the BCrypt Password Encoder use to encrypt password
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Configure the web security method
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
 
+        // CORS related configuration to allow communication from the frontend URL
+        http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -77,10 +85,13 @@ public class WebSecurityConfig {
                         config.setMaxAge(3600L);
                         return config;
                     }
-                }))
+                })) 
+                // Set the exception handling of authentication failure or access denied to our custom class
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)
-                        .accessDeniedHandler(customAccessDeniedHandler))
+                                                         .accessDeniedHandler(customAccessDeniedHandler))
+                // Manage the session creation policy
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Configure the Http request that is authenticated or need specific roles
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/analyze").permitAll()
                         .requestMatchers("/register/**").anonymous()
@@ -96,11 +107,12 @@ public class WebSecurityConfig {
                         .requestMatchers("/summaryAnalysis/**").permitAll()
                         .requestMatchers("/payment/**").authenticated()
                         .requestMatchers("/sendInquiry").permitAll()
-                // .anyRequest().authenticated()
+                        .requestMatchers("/check").hasRole("CARD")
                 );
 
+        // Set the authentiction provider
         http.authenticationProvider(authenticationProvider());
-
+        // Add our custom filter into the filter chain
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

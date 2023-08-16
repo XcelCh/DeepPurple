@@ -399,7 +399,7 @@ function SignUpForm() {
                                                 className="mb-4 w-full text-white bg-[#3C3988] hover:bg-[#351D4F] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                                                 onClick={handleSecondContinue}
                                             >
-                                                Continue
+                                                Create account
                                             </button>
 
                                             <div className="flex flex-col items-left">

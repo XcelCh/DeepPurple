@@ -284,7 +284,7 @@ function EmployeeList() {
                           </label>
                           <ul
                             tabIndex={0}
-                            className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-42 rounded-md border-[#D1D1D1]"
+                            className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-42 rounded-md"
                           >
                             <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
                               <a

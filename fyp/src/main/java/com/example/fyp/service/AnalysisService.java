@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.entity.Transcript;

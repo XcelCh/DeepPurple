@@ -20,15 +20,16 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Recording;
-import com.example.fyp.repo.AudioFileRepository;
+import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.repo.TranscriptRepository;
 import com.example.fyp.utils.AudioUtils;
 
 @Service
 public class StorageService {
 	@Autowired
-    private AudioFileRepository repository;
+    private RecordingRepository repository;
 
 	@Autowired
 	private TranscriptRepository transcriptRepository;
@@ -39,36 +40,19 @@ public class StorageService {
     @Autowired
 	private AmazonS3 s3Client;
 
-    public String uploadImage(MultipartFile file) throws IOException {
-
-        Recording audioData = repository.save(Recording.builder()
-                .recordingName(file.getOriginalFilename())
-                .uploadDate(LocalDateTime.now())
-                .recordingDate(LocalDateTime.now())
-                .sampleRate(0)
-                .content(AudioUtils.compressAudio(file.getBytes())).build());
-        if (audioData != null) {
-            return "file uploaded successfully : " + file.getOriginalFilename();
-        }
-        return null;
-    }
-
-    public byte[] downloadImage(String fileName){
-		Optional<Recording> dbAudioData = repository.findByRecordingName(fileName);
-        byte[] audio=AudioUtils.decompressAudio(dbAudioData.get().getContent());
-        return audio;
-    }       
-    
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file, Account account) {    	    	    	
     	File fileObj = convertMultiPartFileToFile(file);
-    	String fileName = System.currentTimeMillis()+"_"+file.getOriginalFilename();
-    	s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+    	long uniqueIdentifier = System.currentTimeMillis();
+    	String fileName = file.getOriginalFilename();
+    	s3Client.putObject(new PutObjectRequest(bucketName, (uniqueIdentifier+"_"+fileName), fileObj));
     	fileObj.delete();
     	
     	Recording audio = repository.save(Recording.builder()
+    			.timeStamp(uniqueIdentifier)
     			.recordingName(fileName)
     			.uploadDate(LocalDateTime.now())
                 .recordingDate(LocalDateTime.now())
+                .account(account)
                 .sampleRate(0)
     			.recordingUrl(s3Client.getUrl(bucketName, fileName).toString()).build());    			
     	return "File uploaded : " + fileName;

@@ -28,8 +28,8 @@ import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.model.ResponseStatus;
-import com.example.fyp.repo.AudioFileRepository;
 import com.example.fyp.repo.EmployeeRepository;
+import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.EmployeeService;
 
@@ -38,9 +38,6 @@ import com.example.fyp.service.EmployeeService;
 public class EmployeeController {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
-    // @Autowired
-    // private AccountRepository accountRepository;
-
     @Autowired
     private AccountServiceImpl accountServiceImpl;
     
@@ -48,7 +45,7 @@ public class EmployeeController {
     private EmployeeRepository empRepo;
 
     @Autowired
-    private AudioFileRepository recRepo;
+    private RecordingRepository recRepo;
 
     @Autowired
     private final EmployeeService employeeService;

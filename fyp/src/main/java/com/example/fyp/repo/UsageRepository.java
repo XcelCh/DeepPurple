@@ -7,35 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.example.fyp.entity.Usages;
 
+// Usages Repository for Usages Entity to access to the Database
 public interface UsageRepository extends JpaRepository<Usages, Long>{
     
-    // @Query("SELECT u.account.accountId, u.usageDate, SUM(u.minutesUsed * u.rate) " +
-    //        "FROM Usages u " +
-    //        "WHERE u.account.accountId = :accountId " +
-    //        "AND FUNCTION('YEAR', u.usageDate) = FUNCTION('YEAR', CURRENT_DATE) " +
-    //        "AND FUNCTION('MONTH', u.usageDate) = FUNCTION('MONTH', CURRENT_DATE) " +
-    //        "GROUP BY u.account.accountId, u.usageDate")
-    // List<Object[]> getSumOfUsageByAccountId(Integer accountId);
-
-    @Query("SELECT u.account.accountId, SUM(u.minutesUsed * u.rate) " +
-           "FROM Usages u " +
-           "WHERE u.account.accountId = :accountId " +
-           "AND u.billing.billingId = null " +
-           "AND YEAR(u.usageDate) = YEAR(CURRENT_DATE) " +
-           "AND MONTH(u.usageDate) = MONTH(CURRENT_DATE) " +
-           "GROUP BY u.account.accountId")
-    List<Object[]> getSumOfUsageByAccountId(Integer accountId);
-
-    @Query("SELECT u " +
-           "FROM Usages u " +
-           "WHERE u.account.accountId = :accountId " +
-           "AND u.billing.billingId IS NULL")
+    @Query("SELECT u FROM Usages u WHERE u.account.accountId = :accountId AND u.billing.billingId IS NULL")
     List<Usages> findUnbilledUsage(Integer accountId);
 
-    @Query("SELECT SUM(u.minutesUsed * u.rate) " +
-           "FROM Usages u " +
-           "WHERE u.account.accountId = :accountId " +
-           "AND u.billing.billingId IS NULL")
+    @Query("SELECT SUM(u.minutesUsed * u.rate) FROM Usages u WHERE u.account.accountId = :accountId AND u.billing.billingId IS NULL")
     Float findTotalUnbilledUsage(Integer accountId);
-
 }

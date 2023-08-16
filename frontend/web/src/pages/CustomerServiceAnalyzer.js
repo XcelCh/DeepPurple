@@ -1,14 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import agentPicture from "../assets/AgentPicture.png";
 import customerAnalyzer1 from "../assets/CustomerAnalyzer1.png";
 import customerAnalyzer2 from "../assets/CustomerAnalyzer2.png";
 import customerAnalyzer3 from "../assets/CustomerAnalyzer3.png";
 import { Link } from "react-router-dom";
+import authHeader from "../services/auth-header";
+import AuthService from "../services/auth.service";
 
 function CustomerServiceAnalyzer() {
+    const token = authHeader();
+    const navigate = useNavigate();
+    const user = AuthService.getCurrentUser();
     useEffect(() => {
         window.scrollTo(0, 0);
+        fetch ('http://localhost:8082/check', {
+            headers : token,
+        })
+        .then(response => {
+            if (response.ok) { 
+                // Card exist
+                navigate("/recordingList");
+            }
+        })
+        .catch (error => {
+            console.error(error);
+        })
     }, []);
 
     return(
@@ -26,14 +44,25 @@ function CustomerServiceAnalyzer() {
                             </div>
                             <p className="text-lg text-white">Analyze your customer service recordings, gain valuable insights such as sentiment analysis, and leverage the findings to enhance employee performance, ultimately delivering exceptional customer experiences.</p>
                             <div className="inline-block mt-6">
-                                <Link to="/signUpForm">
-                                    <button
-                                    type="button"
-                                    className="text-[#60388B] bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
-                                    >
-                                    Create account
-                                    </button>
-                                </Link>
+                                {user ? (
+                                    <Link to="/billing">
+                                        <button
+                                        type="button"
+                                        className="text-[#60388B] bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                        >
+                                        Add payment
+                                        </button>
+                                    </Link>
+                                ) : (
+                                    <Link to="/signUpForm">
+                                        <button
+                                        type="button"
+                                        className="text-[#60388B] bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                        >
+                                        Create account
+                                        </button>
+                                    </Link>
+                                )}
                             </div>
                         </div>
                         <div>
@@ -95,14 +124,26 @@ function CustomerServiceAnalyzer() {
                                     <p className="text-5xl text-[#FFAFAF]">today!</p>
                                 </div>
                                 <div className="flex items-center inline-block">
-                                    <Link to="/signUpForm">
-                                        <button
-                                        type="button"
-                                        className="text-[#414141] bg-[#ABE5BB] hover:bg-[#7DBC8F] focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
-                                        >
-                                            Create account
-                                        </button>
-                                    </Link>
+                                    {user ? (
+                                        <Link to="/billing">
+                                            <button
+                                            type="button"
+                                            className="text-[#414141] bg-[#ABE5BB] hover:bg-[#7DBC8F] focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                            >
+                                                Add payment
+                                            </button>
+                                        </Link>
+                                    ) : (
+                                        <Link to="/signUpForm">
+                                            <button
+                                            type="button"
+                                            className="text-[#414141] bg-[#ABE5BB] hover:bg-[#7DBC8F] focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"
+                                            >
+                                                Create account
+                                            </button>
+                                        </Link>
+                                    )}
+                                    
                                     <a href="/pricing" className="ml-8 inline-flex items-center text-white hover:underline">
                                         <p>View pricing</p>
                                         <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path></svg>

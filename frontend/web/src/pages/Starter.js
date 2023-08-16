@@ -15,36 +15,6 @@ function Starter() {
   useEffect (() => {
     window.scrollTo(0, 0);
 
-    console.log("1 called");
-    fetch ('http://localhost:8082/starter/check', {
-    
-    headers : token,
-  })
-  .then(response => {
-
-    if (response.ok) { 
-
-      console.log('Role Allowed.');
-
-    }
-    else if (response.status == 403) {
-
-      console.log('Forbidden.');
-      navigate('/unauthorizedPage');
-    }
-    else if (response.status == 401) {
-
-      console.log('Unauthorized.');
-      navigate('/loginForm');
-    }
-  })
-  .catch (error => {
-
-    console.error(error);
-  })
-
-  console.log("2 called");
-
     fetch('http://localhost:8082/profile/getCompanyField', {
       headers:token,
     })

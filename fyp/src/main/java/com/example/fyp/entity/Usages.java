@@ -26,8 +26,8 @@ public class Usages {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long usagesId;
 
-    private float minutesUsed;
-    private float rate;
+    private double minutesUsed;
+    private double rate;
     private Date usageDate;
     
     @ManyToOne

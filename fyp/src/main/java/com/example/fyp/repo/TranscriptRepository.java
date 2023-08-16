@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.fyp.entity.Transcript;
 
+// Transcript Repository for Transcript Entity to access to the Database
 @Repository
 public interface TranscriptRepository extends JpaRepository<Transcript, Integer> {
 
@@ -17,13 +18,9 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Integer>
     @Query("SELECT t FROM Transcript t WHERE t.transcriptId = :transcriptId AND t.analysis.recording.recordingId = :recordingId")
     Transcript findByTranscriptIdAndRecordingId(Integer transcriptId, Integer recordingId);
 
-    // @Query("SELECT t.dialog " +
-    //     "FROM Transcript t " +
-    //     "JOIN Analysis a ON t.recordingId = a.recordingId ")
     @Query("SELECT t.dialog FROM Transcript t")
     List<String> getTranscripts();
 
-    // @Query("SELECT t.employeeId, t.dialog FROM Transcript t WHERE t.recordingId = :recordingId")
-    @Query("SELECT t.speaker, t.dialog, t.startTime, t.endTime FROM Transcript t WHERE t.analysis.analysisId = :analysisId")
+    @Query("SELECT t.speaker, t.dialog FROM Transcript t WHERE t.analysis.analysisId = :analysisId")
     List<Object[]> findEmployeeAndDialogByAnalysisId(Integer analysisId);
 }

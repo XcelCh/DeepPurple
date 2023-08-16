@@ -2,6 +2,7 @@ package com.example.fyp.repo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.fyp.entity.Employee;
 
+// Employee Repository for Employee Entity to access the database
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
@@ -30,6 +32,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query("SELECT e.employeeName AS employeeName, e.employeeId AS employeeId, e.numPositiveSentiment AS numPositiveSentiment, e.numNegativeSentiment AS numNegativeSentiment, e.numCallsHandled AS numCallsHandled FROM Employee e WHERE e.account.accountId = :account_id")
     List<Map<String, Object>> getAllEmployee(Integer account_id);
    
+    Optional<Employee> findByEmployeeName(String employeeName);
+    
     @Query("SELECT COUNT(e.employeeId) FROM Employee e WHERE e.employeeName = :empName AND e.account.accountId = :accountId")
     Integer countEmployeeByName(String empName, Integer accountId);
 
