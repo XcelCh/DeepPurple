@@ -34,10 +34,6 @@ import com.example.fyp.service.StorageService;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
 
-import jakarta.persistence.criteria.CriteriaBuilder.In;
-
-import org.apache.commons.text.StringEscapeUtils;
-
 @RestController
 @RequestMapping("/audio")
 public class UploadController {
