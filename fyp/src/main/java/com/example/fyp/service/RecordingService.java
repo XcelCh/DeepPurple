@@ -241,7 +241,7 @@ public class RecordingService extends AudioFileWriter{
         Usages usage = new Usages(null, (totalDuration/60), price, new Date(System.currentTimeMillis()), null, account);
         account.addUsage(usage);
         accountServiceImpl.saveAccount(account);
-
+        
         System.out.println("Finish analyzing");
 
         return true;

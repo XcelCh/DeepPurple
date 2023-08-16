@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.fyp.controller.dto.ChangePasswordDto;
+import com.example.fyp.controller.dto.EditProfileDto;
 import com.example.fyp.entity.Account;
 import com.example.fyp.service.AccountDetailsImpl;
 import com.example.fyp.service.AccountServiceImpl;
@@ -48,18 +49,20 @@ public class EditProfileController {
 
     // Edit profile details that are changed by the POST method editProfile endpoints
     @PostMapping("/editProfile")
-    public ResponseEntity<String> saveEdit(@RequestBody Account account) {
+    public ResponseEntity<String> saveEdit(@RequestBody EditProfileDto editProfileDto) {
         
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AccountDetailsImpl userPrincipal = (AccountDetailsImpl) authentication.getPrincipal();
 
         Account acc = accountServiceImpl.loadUserDetailsByUsername(userPrincipal.getUsername());
 
-        account.setAccountId(acc.getAccountId());
-        account.setPassword(acc.getPassword());
-        account.setRoles(acc.getRoles());
+        acc.setFullName(editProfileDto.getFullName());
+        acc.setGender(editProfileDto.getGender());
+        acc.setDob(editProfileDto.getDob());
+        acc.setPhoneNum(editProfileDto.getPhoneNum());
+        acc.setCompanyField(editProfileDto.getCompanyField());
         
-        accountServiceImpl.saveAccount(account);
+        accountServiceImpl.saveAccount(acc);
 
         return ResponseEntity.ok("Edit Profile received succesfully.");
     }

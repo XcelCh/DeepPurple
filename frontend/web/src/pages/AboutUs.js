@@ -27,6 +27,7 @@ function AboutUs() {
   })
 
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage]=  useState(false);
 
   const namePattern = /^(?:[A-Za-z]+){0,10}$/;
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -81,10 +82,8 @@ function AboutUs() {
       if(response.ok) {
 
         console.log('Inquiry Sent.');
-        navigate('/');
-        
-        
-
+        setSuccessMessage(true);
+        // navigate('/');
       }
       else if(response.status === 502) {
 
@@ -220,6 +219,28 @@ function AboutUs() {
                   onChange={(event) => setFormData({...formData, notes : event.target.value})}
                   maxLength={255}
                 ></textarea>
+
+                {successMessage && (
+                  <div className="fixed top-0 left-0 right-0 z-50 pt-32 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full bg-black bg-opacity-50">
+                      <div className="relative w-2/5 mx-auto">
+                          <div className="relative bg-white rounded-lg shadow">
+                              <button onClick={() => setSuccessMessage(false)} className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                                  <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                  </svg>
+                                  <span className="sr-only">Close modal</span>
+                              </button>
+                              <div className="p-8 text-center">
+                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                  </svg>
+                                  <p className="mb-5 text-lg font-semibold text-[#414141]">Your inquiry has been submitted succesfully! </p>
+                                  <button onClick={() => setSuccessMessage(false)} className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">Continue</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                )}
 
                 {errorMessage && (
                   <div className="flex items-center text-red-500 text-sm mb-4">

@@ -92,21 +92,26 @@ public class WebSecurityConfig {
                 // Manage the session creation policy
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Configure the Http request that is authenticated or need specific roles
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        // Endpoints that can be access by all user
                         .requestMatchers("/analyze").permitAll()
-                        .requestMatchers("/register/**").anonymous()
-                        .requestMatchers("/profile/**").authenticated()
-                        .requestMatchers("/addSubs").authenticated()
-                        .requestMatchers("/starter/**").authenticated()
-                        .requestMatchers("/getPricing").permitAll()
-                        .requestMatchers("/employeeList/**").permitAll()
-                        .requestMatchers("/recordingList/**").permitAll()
-                        .requestMatchers("/customerServiceAnalyzer").permitAll()
-                        .requestMatchers("/audio/**").permitAll()
-                        .requestMatchers("/analysis/**").permitAll()
-                        .requestMatchers("/summaryAnalysis/**").permitAll()
-                        .requestMatchers("/payment/**").authenticated()
                         .requestMatchers("/sendInquiry").permitAll()
+
+                        // Endpoints that can only be access by UNAUTHENTICATED user
+                        .requestMatchers("/api/auth/**").anonymous()
+                        .requestMatchers("/register/**").anonymous()
+
+                        // Endpoints that can be access by AUTHENTICATED user
+                        .requestMatchers("/profile/**").authenticated()
+                        .requestMatchers("/starter/**").authenticated()
+                        .requestMatchers("/payment/**").authenticated()
+                        
+                        // Endpoints that can be access by user that is AUTHENTICATED and Has Specific ROLE
+                        .requestMatchers("/employeeList/**").hasRole("CARD")
+                        .requestMatchers("/recordingList/**").hasRole("CARD")
+                        .requestMatchers("/audio/**").hasRole("CARD")
+                        .requestMatchers("/analysis/**").hasRole("CARD")
+                        .requestMatchers("/summaryAnalysis/**").hasRole("CARD")
                         .requestMatchers("/check").hasRole("CARD")
                 );
 
