@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import DateRange from "../components/DateRange";
 import Pagination from "../components/Pagination";
 import authHeader from "../services/auth-header";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 // Icons
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -433,9 +434,8 @@ function RecordingList() {
         <div className="place-self-end">
           <Link to="./AddRecording">
             <button className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]">
-              <img src={Upload} className="mr-2 h-5"></img>
-              <p className="mr-2 text-md">Upload</p>
-              <img src={Toggle} className="h-5"></img>
+              <AddCircleOutlineIcon className="mr-2" />
+              <p className="mr-2 text-md">Add Recording</p>
             </button>
           </Link>
         </div>

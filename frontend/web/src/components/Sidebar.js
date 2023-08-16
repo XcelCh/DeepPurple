@@ -23,7 +23,7 @@ const Sidebar = ({ children }) => {
   const menuItem = [
     {
       path: "/recordingList",
-      name: "Recording",
+      name: "Recording List",
       icon: (
           <LibraryMusicOutlinedIcon />
 
@@ -31,14 +31,14 @@ const Sidebar = ({ children }) => {
     },
     {
       path: "/employeeList",
-      name: "Employee",
+      name: "Employee List",
       icon: (
         <PeopleOutlineOutlinedIcon />
       ),
     },
     {
       path: "/summaryAnalysis",
-      name: "Summary",
+      name: "Summary Analysis",
       icon: (
         <InsertChartOutlinedIcon />
       ),

@@ -1,13 +1,14 @@
 package com.example.fyp.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +36,8 @@ import com.example.fyp.service.RecordingService;
 import com.example.fyp.service.UsageService;
 
 @RestController
-@Configuration
 @RequestMapping("/recordingList")
-public class RecordingController{
+public class RecordingController implements Function<List<Integer>, ResponseEntity<String>> {
 
     private final RecordingListService recordingListService;
     private final RecordingService recordingService;
@@ -142,31 +142,31 @@ public class RecordingController{
     }
 
     @PostMapping("analyzeLambda")
-    @Bean
-    public Function<List<Integer>, ResponseEntity<String>> analyze(@RequestBody List<Integer> ids){
-        return value -> {
-            try {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());  
+    public ResponseEntity<String> apply(@RequestBody List<Integer> ids){
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());  
 
-                Float limit = account.getPayment().getUsageLimit();
-                Float totalUnbilled = usageService.getTotalUnbilledUsage(account.getAccountId());
-                Float limitLeft = limit - totalUnbilled;
+            Float limit = account.getPayment().getUsageLimit();
+            Float totalUnbilled = usageService.getTotalUnbilledUsage(account.getAccountId());
+            Float limitLeft = limit - totalUnbilled;
 
-                boolean check = recordingService.checkLimit(ids, limitLeft, account);
+            boolean check = recordingService.checkLimit(ids, limitLeft, account);
 
-                if(check == false)
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limit Exceeded");
-                else 
-                    return ResponseEntity.status(HttpStatus.OK).body("Analyze Complete");
+            if(check == false) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limit Exceeded");
             }
-
-            catch (UsernameNotFoundException e){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not Found.");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+ e);
+            else  {
+                return ResponseEntity.status(HttpStatus.OK).body("Analyze Complete");
             }
-        };
+        }
+
+        catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not Found.");
+         }
+         catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+ e);
+         }
     }
 }
