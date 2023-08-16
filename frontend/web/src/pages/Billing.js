@@ -46,6 +46,9 @@ function Billing() {
     const [limitError, setLimitError] = useState(false)
     const [totalUsage, setTotalUsage] = useState(0.0);
     const [successMessage, setSuccessMessage] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const limitPattern = /^[0-9]+\.?[0-9]+$/;
 
     const openModal = () => {
         setVisible(true);
@@ -172,6 +175,12 @@ function Billing() {
     }, [])
 
     const setUsageLimit = (limit) => {
+
+        if(!limitPattern.test(limit)) {
+            setErrorMessage('Please enter a valid price.');
+            setLimitError(true);
+            return;
+        }
         
         fetch(`http://localhost:8082/payment/setLimit?limit=${limit}`, {
             method: 'POST',
@@ -187,6 +196,7 @@ function Billing() {
                 navigate('/unauthorizedPage');
             }
             else if(response.status === 400) {
+                setErrorMessage('Limit can not be lower than current usage!');
                 setLimitError(true);
                 console.log('Limit can not be lower than current usage.');
             }
@@ -250,7 +260,7 @@ function Billing() {
                                                             <svg className="mx-auto mb-4 text-[#414141] w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                                             </svg>
-                                                            <p className="mb-5 text-lg font-semibold text-[#414141]">Limit can not be lower than current usage!</p>
+                                                            <p className="mb-5 text-lg font-semibold text-[#414141]">{errorMessage}</p>
                                                             <button onClick={() => setLimitError(false)} className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">Continue</button>
                                                         </div>
                                                     </div>
