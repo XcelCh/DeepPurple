@@ -1,5 +1,7 @@
 package com.example.fyp.service;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.example.fyp.entity.Account;
@@ -20,4 +22,8 @@ public interface AccountService {
     int getAccountId(String email);
 
     void deleteAccount(Account account);
+
+    List<Integer> getAllAccountId();
+
+    Account getById(Integer accountId);
 }

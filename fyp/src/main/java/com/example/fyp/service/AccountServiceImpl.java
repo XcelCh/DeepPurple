@@ -1,6 +1,7 @@
 package com.example.fyp.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,5 +99,26 @@ public class AccountServiceImpl implements UserDetailsService, AccountService {
 
         account.deleteAll(account.getUsageList(), account.getRecording(), account.getEmployee());
         accountRepository.deleteById(account.getAccountId());
+    }
+
+    // Get all registered AccountId
+    @Override
+    public List<Integer> getAllAccountId() {
+
+        List<Account> allAccount = accountRepository.findAll();
+        
+        return allAccount.stream()
+                          .map(Account::getAccountId)
+                          .collect(Collectors.toList());
+    }
+
+    // Get Account object by its Id
+    @Override
+    public Account getById(Integer accountId) {
+
+        Account account = accountRepository.findById(accountId)
+            .orElseThrow(() -> new UsernameNotFoundException("User Not Found with ID: " + accountId));
+
+        return account;
     }
 }

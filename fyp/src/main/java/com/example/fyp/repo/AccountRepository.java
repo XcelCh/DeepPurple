@@ -1,5 +1,6 @@
 package com.example.fyp.repo;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     @Query("SELECT accountId AS accountId FROM Account WHERE email = :email")
     Integer getAccountId(String email);
+
+    List<Account> findAll(); 
 }
