@@ -113,6 +113,9 @@ public class EmployeeController {
                 // add to database
                 Employee emp = new Employee(empName);
                 emp.setAccount(account);
+                emp.setNumCallsHandled(0);
+                emp.setNumNegativeSentiment(0);
+                emp.setNumPositiveSentiment(0);
                 Employee empObj = empRepo.save(emp);
 
                 response.setSuccess(true);

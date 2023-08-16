@@ -43,7 +43,7 @@ public class Recording {
     private String recordingName;
     
     @Nullable
-    private long timeStamp;
+    private Long timeStamp;
     
     @Nullable
     @Lob

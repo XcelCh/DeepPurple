@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Forward, Backward } from "../assets/index";
 import styles from "../styles/AudioPlayer.module.css";
 
-function AudioPlayer({ initialParagraphs, employeeName, recordingName }) {
+function AudioPlayer({ initialParagraphs, employeeName, recordingName, timeStamp }) {
 
     useEffect(() => {
         console.log("RECORDING NAME: " + recordingName);
@@ -79,18 +79,21 @@ function AudioPlayer({ initialParagraphs, employeeName, recordingName }) {
   return (
     <div className={styles.audioPlayer}>
       <div className="flex items-center">
-        <audio
-          ref={audioPlayer}
-          src={`http://localhost:8082/audio/download/${recordingName}`}
-          preload="metadata"
-          onLoadedMetadata={onLoadedMetadata}
-        ></audio>
-        {/* <audio
-          ref={audioPlayer}
-          src="http://localhost:8082/audio/download/1691995312720_Patricia_Recording_1.wav"
-          preload="metadata"
-          onLoadedMetadata={onLoadedMetadata}
-        ></audio> */}
+        {timeStamp && (
+          <audio
+            ref={audioPlayer}
+            src={`http://localhost:8082/audio/download/${timeStamp}_${recordingName}`}
+            preload="metadata"
+            onLoadedMetadata={onLoadedMetadata}
+          ></audio>
+        )}
+
+        {/* // <audio
+        //   ref={audioPlayer}
+        //   src="http://localhost:8082/audio/download/1692172900944_sample1.wav"
+        //   preload="metadata"
+        //   onLoadedMetadata={onLoadedMetadata}
+        // ></audio> */}
 
         {/* current time */}
         <div className="mr-2">{calculateTime(currentTime)}</div>
@@ -164,7 +167,7 @@ function AudioPlayer({ initialParagraphs, employeeName, recordingName }) {
               const widthPercentage = `${
                 ((endTime - startTime) / duration) * 100
               }%`;
-            //   console.log(widthPercentage);
+              //   console.log(widthPercentage);
               return (
                 <div
                   style={{ width: widthPercentage }}
@@ -190,8 +193,8 @@ function AudioPlayer({ initialParagraphs, employeeName, recordingName }) {
         <div class="mb-4 flex h-2 overflow-hidden rounded bg-[#F5F5F5] text-xs">
           {initialParagraphs.map((paragraph) => {
             const startTime = paragraph[2];
-              const endTime = paragraph[3];
-              if (paragraph[0] == false) {
+            const endTime = paragraph[3];
+            if (paragraph[0] == false) {
               const widthPercentage = `${
                 ((endTime - startTime) / duration) * 100
               }%`;

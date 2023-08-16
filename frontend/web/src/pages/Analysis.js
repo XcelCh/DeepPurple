@@ -44,8 +44,8 @@ function Analysis() {
   // };
   const [analysisId, setAnalysisId] = useState();
   const [analysisData, setAnalysisData] = useState({});
-  const [suggestions, setSuggestions] = useState([]);
-  const [transcriptData, setTranscriptData] = useState([]);
+  const [suggestions, setSuggestions] = useState([1]);
+  const [transcriptData, setTranscriptData] = useState([1]);
 
   const fromEmployeeList = window.location.pathname.startsWith("/employeeList");
 
@@ -60,9 +60,9 @@ function Analysis() {
 
   useEffect(() => {
     console.log(analysisData);
-    // console.log(suggestions);
-    // console.log(transcriptData);
-  }, [analysisData, suggestions]);
+    console.log(suggestions);
+    console.log(transcriptData);
+  }, [analysisData, suggestions, transcriptData]);
 
 
   // Get Analysis
@@ -588,6 +588,7 @@ function Analysis() {
               initialParagraphs={transcriptData}
               employeeName={analysisData.recording?.employee.employeeName}
               recordingName={analysisData.recording?.recordingName}
+              timeStamp = {analysisData.recording?.timeStamp}
             />
           </div>
 
@@ -676,11 +677,11 @@ function Analysis() {
                       />
                     );
                   })}
-                {!suggestions.length ? (
+                {/* {!suggestions.length ? (
                   <div className="border-x-2 border-b-2 border-t-2 p-2 mr-2 rounded-b-lg rounded-r-lg">
                     <img src={EmptySentiment} className="mx-auto"></img>
                   </div>
-                ) : null}
+                ) : null} */}
               </div>
             </div>
           </div>

@@ -37,7 +37,7 @@ import com.example.fyp.service.UsageService;
 
 @RestController
 @RequestMapping("/recordingList")
-public class RecordingController implements Function<List<Integer>, ResponseEntity<String>> {
+public class RecordingController {
 
     private final RecordingListService recordingListService;
     private final RecordingService recordingService;
@@ -121,31 +121,45 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
 
     // Update Recording's employee
     @PostMapping("/updateRecordingEmployeeById/{rec_id}")
-    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer rec_id, @RequestBody String emp_id) {
+    public ResponseEntity<?> updateEmpNameById(@PathVariable Integer rec_id, @RequestBody String new_emp_id) {
         ResponseStatus response = new ResponseStatus();
 
-        // Integer emp_ids = 6;
-        System.out.println("REC ID: " + rec_id);
-        System.out.println("EMP_ID: " + emp_id);
-
-        Employee employee = empRepo.findById(Integer.parseInt(emp_id)).get();
+        // update recording
         Recording recording = recRepo.findById(rec_id).get();
-        recording.setEmployee(employee);
+        Integer old_emp_id = recording.getEmployee().getEmployeeId();
+
+        // update num calls handled
+        Employee new_employee = empRepo.findById(Integer.parseInt(new_emp_id)).get();
+        // System.out.println("NEW EMP - BEFORE NUM CALLS HANDLED: " +
+        // new_employee.getNumCallsHandled());
+        new_employee.setNumCallsHandled(new_employee.getNumCallsHandled() + 1);
+        // System.out.println("NEW EMP - AFTER NUM CALLS HANDLED: " +
+        // new_employee.getNumCallsHandled());
+
+        Employee old_employee = empRepo.findById(old_emp_id).get();
+        // System.out.println("OLD EMP - BEFORE NUM CALLS HANDLED: " +
+        // old_employee.getNumCallsHandled());
+        old_employee.setNumCallsHandled(old_employee.getNumCallsHandled() - 1);
+        // System.out.println("OLD EMP - AFTER NUM CALLS HANDLED: " +
+        // old_employee.getNumCallsHandled());
+
+        // update recording
+        recording.setEmployee(new_employee);
 
         Recording recObj = recRepo.save(recording);
 
         // RESPONSE DATA
         response.setSuccess(true);
-        response.setMessage("Succesfully change the employee to employee id " + emp_id);
+        response.setMessage("Succesfully change the employee to employee id " + new_emp_id);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("analyzeLambda")
-    public ResponseEntity<String> apply(@RequestBody List<Integer> ids){
+    public ResponseEntity<String> apply(@RequestBody List<Integer> ids) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());  
+            Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
 
             Float limit = account.getPayment().getUsageLimit();
             Float totalUnbilled = usageService.getTotalUnbilledUsage(account.getAccountId());
@@ -153,20 +167,54 @@ public class RecordingController implements Function<List<Integer>, ResponseEnti
 
             boolean check = recordingService.checkLimit(ids, limitLeft, account);
 
-            if(check == false) {
+            if (check == false) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limit Exceeded");
-            }
-            else  {
+            } else {
                 return ResponseEntity.status(HttpStatus.OK).body("Analyze Complete");
             }
         }
 
         catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not Found.");
-         }
-         catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+ e);
-         }
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "
+                    + e);
+        }
     }
+
+    // @PostMapping("analyzeLambda")
+    // @Bean
+    // public Function<List<Integer>, ResponseEntity<String>> analyze(@RequestBody
+    // List<Integer> ids){
+    // return value -> {
+    // try {
+    // Authentication authentication =
+    // SecurityContextHolder.getContext().getAuthentication();
+    // Account account =
+    // accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
+
+    // Float limit = account.getPayment().getUsageLimit();
+    // Float totalUnbilled =
+    // usageService.getTotalUnbilledUsage(account.getAccountId());
+    // Float limitLeft = limit - totalUnbilled;
+
+    // boolean check = recordingService.checkLimit(ids, limitLeft, account);
+
+    // if(check == false)
+    // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limit Exceeded");
+    // else
+    // return ResponseEntity.status(HttpStatus.OK).body("Analyze Complete");
+    // }
+
+    // catch (UsernameNotFoundException e){
+    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not
+    // Found.");
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+
+    // e);
+    // }
+    // };
+    // }
 }

@@ -45,11 +45,11 @@ public class AnalysisController {
         return analysisService.getAnalysisByRecordingId(recordingId);
     }
 
-    // @GetMapping("getAnalysisId/{recordingId}")
-    // public ResponseEntity<?> getAnalysisId(@PathVariable Integer recordingId) {
-    //     Integer analysisId = analysisService.getAnalysisId(recordingId);
-    //     return ResponseEntity.ok(analysisId);
-    // }
+    @GetMapping("getAnalysisId/{recordingId}")
+    public ResponseEntity<?> getAnalysisId(@PathVariable Integer recordingId) {
+        Integer analysisId = analysisService.getAnalysisId(recordingId);
+        return ResponseEntity.ok(analysisId);
+    }
 
     @PostMapping("/editTranscript")
     public ResponseEntity<String> saveEdit(@RequestBody ChangeTranscriptDto changeTranscriptDto) {
@@ -65,11 +65,11 @@ public class AnalysisController {
 
         // get analysis
         Integer analysisId = analysisService.getAnalysisId(recordingId);
+        System.out.println("ANALYSIS ID: " + analysisId);
 		Optional<Analysis> analysis = analysisRepo.findById(analysisId);
-
+        
 		response.setSuccess(true);
-		response.setData(analysis);
-
+        response.setData(analysis);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
@@ -96,6 +96,8 @@ public class AnalysisController {
 
     // get analysis
     Integer analysisId = analysisService.getAnalysisId(recordingId);
+
+    System.out.println("ANALYSIS ID: " + analysisId);
     String analysis = analysisRepo.findById(analysisId).get().getNegativeEmotion();
 
     String[] suggestion_list = analysis.split("\\n");

@@ -1,11 +1,14 @@
 package com.example.fyp.repo;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.fyp.entity.Analysis;
+import com.example.fyp.entity.Recording;
 
 // Analysis Repository for Analysis Entity to access to the Database
 @Repository
@@ -20,4 +23,5 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
     @Query("SELECT a.analysisId FROM Analysis a WHERE a.recording.recordingId = :recordingId")
     Integer getAnalysisId(@Param("recordingId") Integer recordingId);
     
+    Optional<Analysis> findById(Integer analysisId);
 }
