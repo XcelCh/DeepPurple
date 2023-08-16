@@ -10,21 +10,22 @@ function EditProfile() {
     const [formData, setFormData] = useState({
       fullName: "",
       email: "",
-      password: "",
-      confirmPassword: "",
       phoneNum: "",
       dob: "",
       gender: "Gender",
       companyField: "-"
     })
-    // const [profilePic, setProfilePic] = useState('');
 
     const navigate = useNavigate();
 
     const token = authHeader();
     const [dropdown, setDropdown] = useState("");
     const [otherInput, setOtherInput] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [message, setMessage] = useState('');
+    const [limitError, setLimitError] = useState(false);
+    const [success, setSuccess] = useState(false);
+
+    const phonePattern = /^\d{8,}$/;
 
     const companyFieldArray = ['Education', 'Entertainment/Media', 'F&B', 'FinTech', 
                               'Healthcare/Pharmaceuticals', 'Retail/E-Commerce', 'Technology', 'Telecommunications'];
@@ -69,29 +70,66 @@ function EditProfile() {
             console.error(error);
           });
 
-      // setProfilePic(sessionStorage.getItem("profilepic"));
-
     }, [])
 
 
     const handleSave = () => {
 
-      setErrorMessage('');
+      setMessage('');
+      setSuccess(false);
 
-      if (formData.companyField === '') {
-        setErrorMessage('Company Field cannot be empty!');
+      if (formData.fullName.trim() === '') {
+        setMessage('Name field cannot be empty!');
+        setLimitError(true);
+        return;
+      }
+
+      if (formData.phoneNum.trim() === '') {
+        setMessage('Phone Number cannot be empty!');
+        setLimitError(true);
+        return;
+      }
+
+      if (!phonePattern.test(formData.phoneNum)) {
+          setMessage('Please enter a valid Singapore phone number!');
+          setLimitError(true);
+          return;
+      }
+
+      if (formData.dob === '') {
+          setMessage('Date of Birth field cannot be empty!');
+          setLimitError(true);
+          return;
+      }
+
+      if (new Date().setFullYear(new Date().getFullYear() - 18) < new Date(formData.dob)) {
+          
+          setMessage('You must be at least 18 years old!');
+          setLimitError(true);
+          return;
+      }
+
+      if (formData.gender != "Female" && formData.gender != "Male") {
+          setMessage('Select your gender');
+          setLimitError(true);
+          return;
+      }
+
+      if (formData.companyField.trim() === '') {
+
+        setMessage('Company field cannot be empty!');
+        setLimitError(true);
         return ;
       }
+
+
 
       const data = {
         'email': formData.email,
         'fullName': formData.fullName,
-        'password': null,
         'gender': formData.gender,
         'phoneNum': formData.phoneNum,
         'dob': formData.dob,
-        'roles': null,
-        // 'profilePic': null,
         'companyField': formData.companyField
       }
 
@@ -108,7 +146,9 @@ function EditProfile() {
           throw new Error('Send data failed.');
         }
         else {
-          navigate('/');
+          setMessage('Account has been successfully edited!');
+          setSuccess(true);
+          setLimitError(true);
           console.log('Success sending data.');
         }
       })
@@ -276,22 +316,32 @@ function EditProfile() {
                         ></input>
                         
                       ) : null}
-                      {errorMessage && (
-                          <div className="flex items-center text-red-500 text-sm mt-2">
-                              <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              className="w-5 h-5 mr-2"
-                              >
-                              <path
-                                  fillRule="evenodd"
-                                  d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                  clipRule="evenodd"
-                              />
-                              </svg>
-                              {errorMessage}
-                          </div>
+                      {limitError && (
+                        <div className="fixed top-0 left-0 right-0 z-50 pt-32 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full bg-black bg-opacity-50">
+                            <div className="relative w-2/5 mx-auto">
+                                <div className="relative bg-white rounded-lg shadow">
+                                    <button onClick={() => setLimitError(false)} className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                        <span className="sr-only">Close modal</span>
+                                    </button>
+                                    <div className="p-8 text-center">
+                                      {success ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16">
+                                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                        </svg>
+                                      ) : (    
+                                        <svg className="mx-auto mb-4 text-[#414141] w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                        </svg>
+                                      )}
+                                        <p className="mb-5 text-lg font-semibold text-[#414141]">{message}</p>
+                                        <button onClick={() => setLimitError(false)} className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">Continue</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                       )}
                 </div>
               </div>

@@ -45,6 +45,7 @@ function Billing() {
     const [visible, setVisible] = useState(false)
     const [limitError, setLimitError] = useState(false)
     const [totalUsage, setTotalUsage] = useState(0.0);
+    const [successMessage, setSuccessMessage] = useState(false);
 
     const openModal = () => {
         setVisible(true);
@@ -112,6 +113,7 @@ function Billing() {
         .then (response => {
             if (response.ok) {
                 console.log('Successfully fetch billing history.');
+                setSuccessMessage(true);
                 return response.json();
             }
             else if(response.status === 401) {
@@ -168,47 +170,6 @@ function Billing() {
         getBillingHistory();
         getTotalUsage();
     }, [])
-    
-    const data = {
-        labels: ['01 Aug', '02 Aug', '03 Aug', '04 Aug', '05 Aug', '06 Aug'],
-        datasets: [
-            {
-                data: [0.24, 0.48, 0.72, 0.96, 1.2, 1.5],
-                backgroundColor: '#7566BB',
-                borderWidth: 0,    
-            }
-        ]
-    }
-
-    const options = {
-        plugins: {
-            legend: {
-                display: false, // Set to false to hide the legend
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        const value = context.parsed.y;
-                        return '$' + value;
-                    },
-                },
-            },
-        },
-        scales: {
-            x: {
-                grid: {
-                display: false, // Set to false to hide the vertical grid lines
-                },
-            },
-            y: {
-                ticks: {
-                callback: function (value) {
-                    return '$' + value;
-                },
-                },
-            },
-        },
-    }
 
     const setUsageLimit = (limit) => {
         
@@ -418,47 +379,32 @@ function Billing() {
                                     </div>
                                 </div>
                             )}
+
+                            {successMessage && (
+                                <div className="fixed top-0 left-0 right-0 z-50 pt-32 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full bg-black bg-opacity-50">
+                                    <div className="relative w-2/5 mx-auto">
+                                        <div className="relative bg-white rounded-lg shadow">
+                                            <button onClick={() => setSuccessMessage(false)} className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                </svg>
+                                                <span className="sr-only">Close modal</span>
+                                            </button>
+                                            <div className="p-8 text-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                                </svg>
+                                                <p className="mb-5 text-lg font-semibold text-[#414141]">Your payment details has been succesfully deleted!</p>
+                                                <button onClick={() => setSuccessMessage(false)} className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">Continue</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                         </div>
                     </div>
                 </div>
-                {/* <div className="mt-8">
-                    <div className="px-32">
-                        <div className="border border-[#A5A5A5] rounded-md p-8 bg-white">
-                            <p className="text-2xl font-semibold text-[#414141]">
-                                Usage
-                            </p>
-                            <p className="text-md text-[#414141]">  
-                                The chart below provides a visual representation of your usage activity over time.
-                            </p>
-                            <div className="flex mt-2">
-                                <select
-                                    className="select select-bordered font-normal select-sm h-11 w-48"
-                                    >
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                </select>
-                                <select
-                                    className="select select-bordered font-normal select-sm h-11 w-24 ml-4"
-                                    >
-                                    <option value="January">2023</option>
-                                    <option value="February">2022</option>
-                                    <option value="March">2021</option>
-                                </select>
-                            </div>
-                            <p className="text-xl font-semibold mt-2 mb-2 text-[#414141]">
-                                Daily usage (SGD)
-                            </p>
-                            <div style={{ width: '800px', height: '400px'}}>
-                                <Bar
-                                    data = {data}
-                                    options = {options}    
-                                ></Bar>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
                 <div className="mt-8 mb-16">
                     <div className="px-32">
                         <div className="border border-[#A5A5A5] rounded-md p-8 bg-white">
@@ -503,7 +449,7 @@ function Billing() {
                                                             {billing.dateBilled.toString()}
                                                         </td>
                                                         <td className="h-1" style={{ width: '25%' }}>
-                                                            {billing.totalAmount.toString()}
+                                                            $ {billing.totalAmount.toString()}
                                                         </td>
                                                         <td className="h-1" style={{ width: '25%' }}>
                                                             Paid
