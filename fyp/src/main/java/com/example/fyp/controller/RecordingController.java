@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.fyp.entity.Account;
+import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.model.ResponseStatus;
@@ -73,6 +74,15 @@ public class RecordingController {
             System.out.println("ACCOUNT ID: " + account_id);
 
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
+            
+            //delete unanalyzed recordings
+            for (Map<String, Object> rec : recList) {		
+            	if(((Analysis) rec.get("analysis")) == null) {
+    	            Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
+    	            recRepo.delete(r.get());
+            	}
+    	       
+            }
 
             System.out.println("RECORDING: " + recList);
 
