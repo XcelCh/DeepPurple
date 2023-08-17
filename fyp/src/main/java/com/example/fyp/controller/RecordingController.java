@@ -1,5 +1,6 @@
 package com.example.fyp.controller;
 
+import java.awt.SystemColor;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -71,6 +72,9 @@ public class RecordingController {
     @Autowired
     private AnalysisService analysisService;
     
+    @Autowired
+    private StorageService storageService;
+    
     // Get All Recordings
     @GetMapping("/getAllRecordings")
     public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String search) {
@@ -85,14 +89,15 @@ public class RecordingController {
 
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
             
-            //delete unanalyzed recordings
-            // for (Map<String, Object> rec : recList) {		
-            // 	if(((Analysis) rec.get("analysis")) == null) {
-    	    //         Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
-    	    //         recRepo.delete(r.get());
-            // 	}
-    	       
-            // }
+            //delete unanalyzed recordings            
+            for (Map<String, Object> rec : recList) {		
+            	Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
+            	
+            	if(r.get().getAnalysis() == null) {    	             
+    	             recRepo.delete(r.get());    	             
+    	             storageService.deleteFile(r.get().getTimeStamp()+"_"+r.get().getRecordingName());
+             	}                
+            }            
 
             System.out.println("RECORDING: " + recList);
 

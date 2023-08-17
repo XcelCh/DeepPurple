@@ -645,6 +645,7 @@ const addEmployee = async (empData) => {
               onChange={(e) => handleSelectedEmployee(e.target.value)}
               className="select select-bordered font-normal select-sm h-11"
             >
+              <option value="" selected disabled>Select Employee</option>
               {empList &&
                 empList.map((emp) => {
                   return (
