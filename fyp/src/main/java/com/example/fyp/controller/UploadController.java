@@ -250,12 +250,21 @@ public class UploadController {
 	@PostMapping("/analyze")
 	private String recordAnalyzer(@RequestBody List<Integer> recordingIds) throws RuntimeException {
 
+		// get company 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		Integer account_id = accountServiceImpl.getAccountId(email);
+		Account account = accountServiceImpl.loadUserDetailsByUsername(email);
+		String company = account.getCompanyField();
+
 		List<Integer> analysisIds = new ArrayList<>();
 		for (Integer recordingId : recordingIds) {
 			analysisIds.add(analysisService.getAnalysisId(recordingId));
 		}
 		
 		for (Integer analysisId : analysisIds) {
+
+			
 
 			System.out.println("ANALYSIS ID: " + analysisId);
 
@@ -325,6 +334,8 @@ public class UploadController {
 			}
 
 			analysis.setCategory(category);
+
+			
 
 			// Summary
 			prompt = "Summarize this customer service conversation into 1 paragraph: " + formattedTranscripts;
@@ -409,7 +420,7 @@ public class UploadController {
 			analysis.setRecordingSentiment(callSentiment);
 
 			// Main issue
-			prompt = "Describe the main issue into just a few words based on this conversation: "
+			prompt = "This is a " + company + " company. Describe the main issue into just a few words based on this conversation: "
 					+ formattedTranscripts;
 			CompletionRequest mainIssueRequest = CompletionRequest.builder()
 					.model(currentModel)
@@ -423,7 +434,7 @@ public class UploadController {
 			analysis.setMainIssue(mainIssue);
 
 			// Employee performance
-			prompt = "This is a telecommunication company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n"
+			prompt = "This is a " + company + " company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n"
 					+ //
 					"\n" + //
 					"- Fluency: rating/100\n" + //
@@ -431,9 +442,35 @@ public class UploadController {
 					"- Problem Solving: rating/100\n" + //
 					"- Personalization: rating/100" + //
 					" Based on the following conversation: " + formattedTranscripts + //
-					". Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range and should not be overly high. An average score around 80 is expected.\r\n"
+					// "Please provide an assessment of the conversation above on a scale of 1 to
+					// 100 where 1 is very poor, 50 is average and 100 is excellent. You do not
+					// always have to give high values.\r\n" + //
+					"You can use this guideline as a guide to rate the quality of the conversation " + //
+					"Guideline: " + //
+					"1.Rate conversations above 75 when they exhibit clear communication, engage participants effectively, and maintain a strong flow of information."
 					+ //
+					"2.Assign a rating between 40 and 74 for conversations that demonstrate moderate quality. These conversations convey the main points but might lack some depth or engagement."
+					+ //
+					"3.Use a rating of range 1 - 39 for conversations that exhibit poor communication, confusion, or lack of engagement. These conversations struggle to convey coherent information."
+					+ //
+					"Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range in accordance with the guideline given and should not be overly high."
+					+ //
+					"It is best that the rating should rarely be above 85 unless it exceptionally adhere and excelled to guideline number 1."
+					+ //
+					// An average score around 80 is expected.\r\n" + //
 					"[You do not need to explain anything. Just respond with the format given.]";
+
+			// prompt = "This is a telecommunication company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n"
+			// 		+ //
+			// 		"\n" + //
+			// 		"- Fluency: rating/100\n" + //
+			// 		"- Hospitality: rating/100\n" + //
+			// 		"- Problem Solving: rating/100\n" + //
+			// 		"- Personalization: rating/100" + //
+			// 		" Based on the following conversation: " + formattedTranscripts + //
+			// 		". Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range and should not be overly high. An average score around 80 is expected.\r\n"
+			// 		+ //
+			// 		"[You do not need to explain anything. Just respond with the format given.]";
 
 			CompletionRequest employeePerformanceRequest = CompletionRequest.builder()
 					.model(currentModel)

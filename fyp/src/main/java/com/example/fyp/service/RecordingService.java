@@ -107,7 +107,7 @@ public class RecordingService extends AudioFileWriter{
             recording.setBytes(audio.readAllBytes());
             recording.setFormat(audio.getFormat());
             recording.setSampleRate((int) (recording.getFormat().getSampleRate()));
-
+            recording.setAudioFormat(recording.getRecordingName().split("\\.")[1]);
             recording.setRecordingDuration((double) (audio.getFrameLength() / recording.getFormat().getFrameRate()));
 
             // Add total duration
