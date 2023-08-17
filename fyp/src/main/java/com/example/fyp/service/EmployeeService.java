@@ -1,5 +1,6 @@
 package com.example.fyp.service;
 
+import com.example.fyp.controller.dto.EmployeeAnalysisDto;
 import com.example.fyp.repo.EmployeeRepository;
 import java.util.List;
 import java.util.Map;
@@ -30,5 +31,10 @@ public class EmployeeService {
       }else{
         return false;
       }
+    }
+
+    public List<Object[]> getEmployeeByAccountId(Integer accountId) {
+
+      return employeeRepository.findEmployeeByAccount(accountId);
     }
 }

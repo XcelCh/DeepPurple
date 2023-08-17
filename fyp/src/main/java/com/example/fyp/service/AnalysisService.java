@@ -129,4 +129,16 @@ public class AnalysisService {
     public void saveAnalysis(Analysis analysis) {
         analysisRepository.save(analysis);
     }
+
+    public Integer countCategoryById(String category, Integer accountId) {
+        return analysisRepository.countByCategory(category, accountId);
+    }
+
+    public Integer countRecSentiment(String sentiment, Integer accountId) {
+        return analysisRepository.countByRecordingSentiment(sentiment, accountId);
+    }
+
+    public Integer countEmpSentiment(String sentiment, Integer employeeId) {
+        return analysisRepository.countByEmployeeSentiment(sentiment, employeeId);
+    }
 }
