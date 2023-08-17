@@ -97,7 +97,7 @@ public class RecordingController {
             System.out.println("RECORDING: " + recList);
 
             if (search != null && !search.isEmpty()) {
-                String searchKeyword = "%" + search.toLowerCase() + "%";
+                String searchKeyword = "%" + search.toLowerCase() + "%";    
 
                 recList = recList.stream()
                         .filter(rec -> ((String) rec.get("recordingName")).contains(search))

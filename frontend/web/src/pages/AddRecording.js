@@ -207,12 +207,23 @@ function AddRecording() {
   })
     .then((res) => res.json())
     .then(
-      (result) => {               
-        empId = result.data.employeeId;
-        empName = result.data.employeeName;
-        getEmpList();
-        // Success message
-        console.log("New employee to assign added!")             
+      (result) => {       
+        if (result.success) {
+          empId = result.data.employeeId;
+          empName = result.data.employeeName;
+          getEmpList();
+                       Swal.fire(
+                         "Added",
+                         "The employee has been added.",
+                         "success"
+                       );
+
+        } else {
+             Swal.fire("Fail", "Fail to add employee. Try again", "error");
+          
+        }
+       
+          
       },
       (error) => {
         setError(error);
