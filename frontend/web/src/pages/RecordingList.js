@@ -196,9 +196,9 @@ function RecordingList() {
   };
 
   // Change Employee
-   const handleChangeEmployee = (recordingId, employeeId, index) => {
+  const handleChangeEmployee = (recordingId, employeeId, index) => {
      fetch(
-       `http://localhost:8082/recordingList/updateRecordingEmployeeById/${recordingId}`,
+       `http://localhost:8082/recordingList/updateRecordingEmployeeById`,
        {
          method: "POST",
          headers: {

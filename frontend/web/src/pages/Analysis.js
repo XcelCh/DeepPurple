@@ -588,7 +588,7 @@ function Analysis() {
               initialParagraphs={transcriptData}
               employeeName={analysisData.recording?.employee.employeeName}
               recordingName={analysisData.recording?.recordingName}
-              timeStamp = {analysisData.recording?.timeStamp}
+              timeStamp={analysisData.recording?.timeStamp}
             />
           </div>
 
@@ -604,14 +604,15 @@ function Analysis() {
                       Transcript Confidence Rate
                     </p>
                     <p className="text-xl font-bold">
-                      {analysisData.transcriptConfidence}%
+                      {(analysisData.transcriptConfidence * 100).toFixed(2)}%
                     </p>
                   </div>
-                  {analysisData.transcriptConfidence < 50 ? (
+                  {(analysisData.transcriptConfidence * 100).toFixed(2) < 50 ? (
                     <p className="inline-block px-3 rounded-full bg-[#D32F2F] text-white">
                       Low
                     </p>
-                  ) : analysisData.transcriptConfidence < 71 ? (
+                  ) : (analysisData.transcriptConfidence * 100).toFixed(2) <
+                    71 ? (
                     <p className="inline-block px-3 rounded-full bg-[#FBC02D] text-white">
                       Medium
                     </p>
@@ -672,7 +673,7 @@ function Analysis() {
                         color="#9554FE"
                         title={elem.title}
                         content={elem.explanation}
-                        improvedSentence = {elem.improvedSentence}
+                        improvedSentence={elem.improvedSentence}
                         contentStyle={{ backgroundColor: "#FF0000" }}
                       />
                     );

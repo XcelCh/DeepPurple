@@ -25,7 +25,7 @@ function Card({ color, title, content, improvedSentence, highlight, setHighlight
 
   return (
     <div tabIndex="0" className="collapse rounded-lg shadow-md">
-        <input type="checkbox" onClick={handleCheckboxChange} />
+      <input type="checkbox" onClick={handleCheckboxChange} />
       <div
         className="collapse-title text-sm mt-2 font-bold rounded-t-lg text-[#FFFFFF]"
         style={{ backgroundColor: `${color}` }}
@@ -34,8 +34,13 @@ function Card({ color, title, content, improvedSentence, highlight, setHighlight
       </div>
       <div className="collapse-content bg-[#FFFFFF] text-sm">
         <p className="mt-2">{content}</p>
-        <p className="mt-2">Suggestion: {improvedSentence}</p>
-
+        <br></br>
+        {!sentiment ? (
+          <p>
+            Suggestion <br></br>
+            {improvedSentence}
+          </p>
+        ) : null}
       </div>
     </div>
   );

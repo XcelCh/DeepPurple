@@ -64,7 +64,8 @@ function AddRecording() {
   const [postsPerPage, setPostPerPage] = useState(5);
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
-
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  
   // Get All Recordings
  const getRecList = async () => {  
   const params = `?currentDate=${dateTimeString}`;
@@ -481,7 +482,14 @@ const addEmployee = async (empData) => {
 
   const analyzeRecordings = () => {
     const ids = recList.map((recording) => recording.recordingId);
-    console.log("click analyze...");
+    setIsButtonDisabled(true);
+     Swal.fire({
+          title: "Analyzing... Please wait for a while...",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        });
 
     // make transcription + analysis id
     fetch("http://localhost:8082/recordingList/analyzeLambda", {
@@ -538,36 +546,10 @@ const addEmployee = async (empData) => {
       })
       .catch((error) => {
         console.error(error);
-      });
+      }).finally(() => {
+      Swal.close();
+    });
     
-    // Analyze
-    // fetch("http://localhost:8082/audio/analyze", {
-    //   method: "POST",
-    //   headers: {
-    //     Authorization: token.Authorization,
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(ids),
-    // })
-    //   .then((response) => {
-    //     if (response.status === 400) {
-    //       console.log("Limit Exceeded.");
-    //       setLimitError(true);
-    //       throw new Error("Limit Exceeded");
-    //     } else if (response.ok) {
-    //       console.log("Analyze Complete.");
-    //       navigate("/RecordingList");
-    //     } else if (response.status === 401) {
-    //       console.log("Unauthorized");
-    //       navigate("/");
-    //     } else {
-    //       console.log("error happened.");
-    //       throw new Error("Error Happened.");
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
   }
 
   return (
@@ -625,7 +607,7 @@ const addEmployee = async (empData) => {
           </li>
         </ul>
       </div>
-            
+
       <p className="font-bold mb-1">Configuration</p>
       <div className="grid grid-cols-2 flex w-2/5 items-center mb-5">
         <p>Assign employee by</p>
@@ -669,13 +651,13 @@ const addEmployee = async (empData) => {
 
         {showOtherTB == true ? (
           <div className="ml-10 flex items-center mb-5 ">
-          <label
-          htmlFor="addEmployeeModal"
-          className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]"
-        >            
-          <p className="mr-2 text-md">Add & Assign Employee</p>
-        </label>
-        </div>
+            <label
+              htmlFor="addEmployeeModal"
+              className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]"
+            >
+              <p className="mr-2 text-md">Add & Assign Employee</p>
+            </label>
+          </div>
         ) : null}
 
         {/* Split File Name */}
@@ -702,8 +684,8 @@ const addEmployee = async (empData) => {
             >
               <option value="">Select Column</option>
               {delimitedFields.map((column) => {
-                return <option value={column}>Column {column}</option>
-              })}   
+                return <option value={column}>Column {column}</option>;
+              })}
             </select>
           </>
         ) : null}
@@ -735,7 +717,12 @@ const addEmployee = async (empData) => {
                       <td>{recording.employeeName}</td>
                       <td>
                         <RxCross2
-                          onClick={() => handleDelete(recording.recordingName, recording.recordingId)}
+                          onClick={() =>
+                            handleDelete(
+                              recording.recordingName,
+                              recording.recordingId
+                            )
+                          }
                         />
                       </td>
                     </tr>
@@ -751,10 +738,7 @@ const addEmployee = async (empData) => {
             </p>
             <p className="text-center font-semibold text-sm mb-10">
               Start uploading your audio files by clicking
-              <a
-                href="/AddRecording"
-                className="underline underline-offset-2"
-              >
+              <a href="/AddRecording" className="underline underline-offset-2">
                 Upload
               </a>
             </p>
@@ -764,24 +748,60 @@ const addEmployee = async (empData) => {
 
       {limitError && (
         <div className="fixed top-0 left-0 right-0 z-50 pt-32 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full bg-black bg-opacity-50">
-            <div className="relative w-2/5 mx-auto">
-                <div className="relative bg-white rounded-lg shadow">
-                    <button onClick={() => setLimitError(false)} className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
-                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                        <span className="sr-only">Close modal</span>
-                    </button>
-                    <div className="p-8 text-center items-center justify-center flex flex-col">
-                        <svg className="mx-auto mb-4 text-[#414141] w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                        </svg>
-                        <p className="mb-5 text-lg font-semibold text-[#414141]">Limit is not sufficient to analyse!</p>
-                        <p className="mb-5 text-lg font-semibold text-[#414141]">Increase limit to use the feature!</p>
-                        <button onClick={() => setLimitError(false)} className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">Continue</button>
-                    </div>
-                </div>
+          <div className="relative w-2/5 mx-auto">
+            <div className="relative bg-white rounded-lg shadow">
+              <button
+                onClick={() => setLimitError(false)}
+                className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+              >
+                <svg
+                  className="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 14"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                  />
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+              <div className="p-8 text-center items-center justify-center flex flex-col">
+                <svg
+                  className="mx-auto mb-4 text-[#414141] w-12 h-12"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+                <p className="mb-5 text-lg font-semibold text-[#414141]">
+                  Limit is not sufficient to analyse!
+                </p>
+                <p className="mb-5 text-lg font-semibold text-[#414141]">
+                  Increase limit to use the feature!
+                </p>
+                <button
+                  onClick={() => setLimitError(false)}
+                  className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10"
+                >
+                  Continue
+                </button>
+              </div>
             </div>
+          </div>
         </div>
       )}
 
@@ -794,7 +814,11 @@ const addEmployee = async (empData) => {
         ></Pagination>
       </div>
       <div className="flex justify-end">
-        <button onClick={analyzeRecordings} className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]">
+        <button
+          onClick={analyzeRecordings}
+          className="btn btn-sm bg-[#9554FE] normal-case h-11 w-42 border-[#9554FE]"
+          disabled={isButtonDisabled}
+        >
           <img src={Analyze} className="mr-2 h-5"></img>
           <p className="mr-2 text-md">Analyze</p>
         </button>

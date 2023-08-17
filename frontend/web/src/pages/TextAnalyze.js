@@ -243,6 +243,7 @@ function TextAnalyze() {
                         contentStyle={{ backgroundColor: "#FF0000" }}
                         highlight={highlight}
                         setHighlight={setHighlight}
+                        sentiment={true}
                       />
                     );
                   })
