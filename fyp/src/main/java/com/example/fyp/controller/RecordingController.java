@@ -29,12 +29,16 @@ import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Employee;
 import com.example.fyp.entity.Recording;
 import com.example.fyp.model.ResponseStatus;
+import com.example.fyp.repo.AnalysisRepository;
 import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.RecordingListService;
 import com.example.fyp.service.RecordingService;
+import com.example.fyp.service.StorageService;
 import com.example.fyp.service.UsageService;
+import com.example.fyp.service.AnalysisService;
+
 
 @RestController
 @RequestMapping("/recordingList")
@@ -59,8 +63,14 @@ public class RecordingController {
     private EmployeeRepository empRepo;
 
     @Autowired
+    private AnalysisRepository analysisRepo;
+
+    @Autowired
     private UsageService usageService;
 
+    @Autowired
+    private AnalysisService analysisService;
+    
     // Get All Recordings
     @GetMapping("/getAllRecordings")
     public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String search) {
@@ -76,13 +86,13 @@ public class RecordingController {
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
             
             //delete unanalyzed recordings
-            for (Map<String, Object> rec : recList) {		
-            	if(((Analysis) rec.get("analysis")) == null) {
-    	            Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
-    	            recRepo.delete(r.get());
-            	}
+            // for (Map<String, Object> rec : recList) {		
+            // 	if(((Analysis) rec.get("analysis")) == null) {
+    	    //         Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
+    	    //         recRepo.delete(r.get());
+            // 	}
     	       
-            }
+            // }
 
             System.out.println("RECORDING: " + recList);
 
@@ -134,6 +144,11 @@ public class RecordingController {
     public ResponseEntity<?> updateEmpNameById(@PathVariable Integer rec_id, @RequestBody String new_emp_id) {
         ResponseStatus response = new ResponseStatus();
 
+        // get recording sentiment
+        Integer analysisId = analysisService.getAnalysisId(rec_id);
+        Analysis analysis = analysisRepo.findById(analysisId).get();
+        String recordingSentiment = analysis.getRecordingSentiment();
+
         // update recording
         Recording recording = recRepo.findById(rec_id).get();
         Integer old_emp_id = recording.getEmployee().getEmployeeId();
@@ -152,6 +167,15 @@ public class RecordingController {
         old_employee.setNumCallsHandled(old_employee.getNumCallsHandled() - 1);
         // System.out.println("OLD EMP - AFTER NUM CALLS HANDLED: " +
         // old_employee.getNumCallsHandled());
+
+        // update number of employee recording sentiment
+        if (recordingSentiment.equals("Positive")) {
+            new_employee.setNumPositiveSentiment(new_employee.getNumPositiveSentiment() + 1);
+            old_employee.setNumPositiveSentiment(old_employee.getNumPositiveSentiment() - 1);
+        } else{
+            new_employee.setNumNegativeSentiment(new_employee.getNumNegativeSentiment() + 1);
+            old_employee.setNumNegativeSentiment(old_employee.getNumNegativeSentiment() - 1);
+        }
 
         // update recording
         recording.setEmployee(new_employee);

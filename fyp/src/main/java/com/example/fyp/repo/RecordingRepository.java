@@ -23,7 +23,7 @@ public interface RecordingRepository extends JpaRepository<Recording, Integer>{
     @Query("SELECT COUNT(r) FROM Recording r")
     Integer countRecordings();
 
-    @Query("SELECT r.recordingId AS recordingId, r.recordingName AS recordingName, r.uploadDate AS uploadDate, " +
+    @Query("SELECT r.recordingId AS recordingId, r.recordingName AS recordingName, r.uploadDate AS uploadDate, r.timeStamp AS timeStamp, " +
             "r.recordingDate AS dateRecorded, r.employee.employeeName AS employeeName, r.employee.employeeId AS employeeId, r.account.accountId AS account_id, " +
             "r.analysis.category AS category, r.analysis.recordingSentiment AS sentiment, " +
             "r.analysis.employeeSentiment AS employeeSentiment, r.analysis.customerSentiment AS customerSentiment " +

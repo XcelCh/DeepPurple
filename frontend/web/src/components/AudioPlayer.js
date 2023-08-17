@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Forward, Backward } from "../assets/index";
 import styles from "../styles/AudioPlayer.module.css";
+import authHeader from "../services/auth-header";
 
-function AudioPlayer({ initialParagraphs, employeeName, recordingName, timeStamp }) {
-
-    useEffect(() => {
-        console.log("RECORDING NAME: " + recordingName);
-    }, [recordingName]);
-
+function AudioPlayer({
+  initialParagraphs,
+  employeeName,
+  recordingName,
+  timeStamp,
+}) {
   // state
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -76,24 +77,34 @@ function AudioPlayer({ initialParagraphs, employeeName, recordingName, timeStamp
     changeRange();
   };
 
+  const token = authHeader();
+  useEffect(() => {
+    const audioSrc = `http://localhost:8082/audio/download/${timeStamp}_${recordingName}`;
+
+    fetch(audioSrc, {
+      headers: token,
+    })
+      .then((response) => response.blob())
+      .then((audioBlob) => {
+        const audioUrl = URL.createObjectURL(audioBlob);
+        audioPlayer.current.src = audioUrl;
+      })
+      .catch((error) => {
+        console.error("Error fetching audio:", error);
+      });
+  }, [timeStamp, recordingName]);
+
   return (
     <div className={styles.audioPlayer}>
       <div className="flex items-center">
         {timeStamp && (
           <audio
             ref={audioPlayer}
-            src={`http://localhost:8082/audio/download/${timeStamp}_${recordingName}`}
+            // src={`http://localhost:8082/audio/download/${timeStamp}_${recordingName}`}
             preload="metadata"
             onLoadedMetadata={onLoadedMetadata}
           ></audio>
         )}
-
-        {/* // <audio
-        //   ref={audioPlayer}
-        //   src="http://localhost:8082/audio/download/1692172900944_sample1.wav"
-        //   preload="metadata"
-        //   onLoadedMetadata={onLoadedMetadata}
-        // ></audio> */}
 
         {/* current time */}
         <div className="mr-2">{calculateTime(currentTime)}</div>
@@ -163,11 +174,14 @@ function AudioPlayer({ initialParagraphs, employeeName, recordingName, timeStamp
           {initialParagraphs.map((paragraph) => {
             const startTime = paragraph[2];
             const endTime = paragraph[3];
-            if (paragraph[0] == true) {
+            console.log("START TIME: " + startTime);
+            console.log("END TIME: " + endTime);
+            if (paragraph[0]) {
+              // console.log("employee");
               const widthPercentage = `${
                 ((endTime - startTime) / duration) * 100
               }%`;
-              //   console.log(widthPercentage);
+              console.log(widthPercentage);
               return (
                 <div
                   style={{ width: widthPercentage }}
@@ -175,6 +189,7 @@ function AudioPlayer({ initialParagraphs, employeeName, recordingName, timeStamp
                 ></div>
               );
             } else {
+              console.log("employee empty");
               const gap = endTime - startTime;
               const widthPercentage = `${(gap / duration) * 100}%`;
               // console.log(widthPercentage);
@@ -191,10 +206,12 @@ function AudioPlayer({ initialParagraphs, employeeName, recordingName, timeStamp
           <p className="font-bold text-[#9554FE]">Customer</p>
         </div>
         <div class="mb-4 flex h-2 overflow-hidden rounded bg-[#F5F5F5] text-xs">
-          {initialParagraphs.map((paragraph) => {
-            const startTime = paragraph[2];
-            const endTime = paragraph[3];
-            if (paragraph[0] == false) {
+          {/* {initialParagraphs.map((paragraph) => {
+            if (!paragraph[0]) {
+              console.log("false");
+              const startTime = paragraph[2];
+              const endTime = paragraph[3];
+
               const widthPercentage = `${
                 ((endTime - startTime) / duration) * 100
               }%`;
@@ -205,6 +222,8 @@ function AudioPlayer({ initialParagraphs, employeeName, recordingName, timeStamp
                 ></div>
               );
             } else {
+              const startTime = paragraph[2];
+              const endTime = paragraph[3];
               const gap = endTime - startTime;
               const widthPercentage = `${(gap / duration) * 100}%`;
               return (
@@ -214,7 +233,7 @@ function AudioPlayer({ initialParagraphs, employeeName, recordingName, timeStamp
                 ></div>
               );
             }
-          })}
+          })}*/}
         </div>
       </div>
     </div>

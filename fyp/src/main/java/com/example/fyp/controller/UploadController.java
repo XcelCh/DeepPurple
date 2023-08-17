@@ -262,23 +262,21 @@ public class UploadController {
 			analysisIds.add(analysisService.getAnalysisId(recordingId));
 		}
 		
-		for (Integer analysisId : analysisIds) {
+		for (int i = 0; i < analysisIds.size(); i ++) {
 
-			
-
-			System.out.println("ANALYSIS ID: " + analysisId);
+			System.out.println("ANALYSIS ID: " + analysisIds.get(i));
 
 			String apiKey = apiKeyContent;
 
 			String currentModel = "text-davinci-003";
 
-			Analysis analysis = analysisService.findAnalysisById(analysisId);
+			Analysis analysis = analysisService.findAnalysisById(analysisIds.get(i));
 
 			// Set up OpenAI API
 			OpenAiService openAiService = new OpenAiService(apiKey);
 
 			// Merge all the transcripts and prefix with Agent / Customer
-			List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(analysisId);
+			List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(analysisIds.get(i));
 
 			String formattedTranscripts = "";
 
@@ -334,8 +332,6 @@ public class UploadController {
 			}
 
 			analysis.setCategory(category);
-
-			
 
 			// Summary
 			prompt = "Summarize this customer service conversation into 1 paragraph: " + formattedTranscripts;
@@ -418,6 +414,15 @@ public class UploadController {
 			}
 
 			analysis.setRecordingSentiment(callSentiment);
+
+			// Update Employee Recording Sentiment
+			Recording recording = recRepo.findById(recordingIds.get(i)).get();
+			Employee employee = recording.getEmployee();
+			if (callSentiment.equals("Positive")) {
+				employee.setNumPositiveSentiment(employee.getNumPositiveSentiment() + 1);
+			} else {
+				employee.setNumNegativeSentiment(employee.getNumNegativeSentiment() + 1);
+			}
 
 			// Main issue
 			prompt = "This is a " + company + " company. Describe the main issue into just a few words based on this conversation: "

@@ -198,12 +198,12 @@ function RecordingList() {
   // Change Employee
   const handleChangeEmployee = (recordingId, employeeId, index) => {
      fetch(
-       `http://localhost:8082/recordingList/updateRecordingEmployeeById`,
+       `http://localhost:8082/recordingList/updateRecordingEmployeeById/${recordingId}`,
        {
          method: "POST",
          headers: {
            "Content-Type": "text/plain", // Set the content type to indicate JSON data
-        "Authorization":token },
+        "Authorization":token.Authorization },
          
          body: employeeId,
        }
@@ -261,15 +261,42 @@ function RecordingList() {
   };
 
   // Download Recording
-  const handleDownload = (fileName, timeStamp) => {
-    const link = document.createElement("a");
-    link.href = `http://localhost:8082/audio/download/${fileName}`;
 
-    link.download = fileName;
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = (fileName, timeStamp) => {
+    const headers = new Headers();
+    headers.append("Authorization", `${token.Authorization}`);
+    
+     Swal.fire({
+       title: "Downloading...",
+       didOpen: () => {
+         Swal.showLoading();
+       },
+       allowOutsideClick: () => !Swal.isLoading(),
+     });
+    
+    fetch(`http://localhost:8082/audio/download/${timeStamp}_${fileName}`, {
+      method: "GET",
+      headers: headers,
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", timeStamp + "_" + fileName);
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Error downloading audio:", error);
+      }).finally(() => {
+      Swal.close();
+    });
+    
+    
   };
 
   useEffect(() => {
@@ -567,7 +594,7 @@ function RecordingList() {
                             <li className="hover:bg-[#9554FE]">
                               <a
                                 onClick={() =>
-                                  handleDownload(recording.recordingName)
+                                  handleDownload(recording.recordingName, recording.timeStamp)
                                 }
                                 className="text-[#9554FE] hover:text-[#FFFFFF]"
                               >
