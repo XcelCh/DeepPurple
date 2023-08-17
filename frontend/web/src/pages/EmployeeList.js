@@ -100,6 +100,7 @@ function EmployeeList() {
         // Deleting
         fetch(`http://localhost:8082/employeeList/deleteEmployeeById/${id}`, {
           method: "DELETE",
+          headers : token
         })
           .then((res) => res.json())
           .then(

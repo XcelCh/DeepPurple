@@ -1,11 +1,13 @@
 package com.example.fyp.service;
 
 import com.example.fyp.controller.dto.EmployeeAnalysisDto;
+import com.example.fyp.entity.Employee;
 import com.example.fyp.repo.EmployeeRepository;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 // Service Class for Employee Entity to communicate with database 

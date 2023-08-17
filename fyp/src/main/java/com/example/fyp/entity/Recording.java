@@ -125,12 +125,12 @@ public class Recording {
     }
 
     // Delete method which deletes related entities 
-    public Recording deleteRecording(Analysis analysis) {
+    // public Recording deleteRecording() {
 
-        analysis.deleteAnalysis(analysis.getTranscripts());
-        this.setAnalysis(null);
-        analysis.setRecording(null);
+    //     this.analysis.deleteAnalysis();
+    //     this.setAnalysis(null);
+    //     this.analysis.setRecording(null);
 
-        return this;
-    }
+    //     return this;
+    // }
 }

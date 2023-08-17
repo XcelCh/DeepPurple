@@ -73,14 +73,14 @@ public class Employee {
     }
 
     // Method to delete related entities when deleting Employee Record
-    public Employee deleteEmployee(List<Recording> recordings) {
+    // public Employee deleteEmployee() {
 
-        for (Recording r : recordings) {
-            r.deleteRecording(r.getAnalysis());
-            recordings.remove(r);
-            r.setEmployee(null);
-        }
+    //     for (Recording r : this.recording) {
+    //         r.deleteRecording();
+    //         this.recording.remove(r);
+    //         r.setEmployee(null);
+    //     }
 
-        return this;
-    }
+    //     return this;
+    // }
 }
