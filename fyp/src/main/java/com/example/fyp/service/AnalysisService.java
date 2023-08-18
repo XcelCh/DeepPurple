@@ -19,6 +19,7 @@ import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.repo.TranscriptRepository;
 import com.example.fyp.utils.Container;
 
+// Service class for communicating between Database to process Analysis entity
 @Service
 public class AnalysisService {
     @Autowired
@@ -33,6 +34,7 @@ public class AnalysisService {
     @Autowired
     private TranscriptRepository transcriptRepository;
 
+    // Get analysis object by recording ID
     public ResponseEntity<?> getAnalysisByRecordingId(Integer recordingId) {
         Optional<Analysis> analysis = analysisRepository.findById(recordingId);
         Optional<Recording> recording = recordingRepository.findById(recordingId);
@@ -61,18 +63,21 @@ public class AnalysisService {
         }
     }
 
+    // Get Analysis ID
     public Integer getAnalysisId(Integer recordingId) {
         Integer analysisId = analysisRepository.getAnalysisId(recordingId);
         System.out.println("ANALYSIS ID: " + analysisId);
         return analysisId;
     }
 
+    // Update dialog using transcript
     public void updateDialogByTranscriptAndRecordingId(Integer transcriptId, Integer recordingId, String dialog) {
         Transcript transcript = transcriptRepository.findByTranscriptIdAndRecordingId(transcriptId, recordingId);
         transcript.setDialog(dialog);
         transcriptRepository.save(transcript);
     }
     
+    // Process and save analysis
     public Analysis processAnalysis(Recording rec, Container c){
 
         // return analysisRepository.save(new Analysis(null,null, null, c.getData()[1], c.getData()[2], c.getData()[4],
@@ -89,7 +94,7 @@ public class AnalysisService {
     }
 
 
-
+    // Find analysis using analysis ID
     public Analysis findAnalysisById(Integer id) {
 
         Analysis analysis = analysisRepository.findById(id)
@@ -98,6 +103,7 @@ public class AnalysisService {
         return analysis;
     }
 
+    // Get the sentiment score for the Analysis
     public double getScore(String employeePerformance, String skill) {
 
         int index = employeePerformance.toLowerCase().indexOf(skill);
@@ -126,18 +132,22 @@ public class AnalysisService {
         return Double.parseDouble(score);
     }
 
+    // Save analysis
     public void saveAnalysis(Analysis analysis) {
         analysisRepository.save(analysis);
     }
 
+    // Count how many analyses instance of a category
     public Integer countCategoryById(String category, Integer accountId) {
         return analysisRepository.countByCategory(category, accountId);
     }
 
+    // Count how many analyses instance of a sentiment
     public Integer countRecSentiment(String sentiment, Integer accountId) {
         return analysisRepository.countByRecordingSentiment(sentiment, accountId);
     }
 
+    // Count based on employee's sentiment
     public Integer countEmpSentiment(String sentiment, Integer employeeId) {
         return analysisRepository.countByEmployeeSentiment(sentiment, employeeId);
     }

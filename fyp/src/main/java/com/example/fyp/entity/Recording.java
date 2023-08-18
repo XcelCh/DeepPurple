@@ -27,7 +27,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-// Analysis Entity 
+// Recording file Entity 
 @Data
 @Entity
 @AllArgsConstructor

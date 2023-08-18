@@ -17,6 +17,7 @@ import com.example.fyp.entity.Account;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.SummaryAnalysisService;
 
+//Controller to handle summary of all the analyses
 @RestController
 @RequestMapping("/summaryAnalysis")
 public class SummaryAnalysisController {
@@ -27,6 +28,7 @@ public class SummaryAnalysisController {
     @Autowired
     SummaryAnalysisService summaryAnalysisService;
 
+    //Get analyses
     @GetMapping("/getAnalysis")
     public ResponseEntity<?> getSummaryAnalysis() {
 

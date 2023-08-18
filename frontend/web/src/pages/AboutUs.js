@@ -32,6 +32,7 @@ function AboutUs() {
   const namePattern = /^(?:[A-Za-z]+){0,10}$/;
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+  //check for entry limit
   useEffect (() => {
 
     setErrorMessage('');
@@ -44,7 +45,7 @@ function AboutUs() {
 
 
 
-
+  //handle submitted form data
   const handleSubmit = (e) => {
 
     e.preventDefault();
@@ -72,7 +73,7 @@ function AboutUs() {
 
     
     
-
+    //send form data to backend
     fetch('http://localhost:8082/sendInquiry', {
       method : 'POST',
       headers : {'Content-Type' : 'application/json'},

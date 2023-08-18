@@ -4,9 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+//Helper files for handling recording/audio files
 public class AudioUtils {
 
-
+    //compress audio
     public static byte[] compressAudio(byte[] data) {
         Deflater deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
@@ -27,7 +28,7 @@ public class AudioUtils {
     }
 
 
-
+    //decompress audio
     public static byte[] decompressAudio(byte[] data) {
         Inflater inflater = new Inflater();
         inflater.setInput(data);

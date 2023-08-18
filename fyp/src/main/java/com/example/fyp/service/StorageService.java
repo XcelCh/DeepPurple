@@ -26,6 +26,7 @@ import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.repo.TranscriptRepository;
 import com.example.fyp.utils.AudioUtils;
 
+//Service class to synchronise between DeepPurple DB and remote AWS S3 DB, to store file blobs.
 @Service
 public class StorageService {
 	@Autowired
@@ -40,6 +41,7 @@ public class StorageService {
     @Autowired
 	private AmazonS3 s3Client;
 
+	//upload file
     public String uploadFile(MultipartFile file, Account account) {    	    	    	
     	File fileObj = convertMultiPartFileToFile(file);
     	long uniqueIdentifier = System.currentTimeMillis();
@@ -58,6 +60,7 @@ public class StorageService {
     	return "File uploaded : " + fileName;
     }
     
+	//download file from S3 (get and read object's byte content)
     public byte[] downloadFile(String fileName) {
     	S3Object s3Object = s3Client.getObject(bucketName, fileName);    	
     	S3ObjectInputStream inputStream = s3Object.getObjectContent();    	
@@ -70,7 +73,7 @@ public class StorageService {
     	return null;
     }
     
-    
+    //Convert from a S3 object instance to a file
     public void readFromS3ObjectToFile(String fileName, String filePath) {    
     	S3Object s3Object = s3Client.getObject(bucketName, fileName);
     	InputStream inputStream = s3Object.getObjectContent();    	
@@ -82,6 +85,7 @@ public class StorageService {
     	}
     }
     
+	//Delete a file in S3
     public String deleteFile(String fileName) {
     	s3Client.deleteObject(bucketName, fileName);
     	return fileName + " removed.";

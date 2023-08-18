@@ -19,6 +19,7 @@ import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.repo.TranscriptRepository;
 
+//Service class for Analyses summary
 @Service
 public class SummaryAnalysisService {
 
@@ -34,6 +35,7 @@ public class SummaryAnalysisService {
     @Autowired
     private TranscriptRepository transcriptRepository;
 
+    //Get analyses' Summary
     public SummaryAnalysisDto getSummaryAnalysis(Integer accountId) {
 
         SummaryAnalysisDto summaryAnalysisDto = new SummaryAnalysisDto();

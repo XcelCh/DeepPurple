@@ -33,6 +33,7 @@ import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.EmployeeService;
 
+//Controller to handle employees (read, add, update, delete, etc.)
 @RestController
 @RequestMapping("/employeeList")
 public class EmployeeController {

@@ -192,6 +192,7 @@ function Analysis() {
     }
   };
 
+  //convert time to percentage
   const timeToPercentage = (secs) => {
     const totalTime =
       analysisData.employeeSpeakTime +

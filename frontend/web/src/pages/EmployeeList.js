@@ -121,7 +121,7 @@ function EmployeeList() {
     });
   };
 
-  // Update Employee
+  // Update selected employee's data and save
   const updateEmployee = (empData, currentEmployeeId) => {
     fetch(
       `http://localhost:8082/employeeList/updateEmployeeNameById/${currentEmployeeId}`,
