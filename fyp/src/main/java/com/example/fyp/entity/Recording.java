@@ -45,12 +45,6 @@ public class Recording {
     @Nullable
     private Long timeStamp;
     
-    // Not needed
-    @Nullable
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] content;
-
     // upload date and recording date could only get the date the user last modified the audio
     // remove one of them
     @Column(columnDefinition = "DATETIME")
@@ -64,7 +58,6 @@ public class Recording {
 
     @Nullable
     private String recordingUrl;
-    private String employeeName;
     private String audioFormat;
     private Integer sampleRate;
     
