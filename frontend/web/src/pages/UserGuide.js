@@ -27,6 +27,7 @@ import Userguideeditprofile from "../assets/Userguideeditprofile.png";
 import Userguideemotioncards from "../assets/Userguideemotioncards.png";
 import Userguideoverallsentiment from "../assets/Userguideoverallsentiment.png";
 import Userguideuploadrecording from "../assets/Userguideuploadrecording.png";
+import Userguideassignemployee from "../assets/Userguideassignemployee.png";
 
 import ScrollToTopButton from "./ScrollToTopButton";
 import { useNavigate } from 'react-router-dom';
@@ -100,13 +101,35 @@ function UserGuide() {
           Text Analyzer
           </a>
           </div>
+          <div className="relative group">
           <div className="bg-purple-100 p-2 rounded-md transition-all duration-300">
           <a
-          href="#customer-service"
+          href="#setup-accounts"
           className="text-purple-600 hover:text-purple-800 transition-all duration-300"
           >
           Customer Service Analyzer
           </a>
+          </div>
+          <ul className="absolute left-0 hidden group-hover:block bg-white border rounded-md shadow-md p-2 w-48 transition-opacity duration-300">
+          <li className="hover:bg-gray-100 transition-all duration-300">
+          <a href="#first-time" className="block py-1 px-2">First Time Users</a>
+          </li>
+          <li className="hover:bg-gray-100 transition-all duration-300">
+          <a href="#navigation" className="block py-1 px-2">Navigation</a>
+          </li>
+          <li className="hover:bg-gray-100 transition-all duration-300">
+          <a href="#recording-list" className="block py-1 px-2">Recording List</a>
+          </li>
+          <li className="hover:bg-gray-100 transition-all duration-300">
+          <a href="#upload-recording" className="block py-1 px-2">Upload Recording</a>
+          </li>
+          <li className="hover:bg-gray-100 transition-all duration-300">
+          <a href="#assign-employee" className="block py-1 px-2">Assign Employee to Recording</a>
+          </li>
+          <li className="hover:bg-gray-100 transition-all duration-300">
+          <a href="#employee-list" className="block py-1 px-2">employee List</a>
+          </li>
+          </ul>
           </div>
           </div>
 
@@ -350,7 +373,7 @@ function UserGuide() {
           
           <br></br>
 
-          <h2 className="text-md font-semibold mb-2">First Time Users</h2>
+          <h2 id="first-time" className="text-md font-semibold mb-2">First Time Users</h2>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
           <p>
@@ -364,32 +387,35 @@ function UserGuide() {
           </p>
           <img src={Userguidecompanyfield} alt="User Guide Design" />
           
-          <br></br>
-          <h2 className="text-md font-semibold mb-2">Navigation</h2>
+          <br />
+          <h2 id="navigation" className="text-md font-semibold mb-2">Navigation</h2>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
-          <p>The Customer Service Analyzer page includes | Recording List | Employee List | Summary |</p>
+          <p>The Customer Service Analyzer page includes</p>
+          <p>| Recording List | Employee List | Summary |</p>
+
+          <div className="flex justify-left items-left">
           <p>Click on this Menu Button to expand it.</p>
           <img src={Userguidemenubutton} alt="User Guide Design" />
+          </div>
           <img src={Userguidecsamenu} alt="User Guide Design" />
+
 
      
           <br></br>
-          <h2 className="text-md font-semibold mb-2">Recording List</h2>
+          <h2 id="recording-list" className="text-md font-semibold mb-2">Recording List</h2>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
-          <p>
-          Users can view the recordings which are uploaded here. To get started on any recordings,
-          click on the 3-dot menu button on any recording.
-          </p>
-          <p>
-          Users will be able to perform these 3 actions for the recordings:
-          | View Analysis | Delete | Download |
-          </p>
+          <p>Users can view the recordings which are uploaded here.</p>
+          <p>To get started on any recordings, click on the 3-dot menu button on any recording.</p><br></br>
+          
+          <p>Users will be able to perform these 3 actions for the recordings:</p>
+          <p>| View Analysis | Delete | Download |</p>
+        
           <img src={Userguiderecordinglist} alt="User Guide Design" />
 
           <br></br>
-          <h2 className="text-md font-semibold mb-2">Upload Recording</h2>
+          <h2 id="upload-recording" className="text-md font-semibold mb-2">Upload Recording</h2>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
           <p>
@@ -397,24 +423,35 @@ function UserGuide() {
           Click “Upload” on the “Recording List” page then click “Upload” again.
           </p>
           <p>File explorer will pop-up, choose a file or folder to upload then click “Open”.</p>
-          <p>Click on “Analyze” once the file/folder is uploaded.</p>
           <img src={Userguideuploadrecording} alt="User Guide Design" />
 
           <br></br>
-          <h2 className="text-md font-semibold mb-2">Employee List</h2>
+          <h2 id="assign-employee" className="text-md font-semibold mb-2">Assign Employee To Recording</h2>
+          <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
+          <br />
+          <p>
+          Once recording has been uploaded successfully, you can assign a employee to the recording.
+          Under "Configuration" click on the dropdown menu and select "Existing Employee"
+          Then under "Employee", select the employee you want to assign the recordings.
+          Once done, click on "Analyze" button.
+          </p>
+          <img src={Userguideassignemployee} alt="User Guide Design" />
+
+          <br></br>
+          <h2 id="employee-list" className="text-md font-semibold mb-2">Employee List</h2>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
           <p>
           Users can add employees to this list and are able to view the number of calls handled by each of them
           and the amount of positive/negative sentiments of each call.</p>
-          
+          <div className="flex justify-left items-left">
           <p>To manage an employee, click on the 3-dot menu button on any employee.</p>
-         
           <img src={Userguide3dotmenu} alt="User Guide Design" />
-          <p>
-          Users will be able to perform these 3 actions for the employee:
-          | View Calls Handled | Edit Name | Delete |
-          </p>
+          </div>
+          
+          <p>Users will be able to perform these 3 actions for the employee:</p>
+          <p>| View Calls Handled | Edit Name | Delete |</p>
+          
           <img src={Userguideemployeelist} alt="User Guide Design" />
 
           <h2 className="text-md font-semibold mb-2">Add Employee</h2>
