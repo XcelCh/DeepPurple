@@ -18,5 +18,6 @@ public class SummaryAnalysisDto {
     // private int negativeEmpSentiment;
     private List<EmployeeAnalysisDto> employeeList;
     private int recordingTotal;
+    private String suggestion;
 
 }

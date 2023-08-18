@@ -47,11 +47,13 @@ function SummaryAnalysis() {
     positiveRecSentiment : 0,
     negativeRecSentiment : 0,
     positiveEmpSentiment : 0,
-    negativeEmpSentiment : 0
+    negativeEmpSentiment : 0,
+    suggestion: ''
   })
 
   
   const [employeeDetails, setEmployeeDetails] = useState([]);
+  const [sortedCallsHandled, setSortedCallsHandled] = useState([]);
   const employeeDetail = [];
   console.log(analysisForm);
 
@@ -86,6 +88,9 @@ function SummaryAnalysis() {
   // }
 
   const calculateTime = (secs) => {
+    if (isNaN(secs) || secs === 0) {
+      return 'No calls';
+    }
     if(secs < 60) {
         return `${secs} ${secs === 1 ? 'second' : 'seconds'}`;
     } else {
@@ -109,8 +114,8 @@ function SummaryAnalysis() {
   const [summaryAnalysisData, setSummaryAnalysisData] = useState([]);
   // const [topSentimentOption, setTopSentimentOption] = useState('Positive');
   const [randomColors, setRandomColors] = useState([]);
-  const [employeeName, setemployeeName] = useState(0);
-  const [employeeKey, setemployeeKey] = useState(0);
+  const [employeeName, setEmployeeName] = useState(0);
+  const [employeeKey, setEmployeeKey] = useState(0);
   // const [employeeSentiment, setEmployeeSentiment] = useState({
   //   sentimentCount: [],
   //   sentimentPercentage: [],
@@ -165,10 +170,13 @@ function SummaryAnalysis() {
             positiveRecSentiment : data.positiveRecSentiment,
             negativeRecSentiment : data.negativeRecSentiment,
             positiveEmpSentiment : data.positiveEmpSentiment,
-            negativeEmpSentiment : data.negativeEmpSentiment
+            negativeEmpSentiment : data.negativeEmpSentiment,
+            suggestion: data.suggestion
 
           })
 
+          const sorted = [...data.employeeList].sort((a, b) => b.numberOfCalls - a.numberOfCalls);
+          setSortedCallsHandled(sorted);
           // console.log(data.employeeList.length);
           for(let x = 0; x < data.employeeList.length; x++) {
             // const emp = data.employeeList[x];
@@ -291,12 +299,11 @@ function SummaryAnalysis() {
   }, [employeeDetails])
 
   const handleEmployeeSentiment = (employee) => {
-    setemployeeName(employee);
+    setEmployeeName(employee);
 
     for (var x = 0; x < employeeDetails.length; x++) {
-      
-      if(employeeDetails[x].employeeName === employeeName) {
-        setemployeeKey(x);
+      if(employeeDetails[x].employeeName === employee) {
+        setEmployeeKey(x);
       }
     }
 
@@ -492,7 +499,7 @@ function SummaryAnalysis() {
                       <div className="flex items-center">
                         <img src={countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? Heart : RedHeart} />
                         <p className={`text-3xl font-bold ${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ?  "text-[#80F2AA]" : "text-[#EE5B3D]"}`}>
-                          {[countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment), countToPercentage(employeeDetails[employeeKey].negativeEmpSentiment, employeeDetails[employeeKey].positiveEmpSentiment)]}%
+                          {[countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)]}%
                         </p>
                       </div>
                       <p className="text-xl font-medium">{countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? "High" : "Low"}</p>
@@ -532,7 +539,7 @@ function SummaryAnalysis() {
           <div className="border rounded-md p-8">
             <p className="font-bold text-xl mb-4">Number of Calls Handled</p>
             <div className="overflow-y-scroll h-96 pr-4">
-              {employeeDetails.map((employee, index) => (
+              {sortedCallsHandled.map((employee, index) => (
                 <div className="mb-4">
                   <p className="font-semibold">{employee.employeeName}</p>
                   <div className="relative w-full">
@@ -556,7 +563,7 @@ function SummaryAnalysis() {
           <div className="grid w-full grid-cols-2 mt-4 border rounded rounded-md">
             <div className="col-span-1 p-8 border-r">
               <p className="font-bold text-xl mb-4">Improvement Suggestions</p>
-              <p style={{ textAlign: 'justify' }}>To improve customer satisfaction and streamline the process, I would suggest that the employee proactively offer the customer a temporary laptop replacement while their device is being serviced. This gesture would address the customer's immediate needs, ensuring they can continue their work without interruptions during the estimated 5-day service period. Additionally, the employee could provide regular updates on the progress of the laptop repair, keeping the customer informed and minimizing any potential frustration or uncertainty. Such proactive measures will enhance the overall customer experience and foster a positive impression of the company's service.</p>
+              <p style={{ textAlign: 'justify' }}>{analysisForm.suggestion}</p>
             </div>
             {/* <div className="grid grid-rows-2 col-span-1 p-8">
               <div className="border-b">

@@ -116,7 +116,7 @@ public class EditProfileController {
 
     // Set the company field received by the setCompanyField POST endpoint
     @PostMapping("/setCompanyField")
-    public ResponseEntity<String> setCompanyField(@RequestBody String companyField) {
+    public ResponseEntity<String> setCompanyField(@RequestBody String companyField) {   
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

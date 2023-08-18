@@ -36,8 +36,10 @@ public class SummaryAnalysisController {
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Integer accountId = accountServiceImpl.getAccountId(authentication.getName());
+            Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
+            String company = account.getCompanyField();
 
-            SummaryAnalysisDto summaryAnalysisDto = summaryAnalysisService.getSummaryAnalysis(accountId);
+            SummaryAnalysisDto summaryAnalysisDto = summaryAnalysisService.getSummaryAnalysis(accountId, company);
 
 
             return ResponseEntity.ok(summaryAnalysisDto);

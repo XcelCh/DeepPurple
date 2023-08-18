@@ -49,5 +49,8 @@ public interface RecordingRepository extends JpaRepository<Recording, Integer>{
 
     // @Query("SELECT COUNT(*) FROM Recording r WHERE r.employee.employeeId = :employeeId")
     // Integer findTotalRecordingByEmployeeId(@Param("employeeId") Integer employeeId);
+
+    @Query("SELECT r.analysis.mainIssue FROM Recording r WHERE r.account.accountId = :accountId")
+    List<String> getAllMainIssue(@Param("accountId") Integer accountId);
     
 }
