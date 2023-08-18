@@ -129,6 +129,7 @@ function EmployeeList() {
         method: "POST",
         headers: {
           "Content-Type": "text/plain", // Set the content type to indicate JSON data
+          "Authorization": token.Authorization,
         },
         body: empData,
       }
@@ -138,11 +139,15 @@ function EmployeeList() {
         (result) => {
           getEmpList();
           // Success message
-          Swal.fire(
-            "Updated",
-            "The employee name has been updated!",
-            "success"
-          );
+          if (result.success == true) {
+            Swal.fire(
+              "Updated",
+              "The employee name has been updated!",
+              "success"
+            );
+          } else {
+            Swal.fire("Fail", "Fail to update employee.", "error");
+          }
         },
         (error) => {
           setError(error);

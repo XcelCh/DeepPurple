@@ -464,10 +464,13 @@ public class UploadController {
 			// Update Employee Recording Sentiment
 			Recording recording = recRepo.findById(recordingIds.get(i)).get();
 			Employee employee = recording.getEmployee();
-			if (callSentiment.equals("Positive")) {
-				employee.setNumPositiveSentiment(employee.getNumPositiveSentiment() + 1);
-			} else {
-				employee.setNumNegativeSentiment(employee.getNumNegativeSentiment() + 1);
+
+			if (employee != null) {
+				if (callSentiment.equals("Positive")) {
+					employee.setNumPositiveSentiment(employee.getNumPositiveSentiment() + 1);
+				} else {
+					employee.setNumNegativeSentiment(employee.getNumNegativeSentiment() + 1);
+				}
 			}
 
 			// Main issue

@@ -54,23 +54,37 @@ function EmployeeRecordingList() {
   };
 
   // Get All Recording Per Employee
-  const getRecList = async () => {
-    const params = `?search=${search}`;
-    try {
-      const response = await fetch(
-        `http://localhost:8082/employeeList/getEmployeeRecording/${id}${params}`,
-        {
-          headers: token,
-        }
-      );
+    const getRecList = async () => {
+      const params = `?search=${search}`;
+      console.log(params);
+      try {
+        Swal.fire({
+          title: "Retrieving All Recordings",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        });
 
-      response.json().then((data) => {
-        setRecList(data.data);
-      });
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+        const response = await fetch(
+          `http://localhost:8082/recordingList/getAllRecordings${params}`,
+          {
+            headers: token,
+          }
+        );
+
+        response
+          .json()
+          .then((data) => {
+            setRecList(data.data);
+            // setOriginalList(data.data);
+            // setDisplayList(data.data);
+          })
+          .finally(Swal.close());
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
   // Download Recording
 
@@ -153,6 +167,10 @@ function EmployeeRecordingList() {
     getEmployeeDetail();
   }, [search]);
 
+   useEffect(() => {
+     console.log(recList);
+   }, [search]);
+
   // Pagination
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
@@ -210,49 +228,45 @@ function EmployeeRecordingList() {
                 No
               </th>
               <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
-                Recording Name
+                Recording name
               </th>
-              <th className="bg-[#F6F4FC] normal-case  text-sm font-semibold text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Upload Date
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Date Recorded
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Category
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
-                Sentiment
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
+                Overall Sentiment
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm text-center font-semibold">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
             {recList && recList.length > 0
               ? recList
+                  .filter((rec) => rec?.employeeId == id)
                   .slice(firstPostIndex, lastPostIndex)
                   .map((recording, index) => (
-                    <tr className="hover">
-                      <th className="h-1">
-                        {currentPage * postsPerPage - 4 + index}
-                      </th>
-                      <td className="h-1">{recording.recordingName}</td>
-                      <td className="text-center h-1">
-                        {recording.uploadDate.replace("T", " ")}
+                    <tr>
+                      <th>{currentPage * postsPerPage - 4 + index}</th>
+                      <td>
+                        {recording.recordingName}-[{recording.recordingId}]
                       </td>
-                      <td className="text-center h-1">
-                        {recording.recordingDate.replace("T", " ")}
-                      </td>
-                      <td className="text-center h-1">category</td>
-                      <td className="text-center h-1">sentiment</td>
+                      <td>{recording.uploadDate.substring(0, 10)}</td>
+                      <td>{recording.dateRecorded.substring(0, 10)}</td>
+                      <td>{recording.category}</td>
+                      <td>{recording.sentiment}</td>
                       <td className="flex justify-center items-center">
-                        <div className="dropdown">
+                        <div className="dropdown dropdown-end mt-2">
                           <label
                             tabIndex={0}
-                            className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
+                            className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
                           >
                             <MoreVertIcon
                               style={{ color: "black" }}
@@ -260,7 +274,7 @@ function EmployeeRecordingList() {
                           </label>
                           <ul
                             tabIndex={0}
-                            className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
+                            className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36  rounded-md"
                           >
                             <li className="hover:bg-[#9554FE]">
                               <a
@@ -302,6 +316,7 @@ function EmployeeRecordingList() {
                         </div>
                       </td>
                     </tr>
+                    // );
                   ))
               : null}
           </tbody>
@@ -326,7 +341,9 @@ function EmployeeRecordingList() {
       </div>
       <div className="join flex justify-end mt-10 mb-10">
         <Pagination
-          totalPosts={recList && recList.length}
+          totalPosts={
+            recList && recList.filter((rec) => rec?.employeeId == id).length
+          }
           postsPerPage={postsPerPage}
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}

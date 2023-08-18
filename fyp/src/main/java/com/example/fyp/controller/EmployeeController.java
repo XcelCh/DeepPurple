@@ -160,53 +160,37 @@ public class EmployeeController {
     {
         ResponseStatus response = new ResponseStatus();
         Optional<Employee> oldEmpData = empRepo.findById(id);
-        System.out.println("OLD EMP DATA: " + id);
 
-        if (oldEmpData.isPresent()) {
-            Employee updatedEmpData = oldEmpData.get();
-            updatedEmpData.setEmployeeName(empName);
+        // Retrieve the current authentication token
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Integer account_id = accountServiceImpl.getAccountId(email);
+        Account account = accountServiceImpl.loadUserDetailsByUsername(email);
 
-            Employee empObj = empRepo.save(updatedEmpData);
+        // check if employee name is existed
+        boolean empExisted = employeeService.empIsExisted(empName, account_id);
 
-            // RESPONSE DATA
-            response.setSuccess(true);
-            response.setMessage("Successfully change the name to " + empName);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }
+        if (empExisted == true){
+                response.setSuccess(false);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            } else {
+                if (oldEmpData.isPresent()) {
+                    Employee updatedEmpData = oldEmpData.get();
+                    updatedEmpData.setEmployeeName(empName);
+
+                    Employee empObj = empRepo.save(updatedEmpData);
+
+                    // RESPONSE DATA
+                    response.setSuccess(true);
+                    response.setMessage("Successfully change the name to " + empName);
+                    return ResponseEntity.status(HttpStatus.OK).body(response);
+                }
+            }
         // RESPONSE DATA
         response.setSuccess(false);
         response.setMessage("Fail to change the name to " + empName);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // View Recording List of the Employee
-    @GetMapping("/getEmployeeRecording/{id}")
-    public ResponseEntity<?> getEmployeeRecordingList(@PathVariable Integer id, @RequestParam(required = false) String search) {
-        ResponseStatus<List<Recording>> response = new ResponseStatus<>();
-
-        try {
-            List<Recording> recList = new ArrayList<>();
-            recRepo.findByEmployee_EmployeeId(id).forEach(recList::add);
-
-             if (search != null && !search.isEmpty()){
-                String searchKeyword = "%" + search + "%";
-                recList = recList.stream()
-                .filter(rec -> rec.getRecordingName().toLowerCase().contains(search.toLowerCase()))
-                        .collect(Collectors.toList());
-            }
-
-            // RESPONSE DATA
-            response.setSuccess(true);
-            response.setData(recList);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-
-        } catch (Exception ex) {
-            // RESPONSE DATA
-            response.setSuccess(false);
-            response.setMessage("Fail to get All Employees.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
     }
 
     // Get Employee Detail

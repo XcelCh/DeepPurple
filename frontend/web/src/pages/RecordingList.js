@@ -314,7 +314,9 @@ function RecordingList() {
 
   useEffect(() => {
     console.log("DISPLAY LIST: " + displayList);
-    setEmpIdList(displayList.map((rec) => rec.employeeId));
+    setEmpIdList(
+      displayList.map((rec) => (rec.employeeId !== null ? rec.employeeId : "00"))
+    );
   }, [displayList]);
 
   return (
@@ -543,18 +545,24 @@ function RecordingList() {
                           }
                           className="select select-bordered font-normal select-sm h-8"
                         >
+                          {empIdList[currentPage * postsPerPage - 4 + index - 1
+                          ] === "00" ? (
+                            <option>
+                             Select
+                            </option>
+                          ) : null}
+
                           {empList &&
-                            empList
-                              .map((emp) => (
-                                <>
-                                  <option
-                                    key={emp.employeeId}
-                                    value={emp.employeeId}
-                                  >
-                                   {emp.employeeName}
-                                  </option>
-                                </>
-                              ))}
+                            empList.map((emp) =>
+                            (
+                                <option
+                                  key={emp.employeeId}
+                                  value={emp.employeeId}
+                                >
+                                  {emp.employeeName}
+                                </option>
+                              )
+                            )}
                         </select>
                       </td>
                       <td className="">{recording.category}</td>
