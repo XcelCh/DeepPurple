@@ -40,7 +40,7 @@ import com.example.fyp.service.StorageService;
 import com.example.fyp.service.UsageService;
 import com.example.fyp.service.AnalysisService;
 
-
+//Controller to handle existing recording files list
 @RestController
 @RequestMapping("/recordingList")
 public class RecordingController {
@@ -75,7 +75,7 @@ public class RecordingController {
     @Autowired
     private StorageService storageService;
     
-    // Get All Recordings
+    // Get All Recordings and delete recordings that have null analysis
     @GetMapping("/getAllRecordings")
     public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String search) {
         ResponseStatus<List<Map<String, Object>>> response = new ResponseStatus<>();
@@ -194,6 +194,7 @@ public class RecordingController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    //check if the recording analysis was successful, based on user's current usage limit.
     @PostMapping("analyzeLambda")
     public ResponseEntity<String> apply(@RequestBody List<Integer> ids) {
         try {

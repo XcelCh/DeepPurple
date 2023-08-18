@@ -17,6 +17,7 @@ import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
 import com.google.cloud.speech.v1.SpeechRecognitionResult;
 import com.google.cloud.speech.v1.WordInfo;
 
+//Service to handle Diarization communication between database and backend
 @Service
 public class DiarizationService {
 

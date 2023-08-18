@@ -45,6 +45,7 @@ function RecordingList() {
     custSentiment: "",
   });
 
+  // Keep track of the search bar's value
   const handleSearch = (event) => {
     event.preventDefault();
     let filteredRecList = [...originalList];
@@ -84,6 +85,7 @@ function RecordingList() {
     setDisplayList(filteredRecList);
   };
 
+  //check if date is in a range
   const isDateInRange = (date, startDate, endDate) => {
     const parsedDate = new Date(date);
 
@@ -108,6 +110,7 @@ function RecordingList() {
     return parsedDateOnly >= parsedStartDateOnly && parsedDateOnly <= parsedEndDateOnly;
   };
 
+  //search the recording list based on the search bar value
   const searchRecList = async () => {
     try {
       const searchedRecList = recList.filter(

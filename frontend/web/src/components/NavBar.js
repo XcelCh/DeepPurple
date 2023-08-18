@@ -12,26 +12,28 @@ function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = AuthService.getCurrentUser();
-  const [cardExist, setCardExist] = useState(false);
+  // const [cardExist, setCardExist] = useState(false);
   // const [profilePic, setProfilePic] = useState('');
 
-  useEffect(() => {
-    const token = authHeader();
-    if(user) {
-      fetch ('http://localhost:8082/check', {
-        headers : token,
-      })
-      .then(response => {
-        if (response.ok) { 
-            // Card exist
-            setCardExist(true);
-        }
-      })
-      .catch (error => {
-        console.error(error);
-      })
-    }
-  }, [cardExist])
+  // useEffect(() => {
+  //   const token = authHeader();
+  //   if(user) {
+  //     fetch ('http://localhost:8082/check', {
+  //       headers : token,
+  //     })
+  //     .then(response => {
+  //       if (response.ok) { 
+  //           // Card exist
+  //           setCardExist(true);
+  //       }
+  //     })
+  //     .catch (error => {
+  //       console.error(error);
+  //     })
+  //   }
+  // }, [])
+
+  // console.log(cardExist);
 
   // useEffect(() => {
   // // if (user) {
@@ -88,7 +90,8 @@ function NavBar() {
                 </Link>
               </li>
               <li>
-                <Link to={cardExist ? "/Starter" : "/CustomerServiceAnalyzer"}>
+                {/* <Link to={cardExist ? "/Starter" : "/CustomerServiceAnalyzer"}> */}
+                <Link to={"/CustomerServiceAnalyzer"}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

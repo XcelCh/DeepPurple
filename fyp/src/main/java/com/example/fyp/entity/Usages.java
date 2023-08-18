@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+//Usages entity
 @Data
 @Entity
 @AllArgsConstructor
@@ -40,6 +41,7 @@ public class Usages {
     @JsonManagedReference
     private Account account;
 
+    //Usage's toString method
     @Override
     public String toString() {
         return "Usages{usagesId=" + usagesId + ", minutesUsed=" + minutesUsed + ", rate=" + rate + ", usageDate=" + usageDate +

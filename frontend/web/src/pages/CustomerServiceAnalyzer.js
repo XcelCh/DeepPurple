@@ -21,7 +21,7 @@ function CustomerServiceAnalyzer() {
         .then(response => {
             if (response.ok) { 
                 // Card exist
-                navigate("/recordingList");
+                navigate("/Starter");
             }
         })
         .catch (error => {

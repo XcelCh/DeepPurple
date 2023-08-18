@@ -28,6 +28,7 @@ import com.google.cloud.speech.v1.SpeechSettings;
 import com.google.cloud.speech.v1.WordInfo;
 import com.google.protobuf.ByteString;
 
+// Service class for Transcript entity
 @Service
 public class TranscriptService{
     private final TranscriptRepository transcriptRepository;
@@ -75,6 +76,7 @@ public class TranscriptService{
         return response.getResultsList();
     }
 
+    //Transcribe speech into text result
     public List<SpeechRecognitionResult> transcribeSpeechEnhanced(byte[] bytes) throws FileNotFoundException, IOException{
         System.out.println("Inside transcript service");
 
@@ -112,6 +114,7 @@ public class TranscriptService{
         return response.getResultsList();
     }
 
+    //Process generated transcript
     public Container processTranscription(Queue<Diarization> orderedDiarization, double offset, Container c){
         double endTime = 0.0 + offset;
         double tempEndTime = endTime;
@@ -157,6 +160,7 @@ public class TranscriptService{
         return c;
     }
 
+    //Overloaded process transcription
     public Container processTranscription(List<List<SpeechRecognitionResult>> results, Queue<Diarization> diarizations, List<Double> offsets){
         double[] data = new double[5]; // 0 = confidence, 1 = employee speak time, 2 = customer speak time, 3 = counter, 4 = silence time
         List<Transcript> transcriptions = new ArrayList<>();
@@ -265,6 +269,7 @@ public class TranscriptService{
         return new Container(transcriptions, data);
     }
 
+    // Save transcripts.
     public void persistTranscriptions(Analysis analysis, Container c){
         for (Transcript t: c.getTranscriptions()) {
             t.setAnalysis(analysis);

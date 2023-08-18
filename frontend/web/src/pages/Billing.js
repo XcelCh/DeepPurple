@@ -34,17 +34,17 @@ function Billing() {
     const token = authHeader();
     const navigate = useNavigate();
 
-    const [fetchDone, setFetchDone] = useState(false);
-    const [cardNum, setCardNum] = useState('');
-    const [expDate, setExpDate] = useState('');
+    const [fetchDone, setFetchDone] = useState(false); //to store fetch requests' state
+    const [cardNum, setCardNum] = useState(''); 
+    const [expDate, setExpDate] = useState(''); //state for billing expire date
     const [card, setCard] = useState(false);
-    const [limit, setLimit] = useState(0.0);
+    const [limit, setLimit] = useState(0.0); //state for billing limit
     const user = AuthService.getCurrentUser();
     const [firstDigit, setFirstDigit] = useState('');
     const [billingHistory, setBillingHistory] = useState([]);
-    const [visible, setVisible] = useState(false)
-    const [limitError, setLimitError] = useState(false)
-    const [totalUsage, setTotalUsage] = useState(0.0);
+    const [visible, setVisible] = useState(false);
+    const [limitError, setLimitError] = useState(false);
+    const [totalUsage, setTotalUsage] = useState(0.0); //to keep track of user's current totalUsage
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -58,6 +58,7 @@ function Billing() {
         setVisible(false);
     };
 
+    //get billing history
     const getBillingHistory = () => {
         fetch(`http://localhost:8082/payment/getBillingHistory`,
         {
@@ -83,6 +84,7 @@ function Billing() {
         })
     };
 
+    //get user's total usage
     const getTotalUsage = () => {
         fetch(`http://localhost:8082/payment/getUsage`,
         {
@@ -107,6 +109,7 @@ function Billing() {
         })
     };
 
+    //delete user's card
     const deleteCard = () => {
         fetch(`http://localhost:8082/payment/deleteCard`,
         {
@@ -174,6 +177,7 @@ function Billing() {
         getTotalUsage();
     }, [])
 
+    //set user's requested usage limit
     const setUsageLimit = (limit) => {
 
         if(!limitPattern.test(limit)) {

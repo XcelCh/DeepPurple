@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 
 import javax.sound.sampled.AudioFileFormat;
@@ -460,4 +461,41 @@ public class RecordingService extends AudioFileWriter{
     public int write(AudioInputStream stream, AudioFileFormat.Type fileType, File out) throws IOException {
         throw new UnsupportedOperationException("Unimplemented method 'write'");
     }
+
+    public double getAvgRecordingDurationByAccount (Integer accountId) {
+        return recordingRepository.getAverageRecordingDurationByAccount(accountId);
+    }
+
+    public double getAvgPerformanceByEmployee (Integer employeeId) {
+
+        Double avg= recordingRepository.findAvgPeformanceByEmployeeId(employeeId);
+
+        if (avg == null) {
+            avg = (double)0;
+        }
+
+        return avg;
+    }
+
+    public double getTotalDurationByEmployee (Integer employeeId) {
+
+        Double total = recordingRepository.findTotalDurationByEmployeeId(employeeId);
+
+        if(total == null) {
+            total = (double)0;
+        }
+
+        return total;
+    }
+
+    // public int getTotalRecordingByEmployee (Integer employeeId) {
+
+    //     Integer total = recordingRepository.findTotalRecordingByEmployeeId(employeeId);
+
+    //     if(total == null) {
+    //         total = 0;
+    //     }
+
+    //     return total;
+    // }
 }

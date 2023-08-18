@@ -21,9 +21,13 @@ import authHeader from "../services/auth-header";
 import Pagination from "../components/Pagination";
 import { useNavigate } from "react-router-dom";
 
+//store time when user enters the add recording page
 const today = new Date();
 var dateTimeString;
 
+//this dateTimeString is to display the uploaded recordings
+//which are after the time the page was loaded on.
+//this is to prevent displaying other past uploaded audio files in this page.
 dateTimeString =
   today.getFullYear() +
   "-" +
@@ -38,21 +42,20 @@ dateTimeString =
   ("0" + today.getSeconds()).slice(-2);
 
 function AddRecording() {
-  const [empList, setEmpList] = useState([]);
-  const [recList, setRecList] = useState([]);
-  const [analyzed, setAnalyzed] = useState(false);
+  const [empList, setEmpList] = useState([]); //useState to store all employees linked to the account
+  const [recList, setRecList] = useState([]);  //useState to store all recording files linked to the account
 
-  const [numbering, setNumbering] = useState(1);
-  const [assignEmployee, setAssignEmployee] = useState("");
-  const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [numbering, setNumbering] = useState(1); //for pagination
+  const [assignEmployee, setAssignEmployee] = useState(""); //handle user's selection method for assigning employee
+  const [selectedEmployee, setSelectedEmployee] = useState(""); 
   const [employee, setEmployee] = useState("");
   const [showEmployee, setShowEmployee] = useState(true);
-  const [showOtherTB, setShowOtherTB] = useState(false);
+  const [showOtherTB, setShowOtherTB] = useState(false); //toggler to show the add and assign button if the user chooses 'Other' while assigning existing employee
   const [employeeNameToAssign, setEmployeeNameToAssign] = useState("");
   const [employeeIdToAssign, setEmployeeIdToAssign] = useState("");
-  const [showDelimiter, setShowDelimiter] = useState(false);
-  const [delimiter, setDelimiter] = useState("");
-  const [delimitedFields, setDelimitedFields] = useState([]);
+  const [showDelimiter, setShowDelimiter] = useState(false); //handle file delimiter
+  const [delimiter, setDelimiter] = useState(""); //handle file delimiter
+  const [delimitedFields, setDelimitedFields] = useState([]); //handle file delimiter
   const [error, setError] = useState("");
   const [limitError, setLimitError] = useState(false);
 
@@ -133,6 +136,7 @@ function AddRecording() {
     }
   }, [assignEmployee]);
 
+  //toggle showOtherTB during assigning existing employee
   useEffect(() => {
     if (selectedEmployee == "other") {
       setShowOtherTB(true);
@@ -142,12 +146,13 @@ function AddRecording() {
     }
   }, [selectedEmployee]);
 
-
+  //listen for user's selection for assigning employee method
   const handleAssignEmployee = (selected) => {
     setAssignEmployee(selected);
     console.log(assignEmployee);
   };
 
+  //update the audio files based on user's selection
   const handleSelectedEmployee = (value) => {
     if(value == "other"){
       setShowOtherTB(true);
@@ -275,7 +280,8 @@ function AddRecording() {
     })
   };
 
-  const handleUploadMultipleTest = () => {    
+  //handle multiple file upload
+  const handleUploadMultipleFiles = () => {    
     const audioInput = document.getElementById("audioInputMultiple");           
     const totalFiles = audioInput.files.length;
     let uploadedFilesCount = 0;
@@ -329,7 +335,7 @@ function AddRecording() {
     });
   };
   
-
+  //function to handle if user chooses to delete an uploaded recording
   const handleDelete = (recName, recId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -363,7 +369,7 @@ function AddRecording() {
     });
   }
 
-  
+  //function to handle user's input for file delimiter  
   const handleFileDelimiter = () => {    
     const audioInput = document.getElementById("audioInput");
     const audioInputMultiple = document.getElementById("audioInputMultiple");
@@ -390,7 +396,7 @@ function AddRecording() {
   }, [delimiter]);
 
 
-// Add Employee
+// Add new Employee
 const addEmployee = async (empData) => {
   await fetch(`http://localhost:8082/employeeList/addEmployee`, {
     method: "POST",
@@ -417,6 +423,7 @@ const addEmployee = async (empData) => {
     );
   };
 
+  //update assign employee based on the name inside the file's delimited value.
   const updateEmployeeDelimiter = async (recID, empName) => {
     const params = `?recordingID=${recID}&empName=${empName}`;
     const data = recID;
@@ -437,7 +444,7 @@ const addEmployee = async (empData) => {
     })
   }
 
-
+  //handle choosing the columns of the delimited fields.
   const handleSelectColumn = (col) => {
     Swal.fire({
       title: "Are you sure?",
@@ -480,17 +487,7 @@ const addEmployee = async (empData) => {
     });    
   }      
 
-  const encodeValue = (id, name) => {
-    // Using a pipe "|" as the delimiter to separate id and name
-    return `${id}|${name}`;
-  };
-
-  const decodeValue = (value) => {
-    // Split the value using the pipe delimiter and return an object with id and name
-    const [id, name] = value.split('|');
-    return { id, name };
-  };
-
+  //handle analyzing recordings after upload
   const analyzeRecordings = () => {
     const ids = recList.map((recording) => recording.recordingId);
     setIsButtonDisabled(true);
@@ -563,6 +560,19 @@ const addEmployee = async (empData) => {
     
   }
 
+  //helper function to encode 2 strings to 1
+  const encodeValue = (id, name) => {
+    // Using a pipe "|" as the delimiter to separate id and name
+    return `${id}|${name}`;
+  };
+
+  //helper function to separate 2 values from encoded string 
+  const decodeValue = (value) => {
+    // Split the value using the pipe delimiter and return an object with id and name
+    const [id, name] = value.split('|');
+    return { id, name };
+  };
+
   return (
     <div className="pt-16 mx-20">
       <div className="flex mb-5">
@@ -610,7 +620,7 @@ const addEmployee = async (empData) => {
                 type="file"
                 id="audioInputMultiple"
                 accept="audio/*"
-                onChange={handleUploadMultipleTest}
+                onChange={handleUploadMultipleFiles}
                 multiple
               />
               <label for="audioInputMultiple">Select folder</label>

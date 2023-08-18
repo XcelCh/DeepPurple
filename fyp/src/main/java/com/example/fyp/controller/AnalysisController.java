@@ -23,6 +23,7 @@ import com.example.fyp.service.AnalysisService;
 import com.example.fyp.service.StorageService;
 import com.example.fyp.controller.dto.SuggestionDto;
 
+//Controller to handle recording analyses
 @RestController
 @RequestMapping("/analysis")
 public class AnalysisController {

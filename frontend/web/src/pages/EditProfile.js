@@ -29,6 +29,7 @@ function EditProfile() {
 
     const companyFieldArray = ['Education', 'Entertainment/Media', 'F&B', 'FinTech', 
                               'Healthcare/Pharmaceuticals', 'Retail/E-Commerce', 'Technology', 'Telecommunications'];
+
     useEffect(() => {
       window.scrollTo(0, 0);
       fetch ("http://localhost:8082/profile/editProfile",{

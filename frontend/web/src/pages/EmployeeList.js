@@ -100,6 +100,7 @@ function EmployeeList() {
         // Deleting
         fetch(`http://localhost:8082/employeeList/deleteEmployeeById/${id}`, {
           method: "DELETE",
+          headers : token
         })
           .then((res) => res.json())
           .then(
@@ -120,7 +121,7 @@ function EmployeeList() {
     });
   };
 
-  // Update Employee
+  // Update selected employee's data and save
   const updateEmployee = (empData, currentEmployeeId) => {
     fetch(
       `http://localhost:8082/employeeList/updateEmployeeNameById/${currentEmployeeId}`,
