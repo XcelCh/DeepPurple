@@ -149,7 +149,7 @@ public class UploadController {
 	            Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
 	            	
                 (r.get()).setEmployee(emp.get());                
-                (r.get()).setEmployeeName(employeeName);
+                // (r.get()).setEmployeeName(employeeName);
                 emp.get().incrementNumCallsHandled();
                 recRepo.save(r.get());
 	            }
@@ -192,7 +192,7 @@ public class UploadController {
 			}
 			
 			recToUpdate.get().setEmployee(empToUpdate.get());	
-			recToUpdate.get().setEmployeeName(empName);
+			// recToUpdate.get().setEmployeeName(empName);
 			empToUpdate.get().incrementNumCallsHandled();			
 			
 			recRepo.save(recToUpdate.get());
