@@ -51,11 +51,5 @@ public class SummaryAnalysisController {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Error: " + e );
         }
     }
-    
-    // @GetMapping("/employeeSentiment/{employeeId}")
-    // public ResponseEntity<?> getEmployeeSentiment(@PathVariable Integer employeeId) {
-    //     Object[] employeeSentiment = summaryAnalysisService.getEmployeeSentiment(employeeId);
-    //     return ResponseEntity.ok(employeeSentiment);
-    // }
-
+        
 }

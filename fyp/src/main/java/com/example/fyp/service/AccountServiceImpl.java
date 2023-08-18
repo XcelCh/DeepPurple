@@ -93,14 +93,6 @@ public class AccountServiceImpl implements UserDetailsService, AccountService {
         return accountRepository.getAccountId(email);
     }
 
-    // Delete Account from database and all asoociated entities with the specific Account
-    @Override
-    public void deleteAccount(Account account) {
-
-        account.deleteAll(account.getUsageList(), account.getRecording(), account.getEmployee());
-        accountRepository.deleteById(account.getAccountId());
-    }
-
     // Get all registered AccountId
     @Override
     public List<Integer> getAllAccountId() {
