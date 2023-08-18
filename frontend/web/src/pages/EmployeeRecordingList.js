@@ -11,8 +11,13 @@ import Swal from "sweetalert2";
 import { ArrowLeft } from "../assets/index";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import authHeader from "../services/auth-header";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
 function EmployeeRecordingList() {
+  const token = authHeader();
+
   const { id } = useParams();
   // Numbering the table
   const [numbering, setNumbering] = useState(1);
@@ -22,11 +27,11 @@ function EmployeeRecordingList() {
   const [empName, setEmpName] = useState("");
   const [search, setSearch] = useState("");
   const [currentRecordingId, setCurrentRecordingId] = useState();
-  
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostPerPage] = useState(5);
- 
+
   // Error message
   const [error, setError] = useState("");
 
@@ -34,7 +39,10 @@ function EmployeeRecordingList() {
   const getEmployeeDetail = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8082/employeeList/getEmployeeDetail/${id}`
+        `http://localhost:8082/employeeList/getEmployeeDetail/${id}`,
+        {
+          headers: token,
+        }
       );
 
       response.json().then((data) => {
@@ -46,19 +54,74 @@ function EmployeeRecordingList() {
   };
 
   // Get All Recording Per Employee
-  const getRecList = async () => {
-    const params = `?search=${search}`;
-    try {
-      const response = await fetch(
-        `http://localhost:8082/employeeList/getEmployeeRecording/${id}${params}`
-      );
+    const getRecList = async () => {
+      const params = `?search=${search}`;
+      console.log(params);
+      try {
+        Swal.fire({
+          title: "Retrieving All Recordings",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        });
 
-      response.json().then((data) => {
-        setRecList(data.data);
+        const response = await fetch(
+          `http://localhost:8082/recordingList/getAllRecordings${params}`,
+          {
+            headers: token,
+          }
+        );
+
+        response
+          .json()
+          .then((data) => {
+            setRecList(data.data);
+            // setOriginalList(data.data);
+            // setDisplayList(data.data);
+          })
+          .finally(Swal.close());
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+  // Download Recording
+
+  const handleDownload = (fileName, timeStamp) => {
+    const headers = new Headers();
+    headers.append("Authorization", `${token.Authorization}`);
+
+    Swal.fire({
+      title: "Downloading...",
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+
+    fetch(`http://localhost:8082/audio/download/${timeStamp}_${fileName}`, {
+      method: "GET",
+      headers: headers,
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", timeStamp + "_" + fileName);
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Error downloading audio:", error);
+      })
+      .finally(() => {
+        Swal.close();
       });
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
   };
 
   // Delete Recording
@@ -76,6 +139,7 @@ function EmployeeRecordingList() {
         // Deleting
         fetch(`http://localhost:8082/recordingList/deleteRecordingById/${id}`, {
           method: "DELETE",
+          headers: token,
         })
           .then((res) => res.json())
           .then(
@@ -89,8 +153,6 @@ function EmployeeRecordingList() {
 
         // Success message
         Swal.fire("Deleted!", "The recording has been deleted!", "success");
-
-        // Reload getEmpList();table
         getRecList();
       }
     });
@@ -104,6 +166,10 @@ function EmployeeRecordingList() {
     getRecList();
     getEmployeeDetail();
   }, [search]);
+
+   useEffect(() => {
+     console.log(recList);
+   }, [search]);
 
   // Pagination
   const lastPostIndex = currentPage * postsPerPage;
@@ -162,49 +228,45 @@ function EmployeeRecordingList() {
                 No
               </th>
               <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
-                Recording Name
+                Recording name
               </th>
-              <th className="bg-[#F6F4FC] normal-case  text-sm font-semibold text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Upload Date
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Date Recorded
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
                 Category
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
-                Sentiment
+              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold">
+                Overall Sentiment
               </th>
-              <th className="bg-[#F6F4FC] normal-case text-sm font-semibold text-center">
+              <th className="bg-[#F6F4FC] normal-case text-sm text-center font-semibold">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
             {recList && recList.length > 0
               ? recList
+                  .filter((rec) => rec?.employeeId == id)
                   .slice(firstPostIndex, lastPostIndex)
                   .map((recording, index) => (
-                    <tr className="hover">
-                      <th className="h-1">
-                        {currentPage * postsPerPage - 4 + index}
-                      </th>
-                      <td className="h-1">{recording.recordingName}</td>
-                      <td className="text-center h-1">
-                        {recording.uploadDate}
+                    <tr>
+                      <th>{currentPage * postsPerPage - 4 + index}</th>
+                      <td>
+                        {recording.recordingName}-[{recording.recordingId}]
                       </td>
-                      <td className="text-center h-1">
-                        {recording.recordingDate}
-                      </td>
-                      <td className="text-center h-1">category</td>
-                      <td className="text-center h-1">sentiment</td>
+                      <td>{recording.uploadDate.substring(0, 10)}</td>
+                      <td>{recording.dateRecorded.substring(0, 10)}</td>
+                      <td>{recording.category}</td>
+                      <td>{recording.sentiment}</td>
                       <td className="flex justify-center items-center">
-                        <div className="dropdown">
+                        <div className="dropdown dropdown-end mt-2">
                           <label
                             tabIndex={0}
-                            className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none h-1"
+                            className="bg-[#FFFFFF] border-[#FFFFFF] hover:bg-[#F6F4FC] hover:border-[#F6F4FC] hover:outline-none"
                           >
                             <MoreVertIcon
                               style={{ color: "black" }}
@@ -212,35 +274,39 @@ function EmployeeRecordingList() {
                           </label>
                           <ul
                             tabIndex={0}
-                            className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-52 rounded-none border-[#D1D1D1]"
+                            className="dropdown-content z-[1] menu shadow bg-[#F6F4FC] rounded-box w-36  rounded-md"
                           >
-                            <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                            <li className="hover:bg-[#9554FE]">
                               <a
-                                className="text-[#9554FE]"
-                                href={`../analysis/${currentRecordingId}`}
+                                className="text-[#9554FE] hover:text-[#FFFFFF]"
+                                href={`../../recordingList/analysis/${currentRecordingId}`}
                                 onClick={() => {
                                   setCurrentRecordingId(recording.recordingId);
                                 }}
                               >
-                                <img src={Eye}></img>{" "}
-                                <p className="ml-1">View Analysis</p>
+                                <RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon>{" "}
+                                View Analysis
                               </a>
                             </li>
-                            <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
-                              <label
-                                className="text-[#D55454]"
+                            <li className="hover:bg-[#9554FE]">
+                              <a
+                                className="text-[#D55454] hover:text-[#FFFFFF]"
                                 onClick={() =>
                                   handleDelete(recording.recordingId)
                                 }
                               >
-                                <img src={TrashCan} className="ml-1"></img>{" "}
-                                <p className="ml-1">Delete</p>
-                              </label>
+                                <DeleteOutlinedIcon></DeleteOutlinedIcon> Delete
+                              </a>
                             </li>
-                            <li className="hover:bg-[#9554FE] hover:text-[#FFFFFF]">
+                            <li className="hover:bg-[#9554FE]">
                               <a
-                                className="text-[#D55454]"
-                                // onClick={() => handleDelete(employee.employeeId)}
+                                onClick={() =>
+                                  handleDownload(
+                                    recording.recordingName,
+                                    recording.timeStamp
+                                  )
+                                }
+                                className="text-[#9554FE] hover:text-[#FFFFFF]"
                               >
                                 <FileDownloadOutlinedIcon></FileDownloadOutlinedIcon>{" "}
                                 Download
@@ -250,6 +316,7 @@ function EmployeeRecordingList() {
                         </div>
                       </td>
                     </tr>
+                    // );
                   ))
               : null}
           </tbody>
@@ -273,8 +340,10 @@ function EmployeeRecordingList() {
         ) : null}
       </div>
       <div className="join flex justify-end mt-10 mb-10">
-         <Pagination
-          totalPosts={recList && recList.length}
+        <Pagination
+          totalPosts={
+            recList && recList.filter((rec) => rec?.employeeId == id).length
+          }
           postsPerPage={postsPerPage}
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}

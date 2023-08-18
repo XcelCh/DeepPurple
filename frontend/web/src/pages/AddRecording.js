@@ -46,6 +46,7 @@ function AddRecording() {
   const [recList, setRecList] = useState([]);  //useState to store all recording files linked to the account
 
   const [numbering, setNumbering] = useState(1); //for pagination
+  const [showAssigning, setShowAssigning] = useState(false); //show configuration
   const [assignEmployee, setAssignEmployee] = useState(""); //handle user's selection method for assigning employee
   const [selectedEmployee, setSelectedEmployee] = useState(""); 
   const [employee, setEmployee] = useState("");
@@ -134,6 +135,41 @@ function AddRecording() {
       setShowDelimiter(false);
       setShowOtherTB(false);
     }
+
+    if (assignEmployee == "none") {
+      const params = `?currentDate=${dateTimeString}`;
+      Swal.fire({
+      title: 'Updating Employee..',      
+      didOpen: () => {
+        Swal.showLoading()
+        return fetch(`http://localhost:8082/audio/unassignEmployees${params}`, {
+          method: "POST",
+          headers: token             
+        })
+        .then (response => {
+    
+          if (response.ok && recList.length !== 0) {
+            Swal.close();
+            getRecList()
+            // Success message
+            Swal.fire(            
+              "Updated",
+              "Employees have been unassigned!",
+              "success"
+            )
+          } else{
+            throw new error;
+          }  
+        })
+        .catch (error => {    
+          setError(error)
+          console.error(error)          
+          Swal.fire("Fail", "Fail to unassign employee", "error")
+        })
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    })
+    }
   }, [assignEmployee]);
 
   //toggle showOtherTB during assigning existing employee
@@ -145,6 +181,15 @@ function AddRecording() {
       setEmployee(selectedEmployee);
     }
   }, [selectedEmployee]);
+
+  //toggle showAssigning
+  useEffect(() => {
+    if(recList.length > 0) {
+      setShowAssigning(true);
+    } else {
+      setShowAssigning(false);
+    }
+  }, [recList]);
 
   //listen for user's selection for assigning employee method
   const handleAssignEmployee = (selected) => {
@@ -351,6 +396,7 @@ function AddRecording() {
         // Deleting
         fetch(`http://localhost:8082/audio/deleteFile${params}`, {
           method: "DELETE",
+          headers: token
         })          
         .then(response => {
 
@@ -430,6 +476,7 @@ const addEmployee = async (empData) => {
     await fetch(`http://localhost:8082/audio/updateRecordingEmployeeByDelimiter${params}`, {
       method: "POST",
       body: data,
+      headers: token
     })
     .then (response => {
       if(response.ok) {
@@ -629,21 +676,26 @@ const addEmployee = async (empData) => {
         </ul>
       </div>
 
-      <p className="font-bold mb-1">Configuration</p>
-      <div className="grid grid-cols-2 flex w-2/5 items-center mb-5">
-        <p>Assign employee by</p>
-        <select
-          // value={gender}
-          onChange={(e) => handleAssignEmployee(e.target.value)}
-          className="select select-bordered font-normal select-sm h-11"
-        >
-          <option value="">Select</option>
-          <option value="existingEmployee">Existing Employee</option>
-          <option value="folderName">Folder Name</option>
-          <option value="splitFileName">Split File Name</option>
-          <option value="none">None</option>
-        </select>
-      </div>
+      {/* Uploaded File Configurations */}
+      {showAssigning == true ? (
+        <>
+          <p className="font-bold mb-1">Configuration</p>
+          <div className="grid grid-cols-2 flex w-2/5 items-center mb-5">
+            <p>Assign employee by</p>
+            <select
+              // value={gender}
+              onChange={(e) => handleAssignEmployee(e.target.value)}
+              className="select select-bordered font-normal select-sm h-11"
+            >
+              <option value="">Select</option>
+              <option value="existingEmployee">Existing Employee</option>
+              <option value="folderName">Folder Name</option>
+              <option value="splitFileName">Split File Name</option>
+              <option value="none">None</option>
+            </select>
+          </div>      
+        </>
+      ) : null}      
 
       {/* Existing Employee */}
       <div className="flex">
@@ -759,7 +811,7 @@ const addEmployee = async (empData) => {
               You don't have any recordings yet
             </p>
             <p className="text-center font-semibold text-sm mb-10">
-              Start uploading your audio files by clicking
+              Start uploading your audio files by clicking {" "}
               <a href="/AddRecording" className="underline underline-offset-2">
                 Upload
               </a>

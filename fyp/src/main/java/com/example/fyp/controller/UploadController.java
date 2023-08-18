@@ -209,6 +209,45 @@ public class UploadController {
 		
 		
 	}
+
+	// Unassign employees from recording files
+	@PostMapping("/unassignEmployees")
+	public ResponseEntity<?> unassignEmployees(@RequestParam String currentDate) {
+		// Retrieve the current authentication token
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String email = authentication.getName();        
+	    Integer account_id = accountServiceImpl.getAccountId(email);
+		
+		ResponseStatus response = new ResponseStatus();  		
+	  
+		List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);		   	  		  		 
+         
+		try {
+			LocalDateTime currTime = LocalDateTime.parse(currentDate);
+	    
+			for (Map<String, Object> rec : recList) {		
+	            if (((LocalDateTime) rec.get("uploadDate")).isAfter(currTime)) {
+	            	Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
+	            	if(r.get().getEmployee() != null) {
+						r.get().getEmployee().decrementNumCallsHandled();
+	            		r.get().setEmployee(null);	            		
+	            		recRepo.save(r.get());
+	            	}    	       	            
+	            }
+			}
+        	        			
+			// RESPONSE DATA
+			response.setSuccess(true);
+			response.setData(recList);
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+            
+    	} catch (Exception e)  {
+    		// RESPONSE DATA
+    		response.setSuccess(false);
+    		response.setMessage("Fail to unassign All Employees.");
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+	}
 	
 	// Get all recent uploaded recordings 
 	@GetMapping("/getRecordings")
@@ -425,10 +464,13 @@ public class UploadController {
 			// Update Employee Recording Sentiment
 			Recording recording = recRepo.findById(recordingIds.get(i)).get();
 			Employee employee = recording.getEmployee();
-			if (callSentiment.equals("Positive")) {
-				employee.setNumPositiveSentiment(employee.getNumPositiveSentiment() + 1);
-			} else {
-				employee.setNumNegativeSentiment(employee.getNumNegativeSentiment() + 1);
+
+			if (employee != null) {
+				if (callSentiment.equals("Positive")) {
+					employee.setNumPositiveSentiment(employee.getNumPositiveSentiment() + 1);
+				} else {
+					employee.setNumNegativeSentiment(employee.getNumNegativeSentiment() + 1);
+				}
 			}
 
 			// Main issue

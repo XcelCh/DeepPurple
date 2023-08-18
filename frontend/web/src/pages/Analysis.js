@@ -292,7 +292,9 @@ function Analysis() {
           <div className="w-3/4 flex flex-col ml-4 border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">Agent</div>
             <div className="flex-grow">
-              {analysisData.recording?.employee.employeeName}
+              {analysisData.recording?.employee
+                ? analysisData.recording?.employee?.employeeName
+                : "Not Assigned"}
             </div>
           </div>
         </div>
@@ -587,7 +589,11 @@ function Analysis() {
             </p>
             <AudioPlayer
               initialParagraphs={transcriptData}
-              employeeName={analysisData.recording?.employee.employeeName}
+              employeeName={
+                analysisData.recording?.employee
+                  ? analysisData.recording?.employee?.employeeName
+                  : "Not Assigned"
+              }
               recordingName={analysisData.recording?.recordingName}
               timeStamp={analysisData.recording?.timeStamp}
             />
@@ -658,7 +664,11 @@ function Analysis() {
             <div className="p-2">
               <TranscriptCard
                 initialParagraphs={transcriptData}
-                employeeName={analysisData.recording?.employee.employeeName}
+                employeeName={
+                  analysisData.recording?.employee
+                    ? analysisData.recording?.employee?.employeeName
+                    : "Not Assigned"
+                }
               />
             </div>
           </div>

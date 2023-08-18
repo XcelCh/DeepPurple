@@ -100,6 +100,8 @@ function AudioPlayer({
       });
   }, [timeStamp, recordingName]);
 
+  const totalWidth = 0;
+
   return (
     <div className={styles.audioPlayer}>
       <div className="flex items-center">
@@ -174,20 +176,31 @@ function AudioPlayer({
 
       <div class="relative mx-12 pt-1">
         <div class="mb-2">
+         
           <p className="font-bold text-[#80F2AA]">{employeeName}</p>
         </div>
         <div class="mb-4 flex h-2 overflow-hidden rounded bg-[#F5F5F5] text-xs">
-          {initialParagraphs.map((paragraph) => {
+          
+          {initialParagraphs.map((paragraph, index) => {
             const startTime = paragraph[2];
             const endTime = paragraph[3];
+
+            // Calculate silent time for paragraphs after the first one
+            let silentTime = 0;
+            if (index > 0) {
+              const prevEndTime = initialParagraphs[index - 1][3];
+              silentTime = startTime - prevEndTime;
+            }
+
             console.log("START TIME: " + startTime);
             console.log("END TIME: " + endTime);
+            console.log("SILENT TIME: " + silentTime);
+
             if (paragraph[0]) {
-              // console.log("employee");
               const widthPercentage = `${
                 ((endTime - startTime) / duration) * 100
               }%`;
-              console.log(widthPercentage);
+              
               return (
                 <div
                   style={{ width: widthPercentage }}
@@ -195,8 +208,8 @@ function AudioPlayer({
                 ></div>
               );
             } else {
-              console.log("employee empty");
-              const gap = endTime - startTime;
+              const gap = endTime - startTime + silentTime;
+              console.log("GAP: " + gap);
               const widthPercentage = `${(gap / duration) * 100}%`;
               // console.log(widthPercentage);
               return (
@@ -212,12 +225,19 @@ function AudioPlayer({
           <p className="font-bold text-[#9554FE]">Customer</p>
         </div>
         <div class="mb-4 flex h-2 overflow-hidden rounded bg-[#F5F5F5] text-xs">
-          {/* {initialParagraphs.map((paragraph) => {
-            if (!paragraph[0]) {
-              console.log("false");
-              const startTime = paragraph[2];
-              const endTime = paragraph[3];
+          {initialParagraphs.map((paragraph, index) => {
 
+            const startTime = paragraph[2];
+            const endTime = paragraph[3];
+
+            // Calculate silent time for paragraphs after the first one
+            let silentTime = 0;
+            if (index > 0) {
+              const prevEndTime = initialParagraphs[index - 1][3];
+              silentTime = startTime - prevEndTime;
+            }
+
+            if (paragraph[0]) {
               const widthPercentage = `${
                 ((endTime - startTime) / duration) * 100
               }%`;
@@ -228,9 +248,7 @@ function AudioPlayer({
                 ></div>
               );
             } else {
-              const startTime = paragraph[2];
-              const endTime = paragraph[3];
-              const gap = endTime - startTime;
+              const gap = endTime - startTime + silentTime;
               const widthPercentage = `${(gap / duration) * 100}%`;
               return (
                 <div
@@ -239,7 +257,7 @@ function AudioPlayer({
                 ></div>
               );
             }
-          })}*/}
+          })}
         </div>
       </div>
     </div>

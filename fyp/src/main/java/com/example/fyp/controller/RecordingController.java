@@ -71,10 +71,10 @@ public class RecordingController {
 
     @Autowired
     private AnalysisService analysisService;
-    
+
     @Autowired
     private StorageService storageService;
-    
+
     // Get All Recordings and delete recordings that have null analysis
     @GetMapping("/getAllRecordings")
     public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String search) {
@@ -88,21 +88,21 @@ public class RecordingController {
             System.out.println("ACCOUNT ID: " + account_id);
 
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
-            
-            //delete unanalyzed recordings            
-            for (Map<String, Object> rec : recList) {		
-            	Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
-            	
-            	if(r.get().getAnalysis() == null) {    	             
-    	             recRepo.delete(r.get());    	             
-    	             storageService.deleteFile(r.get().getTimeStamp()+"_"+r.get().getRecordingName());
-             	}                
-            }            
+
+            // delete unanalyzed recordings
+            for (Map<String, Object> rec : recList) {
+                Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
+
+                if (r.get().getAnalysis() == null) {
+                    recRepo.delete(r.get());
+                    storageService.deleteFile(r.get().getTimeStamp() + "_" + r.get().getRecordingName());
+                }
+            }
 
             System.out.println("RECORDING: " + recList);
 
             if (search != null && !search.isEmpty()) {
-                String searchKeyword = "%" + search.toLowerCase() + "%";    
+                String searchKeyword = "%" + search.toLowerCase() + "%";
 
                 recList = recList.stream()
                         .filter(rec -> ((String) rec.get("recordingName")).contains(search))
@@ -156,30 +156,30 @@ public class RecordingController {
 
         // update recording
         Recording recording = recRepo.findById(rec_id).get();
-        Integer old_emp_id = recording.getEmployee().getEmployeeId();
 
         // update num calls handled
         Employee new_employee = empRepo.findById(Integer.parseInt(new_emp_id)).get();
-        // System.out.println("NEW EMP - BEFORE NUM CALLS HANDLED: " +
-        // new_employee.getNumCallsHandled());
         new_employee.setNumCallsHandled(new_employee.getNumCallsHandled() + 1);
-        // System.out.println("NEW EMP - AFTER NUM CALLS HANDLED: " +
-        // new_employee.getNumCallsHandled());
 
-        Employee old_employee = empRepo.findById(old_emp_id).get();
-        // System.out.println("OLD EMP - BEFORE NUM CALLS HANDLED: " +
-        // old_employee.getNumCallsHandled());
-        old_employee.setNumCallsHandled(old_employee.getNumCallsHandled() - 1);
-        // System.out.println("OLD EMP - AFTER NUM CALLS HANDLED: " +
-        // old_employee.getNumCallsHandled());
+        // If old employee is existed
+        if (recording.getEmployee() != null) {
+            Integer old_emp_id = recording.getEmployee().getEmployeeId();
+            Employee old_employee = empRepo.findById(old_emp_id).get();
+            old_employee.setNumCallsHandled(old_employee.getNumCallsHandled() - 1);
+
+            if (recordingSentiment.equals("Positive")) {
+                old_employee.setNumPositiveSentiment(old_employee.getNumPositiveSentiment() - 1);
+            } else {
+                old_employee.setNumNegativeSentiment(old_employee.getNumNegativeSentiment() - 1);
+            }
+
+        }
 
         // update number of employee recording sentiment
         if (recordingSentiment.equals("Positive")) {
             new_employee.setNumPositiveSentiment(new_employee.getNumPositiveSentiment() + 1);
-            old_employee.setNumPositiveSentiment(old_employee.getNumPositiveSentiment() - 1);
-        } else{
+        } else {
             new_employee.setNumNegativeSentiment(new_employee.getNumNegativeSentiment() + 1);
-            old_employee.setNumNegativeSentiment(old_employee.getNumNegativeSentiment() - 1);
         }
 
         // update recording
@@ -194,7 +194,8 @@ public class RecordingController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    //check if the recording analysis was successful, based on user's current usage limit.
+    // check if the recording analysis was successful, based on user's current usage
+    // limit.
     @PostMapping("analyzeLambda")
     public ResponseEntity<String> apply(@RequestBody List<Integer> ids) {
         try {
@@ -223,38 +224,4 @@ public class RecordingController {
         }
     }
 
-    // @PostMapping("analyzeLambda")
-    // @Bean
-    // public Function<List<Integer>, ResponseEntity<String>> analyze(@RequestBody
-    // List<Integer> ids){
-    // return value -> {
-    // try {
-    // Authentication authentication =
-    // SecurityContextHolder.getContext().getAuthentication();
-    // Account account =
-    // accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
-
-    // Float limit = account.getPayment().getUsageLimit();
-    // Float totalUnbilled =
-    // usageService.getTotalUnbilledUsage(account.getAccountId());
-    // Float limitLeft = limit - totalUnbilled;
-
-    // boolean check = recordingService.checkLimit(ids, limitLeft, account);
-
-    // if(check == false)
-    // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limit Exceeded");
-    // else
-    // return ResponseEntity.status(HttpStatus.OK).body("Analyze Complete");
-    // }
-
-    // catch (UsernameNotFoundException e){
-    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not
-    // Found.");
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Cannot Process, "+
-    // e);
-    // }
-    // };
-    // }
 }

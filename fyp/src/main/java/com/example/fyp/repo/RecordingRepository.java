@@ -37,9 +37,9 @@ public interface RecordingRepository extends JpaRepository<Recording, Integer>{
     @Query("SELECT r.recordingId AS recordingId, r.uploadDate AS uploadDate FROM Recording r WHERE r.recordingId = :recording_id")
     Map<String, Object> getRecordingById(Integer recording_id);        
     
-    Optional<Recording> findByRecordingName(String fileName);    
+    Optional<Recording> findByRecordingName(String fileName);
 
-    List<Recording> findByEmployee_EmployeeId(Integer employeeId);
+     List<Recording> findByEmployee_EmployeeId(Integer employeeId);
 
     @Query("SELECT AVG(r.analysis.averagePerformance) FROM Recording r WHERE r.employee.employeeId = :employeeId")
     Double findAvgPeformanceByEmployeeId(@Param("employeeId") Integer employeeId);
