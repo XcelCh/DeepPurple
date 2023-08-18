@@ -351,6 +351,7 @@ function AddRecording() {
         // Deleting
         fetch(`http://localhost:8082/audio/deleteFile${params}`, {
           method: "DELETE",
+          headers: token
         })          
         .then(response => {
 
@@ -430,6 +431,7 @@ const addEmployee = async (empData) => {
     await fetch(`http://localhost:8082/audio/updateRecordingEmployeeByDelimiter${params}`, {
       method: "POST",
       body: data,
+      headers: token
     })
     .then (response => {
       if(response.ok) {

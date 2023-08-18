@@ -174,20 +174,21 @@ function AudioPlayer({
 
       <div class="relative mx-12 pt-1">
         <div class="mb-2">
+         
           <p className="font-bold text-[#80F2AA]">{employeeName}</p>
         </div>
         <div class="mb-4 flex h-2 overflow-hidden rounded bg-[#F5F5F5] text-xs">
+          
           {initialParagraphs.map((paragraph) => {
+
             const startTime = paragraph[2];
             const endTime = paragraph[3];
             console.log("START TIME: " + startTime);
             console.log("END TIME: " + endTime);
             if (paragraph[0]) {
-              // console.log("employee");
               const widthPercentage = `${
                 ((endTime - startTime) / duration) * 100
               }%`;
-              console.log(widthPercentage);
               return (
                 <div
                   style={{ width: widthPercentage }}
@@ -212,8 +213,8 @@ function AudioPlayer({
           <p className="font-bold text-[#9554FE]">Customer</p>
         </div>
         <div class="mb-4 flex h-2 overflow-hidden rounded bg-[#F5F5F5] text-xs">
-          {/* {initialParagraphs.map((paragraph) => {
-            if (!paragraph[0]) {
+          {initialParagraphs.map((paragraph) => {
+            if (paragraph[0]) {
               console.log("false");
               const startTime = paragraph[2];
               const endTime = paragraph[3];
@@ -239,7 +240,7 @@ function AudioPlayer({
                 ></div>
               );
             }
-          })}*/}
+          })}
         </div>
       </div>
     </div>

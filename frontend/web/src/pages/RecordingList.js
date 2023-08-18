@@ -545,15 +545,13 @@ function RecordingList() {
                         >
                           {empList &&
                             empList
-                              .slice(firstPostIndex, lastPostIndex)
                               .map((emp) => (
                                 <>
-                                  
                                   <option
                                     key={emp.employeeId}
                                     value={emp.employeeId}
                                   >
-                                    {emp.employeeName}
+                                   {emp.employeeName}
                                   </option>
                                 </>
                               ))}
