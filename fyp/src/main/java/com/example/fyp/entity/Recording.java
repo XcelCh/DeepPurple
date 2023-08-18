@@ -113,7 +113,7 @@ public class Recording {
     // ToString method of Recording Entity
     @Override
     public String toString() {
-        return "Recording{recordingId=" + recordingId + ", recordingName='" + recordingName + '\'' + ", content=" + Arrays.toString(content) +
+        return "Recording{recordingId=" + recordingId + ", recordingName='" + recordingName + '\'' +
                 ", uploadDate=" + uploadDate + ", recordingDate=" + recordingDate + ", recordingDuration=" + recordingDuration +
                 ", recordingUrl='" + recordingUrl + '\'' + ", audioFormat='" + audioFormat + '\'' + ", sampleRate=" + sampleRate +
                 ", analysis=" + (analysis != null ? analysis.getAnalysisId() : null) + ", employee=" + (employee != null ? employee.getEmployeeId() : null) +
