@@ -74,10 +74,6 @@ public class AnalysisService {
     }
     
     public Analysis processAnalysis(Recording rec, Container c){
-
-        // return analysisRepository.save(new Analysis(null,null, null, c.getData()[1], c.getData()[2], c.getData()[4],
-        //                 null, null, null,c.getData()[0] / c.getData()[3], null, rec));
-
         Analysis analysis = new Analysis();
         analysis.setEmployeeSpeakTime(c.getData()[1]);
         analysis.setCustomerSpeakTime(c.getData()[2]);

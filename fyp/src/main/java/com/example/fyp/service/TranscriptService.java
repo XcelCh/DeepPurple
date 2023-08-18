@@ -72,36 +72,6 @@ public class TranscriptService{
 
         speechClient.shutdown();
 
-        // // Speaker Tags are only included in the last result object, which has only one alternative.
-        // SpeechRecognitionAlternative alternative =
-        //     response.getResults(response.getResultsCount() - 1).getAlternatives(0);
-
-        // // The alternative is made up of WordInfo objects that contain the speaker_tag.
-        // WordInfo wordInfo = alternative.getWords(0);
-        // int currentSpeakerTag = wordInfo.getSpeakerTag();
-
-        // For each word, get all the words associated with one speaker, once the speaker changes,
-        // add a new line with the new speaker and their spoken words.
-        // StringBuilder speakerWords =
-        //     new StringBuilder(
-        //         String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-
-        // for (int i = 1; i < alternative.getWordsCount(); i++) {
-        //     wordInfo = alternative.getWords(i);
-        //     if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
-        //         speakerWords.append(" ");
-        //         speakerWords.append(wordInfo.getWord());
-        //     } else {
-        //         speakerWords.append(
-        //             String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-        //         currentSpeakerTag = wordInfo.getSpeakerTag();
-        //     }
-        // }
-
-        //System.out.println(speakerWords.toString());
-
-        //System.out.println("\nFinish one transcription");
-
         return response.getResultsList();
     }
 
@@ -215,13 +185,6 @@ public class TranscriptService{
                     if(startTimeFlag){
                         startTime = wordInfo.getStartTime().getSeconds() + wordInfo.getStartTime().getNanos() / 1e9;
                     }
-
-                    // System.out.println("Word: " + word);
-                    // System.out.println("Dialog: " + dialog);
-                    // System.out.printf("Transcription starTime: %d%n", startTime);
-                    // System.out.printf("Diarization starTime: %d%n", currSpeaker.getStartTime());
-                    // System.out.printf("Transcription endTime: %d%n", endTime);
-                    // System.out.printf("Diarization endTime: %d%n", currSpeaker.getEndTime());
 
                     if(endTime <= diarizations.peek().getEndTime()){
                         //System.out.println("Inside the if");
