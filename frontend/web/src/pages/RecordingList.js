@@ -63,7 +63,7 @@ function RecordingList() {
 
     if (filter.handledBy) {
       filteredRecList = filteredRecList.filter(
-        (rec) => rec?.employeeName == filter.handledBy
+        (rec) => rec?.employeeId == filter.handledBy
       );
     }
 
@@ -123,11 +123,6 @@ function RecordingList() {
     }
   };
 
-  const handleFilterUploadDate = () => {
-    console.log(new Date(dateRange[0]));
-    console.log(new Date(dateRange[1]));
-  };
-
   const handleReset = () => {
     console.log("Reset Filter");
   };
@@ -182,14 +177,15 @@ function RecordingList() {
         }
       );
 
-      response.json().then((data) => {
-        setRecList(data.data);
-        setOriginalList(data.data);
-        setDisplayList(data.data);
+      response
+        .json()
+        .then((data) => {
+          setRecList(data.data);
+          setOriginalList(data.data);
+          setDisplayList(data.data);
+        })
+        .finally(Swal.close());
 
-      });
-
-      Swal.close(); // Close the loading dialog
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -310,10 +306,11 @@ function RecordingList() {
 
   useEffect(() => {
     // console.log(recList);
-    console.log(empIdList);
-  });
+    console.log("EMP ID LIST: " + empIdList);
+  },[empIdList]);
 
   useEffect(() => {
+    console.log("DISPLAY LIST: " + displayList);
     setEmpIdList(displayList.map((rec) => rec.employeeId));
   }, [displayList]);
 
@@ -375,7 +372,7 @@ function RecordingList() {
                       <option value="">Any Employee</option>
                       {empList &&
                         empList.map((emp, index) => (
-                          <option value={emp.employeeName}>
+                          <option value={emp.employeeId}>
                             {emp.employeeName}
                           </option>
                         ))}
@@ -470,12 +467,6 @@ function RecordingList() {
           ></DateRange>
         </div>
 
-        {/* Upload Date */}
-        {/* <div className="grid grid-cols-2 flex items-center mb-5">
-          <p className="font-bold">Upload Date</p> */}
-
-        {/* </div> */}
-
         {/* Upload */}
         <div className="place-self-end">
           <Link to="./AddRecording">
@@ -526,31 +517,43 @@ function RecordingList() {
                   .slice(firstPostIndex, lastPostIndex)
                   .map((recording, index) => (
                     <tr>
-                      <th>
-                        {currentPage * postsPerPage - 4 + index}
-                      </th>
-                      <td>{recording.recordingName}-[{recording.recordingId}]</td>
+                      <th>{currentPage * postsPerPage - 4 + index}</th>
                       <td>
-                        {recording.uploadDate.substring(0, 10)}
+                        {recording.recordingName}-[{recording.recordingId}]
                       </td>
-                      <td>
-                        {recording.dateRecorded.substring(0, 10)}
-                      </td>
+                      <td>{recording.uploadDate.substring(0, 10)}</td>
+                      <td>{recording.dateRecorded.substring(0, 10)}</td>
+
                       <td>
                         <select
-                          value={empIdList[index]}
-                          onChange={(e) => handleChangeEmployee(recording.recordingId, e.target.value, index)}
+                          value={
+                            empIdList[
+                              currentPage * postsPerPage - 4 + index - 1
+                            ]
+                          }
+                          onChange={(e) =>
+                            handleChangeEmployee(
+                              recording.recordingId,
+                              e.target.value,
+                              index
+                            )
+                          }
                           className="select select-bordered font-normal select-sm h-8"
                         >
                           {empList &&
-                            empList.map((emp) => (
-                              <option
-                                key={emp.employeeId}
-                                value={emp.employeeId}
-                              >
-                                {emp.employeeName}
-                              </option>
-                            ))}
+                            empList
+                              .slice(firstPostIndex, lastPostIndex)
+                              .map((emp) => (
+                                <>
+                                  
+                                  <option
+                                    key={emp.employeeId}
+                                    value={emp.employeeId}
+                                  >
+                                    {emp.employeeName}
+                                  </option>
+                                </>
+                              ))}
                         </select>
                       </td>
                       <td className="">{recording.category}</td>
@@ -594,7 +597,10 @@ function RecordingList() {
                             <li className="hover:bg-[#9554FE]">
                               <a
                                 onClick={() =>
-                                  handleDownload(recording.recordingName, recording.timeStamp)
+                                  handleDownload(
+                                    recording.recordingName,
+                                    recording.timeStamp
+                                  )
                                 }
                                 className="text-[#9554FE] hover:text-[#FFFFFF]"
                               >
@@ -608,7 +614,7 @@ function RecordingList() {
                     </tr>
                     // );
                   ))
-              :null}
+              : null}
           </tbody>
         </table>
 
