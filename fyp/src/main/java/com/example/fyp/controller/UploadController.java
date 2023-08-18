@@ -42,6 +42,7 @@ import com.example.fyp.service.StorageService;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
 
+//Controller to handle uploading recording files
 @RestController
 @RequestMapping("/audio")
 public class UploadController {
@@ -71,6 +72,7 @@ public class UploadController {
 	@Autowired
 	private AnalysisService analysisService;
 
+	// Upload audio
 	@PostMapping("/uploadAudio")
 	public ResponseEntity<String> uploadFile(@RequestParam("audio") MultipartFile file) {
 		// Retrieve the current authentication token
@@ -81,6 +83,7 @@ public class UploadController {
 		return new ResponseEntity<>(service.uploadFile(file, account), HttpStatus.OK);
 	}
 	
+	// Download existing recording file
 	@GetMapping("/download/{fileName}")
 	public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName){
 		byte[] data = service.downloadFile(fileName);
@@ -93,6 +96,7 @@ public class UploadController {
 				.body(resource);
 	}
 	
+	// Delete recording file
 	@DeleteMapping("/deleteFile")
 	public ResponseEntity<String> deleteFile(@RequestParam String fileName, @RequestParam String recID){			
 		//get the recording object that is about to be deleted
@@ -112,6 +116,7 @@ public class UploadController {
 		return new ResponseEntity<>(service.deleteFile((recordingToDelete.get().getTimeStamp()+"_"+fileName)), HttpStatus.OK);	
 	}
 	
+	// Update recording file's assigned employee
 	@PostMapping("/updateAudioEmployee")
 	public ResponseEntity<?> updateRecordingEmployee(@RequestParam String currentDate, @RequestParam String employeeId, @RequestParam String employeeName) {  
 		// Retrieve the current authentication token
@@ -165,6 +170,7 @@ public class UploadController {
 	  	  
 	 }
 	
+	// Update file's assigned employee based on the file's delimited value
 	@PostMapping("/updateRecordingEmployeeByDelimiter")
 	public ResponseEntity<?> updateRecordingEmployeeByDelimiter(@RequestParam String recordingID, @RequestParam String empName) {
 		ResponseStatus response = new ResponseStatus();
@@ -204,6 +210,7 @@ public class UploadController {
 		
 	}
 	
+	// Get all recent uploaded recordings 
 	@GetMapping("/getRecordings")
     public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String currentDate) {
         ResponseStatus<List<Map<String, Object>>> response = new ResponseStatus<>();

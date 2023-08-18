@@ -17,7 +17,7 @@ import com.example.fyp.model.promptModel;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
 
-
+//Controller to handle text analyzer's GPT sentiment requests
 @RestController
 public class SentimentController {
 

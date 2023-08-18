@@ -28,6 +28,7 @@ import com.google.cloud.speech.v1.SpeechSettings;
 import com.google.cloud.speech.v1.WordInfo;
 import com.google.protobuf.ByteString;
 
+// Service class for Transcript entity
 @Service
 public class TranscriptService{
     private final TranscriptRepository transcriptRepository;
@@ -72,39 +73,10 @@ public class TranscriptService{
 
         speechClient.shutdown();
 
-        // // Speaker Tags are only included in the last result object, which has only one alternative.
-        // SpeechRecognitionAlternative alternative =
-        //     response.getResults(response.getResultsCount() - 1).getAlternatives(0);
-
-        // // The alternative is made up of WordInfo objects that contain the speaker_tag.
-        // WordInfo wordInfo = alternative.getWords(0);
-        // int currentSpeakerTag = wordInfo.getSpeakerTag();
-
-        // For each word, get all the words associated with one speaker, once the speaker changes,
-        // add a new line with the new speaker and their spoken words.
-        // StringBuilder speakerWords =
-        //     new StringBuilder(
-        //         String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-
-        // for (int i = 1; i < alternative.getWordsCount(); i++) {
-        //     wordInfo = alternative.getWords(i);
-        //     if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
-        //         speakerWords.append(" ");
-        //         speakerWords.append(wordInfo.getWord());
-        //     } else {
-        //         speakerWords.append(
-        //             String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-        //         currentSpeakerTag = wordInfo.getSpeakerTag();
-        //     }
-        // }
-
-        //System.out.println(speakerWords.toString());
-
-        //System.out.println("\nFinish one transcription");
-
         return response.getResultsList();
     }
 
+    //Transcribe speech into text result
     public List<SpeechRecognitionResult> transcribeSpeechEnhanced(byte[] bytes) throws FileNotFoundException, IOException{
         System.out.println("Inside transcript service");
 
@@ -142,6 +114,7 @@ public class TranscriptService{
         return response.getResultsList();
     }
 
+    //Process generated transcript
     public Container processTranscription(Queue<Diarization> orderedDiarization, double offset, Container c){
         double endTime = 0.0 + offset;
         double tempEndTime = endTime;
@@ -187,6 +160,7 @@ public class TranscriptService{
         return c;
     }
 
+    //Overloaded process transcription
     public Container processTranscription(List<List<SpeechRecognitionResult>> results, Queue<Diarization> diarizations, List<Double> offsets){
         double[] data = new double[5]; // 0 = confidence, 1 = employee speak time, 2 = customer speak time, 3 = counter, 4 = silence time
         List<Transcript> transcriptions = new ArrayList<>();
@@ -215,13 +189,6 @@ public class TranscriptService{
                     if(startTimeFlag){
                         startTime = wordInfo.getStartTime().getSeconds() + wordInfo.getStartTime().getNanos() / 1e9;
                     }
-
-                    // System.out.println("Word: " + word);
-                    // System.out.println("Dialog: " + dialog);
-                    // System.out.printf("Transcription starTime: %d%n", startTime);
-                    // System.out.printf("Diarization starTime: %d%n", currSpeaker.getStartTime());
-                    // System.out.printf("Transcription endTime: %d%n", endTime);
-                    // System.out.printf("Diarization endTime: %d%n", currSpeaker.getEndTime());
 
                     if(endTime <= diarizations.peek().getEndTime()){
                         //System.out.println("Inside the if");
@@ -302,6 +269,7 @@ public class TranscriptService{
         return new Container(transcriptions, data);
     }
 
+    // Save transcripts.
     public void persistTranscriptions(Analysis analysis, Container c){
         for (Transcript t: c.getTranscriptions()) {
             t.setAnalysis(analysis);

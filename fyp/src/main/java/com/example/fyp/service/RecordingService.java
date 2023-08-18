@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 
 import javax.sound.sampled.AudioFileFormat;
@@ -66,29 +67,8 @@ public class RecordingService extends AudioFileWriter{
         this.s3Client = s3Client;
     }
 
-    // public Recording getRecordingById(int id){
-    //     Recording recording = recordingDAO.findById(id).get();
-
-    //     byte[] bytes = decompress(recording.getContent());
-              
-    //     System.out.println("After decompress" + bytes.length);
-
-    //     return recording;
-    // }
-
-    // public ResponseEntity<String> getAllRecordingById(List<Integer> ids){
-    //     List<Recording> recordings = (List<Recording>) (recordingDAO.findAllById(ids));
-
-    //     for (Recording recording : recordings)
-    //         System.out.println(decompress(recording.getContent()).length);
-
-    //     return ResponseEntity.ok("OK");
-    // }
-
     // Check if limit of the user is enough to analyze the recording uploaded
     public boolean checkLimit (List<Integer> ids, Float limitLeft, Account account) throws UnsupportedAudioFileException, IOException, Exception {
-
-
         double price = priceService.getPrice(1);
 
         System.out.println("Now fetching");
@@ -286,14 +266,6 @@ public class RecordingService extends AudioFileWriter{
 
         recording.setBytes(out.toByteArray());
 
-        // System.out.println("Before read:" + bytes.length);
-        // bytes = new byte[convertedStream.available()];
-        // convertedStream.read(bytes);
-        // System.out.println("After read:" + bytes.length);
-        
-        // length = (double) (audioInputStream.getFrameLength() / format.getFrameRate());
-        // System.out.println("Length" + length);
-
         // Close the streams
         audioInputStream.close();
     }
@@ -335,35 +307,22 @@ public class RecordingService extends AudioFileWriter{
                 }
             }
 
-            //System.out.printf("%.2f - %.2f, %.5f%n", i * interval, (i + 1) * interval, intervalAmplitude / samplesPerInterval);
-
             if(intervalAmplitude / samplesPerInterval <= threshold){
                 splitTime = i * interval;
                 counter++;
-                //System.out.printf("Split time under threshold: %.2f%n", splitTime);
             }
 
-            //System.out.println(i * interval);
             if(Math.abs((i * interval) - (maxTime + 60.0 - interval)) < tolerance){
                 if(counter == 0){
                     splitTime = i * interval;
-                    //System.out.println("First " + splitTime);
                     splitTimes.add(splitTime);
                 } else {
-                    //System.out.println(maxTime);
                     splitTimes.add(splitTime);
-                    //System.out.println("Second " + splitTime);
-                    //System.out.println(splitTime - maxTime);
-
                     counter = 0;
                 }
 
                 audioLength -= (splitTime - maxTime);
-                //System.out.println("Value: " + (splitTime - maxTime));
-                //System.out.println("total length left after split: " + audioLength);
-
                 maxTime += (splitTime - maxTime);
-                //System.out.println("Max time: " + maxTime);
             }
 
             if(audioLength < 60.0){
@@ -379,28 +338,21 @@ public class RecordingService extends AudioFileWriter{
     }
 
     public byte[][] splitAudio(List<Double> intervals, Recording recording) throws IOException{
-        // AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filepath));
-        // System.out.println(audioInputStream.getFrameLength());
         long totalFrames = (int) ((recording.getBytes().length / recording.getFormat().getFrameSize()));
         System.out.println(totalFrames);
 
         double frameRate = recording.getFormat().getFrameRate();
 
-        // // Create a directory to store the split audio files
-        // File outputDir = new File("splittingOutput");
-        // outputDir.mkdir();
-
         byte[][] splittedBytes = new byte[intervals.size()][];
 
         long startFrame = 0;
         for(int i = 0; i < intervals.size(); i++){
-            // System.out.println("Start frame: " + startFrame / frameRate);
+
             // Calculate the interval duration in frames
             long intervalFrames = (long) ((intervals.get(i) - (startFrame / frameRate)) * frameRate);
 
             // Calculate the start and end frames for each interval
             long endFrame = Math.min(startFrame + intervalFrames, totalFrames);
-            // System.out.println("End frame: " + endFrame / frameRate);
 
             // Create a new audio input stream with the specified frame length
             AudioInputStream intervalAudioInputStream = new AudioInputStream(
@@ -411,25 +363,13 @@ public class RecordingService extends AudioFileWriter{
             splittedBytes[i] = intervalAudioInputStream.readAllBytes();
             System.out.println("Bytes read length: " + splittedBytes[i].length);
 
-            // // Write the interval audio data to a new file
-            // File outputFile = new File(outputDir, "interval_" + (endFrame / frameRate) + ".wav");
-            // AudioSystem.write(intervalAudioInputStream, AudioFileFormat.Type.WAVE, outputFile);
-
             startFrame += intervalFrames;
-
-            // System.out.println("interval_" + (endFrame / frameRate) + ".wav: ");
-            // getAudioInfo("splittingOutput/interval_" + (endFrame / frameRate) + ".wav");
         }
-
-        //audioInputStream.close();
-
         return splittedBytes;
     }
 
     private byte[][][] splitStereoUniqueSpeakerPerChannel(byte[][] splittedAudioBytes) throws IOException{
         // // Calculate the number of samples per channel
-        // int bytesPerSample = inputFormat.getSampleSizeInBits() / 8;
-        // int samplesPerChannel = bytesRead / (2 * bytesPerSample);
 
         byte[][][] leftRightBytes = new byte[splittedAudioBytes.length][2][];
         int bytesPerSample = 2;
@@ -451,11 +391,9 @@ public class RecordingService extends AudioFileWriter{
             }
 
             // Save the left channel to a file
-            // File outputLeftFile = new File("Left_" + i + ".wav");
             leftRightBytes[i][0] = convertToMono(leftRightBytes[i][0]);
 
             // Save the right channel to a file
-            // File outputRightFile = new File("Right_" + i + ".wav");
             leftRightBytes[i][1] = convertToMono(leftRightBytes[i][1]);
         }
 
@@ -521,7 +459,43 @@ public class RecordingService extends AudioFileWriter{
 
     @Override
     public int write(AudioInputStream stream, AudioFileFormat.Type fileType, File out) throws IOException {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'write'");
     }
+
+    public double getAvgRecordingDurationByAccount (Integer accountId) {
+        return recordingRepository.getAverageRecordingDurationByAccount(accountId);
+    }
+
+    public double getAvgPerformanceByEmployee (Integer employeeId) {
+
+        Double avg= recordingRepository.findAvgPeformanceByEmployeeId(employeeId);
+
+        if (avg == null) {
+            avg = (double)0;
+        }
+
+        return avg;
+    }
+
+    public double getTotalDurationByEmployee (Integer employeeId) {
+
+        Double total = recordingRepository.findTotalDurationByEmployeeId(employeeId);
+
+        if(total == null) {
+            total = (double)0;
+        }
+
+        return total;
+    }
+
+    // public int getTotalRecordingByEmployee (Integer employeeId) {
+
+    //     Integer total = recordingRepository.findTotalRecordingByEmployeeId(employeeId);
+
+    //     if(total == null) {
+    //         total = 0;
+    //     }
+
+    //     return total;
+    // }
 }

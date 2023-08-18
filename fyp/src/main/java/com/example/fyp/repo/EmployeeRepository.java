@@ -6,8 +6,10 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.fyp.controller.dto.EmployeeAnalysisDto;
 import com.example.fyp.entity.Employee;
 
 // Employee Repository for Employee Entity to access the database
@@ -38,4 +40,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     Integer countEmployeeByName(String empName, Integer accountId);
 
     void deleteById(Integer id);
+
+    @Query("SELECT e.employeeId, e.employeeName, e.numCallsHandled FROM Employee e WHERE e.account.accountId = :accountId")
+    List<Object[]>findEmployeeByAccount(@Param("accountId") Integer accountId);
+
 }

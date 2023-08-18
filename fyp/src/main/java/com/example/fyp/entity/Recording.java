@@ -27,7 +27,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-// Analysis Entity 
+// Recording file Entity 
 @Data
 @Entity
 @AllArgsConstructor
@@ -45,11 +45,14 @@ public class Recording {
     @Nullable
     private Long timeStamp;
     
+    // Not needed
     @Nullable
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] content;
 
+    // upload date and recording date could only get the date the user last modified the audio
+    // remove one of them
     @Column(columnDefinition = "DATETIME")
     private LocalDateTime uploadDate;
 
@@ -125,12 +128,12 @@ public class Recording {
     }
 
     // Delete method which deletes related entities 
-    public Recording deleteRecording(Analysis analysis) {
+    // public Recording deleteRecording() {
 
-        analysis.deleteAnalysis(analysis.getTranscripts());
-        this.setAnalysis(null);
-        analysis.setRecording(null);
+    //     this.analysis.deleteAnalysis();
+    //     this.setAnalysis(null);
+    //     this.analysis.setRecording(null);
 
-        return this;
-    }
+    //     return this;
+    // }
 }

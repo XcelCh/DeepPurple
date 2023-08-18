@@ -16,7 +16,7 @@ function ChangePassword() {
   const token = authHeader();
   const navigate = useNavigate();
 
-  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+]{6,}$/;
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+]{6,}$/; //regex to check valid passwords
 
 
   const [formData, setFormData] = useState({
@@ -34,6 +34,7 @@ function ChangePassword() {
     setShowPassword(!showPassword);
   };
 
+  //save new valid password
   const handleSave = (e) => {
 
     e.preventDefault();

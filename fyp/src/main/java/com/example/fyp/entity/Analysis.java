@@ -74,14 +74,4 @@ public class Analysis {
                 ", transcript=" + transcripts + ", recording=" + (recording != null ? recording.getRecordingId() : null) + '}';
     }
 
-    // Delete Function where deleting analysis will remove related entity such as Transcript
-    public Analysis deleteAnalysis(List<Transcript> transcripts) {
-
-        for (Transcript t : transcripts) {
-            transcripts.remove(t);
-            t.setAnalysis(null);
-        }
-
-        return this;
-    }
 }

@@ -14,11 +14,14 @@ import com.example.fyp.entity.Recording;
 @Repository
 public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
 
-    @Query("SELECT COUNT(a) FROM Analysis a WHERE a.category = :category")
-    Integer countByCategory(@Param("category") String category);
+    @Query("SELECT COUNT(a) FROM Analysis a WHERE a.category = :category AND a.recording.account.accountId = :accountId")
+    Integer countByCategory(@Param("category") String category, @Param("accountId") Integer accountId);
 
-    @Query("SELECT COUNT(a) FROM Analysis a WHERE a.recordingSentiment = :recordingSentiment")
-    Integer countByRecordingSentiment(@Param("recordingSentiment") String recordingSentiment);
+    @Query("SELECT COUNT(a) FROM Analysis a WHERE a.recordingSentiment = :recordingSentiment AND a.recording.account.accountId = :accountId")
+    Integer countByRecordingSentiment(@Param("recordingSentiment") String recordingSentiment, @Param("accountId") Integer accountId);
+
+    @Query("SELECT COUNT(a) FROM Analysis a JOIN a.recording r WHERE a.employeeSentiment = :employeeSentiment AND a.recording.employee.employeeId = :employeeId")
+    Integer countByEmployeeSentiment(@Param("employeeSentiment") String employeeSentiment, @Param("employeeId") Integer employeeId);
 
     @Query("SELECT a.analysisId FROM Analysis a WHERE a.recording.recordingId = :recordingId")
     Integer getAnalysisId(@Param("recordingId") Integer recordingId);

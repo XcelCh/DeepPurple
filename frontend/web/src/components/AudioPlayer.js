@@ -19,12 +19,14 @@ function AudioPlayer({
   const progressBar = useRef(); // reference to progress bar
   const animationRef = useRef(); // reference the animation
 
+  //load audio recording's duration info
   const onLoadedMetadata = () => {
     const seconds = Math.floor(audioPlayer.current.duration);
     setDuration(seconds);
     progressBar.current.max = seconds;
   };
 
+  //format time based on seconds
   const calculateTime = (secs) => {
     const minutes = Math.floor(secs / 60);
     const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
@@ -33,6 +35,7 @@ function AudioPlayer({
     return `${returnedMinutes}:${returnedSeconds}`;
   };
 
+  //toggle recording's play and pause
   const togglePlayPause = () => {
     const prevValue = isPlaying;
     setIsPlaying(!prevValue);
@@ -45,12 +48,14 @@ function AudioPlayer({
     }
   };
 
+  //animate audio player's duration during play
   const whilePlaying = () => {
     progressBar.current.value = audioPlayer.current.currentTime;
     changePlayerCurrentTime();
     animationRef.current = requestAnimationFrame(whilePlaying);
   };
 
+  //make range dynamic
   const changeRange = () => {
     console.log("Before change: " + progressBar.current.value);
     console.log("Before change: " + audioPlayer.current.currentTime);
@@ -58,7 +63,7 @@ function AudioPlayer({
     console.log("After change: " + audioPlayer.current.currentTime);
     changePlayerCurrentTime();
   };
-
+ 
   const changePlayerCurrentTime = () => {
     progressBar.current.style.setProperty(
       "--seek-before-width",
@@ -77,6 +82,7 @@ function AudioPlayer({
     changeRange();
   };
 
+  //fetch audio from backend
   const token = authHeader();
   useEffect(() => {
     const audioSrc = `http://localhost:8082/audio/download/${timeStamp}_${recordingName}`;

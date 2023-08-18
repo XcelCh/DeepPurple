@@ -118,27 +118,27 @@ public class Account {
     }
 
     // Delete Account function will delete all related entity
-    public Account deleteAll(List<Usages> usageList, List<Recording> recordings, List<Employee> employees) {
+    // public Account deleteAll(List<Usages> usageList, List<Recording> recordings, List<Employee> employees) {
 
-        for (Usages u : usageList) {
-            usageList.remove(u);
-            u.setAccount(null);
-        }
+    //     for (Usages u : usageList) {
+    //         usageList.remove(u);
+    //         u.setAccount(null);
+    //     }
 
-        for (Recording r : recordings) {
-            r.deleteRecording(r.getAnalysis());
-            recordings.remove(r);
-            r.setAccount(null);
-        }
+    //     for (Recording r : recordings) {
+    //         r.deleteRecording();
+    //         recordings.remove(r);
+    //         r.setAccount(null);
+    //     }
 
-        for (Employee e : employees) {
-            e.deleteEmployee(e.getRecording());
-            employees.remove(e);
-            e.setAccount(null);
-        }
+    //     for (Employee e : employees) {
+    //         e.deleteEmployee();
+    //         employees.remove(e);
+    //         e.setAccount(null);
+    //     }
 
-        return this;
-    }
+    //     return this;
+    // }
 
     // To String Method of the Account
     @Override

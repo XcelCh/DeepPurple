@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.fyp.entity.Recording;
@@ -14,8 +15,8 @@ import com.example.fyp.entity.Recording;
 @Repository
 public interface RecordingRepository extends JpaRepository<Recording, Integer>{
 
-    @Query("SELECT AVG(r.recordingDuration) FROM Recording r")
-    Double getAverageRecordingDuration();
+    @Query("SELECT AVG(r.recordingDuration) FROM Recording r WHERE r.account.accountId = :accountId")
+    Double getAverageRecordingDurationByAccount(@Param("accountId") Integer accountId);
 
     @Query("SELECT r.employee.employeeName, AVG(r.recordingDuration), COUNT(*) FROM Recording r GROUP BY r.employee.employeeId, r.employee.employeeName ORDER BY COUNT(*) DESC")
     List<Object[]> findCallsHandled();
@@ -39,5 +40,14 @@ public interface RecordingRepository extends JpaRepository<Recording, Integer>{
     Optional<Recording> findByRecordingName(String fileName);    
 
     List<Recording> findByEmployee_EmployeeId(Integer employeeId);
+
+    @Query("SELECT AVG(r.analysis.averagePerformance) FROM Recording r WHERE r.employee.employeeId = :employeeId")
+    Double findAvgPeformanceByEmployeeId(@Param("employeeId") Integer employeeId);
+
+    @Query("SELECT SUM(r.recordingDuration) FROM Recording r WHERE r.employee.employeeId = :employeeId")
+    Double findTotalDurationByEmployeeId(@Param("employeeId") Integer employeeId);
+
+    // @Query("SELECT COUNT(*) FROM Recording r WHERE r.employee.employeeId = :employeeId")
+    // Integer findTotalRecordingByEmployeeId(@Param("employeeId") Integer employeeId);
     
 }

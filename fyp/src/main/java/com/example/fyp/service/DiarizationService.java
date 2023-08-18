@@ -17,6 +17,7 @@ import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
 import com.google.cloud.speech.v1.SpeechRecognitionResult;
 import com.google.cloud.speech.v1.WordInfo;
 
+//Service to handle Diarization communication between database and backend
 @Service
 public class DiarizationService {
 
@@ -50,21 +51,6 @@ public class DiarizationService {
         }
 
         return orderedDiarization;
-        /*
-        for (SpeechRecognitionResult result : monoLeft) {
-            SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-            System.out.println("Transcript: " + alternative.getTranscript());
-            System.out.println("Word Time Offsets:");
-            for (WordInfo wordInfo : alternative.getWordsList()) {
-                String word = wordInfo.getWord();
-                double startTime = wordInfo.getStartTime().getSeconds() + wordInfo.getStartTime().getNanos() / 1e9;
-                double endTime = wordInfo.getEndTime().getSeconds() + wordInfo.getEndTime().getNanos() / 1e9;
-                double confidence = wordInfo.getConfidence();
-                System.out.printf("Word: %s, Start Time: %.2fs, End Time: %.2fs, Confidence: %.2f\n", word, startTime, endTime, confidence);
-            }
-            System.out.println("---");
-        }
-        */
     }
 
     public Queue<Diarization> diarizeML(String audioFilePath) throws Exception{

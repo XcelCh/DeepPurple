@@ -21,8 +21,6 @@ public interface AccountService {
 
     int getAccountId(String email);
 
-    void deleteAccount(Account account);
-
     List<Integer> getAllAccountId();
 
     Account getById(Integer accountId);

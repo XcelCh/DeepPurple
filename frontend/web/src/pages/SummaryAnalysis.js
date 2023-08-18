@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Duration, Inquiries, Complaints, Warranties, PositiveRectangle, NegativeRectangle, Heart, RedHeart } from "../assets/index";
 import randomColor from 'randomcolor';
+import authHeader from "../services/auth-header";
 import { 
   Chart as ChartJS,
   BarElement,
@@ -35,32 +36,54 @@ ChartJS.register(
 
 function SummaryAnalysis() {
   const navigate = useNavigate();
+  const token = authHeader();
 
-  const [mostMentionedData, setMostMentionedData] = useState({
-    labels: [],
-    datasets: []
-  });
+  const [analysisForm, setAnalysisForm] = useState({
 
-  const mostMentionedOptions = {
-      indexAxis: "y",
-      plugins: {
-          legend: {
-            display: false, // Set to false to hide the legend
-          },
-      },
-      scales: {
-          x: {
-            grid: {
-              display: false, // Set to false to hide the vertical grid lines
-            }
-          },
-          y: {
-            grid: {
-              display: false, // Set to false to hide the vertical grid lines
-            }
-          },
-      },
+    averageCallDuration : 0.00,
+    inquiry : 0,
+    complaint : 0, 
+    warranty : 0,
+    positiveRecSentiment : 0,
+    negativeRecSentiment : 0,
+    positiveEmpSentiment : 0,
+    negativeEmpSentiment : 0
+  })
+
+  
+  const [employeeDetails, setEmployeeDetails] = useState([]);
+  const employeeDetail = [];
+  console.log(analysisForm);
+
+  if (employeeDetails.length > 0) {
+    console.log(employeeDetails[0].employeeName);
   }
+
+  // const [mostMentionedData, setMostMentionedData] = useState({
+  //   labels: [],
+  //   datasets: []
+  // });
+
+  // const mostMentionedOptions = {
+  //     indexAxis: "y",
+  //     plugins: {
+  //         legend: {
+  //           display: false, // Set to false to hide the legend
+  //         },
+  //     },
+  //     scales: {
+  //         x: {
+  //           grid: {
+  //             display: false, // Set to false to hide the vertical grid lines
+  //           }
+  //         },
+  //         y: {
+  //           grid: {
+  //             display: false, // Set to false to hide the vertical grid lines
+  //           }
+  //         },
+  //     },
+  // }
 
   const calculateTime = (secs) => {
     if(secs < 60) {
@@ -79,22 +102,47 @@ function SummaryAnalysis() {
 
   const countToPercentage = (num, otherHalf) => {
     const totalCount = num + otherHalf;
+    // console.log(Math.round(num / totalCount * 100));
     return Math.round(num / totalCount * 100);
   }
 
   const [summaryAnalysisData, setSummaryAnalysisData] = useState([]);
-  const [topSentimentOption, setTopSentimentOption] = useState('Positive');
+  // const [topSentimentOption, setTopSentimentOption] = useState('Positive');
   const [randomColors, setRandomColors] = useState([]);
-  const [employeeSentimentOption, setEmployeeSentimentOption] = useState(0);
-  const [employeeSentiment, setEmployeeSentiment] = useState({
-    sentimentCount: [],
-    sentimentPercentage: [],
-    sentimentCategory: ''
-  });
+  const [employeeName, setemployeeName] = useState(0);
+  const [employeeKey, setemployeeKey] = useState(0);
+  // const [employeeSentiment, setEmployeeSentiment] = useState({
+  //   sentimentCount: [],
+  //   sentimentPercentage: [],
+  //   sentimentCategory: ''
+  // });
 
-  useEffect(() => {
+  // const [totalTime, setTotalTime] = useState(0);
+  const [totalCalls, setTotalCalls] = useState(0);
+
+  useEffect (() => {
+
+      var totalDuration = 0;
+      var totalCalls = 0;
+
+      console.log(employeeDetails);
+
+      for (var x = 0 ; x < employeeDetails.length; x++) {
+        console.log(x);
+        totalCalls += employeeDetails[x].numberOfCalls;
+        totalDuration += employeeDetails[x].totalDuration;
+      }
+
+      setTotalCalls(totalCalls);
+      // setTotalTime(totalDuration);
+
+    }, [employeeDetails])
+
+  useEffect( () => {
     window.scrollTo(0, 0);
-    fetch(`http://localhost:8082/summaryAnalysis/getAnalysis`)
+     fetch(`http://localhost:8082/summaryAnalysis/getAnalysis`, {
+      headers : token
+    })
       .then(response => {
           // error unauthorized
           if (response.status == 401) {
@@ -107,25 +155,36 @@ function SummaryAnalysis() {
           }
       })
       .then(data => {
-        data.averageCallDuration = parseInt(data.averageCallDuration);
-        setSummaryAnalysisData(data);
-        setEmployeeSentiment({
-          sentimentCount: data.employeeSentiment,
-          sentimentPercentage: [countToPercentage(data.employeeSentiment[0][0], data.employeeSentiment[0][1]), countToPercentage(data.employeeSentiment[0][1], data.employeeSentiment[0][0])],
-          sentimentCategory: countToPercentage(data.employeeSentiment[0][0], data.employeeSentiment[0][1]) > 49 ? "High" : "Low",
-        })
-        setMostMentionedData({
-          labels: [data.mostMentionedWords[0][0], data.mostMentionedWords[1][0], data.mostMentionedWords[2][0], data.mostMentionedWords[3][0], data.mostMentionedWords[4][0]],
-          datasets: [{
-            data: [data.mostMentionedWords[0][1], data.mostMentionedWords[1][1], data.mostMentionedWords[2][1], data.mostMentionedWords[3][1], data.mostMentionedWords[4][1]],
-            backgroundColor: '#EE5B3D',
-            borderWidth: 0,
-          }]
-        })
+          console.log(data);
+
+          setAnalysisForm({
+            averageCallDuration : data.averageCallDuration,
+            inquiry : data.inquiry,
+            complaint : data.complaint, 
+            warranty : data.warranty,
+            positiveRecSentiment : data.positiveRecSentiment,
+            negativeRecSentiment : data.negativeRecSentiment,
+            positiveEmpSentiment : data.positiveEmpSentiment,
+            negativeEmpSentiment : data.negativeEmpSentiment
+
+          })
+
+          // console.log(data.employeeList.length);
+          for(let x = 0; x < data.employeeList.length; x++) {
+            // const emp = data.employeeList[x];
+            employeeDetail.push(data.employeeList[x]);
+            // setEmployeeDetails(prev => [...prev, emp]);
+            // console.log(x);
+            console.log(employeeDetail[0]);
+          }
+
+          setEmployeeDetails(employeeDetail);
       })
       .catch(error => {
           console.error(error);
       })
+
+    
 
     const dataLine = {
       type: 'line',
@@ -179,16 +238,16 @@ function SummaryAnalysis() {
   }, []);
 
   useEffect(() => {
-    console.log(employeeSentiment);
-    console.log(summaryAnalysisData);
+    // console.log(employeeSentiment);
+    // console.log(summaryAnalysisData);
 
-    if (!summaryAnalysisData) {
+    if (analysisForm.averageCallDuration === 0) {
       // Data is not available yet, skip rendering the chart
       return;
     }
 
-    if (summaryAnalysisData.callsHandled) {
-      const colors = summaryAnalysisData.callsHandled.map(randomColor);
+    if (employeeDetails.length > 0) {
+      const colors = employeeDetails.map(randomColor);
       setRandomColors(colors);
     }
 
@@ -198,7 +257,7 @@ function SummaryAnalysis() {
       datasets: [
         {
           label: "Number of calls",
-          data: [summaryAnalysisData.countPositiveSentiment, summaryAnalysisData.countNegativeSentiment],
+          data: [analysisForm.positiveRecSentiment, analysisForm.negativeRecSentiment],
           backgroundColor: [
             "#80F2AA",
             "#EE5B3D",
@@ -228,36 +287,24 @@ function SummaryAnalysis() {
     }
     // Render the doughnut chart
     canvas.chart = new ChartJS(canvas, configDoughnut);
-  }, [summaryAnalysisData])
 
-  const handleEmployeeSentiment = (employeeId) => {
-    setEmployeeSentimentOption(employeeId);
-    fetch(`http://localhost:8082/summaryAnalysis/employeeSentiment/${employeeId}`)
-      .then(response => {
-          // error unauthorized
-          if (response.status == 401) {
-              navigate("/");
-              console.log("401 Unauthorized");
-          }
-          else if (response.status == 200) {
-              console.log("Success");
-              return response.json();
-          }
-      })
-      .then(data => {
-        setEmployeeSentiment({
-          sentimentCount: data,
-          sentimentPercentage: [countToPercentage(data[0][0], data[0][1]), countToPercentage(data[0][1], data[0][0])],
-          sentimentCategory: countToPercentage(data[0][0], data[0][1]) > 49 ? "High" : "Low"
-        });
-      })
-      .catch(error => {
-          console.error(error);
-      })
+  }, [employeeDetails])
+
+  const handleEmployeeSentiment = (employee) => {
+    setemployeeName(employee);
+
+    for (var x = 0; x < employeeDetails.length; x++) {
+      
+      if(employeeDetails[x].employeeName === employeeName) {
+        setemployeeKey(x);
+      }
+    }
+
   }
 
   return (
     <>
+    {/* {(employeeDetails.length > 0) ? ( */}
       <div className="pt-16 pl-16">
         <div className="flex items-center">
           <p className="text-2xl font-bold text-left ml-4">Analysis Summary</p>
@@ -277,7 +324,7 @@ function SummaryAnalysis() {
                       Average Call Duration
                   </div>
                   <div className="flex-grow font-bold text-md mt-2">
-                      {calculateTime(summaryAnalysisData.averageCallDuration)}
+                      {calculateTime(analysisForm.averageCallDuration)}
                   </div>
               </div>
               <div className="w-1/4 flex flex-col items-center">
@@ -292,7 +339,7 @@ function SummaryAnalysis() {
                       Number of Inquiries
                   </div>
                   <div className="flex-grow font-bold text-xl mt-2">
-                      {summaryAnalysisData.countInquiry}
+                      {analysisForm.inquiry}
                   </div>
               </div>
               <div className="w-1/4 flex flex-col items-center">
@@ -307,7 +354,7 @@ function SummaryAnalysis() {
                       Number of Complaints
                   </div>
                   <div className="flex-grow font-bold text-xl mt-2">
-                      {summaryAnalysisData.countComplaint}
+                      {analysisForm.complaint}
                   </div>
               </div>
               <div className="w-1/4 flex flex-col items-center">
@@ -322,7 +369,7 @@ function SummaryAnalysis() {
                       Number of Warranties
                   </div>
                   <div className="flex-grow font-bold text-xl mt-2">
-                      {summaryAnalysisData.countWarranty}
+                      {analysisForm.warranty}
                   </div>
               </div>
               <div className="w-1/4 flex flex-col items-center">
@@ -347,11 +394,11 @@ function SummaryAnalysis() {
               </div>
               <div className="flex flex-grow font-medium mt-2">
                 <img src={PositiveRectangle} />
-                <p className="ml-2">{countToPercentage(summaryAnalysisData.countPositiveSentiment, summaryAnalysisData.countNegativeSentiment)}% Positive ({summaryAnalysisData.countPositiveSentiment})</p>
+                <p className="ml-2">{countToPercentage(analysisForm.positiveRecSentiment, analysisForm.negativeRecSentiment)}% Positive ({analysisForm.positiveRecSentiment})</p>
               </div>
               <div className="flex flex-grow font-medium">
                 <img src={NegativeRectangle} />
-                <p className="ml-2">{countToPercentage(summaryAnalysisData.countNegativeSentiment, summaryAnalysisData.countPositiveSentiment)}% Negative ({summaryAnalysisData.countNegativeSentiment})</p>
+                <p className="ml-2">{countToPercentage(analysisForm.negativeRecSentiment, analysisForm.positiveRecSentiment)}% Negative ({analysisForm.negativeRecSentiment})</p>
               </div>
             </div>
           </div>
@@ -361,10 +408,10 @@ function SummaryAnalysis() {
             <div className="w-2/5 h-1/2">
               <div className="flex h-1/3 items-center mb-2">
                 <div className="flex-grow font-bold text-md">
-                  Top 5 Employee Based On Sentiment
+                  Top 5 Employee Based On Performance
                 </div>
                 <div className="relative w-2/5">
-                  <select 
+                  {/* <select 
                       className="bg-gray-50 block appearance-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 h-full px-2" 
                       id="grid-state"
                       value={topSentimentOption}
@@ -372,10 +419,10 @@ function SummaryAnalysis() {
                   >
                       <option value="Positive">Positive</option>
                       <option value="Negative">Negative</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  </select> */}
+                  {/* <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="relative">
@@ -389,40 +436,25 @@ function SummaryAnalysis() {
                             Employee name
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            Value
+                            Avg Performance
                         </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {topSentimentOption === 'Positive' ? (
-                      summaryAnalysisData.top5Positive && summaryAnalysisData.top5Positive.map((employee, index) => (
+                    
+                    {employeeDetails.slice(0, 5).map((employee, index) => (
                         <tr className="bg-[#80F2AA] border-b border-[#83848A]">
                           <th scope="row" className="px-6 py-2 font-medium text-black whitespace-nowrap">
                               {index+1}
                           </th>
                           <td className="px-6 py-2 text-black">
-                              {employee[0]}
+                              {employee.employeeName}
                           </td>
                           <td className="px-6 py-2 text-black">
-                              {employee[1]}
+                              {employee.employeeAvgPerformance}
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      summaryAnalysisData.top5Negative && summaryAnalysisData.top5Negative.map((employee, index) => (
-                        <tr className="bg-[#EE5B3D] border-b border-[#83848A]">
-                          <th scope="row" className="px-6 py-2 font-medium text-black whitespace-nowrap">
-                              {index+1}
-                          </th>
-                          <td className="px-6 py-2 text-black">
-                              {employee[0]}
-                          </td>
-                          <td className="px-6 py-2 text-black">
-                              {employee[2]}
-                          </td>
-                        </tr>
-                      ))
-                    )}
+                        ))}
                   </tbody>
                 </table>
               </div>
@@ -438,12 +470,12 @@ function SummaryAnalysis() {
                   <select 
                       className="bg-gray-50 block appearance-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg w-full p-2.5 focus:ring-indigo-600 focus:border-indigo-600 block px-2" 
                       id="grid-state"
-                      value={employeeSentimentOption}
+                      value={employeeName}
                       onChange={(event) => handleEmployeeSentiment(event.target.value)}
                   >
-                    {summaryAnalysisData.allEmployeeName && summaryAnalysisData.allEmployeeName.map((employee, index) => (
-                      <option key={index} value={employee[0]}>
-                        {employee[1]}
+                    {employeeDetails.map((employee, index) => (
+                      <option key={index} value={employee.employeeName}>
+                        {employee.employeeName}
                       </option>
                     ))}
                   </select>
@@ -453,23 +485,26 @@ function SummaryAnalysis() {
                 </div>
               </div>
               <div className="p-4">
-                {employeeSentiment.sentimentCount && employeeSentiment.sentimentCount[0] && (
+                
+                {(employeeDetails.length > 0 && (employeeDetails[employeeKey].positiveEmpSentiment !== 0 || employeeDetails[employeeKey].negativeEmpSentiment !== 0)) && (
                   <div className="grid grid-cols-3">
                     <div className="flex flex-col items-center col-span-1">
                       <div className="flex items-center">
-                        <img src={employeeSentiment.sentimentCategory === "Low" ? RedHeart : Heart} />
-                        <p className={`text-3xl font-bold ${employeeSentiment.sentimentCategory === "Low" ? "text-[#EE5B3D]" : "text-[#80F2AA]"}`}>{employeeSentiment.sentimentPercentage[0]}%</p>
+                        <img src={countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? Heart : RedHeart} />
+                        <p className={`text-3xl font-bold ${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ?  "text-[#80F2AA]" : "text-[#EE5B3D]"}`}>
+                          {[countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment), countToPercentage(employeeDetails[employeeKey].negativeEmpSentiment, employeeDetails[employeeKey].positiveEmpSentiment)]}%
+                        </p>
                       </div>
-                      <p className="text-xl font-medium">{employeeSentiment.sentimentCategory}</p>
+                      <p className="text-xl font-medium">{countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? "High" : "Low"}</p>
                     </div>
                     <div className="flex flex-col items-center justify-center col-span-2">
                       <div className="relative w-full">
                         <div className="flex items-center justify-between font-medium">
-                          <div className="text-[#80F2AA]">{employeeSentiment.sentimentCount[0][0]} ({employeeSentiment.sentimentPercentage[0]}%)</div>
-                          <div className="text-[#EE5B3D]">{employeeSentiment.sentimentCount[0][1]} ({employeeSentiment.sentimentPercentage[1]}%)</div>
+                          <div className="text-[#80F2AA]">{employeeDetails[employeeKey].positiveEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%)</div>
+                          <div className="text-[#EE5B3D]">{employeeDetails[employeeKey].negativeEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].negativeEmpSentiment, employeeDetails[employeeKey].positiveEmpSentiment)}%)</div>
                         </div>
                         <div className="flex h-3 overflow-hidden rounded-xl bg-[#EE5B3D] text-xs">
-                          <div style={{ width: `${employeeSentiment.sentimentPercentage[0]}%` }} className="bg-[#80F2AA]"></div>
+                          <div style={{ width: `${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%` }} className="bg-[#80F2AA]"></div>
                         </div>
                         <div className="flex items-center justify-between font-medium">
                           <div className="text-[#80F2AA]">Positive</div>
@@ -497,17 +532,17 @@ function SummaryAnalysis() {
           <div className="border rounded-md p-8">
             <p className="font-bold text-xl mb-4">Number of Calls Handled</p>
             <div className="overflow-y-scroll h-96 pr-4">
-              {summaryAnalysisData.callsHandled && summaryAnalysisData.callsHandled.map((call, index) => (
+              {employeeDetails.map((employee, index) => (
                 <div className="mb-4">
-                  <p className="font-semibold">{call[0]}</p>
+                  <p className="font-semibold">{employee.employeeName}</p>
                   <div className="relative w-full">
                     <div className="flex items-center justify-between">
-                      <div className="text-[#83848A]">Average session: {calculateTime(call[1])}</div>
-                      <div className="text-[#83848A]">{call[2]} of {summaryAnalysisData.recordingCount} calls</div>
+                      <div className="text-[#83848A]">Average session: {calculateTime(employee.totalDuration/employee.numberOfCalls)}</div>
+                      <div className="text-[#83848A]">{employee.numberOfCalls} of {totalCalls} calls</div>
                     </div>
                     {/* Bar */}
                     <div className="mb-5 h-3 rounded-full bg-[#F5F5F5]">
-                      <div className="h-3 rounded-full" style={{ width: `${countToPercentage(call[2], summaryAnalysisData.recordingCount - call[2])}%`, backgroundColor: randomColors[index] }}></div>
+                      <div className="h-3 rounded-full" style={{ width: `${countToPercentage(employee.numberOfCalls, totalCalls - employee.numberOfCalls)}%`, backgroundColor: randomColors[index] }}></div>
                     </div>
                   </div>
                 </div>
@@ -523,7 +558,7 @@ function SummaryAnalysis() {
               <p className="font-bold text-xl mb-4">Improvement Suggestions</p>
               <p style={{ textAlign: 'justify' }}>To improve customer satisfaction and streamline the process, I would suggest that the employee proactively offer the customer a temporary laptop replacement while their device is being serviced. This gesture would address the customer's immediate needs, ensuring they can continue their work without interruptions during the estimated 5-day service period. Additionally, the employee could provide regular updates on the progress of the laptop repair, keeping the customer informed and minimizing any potential frustration or uncertainty. Such proactive measures will enhance the overall customer experience and foster a positive impression of the company's service.</p>
             </div>
-            <div className="grid grid-rows-2 col-span-1 p-8">
+            {/* <div className="grid grid-rows-2 col-span-1 p-8">
               <div className="border-b">
                 <p className="font-bold text-xl mb-4">Negative Word Cloud</p>
                 <div className="flex items-center justify-center">
@@ -560,10 +595,11 @@ function SummaryAnalysis() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
+    {/* ) : null} */}
     </>
   );
 }
