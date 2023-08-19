@@ -302,7 +302,7 @@ function AddRecording() {
     
           if (response.ok) {
             Swal.close();
-            getRecList()
+            
             // Success message
             Swal.fire(            
               "Updated",
@@ -321,6 +321,7 @@ function AddRecording() {
       },
       allowOutsideClick: () => !Swal.isLoading()
     })
+    getRecList()
   };
 
   //handle multiple file upload

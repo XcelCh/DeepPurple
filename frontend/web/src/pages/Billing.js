@@ -111,8 +111,8 @@ function Billing() {
     };
 
     //delete user's card
-    const deleteCard = () => {
-        fetch(`${BASE_URL}/payment/deleteCard`,
+    const deleteCard = async () => {
+        await fetch(`${BASE_URL}/payment/deleteCard`,
         {
             method: 'PUT',
             headers: token
@@ -137,6 +137,9 @@ function Billing() {
         })
         setCard(false);
         closeModal();
+
+        getBillingHistory();
+        getTotalUsage();
     }
 
     useEffect (() => {
