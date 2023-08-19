@@ -547,8 +547,8 @@ function SummaryAnalysis() {
 
         {/* Fourth row */}
         <div className="px-4">
-          <div className="grid w-full grid-cols-2 mt-4 border rounded rounded-md">
-            <div className="col-span-1 p-8 border-r">
+          <div className="grid w-full mt-4 border rounded rounded-md">
+            <div className="p-8 border-r">
               <p className="font-bold text-xl mb-4">Improvement Suggestions</p>
               <p style={{ textAlign: 'justify' }}>{analysisForm.suggestion}</p>
             </div>

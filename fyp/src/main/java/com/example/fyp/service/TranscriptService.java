@@ -273,6 +273,15 @@ public class TranscriptService{
     public void persistTranscriptions(Analysis analysis, Container c){
         for (Transcript t: c.getTranscriptions()) {
             t.setAnalysis(analysis);
+            String tempTranscript = t.getDialog();
+            if (tempTranscript != null && !tempTranscript.isEmpty()) {
+                char firstChar = tempTranscript.charAt(0);
+                if (Character.isLowerCase(firstChar)) {
+                    firstChar = Character.toUpperCase(firstChar);
+                    tempTranscript = firstChar + tempTranscript.substring(1);
+                }
+            }
+            t.setDialog(tempTranscript);
             transcriptRepository.save(t);
         }
     }
