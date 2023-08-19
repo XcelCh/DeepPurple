@@ -15,7 +15,7 @@ function Starter() {
   useEffect (() => {
     window.scrollTo(0, 0);
 
-    fetch('http://localhost:8082/profile/getCompanyField', {
+    fetch(`${BASE_URL}/profile/getCompanyField`, {
       headers:token,
     })
     .then(response => {
@@ -80,7 +80,7 @@ function Starter() {
     
 
     console.log(companyField);
-    fetch('http://localhost:8082/profile/setCompanyField', {
+    fetch(`${BASE_URL}/profile/setCompanyField`, {
       method: 'POST',
       headers: {'Authorization': token.Authorization, 
                 'Content-Type': 'text/plain'},

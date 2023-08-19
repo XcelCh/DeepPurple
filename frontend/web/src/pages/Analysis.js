@@ -80,7 +80,7 @@ function Analysis() {
       }
 
       const response = await fetch(
-        `http://localhost:8082/analysis/getAnalysis/${rec_id}`,
+        `${BASE_URL}/analysis/getAnalysis/${rec_id}`,
         {
           headers: token,
         }
@@ -115,7 +115,7 @@ function Analysis() {
       }
 
       const response = await fetch(
-        `http://localhost:8082/analysis/getSuggestions/${rec_id}`,
+        `${BASE_URL}/analysis/getSuggestions/${rec_id}`,
         {
           headers: token,
         }
@@ -150,7 +150,7 @@ function Analysis() {
       }
 
       const response = await fetch(
-        `http://localhost:8082/analysis/getTranscription/${rec_id}`,
+        `${BASE_URL}/analysis/getTranscription/${rec_id}`,
         {
           headers: token,
         }

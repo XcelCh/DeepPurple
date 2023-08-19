@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Forward, Backward } from "../assets/index";
 import styles from "../styles/AudioPlayer.module.css";
 import authHeader from "../services/auth-header";
+import { BASE_URL } from "../pages/config";
 
 function AudioPlayer({
   initialParagraphs,
@@ -85,7 +86,7 @@ function AudioPlayer({
   //fetch audio from backend
   const token = authHeader();
   useEffect(() => {
-    const audioSrc = `http://localhost:8082/audio/download/${timeStamp}_${recordingName}`;
+    const audioSrc = `${BASE_URL}/audio/download/${timeStamp}_${recordingName}`;
 
     fetch(audioSrc, {
       headers: token,

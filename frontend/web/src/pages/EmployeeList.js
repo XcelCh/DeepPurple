@@ -46,7 +46,7 @@ function EmployeeList() {
       }
 
       const response = await fetch(
-        `http://localhost:8082/employeeList/getAllEmployees${params}`,
+        `${BASE_URL}/employeeList/getAllEmployees${params}`,
         {
           headers: token,
         }
@@ -98,7 +98,7 @@ function EmployeeList() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Deleting
-        fetch(`http://localhost:8082/employeeList/deleteEmployeeById/${id}`, {
+        fetch(`${BASE_URL}/employeeList/deleteEmployeeById/${id}`, {
           method: "DELETE",
           headers : token
         })
@@ -124,7 +124,7 @@ function EmployeeList() {
   // Update selected employee's data and save
   const updateEmployee = (empData, currentEmployeeId) => {
     fetch(
-      `http://localhost:8082/employeeList/updateEmployeeNameById/${currentEmployeeId}`,
+      `${BASE_URL}/employeeList/updateEmployeeNameById/${currentEmployeeId}`,
       {
         method: "POST",
         headers: {
@@ -159,7 +159,7 @@ function EmployeeList() {
 
   // Add Employee
   const addEmployee = (empData) => {
-    fetch(`http://localhost:8082/employeeList/addEmployee`, {
+    fetch(`${BASE_URL}/employeeList/addEmployee`, {
       method: "POST",
       headers: {
         "Content-Type": "text/plain", // Set the content type to indicate JSON data

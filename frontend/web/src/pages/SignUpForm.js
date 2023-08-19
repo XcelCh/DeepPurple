@@ -79,7 +79,7 @@ function SignUpForm() {
         }
 
 
-        fetch ('http://localhost:8082/register/checkEmail', {
+        fetch (`${BASE_URL}/register/checkEmail`, {
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
             body : JSON.stringify({email : formData.email})
@@ -136,7 +136,7 @@ function SignUpForm() {
 
         console.log(formData);
 
-        fetch ('http://localhost:8082/register/createAccount', {
+        fetch (`${BASE_URL}/register/createAccount`, {
             method : 'POST',
             headers : {'Content-Type' : 'application/json'},
             body : JSON.stringify(formData)

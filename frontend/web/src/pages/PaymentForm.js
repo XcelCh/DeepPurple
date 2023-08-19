@@ -143,7 +143,7 @@ function PaymentForm() {
 
         console.log('passed');
 
-        fetch('http://localhost:8082/payment/addCard', {
+        fetch(`${BASE_URL}/payment/addCard`, {
           method : 'POST',
           headers : {'Authorization' : token.Authorization,
                       'Content-Type' : 'application/json'},

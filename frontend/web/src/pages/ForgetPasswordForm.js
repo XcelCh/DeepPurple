@@ -39,7 +39,7 @@ function ForgetPasswordForm() {
             return;
         }
 
-        fetch ('http://localhost:8082/register/generatePasswordOTP', {
+        fetch (`${BASE_URL}/register/generatePasswordOTP`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formData)
@@ -72,7 +72,7 @@ function ForgetPasswordForm() {
             return;
         }
 
-        fetch ('http://localhost:8082/register/validateOTP', {
+        fetch (`${BASE_URL}/register/validateOTP`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formData)
@@ -126,7 +126,7 @@ function ForgetPasswordForm() {
             return;
         }
 
-        fetch('http://localhost:8082/register/resetPassword', {
+        fetch(`${BASE_URL}/register/resetPassword`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formData)

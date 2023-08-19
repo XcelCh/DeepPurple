@@ -39,7 +39,7 @@ function EmployeeRecordingList() {
   const getEmployeeDetail = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8082/employeeList/getEmployeeDetail/${id}`,
+        `${BASE_URL}/employeeList/getEmployeeDetail/${id}`,
         {
           headers: token,
         }
@@ -67,7 +67,7 @@ function EmployeeRecordingList() {
         });
 
         const response = await fetch(
-          `http://localhost:8082/recordingList/getAllRecordings${params}`,
+          `${BASE_URL}/recordingList/getAllRecordings${params}`,
           {
             headers: token,
           }
@@ -100,7 +100,7 @@ function EmployeeRecordingList() {
       allowOutsideClick: () => !Swal.isLoading(),
     });
 
-    fetch(`http://localhost:8082/audio/download/${timeStamp}_${fileName}`, {
+    fetch(`${BASE_URL}/audio/download/${timeStamp}_${fileName}`, {
       method: "GET",
       headers: headers,
     })
@@ -137,7 +137,7 @@ function EmployeeRecordingList() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Deleting
-        fetch(`http://localhost:8082/recordingList/deleteRecordingById/${id}`, {
+        fetch(`${BASE_URL}/recordingList/deleteRecordingById/${id}`, {
           method: "DELETE",
           headers: token,
         })

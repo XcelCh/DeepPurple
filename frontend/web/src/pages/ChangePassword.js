@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import authHeader from "../services/auth-header";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
-import { BASE_URL } from "../pages/config";
+import { BASE_URL } from "./config";
 
 function ChangePassword() {
 
@@ -78,7 +78,7 @@ function ChangePassword() {
       return;
     }
 
-    fetch('http://localhost:8082/profile/changePassword', {
+    fetch(`${BASE_URL}/profile/changePassword`, {
         method: 'POST',
         headers: {'Authorization' : token.Authorization,
                   'Content-Type' : 'application/json'},

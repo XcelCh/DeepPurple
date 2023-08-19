@@ -32,7 +32,7 @@ function EditProfile() {
 
     useEffect(() => {
       window.scrollTo(0, 0);
-      fetch ("http://localhost:8082/profile/editProfile",{
+      fetch (`${BASE_URL}/profile/editProfile`,{
           headers: token
         })
           .then(response => {
@@ -136,7 +136,7 @@ function EditProfile() {
 
       console.log(JSON.stringify(data));
 
-      fetch ("http://localhost:8082/profile/editProfile", {
+      fetch (`${BASE_URL}/profile/editProfile`, {
         method : 'POST',
         headers : {'Authorization' : token.Authorization,
                  'Content-Type' : 'application/json'} ,

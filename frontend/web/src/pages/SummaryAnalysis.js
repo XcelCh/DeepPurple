@@ -145,7 +145,7 @@ function SummaryAnalysis() {
 
   useEffect( () => {
     window.scrollTo(0, 0);
-     fetch(`http://localhost:8082/summaryAnalysis/getAnalysis`, {
+     fetch(`${BASE_URL}/summaryAnalysis/getAnalysis`, {
       headers : token
     })
       .then(response => {
