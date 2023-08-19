@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Footer from '../components/Footer';
+import { BASE_URL } from "./config";
 
 function Pricing() {
   useEffect(() => {

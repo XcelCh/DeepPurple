@@ -17,6 +17,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import TablePagination from "@mui/material/TablePagination";
 import authHeader from "../services/auth-header";
+import { BASE_URL } from "./config";
 
 function EmployeeList() {
   const [empList, setEmpList] = useState([]);
@@ -46,7 +47,7 @@ function EmployeeList() {
       }
 
       const response = await fetch(
-        `http://localhost:8082/employeeList/getAllEmployees${params}`,
+        `${BASE_URL}/employeeList/getAllEmployees${params}`,
         {
           headers: token,
         }
@@ -98,7 +99,7 @@ function EmployeeList() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Deleting
-        fetch(`http://localhost:8082/employeeList/deleteEmployeeById/${id}`, {
+        fetch(`${BASE_URL}/employeeList/deleteEmployeeById/${id}`, {
           method: "DELETE",
           headers : token
         })
@@ -124,7 +125,7 @@ function EmployeeList() {
   // Update selected employee's data and save
   const updateEmployee = (empData, currentEmployeeId) => {
     fetch(
-      `http://localhost:8082/employeeList/updateEmployeeNameById/${currentEmployeeId}`,
+      `${BASE_URL}/employeeList/updateEmployeeNameById/${currentEmployeeId}`,
       {
         method: "POST",
         headers: {
@@ -159,7 +160,7 @@ function EmployeeList() {
 
   // Add Employee
   const addEmployee = (empData) => {
-    fetch(`http://localhost:8082/employeeList/addEmployee`, {
+    fetch(`${BASE_URL}/employeeList/addEmployee`, {
       method: "POST",
       headers: {
         "Content-Type": "text/plain", // Set the content type to indicate JSON data
@@ -273,10 +274,10 @@ function EmployeeList() {
                         {employee.numCallsHandled}
                       </td>
                       <td className="text-center h-1">
-                        {employee.numNegativeSentiment}
+                        {employee.numPositiveSentiment}
                       </td>
                       <td className="text-center h-1">
-                        {employee.numPositiveSentiment}
+                        {employee.numNegativeSentiment}
                       </td>
                       <td className="flex justify-center items-center">
                         <div className="dropdown dropdown-end">

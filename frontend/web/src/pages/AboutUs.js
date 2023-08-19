@@ -11,6 +11,7 @@ import { Line, Linkedin, Instagram } from "../assets";
 import ProfileCard from "../components/ProfileCard";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "./config";
 
 function AboutUs() {
   useEffect(() => {
@@ -74,7 +75,7 @@ function AboutUs() {
     
     
     //send form data to backend
-    fetch('http://localhost:8082/sendInquiry', {
+    fetch(`${BASE_URL}/sendInquiry`, {
       method : 'POST',
       headers : {'Content-Type' : 'application/json'},
       body : JSON.stringify(formData)

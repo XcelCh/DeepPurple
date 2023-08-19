@@ -3,6 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useState } from "react";
 import { TableSortLabel } from "@mui/material";
+import { BASE_URL } from "../pages/config";
 
 const GenericModal = ({
   cardTitle,

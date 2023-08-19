@@ -12,6 +12,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import { BASE_URL } from "./config";
 
 function RecordingList() {
   // Get the token
@@ -143,7 +144,7 @@ function RecordingList() {
       });
 
       const response = await fetch(
-        `http://localhost:8082/employeeList/getAllEmployees${params}`,
+        `${BASE_URL}/employeeList/getAllEmployees${params}`,
         {
           headers: token,
         }
@@ -165,6 +166,7 @@ function RecordingList() {
     const params = `?search=${search}`;
     console.log(params);
     try {
+      
       Swal.fire({
         title: "Retrieving All Recordings",
         didOpen: () => {
@@ -174,7 +176,7 @@ function RecordingList() {
       });
 
       const response = await fetch(
-        `http://localhost:8082/recordingList/getAllRecordings${params}`,
+        `${BASE_URL}/recordingList/getAllRecordings${params}`,
         {
           headers: token,
         }
@@ -197,7 +199,7 @@ function RecordingList() {
   // Change Employee
   const handleChangeEmployee = (recordingId, employeeId, index) => {
      fetch(
-       `http://localhost:8082/recordingList/updateRecordingEmployeeById/${recordingId}`,
+       `${BASE_URL}/recordingList/updateRecordingEmployeeById/${recordingId}`,
        {
          method: "POST",
          headers: {
@@ -238,7 +240,7 @@ function RecordingList() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Deleting
-        fetch(`http://localhost:8082/recordingList/deleteRecordingById/${id}`, {
+        fetch(`${BASE_URL}/recordingList/deleteRecordingById/${id}`, {
           method: "DELETE",
           headers: token,
         })
@@ -273,7 +275,7 @@ function RecordingList() {
        allowOutsideClick: () => !Swal.isLoading(),
      });
     
-    fetch(`http://localhost:8082/audio/download/${timeStamp}_${fileName}`, {
+    fetch(`${BASE_URL}/audio/download/${timeStamp}_${fileName}`, {
       method: "GET",
       headers: headers,
     })

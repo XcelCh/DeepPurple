@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Empty } from "../assets/index";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import 'flowbite';
+import { BASE_URL } from "./config";
 
 import {
     Chart as ChartJS,
@@ -60,7 +61,7 @@ function Billing() {
 
     //get billing history
     const getBillingHistory = () => {
-        fetch(`http://localhost:8082/payment/getBillingHistory`,
+        fetch(`${BASE_URL}/payment/getBillingHistory`,
         {
             headers: token
         })
@@ -86,7 +87,7 @@ function Billing() {
 
     //get user's total usage
     const getTotalUsage = () => {
-        fetch(`http://localhost:8082/payment/getUsage`,
+        fetch(`${BASE_URL}/payment/getUsage`,
         {
             headers: token
         })
@@ -111,7 +112,7 @@ function Billing() {
 
     //delete user's card
     const deleteCard = () => {
-        fetch(`http://localhost:8082/payment/deleteCard`,
+        fetch(`${BASE_URL}/payment/deleteCard`,
         {
             method: 'PUT',
             headers: token
@@ -140,7 +141,7 @@ function Billing() {
 
     useEffect (() => {
         window.scrollTo(0, 0);
-        fetch('http://localhost:8082/payment/getCard', {
+        fetch(`${BASE_URL}/payment/getCard`, {
             headers : token
         })
         .then(response => {
@@ -186,7 +187,7 @@ function Billing() {
             return;
         }
         
-        fetch(`http://localhost:8082/payment/setLimit?limit=${limit}`, {
+        fetch(`${BASE_URL}/payment/setLimit?limit=${limit}`, {
             method: 'POST',
             headers: token
         })

@@ -20,6 +20,7 @@ import GenericModal from "../components/GenericModal";
 import authHeader from "../services/auth-header";
 import Pagination from "../components/Pagination";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "./config";
 
 //store time when user enters the add recording page
 const today = new Date();
@@ -74,12 +75,9 @@ function AddRecording() {
  const getRecList = async () => {  
   const params = `?currentDate=${dateTimeString}`;
   try {
-    const response = await fetch(
-      `http://localhost:8082/audio/getRecordings${params}`,
-      {
-        headers: token,
-      }     
-    );
+    const response = await fetch(`${BASE_URL}/audio/getRecordings${params}`, {
+      headers: token,
+    });
 
     response.json().then((data) => {
       if(data.data != null) {        
@@ -101,7 +99,7 @@ function AddRecording() {
  const getEmpList = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8082/employeeList/getAllEmployees`,
+        `${BASE_URL}/employeeList/getAllEmployees`,
         {
           headers : token,
         }
@@ -142,7 +140,7 @@ function AddRecording() {
       title: 'Updating Employee..',      
       didOpen: () => {
         Swal.showLoading()
-        return fetch(`http://localhost:8082/audio/unassignEmployees${params}`, {
+        return fetch(`${BASE_URL}/audio/unassignEmployees${params}`, {
           method: "POST",
           headers: token             
         })
@@ -211,7 +209,7 @@ function AddRecording() {
       title: 'Updating Employee..',      
       didOpen: () => {
         Swal.showLoading()
-        return fetch(`http://localhost:8082/audio/updateAudioEmployee${params}`, {
+        return fetch(`${BASE_URL}/audio/updateAudioEmployee${params}`, {
           method: "POST",
           headers: token,
           body: data          
@@ -247,7 +245,7 @@ function AddRecording() {
   const handleAddAndAssign = async (value) =>{
     var empId = "";
     var empName = "";
-    await fetch(`http://localhost:8082/employeeList/addEmployee`, {
+    await fetch(`${BASE_URL}/employeeList/addEmployee`, {
     method: "POST",
     headers: {
       "Content-Type": "text/plain", // Set the content type to indicate JSON data
@@ -295,7 +293,7 @@ function AddRecording() {
       title: 'Uploading Files..',      
       didOpen: () => {
         Swal.showLoading()
-        return fetch("http://localhost:8082/audio/uploadAudio", {
+        return fetch(`${BASE_URL}/audio/uploadAudio`, {
           method: "POST",
           headers: token,
           body: data
@@ -341,7 +339,7 @@ function AddRecording() {
           const data = new FormData();
           data.set("audio", file);
   
-          return fetch("http://localhost:8082/audio/uploadAudio", {
+          return fetch(`${BASE_URL}/audio/uploadAudio`, {
             method: "POST",
             headers: token,
             body: data
@@ -394,7 +392,7 @@ function AddRecording() {
       if (result.isConfirmed) {
         const params = `?fileName=${recName}&recID=${recId}`;
         // Deleting
-        fetch(`http://localhost:8082/audio/deleteFile${params}`, {
+        fetch(`${BASE_URL}/audio/deleteFile${params}`, {
           method: "DELETE",
           headers: token
         })          
@@ -444,7 +442,7 @@ function AddRecording() {
 
 // Add new Employee
 const addEmployee = async (empData) => {
-  await fetch(`http://localhost:8082/employeeList/addEmployee`, {
+  await fetch(`${BASE_URL}/employeeList/addEmployee`, {
     method: "POST",
     headers: {
       "Content-Type": "text/plain", // Set the content type to indicate JSON data
@@ -473,7 +471,7 @@ const addEmployee = async (empData) => {
   const updateEmployeeDelimiter = async (recID, empName) => {
     const params = `?recordingID=${recID}&empName=${empName}`;
     const data = recID;
-    await fetch(`http://localhost:8082/audio/updateRecordingEmployeeByDelimiter${params}`, {
+    await fetch(`${BASE_URL}/audio/updateRecordingEmployeeByDelimiter${params}`, {
       method: "POST",
       body: data,
       headers: token
@@ -547,7 +545,7 @@ const addEmployee = async (empData) => {
         });
 
     // make transcription + analysis id
-    fetch("http://localhost:8082/recordingList/analyzeLambda", {
+    fetch(`${BASE_URL}/recordingList/analyzeLambda`, {
       method: "POST",
       headers: {
         Authorization: token.Authorization,
@@ -566,7 +564,7 @@ const addEmployee = async (empData) => {
           // Perform operations related to the first fetch's success
 
           // Second Fetch
-          return fetch("http://localhost:8082/audio/analyze", {
+          return fetch(`${BASE_URL}/audio/analyze`, {
             method: "POST",
             headers: {
               Authorization: token.Authorization,
@@ -812,7 +810,7 @@ const addEmployee = async (empData) => {
             </p>
             <p className="text-center font-semibold text-sm mb-10">
               Start uploading your audio files by clicking {" "}
-              <a href="/AddRecording" className="underline underline-offset-2">
+              <a className="">
                 Upload
               </a>
             </p>

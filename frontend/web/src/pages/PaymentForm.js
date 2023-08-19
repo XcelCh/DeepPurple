@@ -4,6 +4,7 @@ import mastercardImage from "../assets/Mastercard.png";
 import visaImage from "../assets/Visa.png";
 import AuthService from "../services/auth.service";
 import authHeader from '../services/auth-header';
+import { BASE_URL } from "./config";
 
 function PaymentForm() {
     const navigate = useNavigate();
@@ -143,7 +144,7 @@ function PaymentForm() {
 
         console.log('passed');
 
-        fetch('http://localhost:8082/payment/addCard', {
+        fetch(`${BASE_URL}/payment/addCard`, {
           method : 'POST',
           headers : {'Authorization' : token.Authorization,
                       'Content-Type' : 'application/json'},

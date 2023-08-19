@@ -19,6 +19,8 @@ import {
 } from "chart.js";
 
 import { Bar } from 'react-chartjs-2';
+import { BASE_URL } from "./config";
+
 ChartJS.register(
   BarElement,
   CategoryScale,
@@ -147,7 +149,7 @@ function SummaryAnalysis() {
 
   useEffect( () => {
     window.scrollTo(0, 0);
-     fetch(`http://localhost:8082/summaryAnalysis/getAnalysis`, {
+     fetch(`${BASE_URL}/summaryAnalysis/getAnalysis`, {
       headers : token
     })
       .then(response => {

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import authHeader from "../services/auth-header";
 import AuthService from "../services/auth.service";
+import { BASE_URL } from "./config";
 
 function LoginForm() {
     const navigate = useNavigate();

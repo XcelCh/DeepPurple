@@ -8,6 +8,7 @@ import customerAnalyzer3 from "../assets/CustomerAnalyzer3.png";
 import { Link } from "react-router-dom";
 import authHeader from "../services/auth-header";
 import AuthService from "../services/auth.service";
+import { BASE_URL } from "./config";
 
 function CustomerServiceAnalyzer() {
     const token = authHeader();
@@ -15,7 +16,7 @@ function CustomerServiceAnalyzer() {
     const user = AuthService.getCurrentUser();
     useEffect(() => {
         window.scrollTo(0, 0);
-        fetch ('http://localhost:8082/check', {
+        fetch (`${BASE_URL}/check`, {
             headers : token,
         })
         .then(response => {

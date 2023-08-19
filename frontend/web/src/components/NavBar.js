@@ -7,6 +7,7 @@ import profilePicture from "../assets/Default.png";
 
 import AuthService from "../services/auth.service";
 import authHeader from "../services/auth-header";
+import { BASE_URL } from "../pages/config";
 
 function NavBar() {
   const navigate = useNavigate();

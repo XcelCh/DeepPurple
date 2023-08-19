@@ -14,6 +14,7 @@ import { SidebarMusic, SidebarEmployee,SidebarStats } from "../assets/index"
 import LibraryMusicOutlinedIcon from "@mui/icons-material/LibraryMusicOutlined";
 import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
 import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
+import { BASE_URL } from "../pages/config";
 
 const Sidebar = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false);

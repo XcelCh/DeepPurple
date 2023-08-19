@@ -31,6 +31,7 @@ import Userguideassignemployee from "../assets/Userguideassignemployee.png";
 
 import ScrollToTopButton from "./ScrollToTopButton";
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from "./config";
 
 function UserGuide() {
   const navigate = useNavigate();

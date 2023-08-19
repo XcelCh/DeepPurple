@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Unauthorized } from "../assets";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "./config";
 
 function UnauthorizedPage() {
   useEffect(() => {
