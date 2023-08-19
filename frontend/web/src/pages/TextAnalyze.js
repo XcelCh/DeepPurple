@@ -2,6 +2,7 @@ import Card from "../components/Card";
 import React, { useState, useEffect } from "react";
 import { EmptySentiment, Loading } from "../assets/index";
 import AuthService from "../services/auth.service";
+import { BASE_URL } from "./config";
 
 function TextAnalyze() {
   const [oriPrompt, setOriPrompt] = useState("");

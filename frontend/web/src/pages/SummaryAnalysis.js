@@ -19,6 +19,8 @@ import {
 } from "chart.js";
 
 import { Bar } from 'react-chartjs-2';
+import { BASE_URL } from "./config";
+
 ChartJS.register(
   BarElement,
   CategoryScale,

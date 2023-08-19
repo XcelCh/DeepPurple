@@ -17,6 +17,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import TablePagination from "@mui/material/TablePagination";
 import authHeader from "../services/auth-header";
+import { BASE_URL } from "./config";
 
 function EmployeeList() {
   const [empList, setEmpList] = useState([]);

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import AuthService from "../services/auth.service";
 import Datepicker from '../components/DatePicker2';
+import { BASE_URL } from "./config";
 
 function SignUpForm() {
 

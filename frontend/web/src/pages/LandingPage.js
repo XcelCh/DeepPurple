@@ -9,6 +9,7 @@ import landingPage3 from "../assets/LandingPage3.png";
 import cardImage from "../assets/Card.png";
 import { Link } from "react-router-dom";
 import 'flowbite';
+import { BASE_URL } from "./config";
 
 function LandingPage() {
     useEffect(() => {

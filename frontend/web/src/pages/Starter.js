@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ArrowButton, StarterDummy } from "../assets";
 import { Link, useNavigate } from "react-router-dom";
 import authHeader from "../services/auth-header";
+import { BASE_URL } from "./config";
 
 function Starter() {
 

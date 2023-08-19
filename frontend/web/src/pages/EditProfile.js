@@ -5,6 +5,7 @@ import authHeader from "../services/auth-header";
 
 import Datepicker from '../components/DatePicker2';
 import AuthService from '../services/auth.service';
+import { BASE_URL } from "./config";
 
 function EditProfile() {
     const [formData, setFormData] = useState({

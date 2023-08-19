@@ -1,4 +1,5 @@
 import React, { useState} from "react";
+import { BASE_URL } from "../pages/config";
 
 function Card({ color, title, content, improvedSentence, highlight, setHighlight, highlighted, sentiment}) {
   

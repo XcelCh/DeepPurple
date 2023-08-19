@@ -1,5 +1,6 @@
 import React from "react";
 import { Linkedin, Instagram } from "../assets";
+import { BASE_URL } from "../pages/config";
 
 function ProfileCard({image, name, position, linkedin }) {
     return (

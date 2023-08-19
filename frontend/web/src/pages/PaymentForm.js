@@ -4,6 +4,7 @@ import mastercardImage from "../assets/Mastercard.png";
 import visaImage from "../assets/Visa.png";
 import AuthService from "../services/auth.service";
 import authHeader from '../services/auth-header';
+import { BASE_URL } from "./config";
 
 function PaymentForm() {
     const navigate = useNavigate();
