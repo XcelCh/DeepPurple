@@ -274,10 +274,10 @@ function EmployeeList() {
                         {employee.numCallsHandled}
                       </td>
                       <td className="text-center h-1">
-                        {employee.numNegativeSentiment}
+                        {employee.numPositiveSentiment}
                       </td>
                       <td className="text-center h-1">
-                        {employee.numPositiveSentiment}
+                        {employee.numNegativeSentiment}
                       </td>
                       <td className="flex justify-center items-center">
                         <div className="dropdown dropdown-end">

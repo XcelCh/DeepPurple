@@ -171,7 +171,7 @@ function EmployeeRecordingList() {
    useEffect(() => {
      console.log(recList);
    }, [search]);
-
+  
   // Pagination
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
@@ -322,7 +322,7 @@ function EmployeeRecordingList() {
               : null}
           </tbody>
         </table>
-        {!recList.length ? (
+        {!recList.filter((rec) => rec?.employeeId == id).length ? (
           <>
             <img src={EmptyRecording} className="mx-auto mt-10"></img>
             <p className="text-center font-semibold text-lg">
@@ -331,7 +331,7 @@ function EmployeeRecordingList() {
             <p className="text-center font-semibold text-sm mb-10">
               Start adding recording by clicking
               <a
-                href="recordingList/AddRecording"
+                href="../../recordingList/AddRecording"
                 className="underline underline-offset-2 ml-1"
               >
                 Add Recording

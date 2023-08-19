@@ -810,7 +810,7 @@ const addEmployee = async (empData) => {
             </p>
             <p className="text-center font-semibold text-sm mb-10">
               Start uploading your audio files by clicking {" "}
-              <a href="/AddRecording" className="underline underline-offset-2">
+              <a className="">
                 Upload
               </a>
             </p>
