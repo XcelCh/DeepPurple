@@ -32,6 +32,7 @@ import {
 
 import { Bar } from "react-chartjs-2";
 import Swal from "sweetalert2";
+import { BASE_URL } from "./config";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 

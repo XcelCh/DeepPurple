@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import authHeader from "../services/auth-header";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
+import { BASE_URL } from "../pages/config";
 
 function ChangePassword() {
 

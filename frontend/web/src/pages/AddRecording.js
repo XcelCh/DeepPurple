@@ -20,6 +20,7 @@ import GenericModal from "../components/GenericModal";
 import authHeader from "../services/auth-header";
 import Pagination from "../components/Pagination";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "./config";
 
 //store time when user enters the add recording page
 const today = new Date();
@@ -74,12 +75,9 @@ function AddRecording() {
  const getRecList = async () => {  
   const params = `?currentDate=${dateTimeString}`;
   try {
-    const response = await fetch(
-      `http://localhost:8082/audio/getRecordings${params}`,
-      {
-        headers: token,
-      }     
-    );
+    const response = await fetch(`${BASE_URL}/audio/getRecordings${params}`, {
+      headers: token,
+    });
 
     response.json().then((data) => {
       if(data.data != null) {        

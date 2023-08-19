@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Empty } from "../assets/index";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import 'flowbite';
+import { BASE_URL } from "../pages/config";
 
 import {
     Chart as ChartJS,
