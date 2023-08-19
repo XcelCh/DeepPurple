@@ -647,19 +647,14 @@ const addEmployee = async (empData) => {
             </a> */}
             <form>
               <UploadFileIcon />
-              <input
+              {/* <input
                 className="hidden"
                 type="file"
                 id="audioInput"
                 accept="audio/*"
                 onChange={handleUpload}
               />
-              <label for="audioInput">Select file</label>
-            </form>
-          </li>
-          <li className="hover:bg-[#9554FE] ">
-            <a className="text-[#9554FE] hover:text-[#FFFFFF]">
-              <DriveFolderUploadIcon />
+              <label for="audioInput">Select file</label> */}
               <input
                 className="hidden"
                 type="file"
@@ -668,7 +663,29 @@ const addEmployee = async (empData) => {
                 onChange={handleUploadMultipleFiles}
                 multiple
               />
-              <label for="audioInputMultiple">Select folder</label>
+              <label for="audioInputMultiple">Select file</label>
+            </form>
+          </li>
+          <li className="hover:bg-[#9554FE] ">
+            <a className="text-[#9554FE] hover:text-[#FFFFFF]">
+              <DriveFolderUploadIcon />
+              <input
+                className="hidden"
+                type="file"
+                id="audioInput"
+                accept="audio/*"
+                onChange={handleUpload}
+              />
+              <label for="audioInput">Select folder</label>
+              {/* <input
+                className="hidden"
+                type="file"
+                id="audioInputMultiple"
+                accept="audio/*"
+                onChange={handleUploadMultipleFiles}
+                multiple
+              />
+              <label for="audioInputMultiple">Select folder</label> */}
             </a>
           </li>
         </ul>

@@ -283,6 +283,10 @@ function SummaryAnalysis() {
           display: false, // Set to false to hide the vertical grid lines
         },
       },
+      y: {
+        min: Math.round(Math.min(...employeePerformances) - 1),
+        max: Math.round(Math.max(...employeePerformances) + 1),
+      },
     },
   };
 
@@ -292,11 +296,6 @@ function SummaryAnalysis() {
       <div className="pt-16 pl-16">
         <div className="flex items-center">
           <p className="text-2xl font-bold text-left ml-4">Analysis Summary</p>
-        </div>
-
-        {/* Date recorded range */}
-        <div>
-          <p className="text-xl font-bold text-left ml-4 mt-4">Date Recorded Range</p>
         </div>
 
         {/* Categories card */}
@@ -525,7 +524,7 @@ function SummaryAnalysis() {
           {/* Number of calls handled */}
           <div className="border rounded-md p-8">
             <p className="font-bold text-xl mb-4">Number of Calls Handled</p>
-            <div className="overflow-y-scroll h-81 pr-4">
+            <div className="overflow-y-scroll h-96 pr-4">
               {sortedCallsHandled.map((employee, index) => (
                 <div className="mb-4">
                   <p className="font-semibold">{employee.employeeName}</p>
