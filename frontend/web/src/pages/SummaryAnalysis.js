@@ -63,38 +63,12 @@ function SummaryAnalysis() {
     console.log(employeeDetails[0].employeeName);
   }
 
-  // const [mostMentionedData, setMostMentionedData] = useState({
-  //   labels: [],
-  //   datasets: []
-  // });
-
-  // const mostMentionedOptions = {
-  //     indexAxis: "y",
-  //     plugins: {
-  //         legend: {
-  //           display: false, // Set to false to hide the legend
-  //         },
-  //     },
-  //     scales: {
-  //         x: {
-  //           grid: {
-  //             display: false, // Set to false to hide the vertical grid lines
-  //           }
-  //         },
-  //         y: {
-  //           grid: {
-  //             display: false, // Set to false to hide the vertical grid lines
-  //           }
-  //         },
-  //     },
-  // }
-
   const calculateTime = (secs) => {
     if (isNaN(secs) || secs === 0) {
       return 'No calls';
     }
     if(secs < 60) {
-        return `${secs} ${secs === 1 ? 'second' : 'seconds'}`;
+        return `${Math.floor(secs)} ${secs === 1 ? 'second' : 'seconds'}`;
     } else {
         const minutes = Math.floor(secs / 60);
         const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;  
@@ -109,24 +83,14 @@ function SummaryAnalysis() {
 
   const countToPercentage = (num, otherHalf) => {
     const totalCount = num + otherHalf;
-    // console.log(Math.round(num / totalCount * 100));
     return Math.round(num / totalCount * 100);
   }
 
-  const [summaryAnalysisData, setSummaryAnalysisData] = useState([]);
-  // const [topSentimentOption, setTopSentimentOption] = useState('Positive');
   const [randomColors, setRandomColors] = useState([]);
   const [employeeName, setEmployeeName] = useState(0);
   const [employeeKey, setEmployeeKey] = useState(0);
   const [employeeNames, setEmployeeNames] = useState([]);
   const [employeePerformances, setEmployeePerformances] = useState([]);
-  // const [employeeSentiment, setEmployeeSentiment] = useState({
-  //   sentimentCount: [],
-  //   sentimentPercentage: [],
-  //   sentimentCategory: ''
-  // });
-
-  // const [totalTime, setTotalTime] = useState(0);
   const [totalCalls, setTotalCalls] = useState(0);
 
   useEffect (() => {
@@ -143,7 +107,6 @@ function SummaryAnalysis() {
       }
 
       setTotalCalls(totalCalls);
-      // setTotalTime(totalDuration);
 
     }, [employeeDetails])
 
@@ -182,13 +145,10 @@ function SummaryAnalysis() {
 
           const sorted = [...data.employeeList].sort((a, b) => b.numberOfCalls - a.numberOfCalls);
           setSortedCallsHandled(sorted);
-          // console.log(data.employeeList.length);
+
           for(let x = 0; x < data.employeeList.length; x++) {
-            // const emp = data.employeeList[x];
+  
             employeeDetail.push(data.employeeList[x]);
-            // setEmployeeDetails(prev => [...prev, emp]);
-            // console.log(x);
-            console.log(employeeDetail[0]);
           }
 
           setEmployeeDetails(employeeDetail);
@@ -394,18 +354,6 @@ function SummaryAnalysis() {
                   Top 5 Employee Based On Performance
                 </div>
                 <div className="relative w-2/5">
-                  {/* <select 
-                      className="bg-gray-50 block appearance-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 h-full px-2" 
-                      id="grid-state"
-                      value={topSentimentOption}
-                      onChange={(event) => setTopSentimentOption(event.target.value)}
-                  >
-                      <option value="Positive">Positive</option>
-                      <option value="Negative">Negative</option>
-                  </select> */}
-                  {/* <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                  </div> */}
                 </div>
               </div>
               <div className="relative">
@@ -543,7 +491,6 @@ function SummaryAnalysis() {
             </div>
           </div>
         </div>
-
         {/* Fourth row */}
         <div className="px-4">
           <div className="grid w-full mt-4 border rounded rounded-md">
@@ -551,48 +498,10 @@ function SummaryAnalysis() {
               <p className="font-bold text-xl mb-4">Improvement Suggestions</p>
               <p style={{ textAlign: 'justify' }}>{analysisForm.suggestion}</p>
             </div>
-            {/* <div className="grid grid-rows-2 col-span-1 p-8">
-              <div className="border-b">
-                <p className="font-bold text-xl mb-4">Negative Word Cloud</p>
-                <div className="flex items-center justify-center">
-                  <ul class="flex justify-center flex-wrap max-w-xl align-center gap-2 leading-8">
-                    <li><a class="text-3xl text-cyan-500">Country Names</a></li>
-                    <li><a class="text-xl text-teal-500">Chemistry</a></li>
-                    <li><a class="text-md text-red-500">File Type</a></li>
-                    <li><a class="text-lg text-green-500">Cryptocurrency</a></li>
-                    <li><a class="text-sm text-orange-500">Academic</a></li>
-                    <li><a class="text-3xl text-cyan-500">Softwares</a></li>
-                    <li><a class="text-md text-blue-500">General</a></li>
-                    <li><a class="text-2xl text-indigo-500">Web Technology</a></li>
-                    <li><a class="text-xl text-indigo-500">Business</a></li>
-                    <li><a class="text-md text-blue-500">Technology</a></li>
-                    <li><a class="text-xs text-cyan-500">Sports</a></li>
-                    <li><a class="text-4xl text-red-500">Law</a></li>
-                    <li><a class="text-lg text-gray-500">Internet Slangs</a></li>
-                    <li><a class="text-3xl text-cyan-500">Insurance</a></li>
-                    <li><a class="text-md text-blue-500">Space Science</a></li>
-                    <li><a class="text-4xl text-red-500">Jobs</a></li>
-                    <li><a class="text-lg text-gray-500">Certifications</a></li>
-                    <li><a class="text-sm text-orange-500">Electronics</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div>
-                <p className="font-bold text-xl mt-4">5 Most Mentioned Words</p>
-                <div className="flex items-center justify-center">
-                  <div style={{ width: '500px', height: '250px'}}>
-                    <Bar
-                      data = {mostMentionedData}
-                      options = {mostMentionedOptions}    
-                    ></Bar>
-                  </div>
-                </div>
-              </div>
-            </div> */}
+          
           </div>
         </div>
       </div>
-    {/* ) : null} */}
     </>
   );
 }

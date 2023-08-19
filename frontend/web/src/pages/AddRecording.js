@@ -291,9 +291,9 @@ function AddRecording() {
     console.log(audioInput.files[0]);
     Swal.fire({
       title: 'Uploading Files..',      
-      didOpen: () => {
+      didOpen: async () => {
         Swal.showLoading()
-        return fetch(`${BASE_URL}/audio/uploadAudio`, {
+        return await fetch(`${BASE_URL}/audio/uploadAudio`, {
           method: "POST",
           headers: token,
           body: data
