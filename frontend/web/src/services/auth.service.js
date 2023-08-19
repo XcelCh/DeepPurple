@@ -1,7 +1,7 @@
 import axios from "axios";
 import { BASE_URL } from "../pages/config";
 
-const API_URL = `{BASE_URL}/api/auth/`;
+const API_URL = `${BASE_URL}/api/auth/`;
 
 // const API_URL = "http://localhost:8082/api/auth/";
 
