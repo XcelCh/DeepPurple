@@ -165,6 +165,7 @@ function RecordingList() {
     const params = `?search=${search}`;
     console.log(params);
     try {
+      
       Swal.fire({
         title: "Retrieving All Recordings",
         didOpen: () => {
