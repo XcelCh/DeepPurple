@@ -139,31 +139,31 @@ function AboutUs() {
             <ProfileCard
               image={Patricia}
               name="Patricia Natasha"
-              position="Technical Lead"
+              position="Developer & Documenter"
               linkedin="https://www.linkedin.com/in/patricia-natasha/"
             ></ProfileCard>
             <ProfileCard
               image={Excel}
               name="Excel Chendrawan"
-              position="Documentation Leader"
+              position="Developer & Documenter"
               linkedin="https://www.linkedin.com/in/excel-chendrawan-5863a7222/"
             ></ProfileCard>
             <ProfileCard
               image={Bryant}
               name="Jonathan Bryant Indramadi"
-              position="Developer"
+              position="Developer & Documenter"
               linkedin="https://www.linkedin.com/in/jonathanbryantindramadi/"
             ></ProfileCard>
             <ProfileCard
               image={Raymond}
               name="Raymond Halim"
-              position="Developer"
+              position="Developer & Documenter"
               linkedin="https://www.linkedin.com/in/raymond-halim-a4352522a/"
             ></ProfileCard>
             <ProfileCard
               image={Alvin}
               name="Teo Wei Jie Alvin"
-              position="Developer"
+              position="Developer & Documenter"
             ></ProfileCard>
           </div>
           {/* End of Card */}

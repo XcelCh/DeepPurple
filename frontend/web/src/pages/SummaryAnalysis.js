@@ -95,7 +95,7 @@ function SummaryAnalysis() {
         return `${secs} ${secs === 1 ? 'second' : 'seconds'}`;
     } else {
         const minutes = Math.floor(secs / 60);
-        const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+        const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;  
         const seconds = Math.floor(secs % 60);
         if(seconds === 0) {
             return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '}`;
@@ -116,6 +116,8 @@ function SummaryAnalysis() {
   const [randomColors, setRandomColors] = useState([]);
   const [employeeName, setEmployeeName] = useState(0);
   const [employeeKey, setEmployeeKey] = useState(0);
+  const [employeeNames, setEmployeeNames] = useState([]);
+  const [employeePerformances, setEmployeePerformances] = useState([]);
   // const [employeeSentiment, setEmployeeSentiment] = useState({
   //   sentimentCount: [],
   //   sentimentPercentage: [],
@@ -161,7 +163,8 @@ function SummaryAnalysis() {
       })
       .then(data => {
           console.log(data);
-
+          setEmployeeNames(data.employeeList.map(employee => employee.employeeName));
+          setEmployeePerformances(data.employeeList.map(employee => employee.employeeAvgPerformance));
           setAnalysisForm({
             averageCallDuration : data.averageCallDuration,
             inquiry : data.inquiry,
@@ -192,63 +195,9 @@ function SummaryAnalysis() {
           console.error(error);
       })
 
-    
-
-    const dataLine = {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb' , 'Mar' , 'Apr' , 'May' , 'Jun' , 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        datasets: [
-          {
-            label: 'Inquiry',
-            data: [40, 45, 42, 52, 60, 68, 49, 39, 42, 52, 67, 62],
-            backgroundColor: '#38BAF4',
-            borderColor: '#38BAF4',
-          },
-          {
-            label: 'Complaint',
-            data: [10, 20, 10, 30, 25, 34, 40, 31, 14, 19, 25, 28],
-            backgroundColor: '#EE5B3D',
-            borderColor: '#EE5B3D',
-          },
-          {
-            label: 'Warranty',
-            data: [63, 77, 70, 85, 81, 65, 90, 100, 91, 84, 80, 92],
-            backgroundColor: '#FFA425',
-            borderColor: '#FFA425',
-          },
-          {
-            label: 'Total',
-            data: [150, 147, 130, 189, 181, 195, 200, 162, 153, 170, 187, 169],
-            backgroundColor: '#6676EE',
-            borderColor: '#6676EE',
-          },
-        ],
-      },
-      options: {
-        scales: {
-          x: {
-            grid: {
-              display: false, // Set to false to hide the vertical grid lines
-            }
-          },
-        },
-      }
-    };
-
-    const categoryCanvas = document.getElementById("chartCategoryTrend");
-
-    if (categoryCanvas.chart) {
-      categoryCanvas.chart.destroy();
-    }
-    
-    categoryCanvas.chart = new ChartJS(categoryCanvas, dataLine);
   }, []);
 
   useEffect(() => {
-    // console.log(employeeSentiment);
-    // console.log(summaryAnalysisData);
-
     if (analysisForm.averageCallDuration === 0) {
       // Data is not available yet, skip rendering the chart
       return;
@@ -308,6 +257,32 @@ function SummaryAnalysis() {
     }
 
   }
+
+  const employeePerformanceData = {
+    labels: employeeNames,
+    datasets: [
+      {
+        data: employeePerformances,
+        backgroundColor: randomColors,
+        borderWidth: 0,
+      },
+    ],
+  };
+
+  const employeePerformanceOptions = {
+    plugins: {
+      legend: {
+        display: false, // Set to false to hide the legend
+      }
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false, // Set to false to hide the vertical grid lines
+        },
+      },
+    },
+  };
 
   return (
     <>
@@ -493,33 +468,37 @@ function SummaryAnalysis() {
               </div>
               <div className="p-4">
                 
-                {(employeeDetails.length > 0 && (employeeDetails[employeeKey].positiveEmpSentiment !== 0 || employeeDetails[employeeKey].negativeEmpSentiment !== 0)) && (
-                  <div className="grid grid-cols-3">
-                    <div className="flex flex-col items-center col-span-1">
-                      <div className="flex items-center">
-                        <img src={countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? Heart : RedHeart} />
-                        <p className={`text-3xl font-bold ${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ?  "text-[#80F2AA]" : "text-[#EE5B3D]"}`}>
-                          {[countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)]}%
-                        </p>
+                {employeeDetails.length > 0 && (
+                  employeeDetails[employeeKey].positiveEmpSentiment !== 0 || employeeDetails[employeeKey].negativeEmpSentiment !== 0 ? (
+                    <div className="grid grid-cols-3">
+                      <div className="flex flex-col items-center col-span-1">
+                        <div className="flex items-center">
+                          <img src={countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? Heart : RedHeart} />
+                          <p className={`text-3xl font-bold ${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ?  "text-[#80F2AA]" : "text-[#EE5B3D]"}`}>
+                            {[countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)]}%
+                          </p>
+                        </div>
+                        <p className="text-xl font-medium">{countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? "High" : "Low"}</p>
                       </div>
-                      <p className="text-xl font-medium">{countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? "High" : "Low"}</p>
-                    </div>
-                    <div className="flex flex-col items-center justify-center col-span-2">
-                      <div className="relative w-full">
-                        <div className="flex items-center justify-between font-medium">
-                          <div className="text-[#80F2AA]">{employeeDetails[employeeKey].positiveEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%)</div>
-                          <div className="text-[#EE5B3D]">{employeeDetails[employeeKey].negativeEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].negativeEmpSentiment, employeeDetails[employeeKey].positiveEmpSentiment)}%)</div>
-                        </div>
-                        <div className="flex h-3 overflow-hidden rounded-xl bg-[#EE5B3D] text-xs">
-                          <div style={{ width: `${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%` }} className="bg-[#80F2AA]"></div>
-                        </div>
-                        <div className="flex items-center justify-between font-medium">
-                          <div className="text-[#80F2AA]">Positive</div>
-                          <div className="text-[#EE5B3D]">Negative</div>
+                      <div className="flex flex-col items-center justify-center col-span-2">
+                        <div className="relative w-full">
+                          <div className="flex items-center justify-between font-medium">
+                            <div className="text-[#80F2AA]">{employeeDetails[employeeKey].positiveEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%)</div>
+                            <div className="text-[#EE5B3D]">{employeeDetails[employeeKey].negativeEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].negativeEmpSentiment, employeeDetails[employeeKey].positiveEmpSentiment)}%)</div>
+                          </div>
+                          <div className="flex h-3 overflow-hidden rounded-xl bg-[#EE5B3D] text-xs">
+                            <div style={{ width: `${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%` }} className="bg-[#80F2AA]"></div>
+                          </div>
+                          <div className="flex items-center justify-between font-medium">
+                            <div className="text-[#80F2AA]">Positive</div>
+                            <div className="text-[#EE5B3D]">Negative</div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <p className="text-center mt-8 text-lg">Employee does not have any recordings yet</p>
+                  )
                 )}
               </div>
             </div>
@@ -529,16 +508,22 @@ function SummaryAnalysis() {
         {/* Third row */}
         <div className="grid w-full gap-4 grid-cols-2 mt-4 px-4">
           <div className="border rounded-md p-8">
-            <p className="font-bold text-xl mb-4">Call Category Trend</p>
+            <p className="font-bold text-xl mb-4">Average Employee Performance</p>
             <div className="rounded-lg overflow-hidden">
-              <canvas id="chartCategoryTrend"></canvas>
+              <Bar
+                style={{
+                  padding: "10px",
+                }}
+                data={employeePerformanceData}
+                options={employeePerformanceOptions}
+              ></Bar>
             </div>
           </div>
 
           {/* Number of calls handled */}
           <div className="border rounded-md p-8">
             <p className="font-bold text-xl mb-4">Number of Calls Handled</p>
-            <div className="overflow-y-scroll h-96 pr-4">
+            <div className="overflow-y-scroll h-81 pr-4">
               {sortedCallsHandled.map((employee, index) => (
                 <div className="mb-4">
                   <p className="font-semibold">{employee.employeeName}</p>
