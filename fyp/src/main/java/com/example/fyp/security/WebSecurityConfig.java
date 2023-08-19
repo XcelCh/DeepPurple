@@ -77,7 +77,7 @@ public class WebSecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        config.setAllowedOrigins(Collections.singletonList("https://frontend.d22e4ei8cn3no7.amplifyapp.com/"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
@@ -94,6 +94,7 @@ public class WebSecurityConfig {
                 // Configure the Http request that is authenticated or need specific roles
                 .authorizeHttpRequests(auth -> auth
                         // Endpoints that can be access by all user
+                        .requestMatchers("/").permitAll()
                         .requestMatchers("/analyze").permitAll()
                         .requestMatchers("/sendInquiry").permitAll()
 

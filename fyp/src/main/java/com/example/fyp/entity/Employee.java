@@ -71,16 +71,4 @@ public class Employee {
     public void decrementNumCallsHandled() {
     	this.numCallsHandled--;
     }
-
-    // Method to delete related entities when deleting Employee Record
-    // public Employee deleteEmployee() {
-
-    //     for (Recording r : this.recording) {
-    //         r.deleteRecording();
-    //         this.recording.remove(r);
-    //         r.setEmployee(null);
-    //     }
-
-    //     return this;
-    // }
 }

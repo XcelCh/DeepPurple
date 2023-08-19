@@ -1,6 +1,5 @@
 package com.example.fyp.controller;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +35,6 @@ import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.AnalysisService;
 import com.example.fyp.service.RecordingListService;
-import com.example.fyp.service.RecordingService;
 import com.example.fyp.service.StorageService;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;

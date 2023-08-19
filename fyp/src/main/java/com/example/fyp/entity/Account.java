@@ -117,29 +117,6 @@ public class Account {
         this.usageList.add(usage);
     }
 
-    // Delete Account function will delete all related entity
-    // public Account deleteAll(List<Usages> usageList, List<Recording> recordings, List<Employee> employees) {
-
-    //     for (Usages u : usageList) {
-    //         usageList.remove(u);
-    //         u.setAccount(null);
-    //     }
-
-    //     for (Recording r : recordings) {
-    //         r.deleteRecording();
-    //         recordings.remove(r);
-    //         r.setAccount(null);
-    //     }
-
-    //     for (Employee e : employees) {
-    //         e.deleteEmployee();
-    //         employees.remove(e);
-    //         e.setAccount(null);
-    //     }
-
-    //     return this;
-    // }
-
     // To String Method of the Account
     @Override
     public String toString() {
