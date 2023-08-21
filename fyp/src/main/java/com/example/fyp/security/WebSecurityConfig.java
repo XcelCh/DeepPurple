@@ -77,7 +77,8 @@ public class WebSecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("https://frontend.d22e4ei8cn3no7.amplifyapp.com/"));
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        // config.setAllowedOrigins(Collections.singletonList("https://frontend.d22e4ei8cn3no7.amplifyapp.com/"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
