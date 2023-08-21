@@ -94,7 +94,7 @@ function AddRecording() {
 
  useEffect(() => {
   getRecList();
- });
+ },[]);
 
  // Get All Employees
  const getEmpList = async () => {
