@@ -63,41 +63,15 @@ function SummaryAnalysis() {
     console.log(employeeDetails[0].employeeName);
   }
 
-  // const [mostMentionedData, setMostMentionedData] = useState({
-  //   labels: [],
-  //   datasets: []
-  // });
-
-  // const mostMentionedOptions = {
-  //     indexAxis: "y",
-  //     plugins: {
-  //         legend: {
-  //           display: false, // Set to false to hide the legend
-  //         },
-  //     },
-  //     scales: {
-  //         x: {
-  //           grid: {
-  //             display: false, // Set to false to hide the vertical grid lines
-  //           }
-  //         },
-  //         y: {
-  //           grid: {
-  //             display: false, // Set to false to hide the vertical grid lines
-  //           }
-  //         },
-  //     },
-  // }
-
   const calculateTime = (secs) => {
     if (isNaN(secs) || secs === 0) {
       return 'No calls';
     }
     if(secs < 60) {
-        return `${secs} ${secs === 1 ? 'second' : 'seconds'}`;
+        return `${Math.floor(secs)} ${secs === 1 ? 'second' : 'seconds'}`;
     } else {
         const minutes = Math.floor(secs / 60);
-        const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+        const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;  
         const seconds = Math.floor(secs % 60);
         if(seconds === 0) {
             return `${returnedMinutes} ${minutes > 1 ? 'minutes ' : 'minute '}`;
@@ -109,22 +83,14 @@ function SummaryAnalysis() {
 
   const countToPercentage = (num, otherHalf) => {
     const totalCount = num + otherHalf;
-    // console.log(Math.round(num / totalCount * 100));
     return Math.round(num / totalCount * 100);
   }
 
-  const [summaryAnalysisData, setSummaryAnalysisData] = useState([]);
-  // const [topSentimentOption, setTopSentimentOption] = useState('Positive');
   const [randomColors, setRandomColors] = useState([]);
   const [employeeName, setEmployeeName] = useState(0);
   const [employeeKey, setEmployeeKey] = useState(0);
-  // const [employeeSentiment, setEmployeeSentiment] = useState({
-  //   sentimentCount: [],
-  //   sentimentPercentage: [],
-  //   sentimentCategory: ''
-  // });
-
-  // const [totalTime, setTotalTime] = useState(0);
+  const [employeeNames, setEmployeeNames] = useState([]);
+  const [employeePerformances, setEmployeePerformances] = useState([]);
   const [totalCalls, setTotalCalls] = useState(0);
 
   useEffect (() => {
@@ -141,7 +107,6 @@ function SummaryAnalysis() {
       }
 
       setTotalCalls(totalCalls);
-      // setTotalTime(totalDuration);
 
     }, [employeeDetails])
 
@@ -163,7 +128,8 @@ function SummaryAnalysis() {
       })
       .then(data => {
           console.log(data);
-
+          setEmployeeNames(data.employeeList.map(employee => employee.employeeName));
+          setEmployeePerformances(data.employeeList.map(employee => employee.employeeAvgPerformance));
           setAnalysisForm({
             averageCallDuration : data.averageCallDuration,
             inquiry : data.inquiry,
@@ -179,13 +145,10 @@ function SummaryAnalysis() {
 
           const sorted = [...data.employeeList].sort((a, b) => b.numberOfCalls - a.numberOfCalls);
           setSortedCallsHandled(sorted);
-          // console.log(data.employeeList.length);
+
           for(let x = 0; x < data.employeeList.length; x++) {
-            // const emp = data.employeeList[x];
+  
             employeeDetail.push(data.employeeList[x]);
-            // setEmployeeDetails(prev => [...prev, emp]);
-            // console.log(x);
-            console.log(employeeDetail[0]);
           }
 
           setEmployeeDetails(employeeDetail);
@@ -194,63 +157,9 @@ function SummaryAnalysis() {
           console.error(error);
       })
 
-    
-
-    const dataLine = {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb' , 'Mar' , 'Apr' , 'May' , 'Jun' , 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        datasets: [
-          {
-            label: 'Inquiry',
-            data: [40, 45, 42, 52, 60, 68, 49, 39, 42, 52, 67, 62],
-            backgroundColor: '#38BAF4',
-            borderColor: '#38BAF4',
-          },
-          {
-            label: 'Complaint',
-            data: [10, 20, 10, 30, 25, 34, 40, 31, 14, 19, 25, 28],
-            backgroundColor: '#EE5B3D',
-            borderColor: '#EE5B3D',
-          },
-          {
-            label: 'Warranty',
-            data: [63, 77, 70, 85, 81, 65, 90, 100, 91, 84, 80, 92],
-            backgroundColor: '#FFA425',
-            borderColor: '#FFA425',
-          },
-          {
-            label: 'Total',
-            data: [150, 147, 130, 189, 181, 195, 200, 162, 153, 170, 187, 169],
-            backgroundColor: '#6676EE',
-            borderColor: '#6676EE',
-          },
-        ],
-      },
-      options: {
-        scales: {
-          x: {
-            grid: {
-              display: false, // Set to false to hide the vertical grid lines
-            }
-          },
-        },
-      }
-    };
-
-    const categoryCanvas = document.getElementById("chartCategoryTrend");
-
-    if (categoryCanvas.chart) {
-      categoryCanvas.chart.destroy();
-    }
-    
-    categoryCanvas.chart = new ChartJS(categoryCanvas, dataLine);
   }, []);
 
   useEffect(() => {
-    // console.log(employeeSentiment);
-    // console.log(summaryAnalysisData);
-
     if (analysisForm.averageCallDuration === 0) {
       // Data is not available yet, skip rendering the chart
       return;
@@ -311,17 +220,42 @@ function SummaryAnalysis() {
 
   }
 
+  const employeePerformanceData = {
+    labels: employeeNames,
+    datasets: [
+      {
+        data: employeePerformances,
+        backgroundColor: randomColors,
+        borderWidth: 0,
+      },
+    ],
+  };
+
+  const employeePerformanceOptions = {
+    plugins: {
+      legend: {
+        display: false, // Set to false to hide the legend
+      }
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false, // Set to false to hide the vertical grid lines
+        },
+      },
+      y: {
+        min: Math.round(Math.min(...employeePerformances) - 1),
+        max: Math.round(Math.max(...employeePerformances) + 1),
+      },
+    },
+  };
+
   return (
     <>
     {/* {(employeeDetails.length > 0) ? ( */}
       <div className="pt-16 pl-16">
         <div className="flex items-center">
           <p className="text-2xl font-bold text-left ml-4">Analysis Summary</p>
-        </div>
-
-        {/* Date recorded range */}
-        <div>
-          <p className="text-xl font-bold text-left ml-4 mt-4">Date Recorded Range</p>
         </div>
 
         {/* Categories card */}
@@ -420,18 +354,6 @@ function SummaryAnalysis() {
                   Top 5 Employee Based On Performance
                 </div>
                 <div className="relative w-2/5">
-                  {/* <select 
-                      className="bg-gray-50 block appearance-none border border-gray-400 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 h-full px-2" 
-                      id="grid-state"
-                      value={topSentimentOption}
-                      onChange={(event) => setTopSentimentOption(event.target.value)}
-                  >
-                      <option value="Positive">Positive</option>
-                      <option value="Negative">Negative</option>
-                  </select> */}
-                  {/* <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                  </div> */}
                 </div>
               </div>
               <div className="relative">
@@ -495,33 +417,37 @@ function SummaryAnalysis() {
               </div>
               <div className="p-4">
                 
-                {(employeeDetails.length > 0 && (employeeDetails[employeeKey].positiveEmpSentiment !== 0 || employeeDetails[employeeKey].negativeEmpSentiment !== 0)) && (
-                  <div className="grid grid-cols-3">
-                    <div className="flex flex-col items-center col-span-1">
-                      <div className="flex items-center">
-                        <img src={countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? Heart : RedHeart} />
-                        <p className={`text-3xl font-bold ${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ?  "text-[#80F2AA]" : "text-[#EE5B3D]"}`}>
-                          {[countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)]}%
-                        </p>
+                {employeeDetails.length > 0 && (
+                  employeeDetails[employeeKey].positiveEmpSentiment !== 0 || employeeDetails[employeeKey].negativeEmpSentiment !== 0 ? (
+                    <div className="grid grid-cols-3">
+                      <div className="flex flex-col items-center col-span-1">
+                        <div className="flex items-center">
+                          <img src={countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? Heart : RedHeart} />
+                          <p className={`text-3xl font-bold ${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ?  "text-[#80F2AA]" : "text-[#EE5B3D]"}`}>
+                            {[countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)]}%
+                          </p>
+                        </div>
+                        <p className="text-xl font-medium">{countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? "High" : "Low"}</p>
                       </div>
-                      <p className="text-xl font-medium">{countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment) > 49 ? "High" : "Low"}</p>
-                    </div>
-                    <div className="flex flex-col items-center justify-center col-span-2">
-                      <div className="relative w-full">
-                        <div className="flex items-center justify-between font-medium">
-                          <div className="text-[#80F2AA]">{employeeDetails[employeeKey].positiveEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%)</div>
-                          <div className="text-[#EE5B3D]">{employeeDetails[employeeKey].negativeEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].negativeEmpSentiment, employeeDetails[employeeKey].positiveEmpSentiment)}%)</div>
-                        </div>
-                        <div className="flex h-3 overflow-hidden rounded-xl bg-[#EE5B3D] text-xs">
-                          <div style={{ width: `${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%` }} className="bg-[#80F2AA]"></div>
-                        </div>
-                        <div className="flex items-center justify-between font-medium">
-                          <div className="text-[#80F2AA]">Positive</div>
-                          <div className="text-[#EE5B3D]">Negative</div>
+                      <div className="flex flex-col items-center justify-center col-span-2">
+                        <div className="relative w-full">
+                          <div className="flex items-center justify-between font-medium">
+                            <div className="text-[#80F2AA]">{employeeDetails[employeeKey].positiveEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%)</div>
+                            <div className="text-[#EE5B3D]">{employeeDetails[employeeKey].negativeEmpSentiment} ({countToPercentage(employeeDetails[employeeKey].negativeEmpSentiment, employeeDetails[employeeKey].positiveEmpSentiment)}%)</div>
+                          </div>
+                          <div className="flex h-3 overflow-hidden rounded-xl bg-[#EE5B3D] text-xs">
+                            <div style={{ width: `${countToPercentage(employeeDetails[employeeKey].positiveEmpSentiment, employeeDetails[employeeKey].negativeEmpSentiment)}%` }} className="bg-[#80F2AA]"></div>
+                          </div>
+                          <div className="flex items-center justify-between font-medium">
+                            <div className="text-[#80F2AA]">Positive</div>
+                            <div className="text-[#EE5B3D]">Negative</div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <p className="text-center mt-8 text-lg">Employee does not have any recordings yet</p>
+                  )
                 )}
               </div>
             </div>
@@ -531,9 +457,15 @@ function SummaryAnalysis() {
         {/* Third row */}
         <div className="grid w-full gap-4 grid-cols-2 mt-4 px-4">
           <div className="border rounded-md p-8">
-            <p className="font-bold text-xl mb-4">Call Category Trend</p>
+            <p className="font-bold text-xl mb-4">Average Employee Performance</p>
             <div className="rounded-lg overflow-hidden">
-              <canvas id="chartCategoryTrend"></canvas>
+              <Bar
+                style={{
+                  padding: "10px",
+                }}
+                data={employeePerformanceData}
+                options={employeePerformanceOptions}
+              ></Bar>
             </div>
           </div>
 
@@ -559,56 +491,17 @@ function SummaryAnalysis() {
             </div>
           </div>
         </div>
-
         {/* Fourth row */}
         <div className="px-4">
-          <div className="grid w-full grid-cols-2 mt-4 border rounded rounded-md">
-            <div className="col-span-1 p-8 border-r">
+          <div className="grid w-full mt-4 border rounded rounded-md">
+            <div className="p-8 border-r">
               <p className="font-bold text-xl mb-4">Improvement Suggestions</p>
               <p style={{ textAlign: 'justify' }}>{analysisForm.suggestion}</p>
             </div>
-            {/* <div className="grid grid-rows-2 col-span-1 p-8">
-              <div className="border-b">
-                <p className="font-bold text-xl mb-4">Negative Word Cloud</p>
-                <div className="flex items-center justify-center">
-                  <ul class="flex justify-center flex-wrap max-w-xl align-center gap-2 leading-8">
-                    <li><a class="text-3xl text-cyan-500">Country Names</a></li>
-                    <li><a class="text-xl text-teal-500">Chemistry</a></li>
-                    <li><a class="text-md text-red-500">File Type</a></li>
-                    <li><a class="text-lg text-green-500">Cryptocurrency</a></li>
-                    <li><a class="text-sm text-orange-500">Academic</a></li>
-                    <li><a class="text-3xl text-cyan-500">Softwares</a></li>
-                    <li><a class="text-md text-blue-500">General</a></li>
-                    <li><a class="text-2xl text-indigo-500">Web Technology</a></li>
-                    <li><a class="text-xl text-indigo-500">Business</a></li>
-                    <li><a class="text-md text-blue-500">Technology</a></li>
-                    <li><a class="text-xs text-cyan-500">Sports</a></li>
-                    <li><a class="text-4xl text-red-500">Law</a></li>
-                    <li><a class="text-lg text-gray-500">Internet Slangs</a></li>
-                    <li><a class="text-3xl text-cyan-500">Insurance</a></li>
-                    <li><a class="text-md text-blue-500">Space Science</a></li>
-                    <li><a class="text-4xl text-red-500">Jobs</a></li>
-                    <li><a class="text-lg text-gray-500">Certifications</a></li>
-                    <li><a class="text-sm text-orange-500">Electronics</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div>
-                <p className="font-bold text-xl mt-4">5 Most Mentioned Words</p>
-                <div className="flex items-center justify-center">
-                  <div style={{ width: '500px', height: '250px'}}>
-                    <Bar
-                      data = {mostMentionedData}
-                      options = {mostMentionedOptions}    
-                    ></Bar>
-                  </div>
-                </div>
-              </div>
-            </div> */}
+          
           </div>
         </div>
       </div>
-    {/* ) : null} */}
     </>
   );
 }

@@ -119,14 +119,4 @@ public class Recording {
                 ", analysis=" + (analysis != null ? analysis.getAnalysisId() : null) + ", employee=" + (employee != null ? employee.getEmployeeId() : null) +
                 ", account=" + (account != null ? account.getAccountId() : null) + '}';
     }
-
-    // Delete method which deletes related entities 
-    // public Recording deleteRecording() {
-
-    //     this.analysis.deleteAnalysis();
-    //     this.setAnalysis(null);
-    //     this.analysis.setRecording(null);
-
-    //     return this;
-    // }
 }
