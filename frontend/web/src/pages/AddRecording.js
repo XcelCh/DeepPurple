@@ -284,45 +284,115 @@ function AddRecording() {
     handleSelectedEmployee(param);
   }
 
-  //handle singular file upload
+  //handle folder upload
   const handleUpload = () => {    
     const data = new FormData();
     const audioInput = document.getElementById("audioInput");        
-    data.set("audio", audioInput.files[0])    
-    console.log(audioInput.files[0]);
-    Swal.fire({
-      title: 'Uploading Files..',      
-      didOpen: async () => {
-        Swal.showLoading()
-        return await fetch(`${BASE_URL}/audio/uploadAudio`, {
-          method: "POST",
-          headers: token,
-          body: data
-        })
-        .then (response => {
     
-          if (response.ok) {
-            Swal.close();
-            
-            // Success message
-            Swal.fire(            
-              "Updated",
-              "The recording has been added.",
-              "success"
-            )
-          } else{
-            throw new error;
-          }     
-        })
-        .catch (error => {      
-          setError(error)
-          console.error(error)
-          Swal.fire("Fail", "Fail to add recording.", "error")
-        })
+    let totalFiles = audioInput.files.length;
+    let uploadedFilesCount = 0;
+    let rejectedFile = 0;
+
+
+    Swal.fire({
+      title: 'Uploading Files..',
+      didOpen: () => {
+        Swal.showLoading();
+  
+        // Define a helper function to upload each file sequentially
+        const uploadFile = (file, rejectedFile) => {
+          const data = new FormData();
+          data.set("audio", file);
+  
+          return fetch(`${BASE_URL}/audio/uploadAudio`, {
+            method: "POST",
+            headers: token,
+            body: data
+          })
+          .then(response => {
+            if (response.ok) {
+              uploadedFilesCount++;
+              if (uploadedFilesCount === (totalFiles-rejectedFile)) {
+                Swal.close();
+                getRecList();
+                // Success message for all files uploaded
+                Swal.fire(
+                  "Updated",
+                  "All recordings have been added.",
+                  "success"
+                );
+              }
+            } else {
+              throw new Error();
+            }
+          })
+          .catch(error => {
+            setError(error);
+            console.error(error);
+            Swal.fire("Fail", "Fail to add recording.", "error");
+          });
+        };
+  
+        // Upload each file one by one
+        for(let i = 0; i < totalFiles; i++){
+
+          const file = audioInput.files[i];
+
+
+          if (file.type.startsWith('audio/')) {
+
+            // console.log('audio file', file);
+
+            if (file.webkitRelativePath) {
+              const modifiedFile = new File([file], file.name);
+              // console.log(rejectedFile);
+              uploadFile(modifiedFile, rejectedFile);
+            }
+          }
+          else {
+            // console.log('not audio file', file);
+            rejectedFile++;
+          }
+        }
+        
       },
       allowOutsideClick: () => !Swal.isLoading()
-    })
-    getRecList()
+    });
+
+
+    // Swal.fire({
+    //   title: 'Uploading Files..',      
+    //   didOpen: async () => {
+    //     Swal.showLoading()
+    //     return await fetch(`${BASE_URL}/audio/uploadAudio`, {
+    //       method: "POST",
+    //       headers: token,
+    //       body: data
+    //     })
+    //     .then (response => {
+    
+    //       if (response.ok) {
+    //         Swal.close();
+            
+    //         // Success message
+    //         Swal.fire(            
+    //           "Updated",
+    //           "The recording has been added.",
+    //           "success"
+    //         )
+    //       } else{
+    //         throw new error;
+    //       }     
+    //     })
+    //     .catch (error => {      
+    //       setError(error)
+    //       console.error(error)
+    //       Swal.fire("Fail", "Fail to add recording.", "error")
+    //     })
+    //   },
+    //   allowOutsideClick: () => !Swal.isLoading()
+    // })
+    // getRecList()
   };
 
   //handle multiple file upload
@@ -330,6 +400,7 @@ function AddRecording() {
     const audioInput = document.getElementById("audioInputMultiple");           
     const totalFiles = audioInput.files.length;
     let uploadedFilesCount = 0;
+    console.log(audioInput.files);
   
     Swal.fire({
       title: 'Uploading Files..',
@@ -675,7 +746,9 @@ const addEmployee = async (empData) => {
                 className="hidden"
                 type="file"
                 id="audioInput"
-                accept="audio/*"
+                // accept="audio/*"
+                webkitdirectory =""
+                directory =""
                 onChange={handleUpload}
               />
               <label for="audioInput">Select folder</label>
