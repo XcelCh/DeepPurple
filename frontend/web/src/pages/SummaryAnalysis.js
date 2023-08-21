@@ -69,7 +69,7 @@ function SummaryAnalysis() {
       return 'No calls';
     }
     if(secs < 60) {
-        return `${Math.floor(secs)} ${secs === 1 ? 'second' : 'seconds'}`;
+        return `${Math.floor(secs.toFixed(2))} ${secs === 1 ? "second" : "seconds"}`;
     } else {
         const minutes = Math.floor(secs / 60);
         const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;  
@@ -93,6 +93,7 @@ function SummaryAnalysis() {
   const [employeeNames, setEmployeeNames] = useState([]);
   const [employeePerformances, setEmployeePerformances] = useState([]);
   const [totalCalls, setTotalCalls] = useState(0);
+  const [recordingExist, setRecordingExist] = useState(true);
 
   useEffect (() => {
 
@@ -128,12 +129,17 @@ function SummaryAnalysis() {
       .then(response => {
           // error unauthorized
           if (response.status == 401) {
-              navigate("/");
-              console.log("401 Unauthorized");
+            navigate("/");
+            console.log("401 Unauthorized");
+          }
+          else if (response.status == 204) {
+            setRecordingExist(false);
+            Swal.close();
           }
           else if (response.status == 200) {
-              console.log("Success");
-              return response.json();
+            setRecordingExist(true);
+            console.log("Success");
+            return response.json();
           }
       })
       .then(data => {
@@ -264,6 +270,28 @@ function SummaryAnalysis() {
 
   return (
     <>
+    {/* No recording exist modal */}
+    {!recordingExist && (
+      <div className="fixed top-0 left-0 right-0 z-50 pt-32 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full bg-black bg-opacity-50">
+          <div className="relative w-2/5 mx-auto">
+              <div className="relative bg-white rounded-lg shadow">
+                  <button onClick={() => navigate('/recordingList')} className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                      <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                      </svg>
+                      <span className="sr-only">Close modal</span>
+                  </button>
+                  <div className="p-8 text-center items-center justify-center flex flex-col">
+                      <svg className="mx-auto mb-4 text-[#414141] w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                      </svg>
+                      <p className="mb-5 text-lg font-semibold text-[#414141]">You have to analyze at least 1 recording before viewing the summary analysis!</p>
+                      <button onClick={() => navigate('/recordingList')} className="text-gray-500 bg-white hover:bg-gray-100 hover:font-semibold focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">Upload now</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+    )}
     {/* {(employeeDetails.length > 0) ? ( */}
       <div className="pt-16 pl-16">
         <div className="flex items-center">

@@ -36,13 +36,14 @@ public class SummaryAnalysisController {
             Integer accountId = accountServiceImpl.getAccountId(authentication.getName());
             Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
             String company = account.getCompanyField();
+            
+            if(account.getRecording().size() == 0) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No recordings found.");
+            }
 
             SummaryAnalysisDto summaryAnalysisDto = summaryAnalysisService.getSummaryAnalysis(accountId, company);
 
-
             return ResponseEntity.ok(summaryAnalysisDto);
-
-
         }
         catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized.");

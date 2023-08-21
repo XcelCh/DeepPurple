@@ -172,8 +172,9 @@ function Analysis() {
   };
 
   const calculateTime = (secs) => {
+    console.log(secs);
     if (secs < 60) {
-      return `${secs.toFixed(2)} ${secs === 1 ? "second" : "seconds"}`;
+      return `${Math.floor(secs.toFixed(2))} ${secs === 1 ? "second" : "seconds"}`;
     } else {
       const minutes = Math.floor(secs / 60);
 

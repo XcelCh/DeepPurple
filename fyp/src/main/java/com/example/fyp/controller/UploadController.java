@@ -382,7 +382,7 @@ public class UploadController {
 					.model(currentModel)
 					.prompt(prompt)
 					.echo(true)
-					.maxTokens(60)
+					.maxTokens(300)
 					.build();
 			response = openAiService.createCompletion(summaryRequest).getChoices().get(0).getText();
 			String summary = response.substring(prompt.length()).trim();
