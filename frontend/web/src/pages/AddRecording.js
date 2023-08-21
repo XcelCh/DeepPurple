@@ -73,7 +73,8 @@ function AddRecording() {
   
   // Get All Recordings
  const getRecList = async () => {  
-  const params = `?currentDate=${dateTimeString}`;
+   const params = `?currentDate=${dateTimeString}`;
+   
   try {
     const response = await fetch(`${BASE_URL}/audio/getRecordings${params}`, {
       headers: token,
@@ -93,7 +94,7 @@ function AddRecording() {
 
  useEffect(() => {
   getRecList();
- }, []);
+ });
 
  // Get All Employees
  const getEmpList = async () => {
