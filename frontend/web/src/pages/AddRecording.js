@@ -74,7 +74,7 @@ function AddRecording() {
   // Get All Recordings
  const getRecList = async () => {  
    const params = `?currentDate=${dateTimeString}`;
-   
+   console.log("DATE TIME STRING: " + dateTimeString);
   try {
     const response = await fetch(`${BASE_URL}/audio/getRecordings${params}`, {
       headers: token,
@@ -85,7 +85,7 @@ function AddRecording() {
         setRecList(data.data);
       }
       
-      console.log(recList);
+      // console.log(recList);
     });
     } catch (error) {
       console.error("Error fetching data:", error);
