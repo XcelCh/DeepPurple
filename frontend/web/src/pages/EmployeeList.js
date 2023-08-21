@@ -59,7 +59,6 @@ function EmployeeList() {
 
       if (showLoading) {
       Swal.close();
-        
       }
     } catch (error) {
       console.error("Error fetching data:", error);

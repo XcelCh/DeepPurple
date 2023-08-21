@@ -20,6 +20,7 @@ import {
 
 import { Bar } from 'react-chartjs-2';
 import { BASE_URL } from "./config";
+import Swal from "sweetalert2";
 
 ChartJS.register(
   BarElement,
@@ -112,6 +113,15 @@ function SummaryAnalysis() {
 
   useEffect( () => {
     window.scrollTo(0, 0);
+
+    Swal.fire({
+      title: "Retrieving Analysis...",
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+    
      fetch(`${BASE_URL}/summaryAnalysis/getAnalysis`, {
       headers : token
     })
@@ -151,11 +161,13 @@ function SummaryAnalysis() {
             employeeDetail.push(data.employeeList[x]);
           }
 
-          setEmployeeDetails(employeeDetail);
+        setEmployeeDetails(employeeDetail);
+         Swal.close();
       })
       .catch(error => {
           console.error(error);
       })
+    
 
   }, []);
 

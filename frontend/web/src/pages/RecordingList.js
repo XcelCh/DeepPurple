@@ -135,14 +135,6 @@ function RecordingList() {
   const getEmpList = async () => {
     const params = `?search=${search}`;
     try {
-      Swal.fire({
-        title: "Retrieving All Recording",
-        didOpen: () => {
-          Swal.showLoading();
-        },
-        allowOutsideClick: () => !Swal.isLoading(),
-      });
-
       const response = await fetch(
         `${BASE_URL}/employeeList/getAllEmployees${params}`,
         {
@@ -152,19 +144,18 @@ function RecordingList() {
 
       response.json().then((data) => {
         setEmpList(data.data);
+
       });
 
-      Swal.close();
     } catch (error) {
       console.error("Error fetching data:", error);
-      Swal.close();
     }
   };
 
   // Get All Recordings
   const getRecList = async () => {
     const params = `?search=${search}`;
-    console.log(params);
+    
     try {
       
       Swal.fire({
@@ -188,8 +179,9 @@ function RecordingList() {
           setRecList(data.data);
           setOriginalList(data.data);
           setDisplayList(data.data);
+          Swal.close();
         })
-        .finally(Swal.close());
+      
 
     } catch (error) {
       console.error("Error fetching data:", error);

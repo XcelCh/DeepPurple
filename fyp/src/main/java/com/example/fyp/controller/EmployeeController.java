@@ -70,10 +70,9 @@ public class EmployeeController {
             List<Map<String, Object>> empList = employeeService.getAllEmployee(account_id);
 
             if (search != null && !search.isEmpty()) {
-                String searchKeyword = "%" + search.toLowerCase() + "%";
 
                 empList = empList.stream()
-                        .filter(emp -> ((String) emp.get("employeeName")).contains(search))
+                        .filter(emp -> ((String) emp.get("employeeName")).toLowerCase().contains(search.toLowerCase()))
                         .collect(Collectors.toList());
             }
 
