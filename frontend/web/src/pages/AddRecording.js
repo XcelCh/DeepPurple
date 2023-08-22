@@ -61,6 +61,7 @@ function AddRecording() {
   const [delimitedFields, setDelimitedFields] = useState([]); //handle file delimiter
   const [error, setError] = useState("");
   const [limitError, setLimitError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const token = authHeader();
   const navigate = useNavigate();
@@ -261,11 +262,11 @@ function AddRecording() {
           empId = result.data.employeeId;
           empName = result.data.employeeName;
           getEmpList();
-                       Swal.fire(
-                         "Added",
-                         "The employee has been added.",
-                         "success"
-                       );
+          Swal.fire(
+            "Added",
+            "The employee has been added.",
+            "success"
+          );
 
         } else {
              Swal.fire("Fail", "Fail to add employee. Try again", "error");
@@ -355,7 +356,7 @@ function AddRecording() {
           // Format the components into the desired format
           const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
-          if (file.type.startsWith('audio/')) {
+          if (file.type.startsWith('audio/wav')) {
 
             // console.log('audio file', file);
 
@@ -374,41 +375,6 @@ function AddRecording() {
       },
       allowOutsideClick: () => !Swal.isLoading()
     });
-
-
-    // Swal.fire({
-    //   title: 'Uploading Files..',      
-    //   didOpen: async () => {
-    //     Swal.showLoading()
-    //     return await fetch(`${BASE_URL}/audio/uploadAudio`, {
-    //       method: "POST",
-    //       headers: token,
-    //       body: data
-    //     })
-    //     .then (response => {
-    
-    //       if (response.ok) {
-    //         Swal.close();
-            
-    //         // Success message
-    //         Swal.fire(            
-    //           "Updated",
-    //           "The recording has been added.",
-    //           "success"
-    //         )
-    //       } else{
-    //         throw new error;
-    //       }     
-    //     })
-    //     .catch (error => {      
-    //       setError(error)
-    //       console.error(error)
-    //       Swal.fire("Fail", "Fail to add recording.", "error")
-    //     })
-    //   },
-    //   allowOutsideClick: () => !Swal.isLoading()
-    // })
-    // getRecList()
   };
 
   //handle multiple file upload
@@ -664,9 +630,10 @@ const addEmployee = async (empData) => {
       .then((response) => {
         console.log("first done");
         if (response.status === 400) {
-          console.log("Limit Exceeded.");
+          setErrorMessage("Limit is not sufficient to analyse!");
           setLimitError(true);
           throw new Error("Limit Exceeded");
+
         } else if (response.ok) {
           console.log("Analyze Complete.");
           // Perform operations related to the first fetch's success
@@ -684,14 +651,15 @@ const addEmployee = async (empData) => {
           console.log("Unauthorized");
           navigate("/");
         } else {
-          console.log("error happened.");
+          setErrorMessage("An error has occured. Please try again.");
+          setLimitError(true);
           throw new Error("Error Happened.");
         }
       })
       .then((secondResponse) => {
         console.log("second done");
         if (secondResponse.status === 400) {
-          console.log("Limit Exceeded.");
+          setErrorMessage("Limit is not sufficient to analyse!");
           setLimitError(true);
           throw new Error("Limit Exceeded");
         } else if (secondResponse.ok) {
@@ -701,7 +669,8 @@ const addEmployee = async (empData) => {
           console.log("Unauthorized");
           navigate("/");
         } else {
-          console.log("error happened.");
+          setErrorMessage("An error has occured. Please try again.");
+          setLimitError(true);
           throw new Error("Error Happened.");
         }
       })
@@ -767,7 +736,7 @@ const addEmployee = async (empData) => {
                 className="hidden"
                 type="file"
                 id="audioInputMultiple"
-                accept="audio/*"
+                accept="audio/wav"
                 onChange={handleUploadMultipleFiles}
                 multiple
               />
@@ -984,10 +953,7 @@ const addEmployee = async (empData) => {
                   />
                 </svg>
                 <p className="mb-5 text-lg font-semibold text-[#414141]">
-                  Limit is not sufficient to analyse!
-                </p>
-                <p className="mb-5 text-lg font-semibold text-[#414141]">
-                  Increase limit to use the feature!
+                  {errorMessage}
                 </p>
                 <button
                   onClick={() => setLimitError(false)}
