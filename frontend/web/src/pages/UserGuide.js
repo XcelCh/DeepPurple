@@ -1,11 +1,11 @@
 import React from "react";
 import NavBar from "../components/NavBar"; 
 import Footer from "../components/Footer"; 
-import Userguidesignin from "../assets/Userguidesignin.png";
+import Userguidesignin from "../assets/SignIn.jpg";
 import Userguidecreateaccount from "../assets/Userguidecreateaccount.png";
-import Userguideusagelimit1 from "../assets/Userguideusagelimit1.png";
-import Userguideusagelimit2 from  "../assets/Userguideusagelimit2.png";
-import Userguideupdatepassword from "../assets/Userguideupdatepassword.png";
+import Userguideusagelimit1 from "../assets/Limit.jpg";
+import Userguideusagelimit2 from  "../assets/SetSpendLimit.jpg";
+import Userguideupdatepassword from "../assets/ChangePassword.jpg";
 import Userguidetsa1 from "../assets/Userguidetsa1.png";
 import Userguidetsa2 from "../assets/Userguidetsa2.png";
 import Userguidereset1 from "../assets/Userguidereset1.png";
@@ -292,10 +292,8 @@ function UserGuide() {
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 
           <p>Click the "Set Limits" text then, enter the new usage limit into the text box and click the "Save" button.</p>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <img src={Userguideusagelimit1} alt="User Guide Design" style={{ width: "45%" }} />
-          <img src={Userguideusagelimit2} alt="User Guide Design" style={{ width: "45%" }} />
-          </div>
+          <img className = "mb-4" src={Userguideusagelimit1} alt="User Guide Design" />
+          <img src={Userguideusagelimit2} alt="User Guide Design" />
           </div>
 
           <br></br> 
