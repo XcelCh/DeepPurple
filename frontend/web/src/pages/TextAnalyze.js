@@ -182,7 +182,7 @@ function TextAnalyze() {
                     Waiting for Input ...
                   </p>
                 ) : (
-                  <p className="card-body h-32 overflow-auto">
+                  <p className="card-body h-40 overflow-auto">
                     {result.overallContent}
                   </p>
                 )}
