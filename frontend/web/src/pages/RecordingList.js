@@ -173,14 +173,16 @@ function RecordingList() {
         }
       );
 
-      response
-        .json()
-        .then((data) => {
+      const data = await response.json();
+
+      // response
+      //   .json()
+      //   .then((data) => {
           setRecList(data.data);
           setOriginalList(data.data);
           setDisplayList(data.data);
           Swal.close();
-        })
+        // })
       
 
     } catch (error) {
@@ -214,7 +216,6 @@ function RecordingList() {
 
      // update employee id list
      const updatedEmpIdList = [...empIdList];
-     console.log(updatedEmpIdList);
      updatedEmpIdList[index] = employeeId;
      setEmpIdList(updatedEmpIdList);
    };
@@ -302,12 +303,6 @@ function RecordingList() {
   }, [search, dateRange[1]]);
 
   useEffect(() => {
-    // console.log(recList);
-    console.log("EMP ID LIST: " + empIdList);
-  },[empIdList]);
-
-  useEffect(() => {
-    console.log("DISPLAY LIST: " + displayList);
     setEmpIdList(
       displayList.map((rec) => (rec.employeeId !== null ? rec.employeeId : "00"))
     );

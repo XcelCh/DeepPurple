@@ -85,21 +85,18 @@ public class RecordingController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
             Integer account_id = accountServiceImpl.getAccountId(email);
-            System.out.println("ACCOUNT ID: " + account_id);
 
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
 
             // delete unanalyzed recordings
-            for (Map<String, Object> rec : recList) {
-                Optional<Recording> r = recRepo.findById((Integer) rec.get("recordingId"));
-
+            for (int i = 0 ; i < recList.size() ; i++) {
+                Optional<Recording> r = recRepo.findById((Integer) recList.get(i).get("recordingId"));
                 if (r.get().getAnalysis() == null) {
                     recRepo.delete(r.get());
                     storageService.deleteFile(r.get().getTimeStamp() + "_" + r.get().getRecordingName());
+                    recList.remove(i);
                 }
             }
-
-            System.out.println("RECORDING: " + recList);
 
             if (search != null && !search.isEmpty()) {
 

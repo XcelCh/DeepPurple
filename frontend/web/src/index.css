@@ -55,5 +55,7 @@ table.table > tbody > tr:hover th {
   background-color: #f6f4fc !important;
 }
 
-.table {
+.tooltip-color{
+  background-color: green !important;
+  color: #fff ;
 }

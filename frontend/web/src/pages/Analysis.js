@@ -65,7 +65,6 @@ function Analysis() {
     console.log(transcriptData);
   }, [analysisData, suggestions, transcriptData]);
 
-
   // Get Analysis
   const getAnalysis = async (showLoading) => {
     try {
@@ -174,7 +173,9 @@ function Analysis() {
   const calculateTime = (secs) => {
     console.log(secs);
     if (secs < 60) {
-      return `${Math.floor(secs.toFixed(2))} ${secs === 1 ? "second" : "seconds"}`;
+      return `${Math.floor(secs.toFixed(2))} ${
+        secs === 1 ? "second" : "seconds"
+      }`;
     } else {
       const minutes = Math.floor(secs / 60);
 
@@ -389,7 +390,23 @@ function Analysis() {
       <div class="grid w-full gap-6 grid-cols-9 mt-8">
         <div class="flex items-center">
           <div className="w-1/4 flex flex-col items-center">
-            <Fluency></Fluency>
+            <div
+              className="tooltip tooltip-right tooltip-info"
+              data-tooltip-style="light"
+              data-tooltip-target="fluency"
+              data-tooltip-placement="right"
+            >
+              <Fluency></Fluency>
+            </div>
+            <div
+              id="fluency"
+              role="tooltip"
+              class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-normal text-xs text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
+            >
+              Fluency shows the abitlity of an agent to <br></br>communicate
+              smoothly and effectively during a call
+              <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
           </div>
           <div className="w-3/4 flex flex-col ml-4 border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">Fluency</div>
@@ -398,7 +415,22 @@ function Analysis() {
         </div>
         <div class="flex items-center col-span-2">
           <div className="w-1/4 flex flex-col items-center">
-            <Hospitality></Hospitality>
+            <div
+              className="tooltip tooltip-right tooltip-info"
+              data-tooltip-style="light"
+              data-tooltip-target="hospitality"
+            >
+              <Hospitality></Hospitality>
+            </div>
+            <div
+              id="hospitality"
+              role="tooltip"
+              class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-normal text-xs text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
+            >
+              Hospitality shows how well the agent creates a <br></br> welcoming and
+              friendly atmosphere during the call
+              <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
           </div>
           <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">Hospitality</div>
@@ -406,8 +438,22 @@ function Analysis() {
           </div>
         </div>
         <div class="flex items-center col-span-2">
-          <div className="w-1/4 flex flex-col items-center">
+          <div
+            className="w-1/4 flex flex-col items-center"
+            data-tooltip-style="light"
+            data-tooltip-target="problemSolving"
+          >
             <ProblemSolving></ProblemSolving>
+          </div>
+          <div
+            id="problemSolving"
+            role="tooltip"
+            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-normal text-xs text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
+          >
+            How well an agent in identifying the issues or concerns customers
+            are facing, <br></br> analyzing the situation accurately, and finding
+            effective solutions.
+            <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
           <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">Problem Solving</div>
@@ -416,7 +462,22 @@ function Analysis() {
         </div>
         <div class="flex items-center col-span-2">
           <div className="w-1/4 flex flex-col items-center">
-            <Personalization></Personalization>
+            <div
+              className="w-1/4 flex flex-col items-center"
+              data-tooltip-style="light"
+              data-tooltip-target="personalization"
+            >
+              <Personalization></Personalization>
+            </div>
+            <div
+              id="personalization"
+              role="tooltip"
+              class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-normal text-xs text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
+            >
+              How well an agent in tailoring the interaction to <br></br> each customer's
+              unique needs and preferences.
+              <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
           </div>
           <div className="w-3/4 flex flex-col border-r border-gray-400 h-1/2 justify-center">
             <div className="flex-grow font-bold text-lg">Personalization</div>
