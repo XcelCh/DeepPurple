@@ -85,6 +85,7 @@ function AboutUs() {
 
         console.log('Inquiry Sent.');
         setSuccessMessage(true);
+        window.location.reload();
         // navigate('/');
       }
       else if(response.status === 502) {
