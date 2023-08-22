@@ -597,7 +597,7 @@ function Analysis() {
                     role="tooltip"
                     class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-normal text-xs text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
                   >
-                    Negative if the customer shows many signs of frustration /{" "}
+                    Negative if the customer shows many signs of frustration or{" "}
                     <br></br>
                     bad emotions, otherwise positive
                     <div class="tooltip-arrow" data-popper-arrow></div>
@@ -648,7 +648,7 @@ function Analysis() {
                     role="tooltip"
                     class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-normal text-xs text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
                   >
-                    Positive if the agent's being polite and understanding
+                    Positive if the agent is being polite and understanding
                     <br></br> when talking to the customer, otherwise negative
                     <div class="tooltip-arrow" data-popper-arrow></div>
                   </div>
