@@ -116,64 +116,67 @@ function SummaryAnalysis() {
   useEffect( () => {
     window.scrollTo(0, 0);
 
-    // Swal.fire({
-    //   title: "Retrieving Analysis...",
-    //   didOpen: () => {
-    //     Swal.showLoading();
-    //   },
-    //   allowOutsideClick: () => !Swal.isLoading(),
-    // });
-    
-     fetch(`${BASE_URL}/summaryAnalysis/getAnalysis`, {
-      headers : token
-    })
-      .then(response => {
-          // error unauthorized
-          if (response.status == 401) {
-            navigate("/");
-            console.log("401 Unauthorized");
-          }
-          else if (response.status == 204) {
-            setRecordingExist(false);
-            Swal.close();
-          }
-          else if (response.status == 200) {
-            setRecordingExist(true);
-            console.log("Success");
-            return response.json();
-          }
-      })
-      .then(data => {
-          console.log(data);
-          setEmployeeNames(data.employeeList.map(employee => employee.employeeName));
-          setEmployeePerformances(data.employeeList.map(employee => employee.employeeAvgPerformance));
-          setAnalysisForm({
-            averageCallDuration : data.averageCallDuration,
-            inquiry : data.inquiry,
-            complaint : data.complaint, 
-            warranty : data.warranty,
-            positiveRecSentiment : data.positiveRecSentiment,
-            negativeRecSentiment : data.negativeRecSentiment,
-            positiveEmpSentiment : data.positiveEmpSentiment,
-            negativeEmpSentiment : data.negativeEmpSentiment,
-            suggestion: data.suggestion
+    Swal.fire({
+      title: "Retrieving Analysis...",
+      didOpen: () => {
+        Swal.showLoading();
 
+        fetch(`${BASE_URL}/summaryAnalysis/getAnalysis`, {
+          headers : token
+        })
+          .then(response => {
+              // error unauthorized
+              if (response.status == 401) {
+                navigate("/");
+                console.log("401 Unauthorized");
+              }
+              else if (response.status == 204) {
+                setRecordingExist(false);
+                Swal.close();
+              }
+              else if (response.status == 200) {
+                setRecordingExist(true);
+                console.log("Success");
+                return response.json();
+              }
+          })
+          .then(data => {
+              console.log(data);
+              setEmployeeNames(data.employeeList.map(employee => employee.employeeName));
+              setEmployeePerformances(data.employeeList.map(employee => employee.employeeAvgPerformance));
+              setAnalysisForm({
+                averageCallDuration : data.averageCallDuration,
+                inquiry : data.inquiry,
+                complaint : data.complaint, 
+                warranty : data.warranty,
+                positiveRecSentiment : data.positiveRecSentiment,
+                negativeRecSentiment : data.negativeRecSentiment,
+                positiveEmpSentiment : data.positiveEmpSentiment,
+                negativeEmpSentiment : data.negativeEmpSentiment,
+                suggestion: data.suggestion
+    
+              })
+    
+              const sorted = [...data.employeeList].sort((a, b) => b.numberOfCalls - a.numberOfCalls);
+              setSortedCallsHandled(sorted);
+    
+              for(let x = 0; x < data.employeeList.length; x++) {
+      
+                employeeDetail.push(data.employeeList[x]);
+              }
+    
+            setEmployeeDetails(employeeDetail);
+             Swal.close();
+          })
+          .catch(error => {
+              console.error(error);
           })
 
-          const sorted = [...data.employeeList].sort((a, b) => b.numberOfCalls - a.numberOfCalls);
-          setSortedCallsHandled(sorted);
-
-          for(let x = 0; x < data.employeeList.length; x++) {
-  
-            employeeDetail.push(data.employeeList[x]);
-          }
-
-        setEmployeeDetails(employeeDetail);
-         Swal.close();
-      })
-      .catch(error => {
-          console.error(error);
-      })
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+    
+    
     
 
   }, []);
