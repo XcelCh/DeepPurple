@@ -62,7 +62,7 @@ function TextAnalyze() {
   const handleSubmit = () => {
     setError("");
     if (prompt === "") {
-      setError("Please input at least one sentence to be analyzed :D");
+      setError("Please input at least one sentence to be analyzed.");
     } else {
       setProcessing(true);
       const data = new FormData();
