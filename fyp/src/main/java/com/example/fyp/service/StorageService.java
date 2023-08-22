@@ -40,7 +40,7 @@ public class StorageService {
 	private AmazonS3 s3Client;
 
 	//upload file
-    public String uploadFile(MultipartFile file, Account account) {    	    	    	
+    public String uploadFile(MultipartFile file, Account account, LocalDateTime modifiedDate) {    	    	    	
     	File fileObj = convertMultiPartFileToFile(file);
     	long uniqueIdentifier = System.currentTimeMillis();
     	String fileName = file.getOriginalFilename();
@@ -51,7 +51,7 @@ public class StorageService {
     			.timeStamp(uniqueIdentifier)
     			.recordingName(fileName)
     			.uploadDate(LocalDateTime.now())
-                .recordingDate(LocalDateTime.now())
+                .recordingDate(modifiedDate)
                 .account(account)
                 .sampleRate(0)
     			.recordingUrl(s3Client.getUrl(bucketName, fileName).toString()).build());    			

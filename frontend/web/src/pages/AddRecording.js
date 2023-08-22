@@ -74,7 +74,6 @@ function AddRecording() {
   // Get All Recordings
  const getRecList = async () => {  
    const params = `?currentDate=${dateTimeString}`;
-   console.log("DATE TIME STRING: " + dateTimeString);
   try {
     const response = await fetch(`${BASE_URL}/audio/getRecordings${params}`, {
       headers: token,
@@ -293,18 +292,19 @@ function AddRecording() {
     let uploadedFilesCount = 0;
     let rejectedFile = 0;
 
-
     Swal.fire({
       title: 'Uploading Files..',
       didOpen: () => {
         Swal.showLoading();
   
         // Define a helper function to upload each file sequentially
-        const uploadFile = (file, rejectedFile) => {
+        const uploadFile = (file, rejectedFile, modDate) => {
           const data = new FormData();
           data.set("audio", file);
+          
+          const dateParam = `?lastModifiedDate=${modDate}`;
   
-          return fetch(`${BASE_URL}/audio/uploadAudio`, {
+          return fetch(`${BASE_URL}/audio/uploadAudio${dateParam}`, {
             method: "POST",
             headers: token,
             body: data
@@ -338,6 +338,21 @@ function AddRecording() {
 
           const file = audioInput.files[i];
 
+          const inputDateString = audioInput.files[i].lastModifiedDate;
+
+          // Parse the input date string
+          const parsedDate = new Date(inputDateString);
+
+          // Extract individual components
+          const year = parsedDate.getFullYear();
+          const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+          const day = String(parsedDate.getDate()).padStart(2, "0");
+          const hours = String(parsedDate.getHours()).padStart(2, "0");
+          const minutes = String(parsedDate.getMinutes()).padStart(2, "0");
+          const seconds = String(parsedDate.getSeconds()).padStart(2, "0");
+
+          // Format the components into the desired format
+          const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
           if (file.type.startsWith('audio/')) {
 
@@ -346,7 +361,7 @@ function AddRecording() {
             if (file.webkitRelativePath) {
               const modifiedFile = new File([file], file.name);
               // console.log(rejectedFile);
-              uploadFile(modifiedFile, rejectedFile);
+              uploadFile(modifiedFile, rejectedFile, formattedDate);
             }
           }
           else {
@@ -408,11 +423,13 @@ function AddRecording() {
         Swal.showLoading();
   
         // Define a helper function to upload each file sequentially
-        const uploadFile = (file) => {
+        const uploadFile = (file, modDate) => {
           const data = new FormData();
           data.set("audio", file);
+
+          const dateParam = `?lastModifiedDate=${modDate}`;
   
-          return fetch(`${BASE_URL}/audio/uploadAudio`, {
+          return fetch(`${BASE_URL}/audio/uploadAudio${dateParam}`, {
             method: "POST",
             headers: token,
             body: data
@@ -443,7 +460,24 @@ function AddRecording() {
   
         // Upload each file one by one
         for(let i = 0; i < totalFiles; i++){
-          uploadFile(audioInput.files[i]);
+
+          const inputDateString = audioInput.files[i].lastModifiedDate;
+
+          // Parse the input date string
+          const parsedDate = new Date(inputDateString);
+
+          // Extract individual components
+          const year = parsedDate.getFullYear();
+          const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+          const day = String(parsedDate.getDate()).padStart(2, "0");
+          const hours = String(parsedDate.getHours()).padStart(2, "0");
+          const minutes = String(parsedDate.getMinutes()).padStart(2, "0");
+          const seconds = String(parsedDate.getSeconds()).padStart(2, "0");
+
+          // Format the components into the desired format
+          const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+          uploadFile(audioInput.files[i], formattedDate);
         }
         
       },

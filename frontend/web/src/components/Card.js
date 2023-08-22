@@ -35,9 +35,9 @@ function Card({ color, title, content, improvedSentence, highlight, setHighlight
       </div>
       <div className="collapse-content bg-[#FFFFFF] text-sm">
         <p className="mt-2">{content}</p>
-        <br></br>
         {!sentiment ? (
           <p>
+            <br></br>
             Suggestion <br></br>
             {improvedSentence}
           </p>
