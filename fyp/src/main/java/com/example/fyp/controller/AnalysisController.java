@@ -93,37 +93,40 @@ public class AnalysisController {
     // Get Suggestions
     @GetMapping("getSuggestions/{recordingId}")
     private ResponseEntity<?> getSuggestions(@PathVariable Integer recordingId) {
-    ResponseStatus response = new ResponseStatus();
+        ResponseStatus response = new ResponseStatus();
 
-    // get analysis
-    Integer analysisId = analysisService.getAnalysisId(recordingId);
+        // get analysis
+        Integer analysisId = analysisService.getAnalysisId(recordingId);
 
-    System.out.println("ANALYSIS ID: " + analysisId);
-    String analysis = analysisRepo.findById(analysisId).get().getNegativeEmotion();
+        System.out.println("ANALYSIS ID: " + analysisId);
+        String analysis = analysisRepo.findById(analysisId).get().getNegativeEmotion();
 
-    String[] suggestion_list = analysis.split("\\n");
+        System.out.println(analysis);
+        String[] suggestion_list = analysis.split("\\n");
 
-   Vector<SuggestionDto> suggestions = new Vector<SuggestionDto>();    
+        Vector<SuggestionDto> suggestions = new Vector<SuggestionDto>();    
 
-   for (int i = 0; i < suggestion_list.length; i++) {
-        SuggestionDto suggestion = new SuggestionDto();
+        for (int i = 0; i < suggestion_list.length; i++) {
+            SuggestionDto suggestion = new SuggestionDto();
 
-        suggestion_list[i] = suggestion_list[i].trim().replace("'", "");
-        String[] perSuggestion = suggestion_list[i].trim().split("\\|");
+            suggestion_list[i] = suggestion_list[i].trim().replace("'", "");
+            String[] perSuggestion = suggestion_list[i].trim().split("\\|");
 
-        for (int j = 0; j < perSuggestion.length; j++) {
-            perSuggestion[j] = perSuggestion[j].trim();
+            if(perSuggestion.length != 1) {
+                for (int j = 0; j < perSuggestion.length; j++) {
+                    perSuggestion[j] = perSuggestion[j].trim();
+                }
+
+                suggestion.setTitle(perSuggestion[1]);
+                suggestion.setExplanation(perSuggestion[2]);
+                suggestion.setImprovedSentence(perSuggestion[3]);
+                suggestions.add(suggestion);
+            }
         }
 
-        suggestion.setTitle(perSuggestion[1]);
-        suggestion.setExplanation(perSuggestion[2]);
-        suggestion.setImprovedSentence(perSuggestion[3]);
-        suggestions.add(suggestion);
+        response.setSuccess(true);
+        response.setData(suggestions);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-    response.setSuccess(true);
-    response.setData(suggestions);
-
-    return ResponseEntity.status(HttpStatus.OK).body(response);
-}
 }
