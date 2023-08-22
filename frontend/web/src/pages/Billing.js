@@ -244,7 +244,7 @@ function Billing() {
                                             <div className="h-4 rounded-full" style={{ width: `${(totalUsage / limit) * 100}%`, backgroundColor: `#7566BB` }}></div>
                                         </div>
                                         <div className="flex justify-end text-md mt-2 text-[#414141] font-light">
-                                            <p>${`${totalUsage.toFixed(2)} / ${limit.toFixed(2)}`}</p>
+                                            <p>${`${parseFloat(totalUsage).toFixed(2)} / $${parseFloat(limit).toFixed(2)}`}</p>
                                         </div>
                                         <div className="flex justify-end text-md mt-2">
                                             <label
