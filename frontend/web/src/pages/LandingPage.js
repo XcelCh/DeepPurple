@@ -10,8 +10,10 @@ import cardImage from "../assets/Card.png";
 import { Link } from "react-router-dom";
 import 'flowbite';
 import { BASE_URL } from "./config";
+import AuthService from "../services/auth.service";
 
 function LandingPage() {
+    const user = AuthService.getCurrentUser();
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -44,7 +46,7 @@ function LandingPage() {
                         <p className="text-8xl font-black text-white">been easier</p>
                         <p className="mt-4 mb-4 text-2xl text-white">We turn words and audios into insights.</p>
                         <div className="flex items-center justify-center inline-block">
-                            <Link to="/signUpForm">
+                            <Link to={user ? '/starter' : '/signUpForm'}>
                                 <button
                                 type="button"
                                 className="text-[#5A3D86] bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 font-bold rounded-full text-lg px-8 py-3 text-center"

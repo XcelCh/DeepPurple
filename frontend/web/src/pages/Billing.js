@@ -33,6 +33,7 @@ ChartJS.register(
 function Billing() {
 
     const token = authHeader();
+    
     const navigate = useNavigate();
 
     const [fetchDone, setFetchDone] = useState(false); //to store fetch requests' state
