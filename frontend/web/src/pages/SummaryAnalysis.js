@@ -503,7 +503,7 @@ function SummaryAnalysis() {
 
             {/* Employee's sentiment */}
             <div className="w-3/5 border-l ml-4">
-              <div className="grid-cols-2 flex h-1/3 px-4 items-center border gap-24">
+              <div className="grid-cols-2 flex h-1/3 px-4 items-center gap-24">
                 <div className="flex">
                   <div className="font-bold text-lg mr-2">
                     Employee's Sentiment
