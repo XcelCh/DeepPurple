@@ -128,6 +128,13 @@ public class RecordingController {
         ResponseStatus response = new ResponseStatus();
 
         try {
+        	
+        	Optional<Recording> recToDelete = recRepo.findById(id);
+        	if(recToDelete.get().getEmployee() != null) {
+        		recToDelete.get().getEmployee().decrementNumCallsHandled();
+        		empRepo.save(recToDelete.get().getEmployee());
+        	}
+        	
             recRepo.deleteById(id);
 
             // RESPONSE DATA

@@ -71,13 +71,14 @@ public class UploadController {
 
 	// Upload audio
 	@PostMapping("/uploadAudio")
-	public ResponseEntity<String> uploadFile(@RequestParam("audio") MultipartFile file) {
+	public ResponseEntity<String> uploadFile(@RequestParam("audio") MultipartFile file, @RequestParam String lastModifiedDate) {
 		// Retrieve the current authentication token
+		LocalDateTime modDate = LocalDateTime.parse(lastModifiedDate);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();        
         Account account = accountServiceImpl.loadUserDetailsByUsername(email);
         
-		return new ResponseEntity<>(service.uploadFile(file, account), HttpStatus.OK);
+		return new ResponseEntity<>(service.uploadFile(file, account, modDate), HttpStatus.OK);
 	}
 	
 	// Download existing recording file
