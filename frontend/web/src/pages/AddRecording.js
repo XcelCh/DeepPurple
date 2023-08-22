@@ -675,6 +675,10 @@ const addEmployee = async (empData) => {
         }
       })
       .catch((error) => {
+        if (error.message === 'Failed to fetch') {
+          setErrorMessage("An error has occured. Please try again.");
+          setLimitError(true);
+        }
         console.error(error);
       }).finally(() => {
       Swal.close();
