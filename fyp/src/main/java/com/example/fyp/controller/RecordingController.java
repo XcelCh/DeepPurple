@@ -92,9 +92,11 @@ public class RecordingController {
             for (int i = 0 ; i < recList.size() ; i++) {
                 Optional<Recording> r = recRepo.findById((Integer) recList.get(i).get("recordingId"));
                 if (r.get().getAnalysis() == null) {
+                    r.get().getEmployee().decrementNumCallsHandled();
+                    empRepo.save(r.get().getEmployee());
                     recRepo.delete(r.get());
                     storageService.deleteFile(r.get().getTimeStamp() + "_" + r.get().getRecordingName());
-                    recList.remove(i);
+                    recList.remove(i);                    
                 }
             }
 
