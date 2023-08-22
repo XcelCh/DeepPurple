@@ -79,7 +79,7 @@ function Pricing() {
                         Customer service analyzer
                     </td>
                     <td className="px-6 py-2 text-[#414141]">
-                        $0.024/minute
+                        $0.05/minute
                     </td>
                   </tr>
                 </tbody>

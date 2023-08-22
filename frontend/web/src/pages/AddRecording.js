@@ -21,6 +21,7 @@ import authHeader from "../services/auth-header";
 import Pagination from "../components/Pagination";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "./config";
+import Cloud from "../assets/Cloud.png";
 
 //store time when user enters the add recording page
 const today = new Date();
@@ -726,7 +727,7 @@ const addEmployee = async (empData) => {
   };
 
   return (
-    <div className="pt-16 mx-20">
+    <div className="pt-16 ml-20">
       <div className="flex mb-5">
         <Link to="../RecordingList">
           <img src={ArrowLeft} className="mr-3"></img>
@@ -930,15 +931,12 @@ const addEmployee = async (empData) => {
         </table>
         {!recList.length ? (
           <>
-            <img src={EmptyRecording} className="mx-auto mt-10"></img>
+            <img src={Cloud} className="mx-auto mt-10 my-4"></img>
             <p className="text-center font-semibold text-lg">
-              You don't have any recordings yet
+              Press the upload button to upload your recordings
             </p>
             <p className="text-center font-semibold text-sm mb-10">
-              Start uploading your audio files by clicking {" "}
-              <a className="">
-                Upload
-              </a>
+              Only .wav files are allowed
             </p>
           </>
         ) : null}
