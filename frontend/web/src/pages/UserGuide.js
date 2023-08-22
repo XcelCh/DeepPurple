@@ -28,6 +28,14 @@ import Userguideemotioncards from "../assets/Userguideemotioncards.png";
 import Userguideoverallsentiment from "../assets/Userguideoverallsentiment.png";
 import Userguideuploadrecording from "../assets/Userguideuploadrecording.png";
 import Userguideassignemployee from "../assets/Userguideassignemployee.png";
+import RecordingAnalysis1 from "../assets/RecordingAnalysis1.jpg";
+import RecordingAnalysis2 from "../assets/RecordingAnalysis2.jpg";
+import UploadRecording from "../assets/UploadRecording.jpg";
+import ExistingEmployee from "../assets/ExistingEmployee.jpg";
+import SplitFileName from "../assets/SplitFileName.jpg";
+import FolderName from "../assets/FolderName.jpg";
+import SummaryAnalysis1 from "../assets/SummaryAnalysis1.jpg";
+import SummaryAnalysis2 from "../assets/SummaryAnalysis2.jpg";
 
 import ScrollToTopButton from "./ScrollToTopButton";
 import { useNavigate } from 'react-router-dom';
@@ -151,7 +159,7 @@ function UserGuide() {
           <div className="flex items-center">
           <div className="w-2/3">
           <br />
-          <p>Enter login details into given boxes.</p>
+          <p>Enter username and password into given boxes.</p>
           <p>If you do not have an account click on "Sign Up".</p>
           </div>
           <div className="w-1/3">
@@ -166,7 +174,7 @@ function UserGuide() {
           <h3 id="create-account" className="text-md font-semibold mb-2">Create an account</h3>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br></br>
-          <p>Firstly, enter your "Full Name, Email, Password" then click Continue.</p>
+          <p>Firstly, enter your "Full Name, Email, Password, and confirmation" then click Continue.</p>
           <p>Next, enter your "Phone Number, Date of Birth and Gender" then click Continue.</p>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
           <img src={Userguidecreateaccount} alt="User Guide Design" className="mr-2" />
@@ -184,7 +192,7 @@ function UserGuide() {
           <div className="flex items-center">
           <div className="w-2/3">
           <br />
-          <p>In the login page, click on "Forget Password?". Next, enter your email then click "Send".</p>
+          <p>In the login page, click on the "Forgot Password?" text. After that, enter your email and click the "Send" button.</p>
           </div>
           <div className="w-1/3">
           <img src={Userguidereset1} alt="User Guide Design" />
@@ -194,7 +202,7 @@ function UserGuide() {
           <div className="flex items-center">
           <div className="w-2/3">
           <br />
-          <p>Next, retrieve the verification code from your email and input the code then click "Next".</p>
+          <p>Next, retrieve the verification code from the email you specified and input the code then click the "Next" button.</p>
           </div>
           <div className="w-1/3">
           <img src={Userguidereset2} alt="User Guide Design" />
@@ -204,7 +212,7 @@ function UserGuide() {
           <div className="flex items-center">
           <div className="w-2/3">
           <br />
-          <p>Lastly, enter a new password for your account then click "Next" and proceed to login again.</p>
+          <p>Lastly, enter a new password for your account then click the "Next" button and proceed to login using your new password</p>
           </div>
           <div className="w-1/3">
           <img src={Userguidereset3} alt="User Guide Design" />
@@ -228,7 +236,7 @@ function UserGuide() {
           <p>
           Once logged in, to edit your profile:
           <ol>
-          <li>Click on the "v" beside your profile picture.</li>
+          <li>Click on the drop-down icon("v") beside your profile picture.</li>
           <li>Click on "Edit Profile".</li>
           </ol>
           </p>
@@ -243,7 +251,7 @@ function UserGuide() {
           <h3 id="edit-profile" className="text-md font-semibold mb-2">Edit Profile</h3>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
-          <p>Replace any information you wish to change, then click on "Save".</p><br></br>
+          <p>Replace any information you wish to change, then click the "Save" button.</p><br></br>
           <div style={{ display: "flex", justifyContent: "center" }}>
           <img src={Userguideeditprofile} alt="User Guide Design" />
           </div>
@@ -283,7 +291,7 @@ function UserGuide() {
             
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 
-          <p>Click on "Set Limits", enter the new usage limit into the text box, and click on "Save".</p>
+          <p>Click the "Set Limits" text then, enter the new usage limit into the text box and click the "Save" button.</p>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
           <img src={Userguideusagelimit1} alt="User Guide Design" style={{ width: "45%" }} />
           <img src={Userguideusagelimit2} alt="User Guide Design" style={{ width: "45%" }} />
@@ -292,11 +300,11 @@ function UserGuide() {
 
           <br></br> 
           <h4 className="text-md font-semibold mb-2">Edit Payment Method</h4>
-          <p>Click on "Edit" to change or add your credit card information.</p>
+          <p>Click on the "Edit" button to change or add your credit card information.</p>
           <div style={{ display: "flex", justifyContent: "center" }}>
           <img src={Userguidepayment1} alt="User Guide Design" />
           </div>
-          <p>Input your credit card information and click on "Add Card".</p>
+          <p>Key in your credit card information and click the "Add Card" button.</p>
           <div style={{ display: "flex", justifyContent: "center" }}>
           <img src={Userguidepayment2} alt="User Guide Design" />
           </div>
@@ -314,9 +322,9 @@ function UserGuide() {
           This tool allows us to analyze any text to see the emotional sentiment of it.
           Users will be able to input text from product reviews, social media comments etc.
           </p>
-          <p>At the home page under “Solutions Tab” click on “Text Sentiment Analyzer”.</p>
+          <p>At the home page under “Solutions” tab click on “Text Sentiment Analyzer”.</p>
           <br></br>
-          <p>To analyze, input text into text box, then Click on “Analyze” button.</p>
+          <p>To analyze, input a text into the left box, then Click the “Analyze” button.</p>
           <br></br>
           <img src={Userguidetsa1} alt="User Guide Design" />
           <br></br>
@@ -336,7 +344,7 @@ function UserGuide() {
           <h3 className="text-md font-semibold mb-2" style={{ textAlign: 'center' }}>Emotion Cards</h3>
           <img src={Userguideemotioncards} alt="User Guide Design" />
           <div style={{ maxWidth: '300px', textAlign: 'left' }}>
-          <p>After analysis, various emotion cards will be displayed based on text given.</p>
+          <p>After the analysis is done, various emotion cards will be displayed based on the text given.</p>
           <p>Click on any card/tab so see the emotion</p>
           </div>
           <br></br>
@@ -346,7 +354,7 @@ function UserGuide() {
           <h3 className="text-md font-semibold mb-2" style={{ textAlign: 'center' }}>Overall Sentiment Analysis</h3>
           <img src={Userguideoverallsentiment} alt="User Guide Design" />
           <div style={{ maxWidth: '300px', textAlign: 'left' }}>
-          <p>After analysis, the overall sentiment will be displayed with explanation on whether it is positive or negative sentiment.</p>
+          <p>The overall sentiment will also be displayed with an explanation on whether it is positive or negative sentiment.</p>
           </div>
           </div>
           </div>
@@ -366,11 +374,11 @@ function UserGuide() {
 
           <p>
           This tool allows users to upload recordings of a conversation and with the use of Deep-Purple,
-          we can translate the recording from Speech to Text and analyze the conversation for different sentiments.</p>
+          we can translate the recording from Speech to Text and analyze the conversation for meaningful insights.</p>
           <p>Users will also be able to manage/view recordings and employees in said recordings.</p><br></br>
           
           
-          <p>At the home page under “Solutions Tab” click on “Customer Service Analyzer”.</p>
+          <p>At the home page under “Solutions” tab click on “Customer Service Analyzer”.</p>
           
           <br></br>
 
@@ -383,7 +391,7 @@ function UserGuide() {
           </p>
           <br></br>
           <p>
-          Click on the Dropbox and select your “Industry/Field” then click “Next”.
+          Click on the dropbox and select your “Industry/Field”, then, click the “Next” button.
           Users will also be able to change their industry/field in the future under “Profile Customization {'>'} Edit Profile”.
           </p>
           <img src={Userguidecompanyfield} alt="User Guide Design" />
@@ -396,57 +404,84 @@ function UserGuide() {
           <p>| Recording List | Employee List | Summary |</p>
 
           <div className="flex justify-left items-left">
-          <p>Click on this Menu Button to expand it.</p>
+          <p>Click on this menu Button on the right to expand it.</p>
           <img src={Userguidemenubutton} alt="User Guide Design" />
           </div>
           <img src={Userguidecsamenu} alt="User Guide Design" />
 
-
-     
           <br></br>
           <h2 id="recording-list" className="text-md font-semibold mb-2">Recording List</h2>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
-          <p>Users can view the recordings which are uploaded here.</p>
-          <p>To get started on any recordings, click on the 3-dot menu button on any recording.</p><br></br>
+          <p>Uploaded recordings can be viewed from this page</p>
+          <p>To perform action on the recordings, click on the 3-dot menu button beside one of the recording.</p><br></br>
           
           <p>Users will be able to perform these 3 actions for the recordings:</p>
           <p>| View Analysis | Delete | Download |</p>
-        
+
           <img src={Userguiderecordinglist} alt="User Guide Design" />
 
           <br></br>
           <h2 id="upload-recording" className="text-md font-semibold mb-2">Upload Recording</h2>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
-          <p>
-          Users have the option to upload a single recording file or a folder with multiple files.
-          Click “Upload” on the “Recording List” page then click “Upload” again.
-          </p>
-          <p>File explorer will pop-up, choose a file or folder to upload then click “Open”.</p>
+          <p>Users have the options to upload multiple or sigular recording file or a folder with multiple files.</p>
+          <br></br>
+
+          <p>To start, Click the “Add Recording” button on the “Recording List” page, after that, you will be redirected to the "Add Recording" page.</p>
+
+          <img src={UploadRecording} alt="User Guide Design" />
+          <br></br>
+          
+          <p>In the "Add Recording" page click the "Upload" button and choose either "Select File" or "Select Folder"</p>
+
           <img src={Userguideuploadrecording} alt="User Guide Design" />
+          <p className="mb-4">In a short while, a File explorer menu will pop-up, then, choose either a file or folder depending on your choice then click the “Open” button.</p>
+          
+          <h2 id="recording-analysis" className="text-md font-semibold mb-2">Recording Analysis</h2>
+          <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
+          <br />
+          <p className="mb-4">The result of the analysis will be displayed in here</p>
+          <p className="mb-4">The recording analysis page contains all the analysis result(Agent name, Summary, Recording sentiment analysis, etc)</p>
+
+          <img src={RecordingAnalysis1} alt="Recording Analysis 1" />
+
+          <img src={RecordingAnalysis2} alt="Recording Analysis 2" />
+          
+          {/* NOT DONE TO BELOW*/}
 
           <br></br>
           <h2 id="assign-employee" className="text-md font-semibold mb-2">Assign Employee To Recording</h2>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
+
           <p>
-          Once recording has been uploaded successfully, you can assign a employee to the recording.
-          Under "Configuration" click on the dropdown menu and select "Existing Employee"
-          Then under "Employee", select the employee you want to assign the recordings.
-          Once done, click on "Analyze" button.
+          Once a recording has been uploaded successfully, you can assign an employee to the recording.
+          Under "Configuration" click on the dropdown menu and select one of the options.
           </p>
           <img src={Userguideassignemployee} alt="User Guide Design" />
+          <hr></hr>
+
+          <p>For option existing employee, a text box will pop-up and you can choose an existing employee</p>
+          <img src={ExistingEmployee} alt="User Guide Design" />
+          <hr></hr>
+
+          <p className="mb-4">For option folder name, The employee name will be collected from the folder name</p>
+          <img className="mb-4" src={FolderName} alt="User Guide Design" />
+          <hr></hr>
+
+          <p>For option split file name, The employee name can be collected automatically by defining the delimiter in the file name.</p>
+          <p>For example, if your file name standard is Name_RecordingNo_Date, then you can set the delimiter to "_" and set the column to "1"</p>
+          <img src={SplitFileName} alt="User Guide Design" />
 
           <br></br>
           <h2 id="employee-list" className="text-md font-semibold mb-2">Employee List</h2>
           <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
           <br />
           <p>
-          Users can add employees to this list and are able to view the number of calls handled by each of them
-          and the amount of positive/negative sentiments of each call.</p>
+          In this page, you can add employee, view the number of calls handled by each of the employee, and the amount of positive/negative sentiments of each call.</p>
           <div className="flex justify-left items-left">
-          <p>To manage an employee, click on the 3-dot menu button on any employee.</p>
+          <p>To perform an action on one of the employee, click on the 3-dot menu button beside one of the employee.</p>
           <img src={Userguide3dotmenu} alt="User Guide Design" />
           </div>
           
@@ -457,21 +492,31 @@ function UserGuide() {
 
           <h2 className="text-md font-semibold mb-2">Add Employee</h2>
           <p>
-          Users will be able to add an employee into the list.
-          Click on “Add Employee”, enter the employee name into the box, then click “Add”.
+          First, Click the “Add Employee” button, then, the "Add Employee" window will pop-up.
           </p>
-          <img src={Userguideaddemployee} alt="User Guide Design" />
+          <p>second, Enter the employee name into the text box and click the “Add” button.</p>
+          <img className="mb-4" src={Userguideaddemployee} alt="User Guide Design" />
 
           <h2 className="text-md font-semibold mb-2">Edit Employee Name</h2>
           <p>
-          Users will be able to edit employee list names after they have been added.
-          Click on the 3-dot menu button for any employee, click “Edit name”,
-          input the new name, and click “Save”.
+          Click on the 3-dot menu button beside one of the employee, then click the “Edit name” button.
           </p>
+          <p>A small pop up window will appear, then, key in the new name inside the box.</p>
           <img src={Userguideeditemployee} alt="User Guide Design" />
+
+          <br></br>
+          <h2 id="assign-employee" className="text-md font-semibold mb-2">Summary Analysis</h2>
+          <hr style={{ border: "none", height: "2px", backgroundImage: "linear-gradient(to right, #8A2BE2, #A020F0)" }} />
+          <br />
+
+          <p>
+          The summary analysis page contains, the summary of every call conducted by each employee in a single dashboard.
+          The graph and chart shows statistical comparison gathered from the analysis of recordings based on several criteria.
+          </p>
+          <img src={SummaryAnalysis1} alt="User Guide Design" />
+          <img src={SummaryAnalysis2} alt="User Guide Design" />
+          
           </section>
-
-
       </div>
       <ScrollToTopButton />
       <Footer />
