@@ -69,6 +69,16 @@ public class Employee {
 
     // Method to decrement number of call handled
     public void decrementNumCallsHandled() {
-    	this.numCallsHandled--;
+        this.numCallsHandled--;
+    }
+    
+    // Method to decremenet number of positive sentiment
+    public void decrementNumNegativeSentiment() {
+        this.numNegativeSentiment--;
+    }
+    
+     // Method to decremenet number of positive sentiment
+    public void decrementNumPositiveSentiment() {
+    	this.numPositiveSentiment--;
     }
 }

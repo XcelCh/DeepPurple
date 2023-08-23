@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -89,12 +90,14 @@ public class RecordingController {
             List<Map<String, Object>> recList = recordingListService.getRecordingList(account_id);
 
             // delete unanalyzed recordings
-            for (int i = 0 ; i < recList.size() ; i++) {
-                Optional<Recording> r = recRepo.findById((Integer) recList.get(i).get("recordingId"));
+            Iterator<Map<String, Object>> iterator = recList.iterator();
+            while (iterator.hasNext()) {
+                Map<String, Object> recIter = iterator.next();
+                Optional<Recording> r = recRepo.findById((Integer) recIter.get("recordingId"));
                 if (r.get().getAnalysis() == null) {
                     recRepo.delete(r.get());
                     storageService.deleteFile(r.get().getTimeStamp() + "_" + r.get().getRecordingName());
-                    recList.remove(i);
+                    iterator.remove();
                 }
             }
 
@@ -125,13 +128,24 @@ public class RecordingController {
         ResponseStatus response = new ResponseStatus();
 
         try {
-        	
-        	Optional<Recording> recToDelete = recRepo.findById(id);
-        	if(recToDelete.get().getEmployee() != null) {
-        		recToDelete.get().getEmployee().decrementNumCallsHandled();
-        		empRepo.save(recToDelete.get().getEmployee());
-        	}
-        	
+            // get recording sentiment
+            Integer analysisId = analysisService.getAnalysisId(id);
+            Analysis analysis = analysisRepo.findById(analysisId).get();
+            String recordingSentiment = analysis.getRecordingSentiment();
+
+            Optional<Recording> recToDelete = recRepo.findById(id);
+            if (recToDelete.get().getEmployee() != null) {
+                recToDelete.get().getEmployee().decrementNumCallsHandled();
+                
+                if (recordingSentiment.equals("Positive")) {
+                    recToDelete.get().getEmployee().decrementNumPositiveSentiment();
+                } else {
+                    recToDelete.get().getEmployee().decrementNumNegativeSentiment();
+                }
+
+                empRepo.save(recToDelete.get().getEmployee());
+            }
+
             recRepo.deleteById(id);
 
             // RESPONSE DATA

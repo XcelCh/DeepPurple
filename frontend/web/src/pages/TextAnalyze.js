@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { EmptySentiment, Loading } from "../assets/index";
 import AuthService from "../services/auth.service";
 import { BASE_URL } from "./config";
+import Swal from "sweetalert2";
 
 function TextAnalyze() {
   const [oriPrompt, setOriPrompt] = useState("");
@@ -64,6 +65,14 @@ function TextAnalyze() {
     if (prompt === "") {
       setError("Please input at least one sentence to be analyzed.");
     } else {
+      Swal.fire({
+        title: "Analyzing...",
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+      });
+
       setProcessing(true);
       const data = new FormData();
       data.append("prompt", prompt);
@@ -82,9 +91,11 @@ function TextAnalyze() {
             setResult(result);
             setOriPrompt(prompt);
             console.log("highlight: " + highlight);
+            Swal.close();
           },
           (error) => {
             setError(error);
+            Swal.close();
           }
         );
     }
@@ -117,7 +128,7 @@ function TextAnalyze() {
             {result === "" && processing === false ? (
               <textarea
                 placeholder="Input your text here ..."
-                className=" mt-2 textarea textarea-bordered textarea-md w-full max-w-full h-96" 
+                className=" mt-2 textarea textarea-bordered textarea-md w-full max-w-full h-96"
                 value={oriPrompt}
                 onChange={handleChange}
                 maxLength={1200}
