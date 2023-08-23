@@ -87,13 +87,11 @@ function ChangePassword() {
     .then (response => {
         if (response.status == 200) {
 
-          console.log('Change Password Successful.');
           navigate('/');
 
         }
         else if (response.status == 401) {
 
-          console.log('Unauthorized.');
           navigate('/unauthorizedPage');
           throw new Error('Not Authorized.');
 
@@ -101,12 +99,10 @@ function ChangePassword() {
         else if (response.status == 400) {
 
           setCurrentMessage('Current password does not match.');
-          console.log('Current password does not match.');
           throw new Error('Current password does not match.');
         }
         else {
-
-          console.log('Could not process. Something happened.');
+          throw new Error('Could not process. Something happened.');
         }
     })
     .catch(error => {

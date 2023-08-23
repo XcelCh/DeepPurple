@@ -57,7 +57,6 @@ function EmployeeRecordingList() {
   // Get All Recording Per Employee
     const getRecList = async () => {
       const params = `?search=${search}`;
-      console.log(params);
       try {
         Swal.fire({
           title: "Retrieving All Recordings",
@@ -167,10 +166,6 @@ function EmployeeRecordingList() {
     getRecList();
     getEmployeeDetail();
   }, [search]);
-
-   useEffect(() => {
-     console.log(recList);
-   }, [search]);
   
   // Pagination
   const lastPostIndex = currentPage * postsPerPage;

@@ -81,10 +81,6 @@ function EmployeeList() {
     getEmpList(false);
   }, [search]);
 
-  useEffect(() => {
-    console.log(empList);
-  });
-
   // Delete Employee
   const handleDelete = (id) => {
     Swal.fire({
@@ -151,7 +147,6 @@ function EmployeeList() {
         },
         (error) => {
           setError(error);
-          console.log(error);
           Swal.fire("Fail", "Fail to update employee name", "error");
         }
       );
@@ -170,7 +165,6 @@ function EmployeeList() {
       .then((res) => res.json())
       .then(
         (result) => {
-          console.log(result);
           getEmpList();
           // Success message
           if (result.success == true) {
@@ -181,7 +175,6 @@ function EmployeeList() {
         },
         (error) => {
           setError(error);
-          console.log(error);
           Swal.fire("Fail", "Fail to add employee.", "error");
         }
       );

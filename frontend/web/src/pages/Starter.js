@@ -21,7 +21,6 @@ function Starter() {
     })
     .then(response => {
       if (response.ok) {
-        console.log('Company Field fetch successfully.');
         return response.text();
       }
       else {
@@ -37,13 +36,9 @@ function Starter() {
     
   }, [])
 
-  // console.log(fetchDone);
-
   useEffect (() => {
-    // console.log('here2'+companyField, fetchDone);
 
     if (companyField.trim() !== '') {
-      // console.log('run here');
       setFetchDone(true);
     }
     
@@ -51,11 +46,8 @@ function Starter() {
 
  
   useEffect (() => {
-    // console.log(fetchDone);
-    // console.log('here'+companyField);
     if ((companyField.trim() !== "-") && (companyField.trim() !== '')) {
 
-      // setNext(true);
       navigate('/RecordingList');
     }
     
@@ -77,10 +69,6 @@ function Starter() {
         return ;
       }
 
-
-    
-
-    console.log(companyField);
     fetch(`${BASE_URL}/profile/setCompanyField`, {
       method: 'POST',
       headers: {'Authorization': token.Authorization, 
@@ -94,7 +82,6 @@ function Starter() {
       }
       else {
 
-        console.log('Set Company Field Successful');
         setNext(true);
       }
     })
@@ -102,14 +89,11 @@ function Starter() {
       console.error(error);
     })
 
-    
-    console.log(next);
   }
 
   const handleDropdown = (selected) => {
     setDropdown(selected);
     setCompanyField(selected);
-    console.log(otherInput + selected);
   };
 
   useEffect(() => {

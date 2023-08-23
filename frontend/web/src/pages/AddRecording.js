@@ -61,6 +61,7 @@ function AddRecording() {
   const [delimitedFields, setDelimitedFields] = useState([]); //handle file delimiter
   const [error, setError] = useState("");
   const [limitError, setLimitError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const token = authHeader();
   const navigate = useNavigate();
@@ -85,7 +86,6 @@ function AddRecording() {
         setRecList(data.data);
       }
       
-      // console.log(recList);
     });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -110,7 +110,6 @@ function AddRecording() {
         if(data.data != null) {
           setEmpList(data.data);
         }        
-        console.log(empList);
       });
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -193,7 +192,6 @@ function AddRecording() {
   //listen for user's selection for assigning employee method
   const handleAssignEmployee = (selected) => {
     setAssignEmployee(selected);
-    console.log(assignEmployee);
   };
 
   //update the audio files based on user's selection
@@ -261,11 +259,11 @@ function AddRecording() {
           empId = result.data.employeeId;
           empName = result.data.employeeName;
           getEmpList();
-                       Swal.fire(
-                         "Added",
-                         "The employee has been added.",
-                         "success"
-                       );
+          Swal.fire(
+            "Added",
+            "The employee has been added.",
+            "success"
+          );
 
         } else {
              Swal.fire("Fail", "Fail to add employee. Try again", "error");
@@ -275,8 +273,7 @@ function AddRecording() {
           
       },
       (error) => {
-        setError(error);
-        console.log(error);        
+        setError(error); 
       }
     );   
 
@@ -355,18 +352,15 @@ function AddRecording() {
           // Format the components into the desired format
           const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
-          if (file.type.startsWith('audio/')) {
+          if (file.type.startsWith('audio/wav')) {
 
-            // console.log('audio file', file);
 
             if (file.webkitRelativePath) {
               const modifiedFile = new File([file], file.name);
-              // console.log(rejectedFile);
               uploadFile(modifiedFile, rejectedFile, formattedDate);
             }
           }
           else {
-            // console.log('not audio file', file);
             rejectedFile++;
           }
         }
@@ -374,41 +368,6 @@ function AddRecording() {
       },
       allowOutsideClick: () => !Swal.isLoading()
     });
-
-
-    // Swal.fire({
-    //   title: 'Uploading Files..',      
-    //   didOpen: async () => {
-    //     Swal.showLoading()
-    //     return await fetch(`${BASE_URL}/audio/uploadAudio`, {
-    //       method: "POST",
-    //       headers: token,
-    //       body: data
-    //     })
-    //     .then (response => {
-    
-    //       if (response.ok) {
-    //         Swal.close();
-            
-    //         // Success message
-    //         Swal.fire(            
-    //           "Updated",
-    //           "The recording has been added.",
-    //           "success"
-    //         )
-    //       } else{
-    //         throw new error;
-    //       }     
-    //     })
-    //     .catch (error => {      
-    //       setError(error)
-    //       console.error(error)
-    //       Swal.fire("Fail", "Fail to add recording.", "error")
-    //     })
-    //   },
-    //   allowOutsideClick: () => !Swal.isLoading()
-    // })
-    // getRecList()
   };
 
   //handle multiple file upload
@@ -416,7 +375,6 @@ function AddRecording() {
     const audioInput = document.getElementById("audioInputMultiple");           
     const totalFiles = audioInput.files.length;
     let uploadedFilesCount = 0;
-    console.log(audioInput.files);
   
     Swal.fire({
       title: 'Uploading Files..',
@@ -527,8 +485,7 @@ function AddRecording() {
     const audioInputMultiple = document.getElementById("audioInputMultiple");
     var initSize = 0;     
     if(audioInput.files.length != 0 && delimiter != ""){      
-      initSize = audioInput.files[0].name.split(delimiter).length;     
-      console.log(audioInput.files[0].name.split(delimiter));
+      initSize = audioInput.files[0].name.split(delimiter).length;
     } else if(audioInputMultiple.files.length != 0) {
       initSize = audioInputMultiple.files[0].name.split(delimiter).length;     
     } else {
@@ -569,7 +526,6 @@ const addEmployee = async (empData) => {
       },
       (error) => {
         setError(error);
-        console.log(error);
         Swal.fire("Fail", "Fail to add employee.", "error");
       }
     );
@@ -586,13 +542,11 @@ const addEmployee = async (empData) => {
     })
     .then (response => {
       if(response.ok) {
-        console.log("success");
         getRecList()
         //Swal.fire("Updated", "Employees have been assigned.", "success");
       }
     })
     .catch (error => {
-      console.log(error);
       Swal.fire("Fail", "Fail to assign employee.", "error");
     })
   }
@@ -614,7 +568,6 @@ const addEmployee = async (empData) => {
           if(recList.length != 0 && delimiter != "") {
             for(let i = 0; i < recList.length; i++) {
               var name = "";
-              console.log(recList);
               if(recList[i].recordingName.split(delimiter).length >= col-1) {
                 name = recList[i].recordingName.split(delimiter)[col-1];
               } else {
@@ -622,7 +575,6 @@ const addEmployee = async (empData) => {
               }
               var filteredName = empList.filter((emp) => emp.employeeName.toLowerCase() == (name.toLowerCase()));
               if(filteredName.length == 0 && !(addedEmployees.includes(name))) {
-                console.log("adding new emp " + name);
                 await addEmployee(name);
                 addedEmployees.push(name);
               }
@@ -633,7 +585,6 @@ const addEmployee = async (empData) => {
           Swal.close();
           Swal.fire("Updated", "Employees have been assigned.", "success");
         } catch (error) {
-         console.log(error); 
          Swal.fire("Fail", "Some error has occured!", "error");
         }        
       }
@@ -662,13 +613,12 @@ const addEmployee = async (empData) => {
       body: JSON.stringify(ids),
     })
       .then((response) => {
-        console.log("first done");
         if (response.status === 400) {
-          console.log("Limit Exceeded.");
+          setErrorMessage("Limit is not sufficient to analyse!");
           setLimitError(true);
           throw new Error("Limit Exceeded");
+
         } else if (response.ok) {
-          console.log("Analyze Complete.");
           // Perform operations related to the first fetch's success
 
           // Second Fetch
@@ -681,31 +631,33 @@ const addEmployee = async (empData) => {
             body: JSON.stringify(ids),
           });
         } else if (response.status === 401) {
-          console.log("Unauthorized");
           navigate("/");
         } else {
-          console.log("error happened.");
+          setErrorMessage("An error has occured. Please try again.");
+          setLimitError(true);
           throw new Error("Error Happened.");
         }
       })
       .then((secondResponse) => {
-        console.log("second done");
         if (secondResponse.status === 400) {
-          console.log("Limit Exceeded.");
+          setErrorMessage("Limit is not sufficient to analyse!");
           setLimitError(true);
           throw new Error("Limit Exceeded");
         } else if (secondResponse.ok) {
-          console.log("Second Fetch Complete.");
           navigate("/RecordingList");
         } else if (secondResponse.status === 401) {
-          console.log("Unauthorized");
           navigate("/");
         } else {
-          console.log("error happened.");
+          setErrorMessage("An error has occured. Please try again.");
+          setLimitError(true);
           throw new Error("Error Happened.");
         }
       })
       .catch((error) => {
+        if (error.message === 'Failed to fetch') {
+          setErrorMessage("An error has occured. Please try again.");
+          setLimitError(true);
+        }
         console.error(error);
       }).finally(() => {
       Swal.close();
@@ -767,7 +719,7 @@ const addEmployee = async (empData) => {
                 className="hidden"
                 type="file"
                 id="audioInputMultiple"
-                accept="audio/*"
+                accept="audio/wav"
                 onChange={handleUploadMultipleFiles}
                 multiple
               />
@@ -984,10 +936,7 @@ const addEmployee = async (empData) => {
                   />
                 </svg>
                 <p className="mb-5 text-lg font-semibold text-[#414141]">
-                  Limit is not sufficient to analyse!
-                </p>
-                <p className="mb-5 text-lg font-semibold text-[#414141]">
-                  Increase limit to use the feature!
+                  {errorMessage}
                 </p>
                 <button
                   onClick={() => setLimitError(false)}

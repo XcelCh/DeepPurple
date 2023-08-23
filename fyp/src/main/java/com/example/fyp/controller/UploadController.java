@@ -34,6 +34,7 @@ import com.example.fyp.repo.EmployeeRepository;
 import com.example.fyp.repo.RecordingRepository;
 import com.example.fyp.service.AccountServiceImpl;
 import com.example.fyp.service.AnalysisService;
+import com.example.fyp.service.EmployeeService;
 import com.example.fyp.service.RecordingListService;
 import com.example.fyp.service.StorageService;
 import com.theokanning.openai.completion.CompletionRequest;
@@ -62,6 +63,9 @@ public class UploadController {
 	
 	@Autowired
 	private EmployeeRepository empRepo;
+	
+	@Autowired
+	private EmployeeService empService;
 
 	@Autowired
 	private AnalysisRepository analysisRepo;
@@ -172,15 +176,34 @@ public class UploadController {
 	@PostMapping("/updateRecordingEmployeeByDelimiter")
 	public ResponseEntity<?> updateRecordingEmployeeByDelimiter(@RequestParam String recordingID, @RequestParam String empName) {
 		ResponseStatus response = new ResponseStatus();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Integer account_id = accountServiceImpl.getAccountId(email);
+
+         List<Map<String, Object>> empList = empService.getAllEmployee(account_id);
+         empList = empList.stream()
+                     .filter(emp -> ((String) emp.get("employeeName")).contains(empName))
+                     .collect(Collectors.toList());                  
+             
+             
 		Integer recID = Integer.parseInt(recordingID);
 				
-		Optional<Recording> recToUpdate = recRepo.findById(recID);
-		Optional<Employee> empToUpdate = empRepo.findByEmployeeName(empName);		
+		Optional<Recording> recToUpdate = recRepo.findById(recID);		
 		
 		try {
+			Optional<Employee> employeeToAssign;
+			
+			if(empList.size() == 1) {		
+				employeeToAssign = empRepo.findById(((Integer) empList.get(0).get("employeeId")));
+			} else {
+				response.setSuccess(false);
+				response.setMessage("Duplicate entries detected!");
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+			}
+			
 			if(recToUpdate.get().getEmployee() != null) {
 				//check for double assignment
-				if(recToUpdate.get().getEmployee().getEmployeeId() == empToUpdate.get().getEmployeeId()) {
+				if(recToUpdate.get().getEmployee().getEmployeeId() == employeeToAssign.get().getEmployeeId()) {
 					response.setSuccess(false);
 					response.setMessage("Employee already assigned to this recording!");
 					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -189,12 +212,12 @@ public class UploadController {
 				recToUpdate.get().getEmployee().decrementNumCallsHandled();
 			}
 			
-			recToUpdate.get().setEmployee(empToUpdate.get());	
+			recToUpdate.get().setEmployee(employeeToAssign.get());	
 			// recToUpdate.get().setEmployeeName(empName);
-			empToUpdate.get().incrementNumCallsHandled();			
+			employeeToAssign.get().incrementNumCallsHandled();			
 			
 			recRepo.save(recToUpdate.get());
-			empRepo.save(empToUpdate.get());
+			empRepo.save(employeeToAssign.get());
 			// RESPONSE DATA
             response.setSuccess(true);            
             return ResponseEntity.status(HttpStatus.OK).body(response);

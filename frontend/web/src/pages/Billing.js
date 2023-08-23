@@ -33,6 +33,7 @@ ChartJS.register(
 function Billing() {
 
     const token = authHeader();
+    
     const navigate = useNavigate();
 
     const [fetchDone, setFetchDone] = useState(false); //to store fetch requests' state
@@ -67,18 +68,15 @@ function Billing() {
         })
         .then (response => {
             if (response.ok) {
-                console.log('Successfully fetch billing history.');
                 return response.json();
             }
             else if(response.status === 401) {
-                console.log('Unauthorized.');
                 navigate('/unauthorizedPage');
 
             }
         })
         .then(data => {
             setBillingHistory(data.body);
-            console.log(data.body[0]);
         })
         .catch(error => {
             console.error(error);
@@ -93,11 +91,9 @@ function Billing() {
         })
         .then (response => {
             if (response.ok) {
-                console.log('Successfully fetch billing history.');
                 return response.json();
             }
             else if(response.status === 401) {
-                console.log('Unauthorized.');
                 navigate('/unauthorizedPage');
 
             }
@@ -119,18 +115,16 @@ function Billing() {
         })
         .then (response => {
             if (response.ok) {
-                console.log('Successfully fetch billing history.');
                 setSuccessMessage(true);
                 return response.json();
             }
             else if(response.status === 401) {
-                console.log('Unauthorized.');
                 navigate('/unauthorizedPage');
 
             }
         })
         .then(data => {
-            console.log(data);
+            
         })
         .catch(error => {
             console.error(error);
@@ -150,24 +144,18 @@ function Billing() {
         .then(response => {
             if (response.ok) {
 
-                console.log('Successfully fetch card.');
                 setFetchDone(true);
                 return response.json();
             }
             else if(response.status === 401) {
-
-                console.log('Unauthorized.');
                 navigate('/unauthorizedPage');
-
             }
         })
         .then(data => {
-            console.log(data);
 
             setCardNum(data.cardNumber.substring(14));
             var month = data.expiryDate.substring(5,7);
             var year = data.expiryDate.substring(0,4);
-            console.log(month, year);
             setExpDate(month+'/'+year);
             setCard(true);
             setLimit(data.usageLimit);
@@ -197,16 +185,13 @@ function Billing() {
         .then (response => {
             if(response.ok) {
                 setLimit(limit);
-                console.log('Limit Changed.');
             }
             else if(response.status === 401) {
-                console.log('Unauthorized;');
                 navigate('/unauthorizedPage');
             }
             else if(response.status === 400) {
                 setErrorMessage('Limit can not be lower than current usage!');
                 setLimitError(true);
-                console.log('Limit can not be lower than current usage.');
             }
         })
         .catch(error => {
@@ -243,7 +228,7 @@ function Billing() {
                                             <div className="h-4 rounded-full" style={{ width: `${(totalUsage / limit) * 100}%`, backgroundColor: `#7566BB` }}></div>
                                         </div>
                                         <div className="flex justify-end text-md mt-2 text-[#414141] font-light">
-                                            <p>${`${totalUsage.toFixed(2)} / ${limit.toFixed(2)}`}</p>
+                                            <p>${`${parseFloat(totalUsage).toFixed(2)} / $${parseFloat(limit).toFixed(2)}`}</p>
                                         </div>
                                         <div className="flex justify-end text-md mt-2">
                                             <label

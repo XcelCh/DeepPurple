@@ -12,14 +12,12 @@ function Card({ color, title, content, improvedSentence, highlight, setHighlight
     if (sentiment == true) {
       if (event.target.checked == true) {
         setHighlight([...highlight, [highlighted, color]]);
-        console.log("add: " + highlight);
       } else {
         setHighlight(
           highlight.filter(
             (item) => item[0] !== highlighted || item[1] !== color
           )
         );
-        console.log("remove: " + highlight);
       }
     }
   };

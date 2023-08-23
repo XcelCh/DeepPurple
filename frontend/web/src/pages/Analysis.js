@@ -60,12 +60,6 @@ function Analysis() {
     getTranscriptions(true);
   }, []);
 
-  useEffect(() => {
-    console.log(analysisData);
-    console.log(suggestions);
-    console.log(transcriptData);
-  }, [analysisData, suggestions, transcriptData]);
-
   // Get Analysis
   const getAnalysis = async (showLoading) => {
     try {
@@ -172,7 +166,6 @@ function Analysis() {
   };
 
   const calculateTime = (secs) => {
-    console.log(secs);
     if (secs < 60) {
       return `${Math.floor(secs.toFixed(2))} ${
         secs === 1 ? "second" : "seconds"
