@@ -95,8 +95,12 @@ public class RecordingController {
                 Map<String, Object> recIter = iterator.next();
                 Optional<Recording> r = recRepo.findById((Integer) recIter.get("recordingId"));
                 if (r.get().getAnalysis() == null) {
-                    r.get().getEmployee().decrementNumCallsHandled();
-                    empRepo.save(r.get().getEmployee());
+
+                    if(r.get().getEmployee() != null) {
+                        r.get().getEmployee().decrementNumCallsHandled();
+                        empRepo.save(r.get().getEmployee());
+                    }
+                    
                     recRepo.delete(r.get());
                     storageService.deleteFile(r.get().getTimeStamp() + "_" + r.get().getRecordingName());
                     iterator.remove();

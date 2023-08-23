@@ -52,9 +52,11 @@ function AudioPlayer({
 
   //animate audio player's duration during play
   const whilePlaying = () => {
-    progressBar.current.value = audioPlayer.current.currentTime;
-    changePlayerCurrentTime();
-    animationRef.current = requestAnimationFrame(whilePlaying);
+    if(audioPlayer.current != null) {
+      progressBar.current.value = audioPlayer.current.currentTime;
+      changePlayerCurrentTime();
+      animationRef.current = requestAnimationFrame(whilePlaying);
+    }
   };
 
   //make range dynamic
@@ -99,7 +101,6 @@ function AudioPlayer({
       });
   }, [timeStamp, recordingName]);
 
-  const totalWidth = 0;
 
   return (
     <div className={styles.audioPlayer}>
