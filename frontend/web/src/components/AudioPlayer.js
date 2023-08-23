@@ -11,7 +11,6 @@ function AudioPlayer({
   recordingName,
   timeStamp,
 }) {
-  console.log(initialParagraphs);
   // state
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -60,10 +59,7 @@ function AudioPlayer({
 
   //make range dynamic
   const changeRange = () => {
-    console.log("Before change: " + progressBar.current.value);
-    console.log("Before change: " + audioPlayer.current.currentTime);
     audioPlayer.current.currentTime = progressBar.current.value;
-    console.log("After change: " + audioPlayer.current.currentTime);
     changePlayerCurrentTime();
   };
  

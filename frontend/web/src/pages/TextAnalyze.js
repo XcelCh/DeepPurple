@@ -20,7 +20,6 @@ function TextAnalyze() {
 
   // Update Highlight
   useEffect(() => {
-    console.log("original prompt: " + oriPrompt);
 
     const highlightedSentences = highlight.reduce((result, pair) => {
       const sentence = pair[0].trim().replaceAll('"', "");
@@ -29,11 +28,6 @@ function TextAnalyze() {
         .replaceAll('"', "");
       const regex = new RegExp(sentence_regex, "gi");
       const highlightColor = pair[1].trim();
-      // debug
-      console.log("sentence: " + sentence);
-      console.log("sentence_regex: " + sentence_regex);
-      console.log("highlightColor: " + highlightColor);
-      console.log("regex: " + regex);
       // debug
       return result.replace(
         regex,
@@ -44,7 +38,6 @@ function TextAnalyze() {
     }, oriPrompt);
 
     setPrompt(highlightedSentences);
-    console.log("highlighted sentence: " + highlightedSentences);
   }, [highlight]);
 
   // Change prompt content
@@ -68,7 +61,6 @@ function TextAnalyze() {
       const data = new FormData();
       data.append("prompt", prompt);
       setProcessing(true);
-      console.log(data);
       fetch(`${BASE_URL}/analyze`, {
         method: "POST",
         body: data,
@@ -76,12 +68,9 @@ function TextAnalyze() {
         .then((res) => res.json())
         .then(
           (result) => {
-            console.log("called get data");
-            console.log(result);
             setProcessing(false);
             setResult(result);
             setOriPrompt(prompt);
-            console.log("highlight: " + highlight);
           },
           (error) => {
             setError(error);

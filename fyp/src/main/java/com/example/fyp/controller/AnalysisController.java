@@ -101,7 +101,6 @@ public class AnalysisController {
         System.out.println("ANALYSIS ID: " + analysisId);
         String analysis = analysisRepo.findById(analysisId).get().getNegativeEmotion();
 
-        System.out.println(analysis);
         String[] suggestion_list = analysis.split("\\n");
 
         Vector<SuggestionDto> suggestions = new Vector<SuggestionDto>();    

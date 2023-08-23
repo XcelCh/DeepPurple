@@ -53,7 +53,6 @@ function LoginForm() {
         .then(
             () => {
               
-              console.log('login');
               navigate('/');
             },
             (error) => {

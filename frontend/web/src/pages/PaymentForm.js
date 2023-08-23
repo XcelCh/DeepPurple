@@ -142,8 +142,6 @@ function PaymentForm() {
       } 
       else{
 
-        console.log('passed');
-
         fetch(`${BASE_URL}/payment/addCard`, {
           method : 'POST',
           headers : {'Authorization' : token.Authorization,
@@ -151,13 +149,10 @@ function PaymentForm() {
           body : JSON.stringify(formData)
         })
         .then(response => {
-          console.log(response);
           if (response.ok) {
-            console.log('Card Successfully added.');
             navigate('/billing');
           }
           else if (response.status == 401) {
-            console.log('Unauthorized.');
             navigate('/unauthorizedPage');
           }
           else if (!response.ok) {

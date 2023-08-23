@@ -27,7 +27,6 @@ function ForgetPasswordForm() {
     
     const handleCheckboxChange = () => {
         setShowPassword(!showPassword);
-        console.log(formData);
     };
 
     const handleCheckEmail = (e) => {
@@ -47,7 +46,6 @@ function ForgetPasswordForm() {
         })
         .then(response => {
             if (response.status == 200) {
-                console.log('Account found. Sending OTP to email.');
                 if (page == 0) {
                     setPage((currPage) => currPage+1);
                 }
@@ -88,7 +86,6 @@ function ForgetPasswordForm() {
                 throw new Error('Invalid OTP');
             }
             else if (response.status == 200) {
-                console.log('OTP Successfully verified.');
                 setPage((currPage) => currPage+1);
             }
         })
@@ -134,11 +131,9 @@ function ForgetPasswordForm() {
         })
         .then(response => {
             if(response.ok) {
-                console.log('Password reset Successful.');
                 navigate('/');
             }
             else {
-                console.log('Error occured in resetting');
             }
         })
         .catch((error) => {

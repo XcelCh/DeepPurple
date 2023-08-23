@@ -59,11 +59,6 @@ function SummaryAnalysis() {
   const [employeeDetails, setEmployeeDetails] = useState([]);
   const [sortedCallsHandled, setSortedCallsHandled] = useState([]);
   const employeeDetail = [];
-  console.log(analysisForm);
-
-  if (employeeDetails.length > 0) {
-    console.log(employeeDetails[0].employeeName);
-  }
 
   const calculateTime = (secs) => {
     if (isNaN(secs) || secs === 0) {
@@ -101,10 +96,7 @@ function SummaryAnalysis() {
       var totalDuration = 0;
       var totalCalls = 0;
 
-      console.log(employeeDetails);
-
       for (var x = 0 ; x < employeeDetails.length; x++) {
-        console.log(x);
         totalCalls += employeeDetails[x].numberOfCalls;
         totalDuration += employeeDetails[x].totalDuration;
       }
@@ -128,7 +120,6 @@ function SummaryAnalysis() {
               // error unauthorized
               if (response.status == 401) {
                 navigate("/");
-                console.log("401 Unauthorized");
               }
               else if (response.status == 204) {
                 setRecordingExist(false);
@@ -136,12 +127,10 @@ function SummaryAnalysis() {
               }
               else if (response.status == 200) {
                 setRecordingExist(true);
-                console.log("Success");
                 return response.json();
               }
           })
           .then(data => {
-              console.log(data);
               setEmployeeNames(data.employeeList.map(employee => employee.employeeName));
               setEmployeePerformances(data.employeeList.map(employee => employee.employeeAvgPerformance));
               setAnalysisForm({

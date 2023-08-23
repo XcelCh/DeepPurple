@@ -11,9 +11,7 @@ const Datepicker = ({formData, setFormData}) => {
 
     useEffect (() => {
 
-        console.log('here'+formData.dob);
         if (formData.dob.length > 0) {
-            // console.log(dob);
             setStartDate(new Date(formData.dob));
         } 
 

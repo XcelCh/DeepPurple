@@ -44,18 +44,14 @@ function EditProfile() {
                 if (user) {
                   AuthService.logout();
                 }
-                console.log("401 Unauthorized");
                 navigate("/unauthorizedPage");
                 
             }
             else if (response.status == 200) {
-              console.log("Success");
               return response.json();
             }
           })
           .then(data => {
-
-            console.log(data);
 
             setFormData((formData) => ({
                         ...formData, 
@@ -135,8 +131,6 @@ function EditProfile() {
         'companyField': formData.companyField
       }
 
-      console.log(JSON.stringify(data));
-
       fetch (`${BASE_URL}/profile/editProfile`, {
         method : 'POST',
         headers : {'Authorization' : token.Authorization,
@@ -151,7 +145,6 @@ function EditProfile() {
           setMessage('Account has been successfully edited!');
           setSuccess(true);
           setLimitError(true);
-          console.log('Success sending data.');
         }
       })
       .catch (error =>  {
@@ -163,7 +156,6 @@ function EditProfile() {
     const [selectValue, setSelectValue] = useState('');
 
     const handleDropdown = (selected) => {
-      console.log(selected);
       setDropdown(selected);
       if (selected !== 'other') {
         setFormData({...formData, companyField: selected});

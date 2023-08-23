@@ -89,7 +89,6 @@ function SignUpForm() {
         .then (response => {
             if (response.status == 200) {
 
-                console.log('Email has been successfully checked.');
                 setPage((currPage) => currPage + 1);
                 
             }
@@ -134,9 +133,6 @@ function SignUpForm() {
             return;
         }
 
-
-        console.log(formData);
-
         fetch (`${BASE_URL}/register/createAccount`, {
             method : 'POST',
             headers : {'Content-Type' : 'application/json'},
@@ -144,13 +140,9 @@ function SignUpForm() {
         })
         .then(async response => {
             if (response.ok) {
-                console.log("Account succesfully created.");
-
-                console.log("Logging in the New Account.");
 
                 await AuthService.login(formData.email, formData.password)
                     .then(() => {
-                        console.log('Logged In.');
                         
                         navigate('/');
                     },

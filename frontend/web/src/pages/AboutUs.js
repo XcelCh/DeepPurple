@@ -37,7 +37,6 @@ function AboutUs() {
   useEffect (() => {
 
     setErrorMessage('');
-    console.log(formData.notes.length);
 
     if(formData.notes.length === 255) {
       setErrorMessage('Max limit is reached.');
@@ -83,14 +82,11 @@ function AboutUs() {
     .then(response => {
       if(response.ok) {
 
-        console.log('Inquiry Sent.');
         setSuccessMessage(true);
         window.location.reload();
-        // navigate('/');
       }
       else if(response.status === 502) {
 
-        console.log('Error Happen.');
         throw new Error('Error Occured');
       }
     })
@@ -99,7 +95,6 @@ function AboutUs() {
     })
   }
 
-  // console.log(formData);
 
   return (
     <>
