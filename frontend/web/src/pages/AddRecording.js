@@ -609,6 +609,8 @@ const addEmployee = async (empData) => {
     });    
   }      
 
+  const [exit, setExit] = useState(false);
+
   //handle analyzing recordings after upload
   const analyzeRecordings = async () => {
     const ids = recList.map((recording) => recording.recordingId);
@@ -622,6 +624,10 @@ const addEmployee = async (empData) => {
         });
 
       for (const id of ids) {
+
+        if (exit) {
+          break;
+        }
 
         const data = {
           recordingList: ids,
@@ -683,11 +689,12 @@ const addEmployee = async (empData) => {
             setErrorMessage("An error has occured. Please try again.");
             setLimitError(true);
           }
+          else if (error.message === 'Limit Exceeded') {
+            setExit(true);
+          }
           console.error(error);
         })
         
-
-
     }
     navigate('/recordingList');
     Swal.close();
