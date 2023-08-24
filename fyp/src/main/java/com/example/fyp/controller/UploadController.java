@@ -313,287 +313,563 @@ public class UploadController {
 	@Value("${apiKey}")
 	private String apiKeyContent;
 
+
 	// Analyze
 	@PostMapping("/analyze")
-	private String recordAnalyzer(@RequestBody List<Integer> recordingIds) throws RuntimeException {
+	private String recordAnalyzer(@RequestBody Integer recordingId) throws RuntimeException {
 
 		// get company 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
+		String email =	 authentication.getName();
 		Integer account_id = accountServiceImpl.getAccountId(email);
 		Account account = accountServiceImpl.loadUserDetailsByUsername(email);
 		String company = account.getCompanyField();
 
-		List<Integer> analysisIds = new ArrayList<>();
-		for (Integer recordingId : recordingIds) {
-			analysisIds.add(analysisService.getAnalysisId(recordingId));
-		}
+		Integer analysisId = analysisService.getAnalysisId(recordingId);
 		
-		for (int i = 0; i < analysisIds.size(); i ++) {
+		String apiKey = apiKeyContent;
 
-			System.out.println("ANALYSIS ID: " + analysisIds.get(i));
+		String currentModel = "text-davinci-003";
 
-			String apiKey = apiKeyContent;
+		Analysis analysis = analysisService.findAnalysisById(analysisId);
 
-			String currentModel = "text-davinci-003";
+		// Set up OpenAI API
+		OpenAiService openAiService = new OpenAiService(apiKey);
 
-			Analysis analysis = analysisService.findAnalysisById(analysisIds.get(i));
+		// Merge all the transcripts and prefix with Agent / Customer
+		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(analysisId);
 
-			// Set up OpenAI API
-			OpenAiService openAiService = new OpenAiService(apiKey);
+		String formattedTranscripts = "";
 
-			// Merge all the transcripts and prefix with Agent / Customer
-			List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(analysisIds.get(i));
-
-			String formattedTranscripts = "";
-
-			for (Object[] innerArray : unformattedTranscripts) {
-				if ((boolean) innerArray[0]) {
-					formattedTranscripts += "Agent: " + (String) innerArray[1] + "\n";
-				} else {
-					formattedTranscripts += "Customer: " + (String) innerArray[1] + "\n";
-				}
-			}
-
-			System.out.println("FORMATTED TRANSCRIPTS: \n" + formattedTranscripts);
-
-			// // Combined prompt
-			// String systemInstructions = "You are an AI language model. Answer each of the following question in 1 word except the second question. End each answer with '\n'.\n";
-			// String prompt = formattedTranscripts.toString()
-			// 			+ "Decide if this conversation category is Inquiry, Complaint, or Warranty: \n"
-			// 			+ "Summarize this customer service conversation into 1 paragraph: \n"
-			// 			+ "Decide if the customer's sentiment is positive or negative based on this conversation (positive means the customer is not in emotional state, otherwise negative): \n"
-			// 			+ "Decide if the agent's sentiment is positive or negative based on this conversation (positive means the agent is not in emotional state, otherwise negative): \n"
-			// 			+ "Decide if the call sentiment is positive or negative based on this conversation (positive means the call's objectives are achieved, otherwise negative): ";
-			// CompletionRequest categoryRequest = CompletionRequest.builder()
-			//                                                     .model(currentModel)
-			//                                                     .prompt(systemInstructions + prompt)
-			//                                                     .echo(true)
-			//                                                     .maxTokens(300)
-			//                                                     .build();
-			// String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
-			// String categoryRaw = response.substring(systemInstructions.length() + prompt.length()).trim();
-			// return categoryRaw;
-
-			// Category
-			String prompt = "Decide if this conversation category is Inquiry, Complaint, or Warranty: "
-					+ formattedTranscripts;
-			CompletionRequest categoryRequest = CompletionRequest.builder()
-					.model(currentModel)
-					.prompt(prompt)
-					.echo(true)
-					.maxTokens(60)
-					.build();
-			String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
-			String categoryRaw = response.substring(prompt.length()).trim();
-			String category;
-
-			if (categoryRaw.toLowerCase().indexOf("inquiry") != -1) {
-				category = "Inquiry";
-			} else if (categoryRaw.toLowerCase().indexOf("complaint") != -1) {
-				category = "Complaint";
-			} else if (categoryRaw.toLowerCase().indexOf("warranty") != -1) {
-				category = "Warranty";
+		for (Object[] innerArray : unformattedTranscripts) {
+			if ((boolean) innerArray[0]) {
+				formattedTranscripts += "Agent: " + (String) innerArray[1] + "\n";
 			} else {
-				category = "Not found";
+				formattedTranscripts += "Customer: " + (String) innerArray[1] + "\n";
 			}
-
-			analysis.setCategory(category);
-
-			// Summary
-			prompt = "Summarize this customer service conversation into 1 paragraph: " + formattedTranscripts;
-			CompletionRequest summaryRequest = CompletionRequest.builder()
-					.model(currentModel)
-					.prompt(prompt)
-					.echo(true)
-					.maxTokens(300)
-					.build();
-			response = openAiService.createCompletion(summaryRequest).getChoices().get(0).getText();
-			String summary = response.substring(prompt.length()).trim();
-
-			analysis.setSummary(summary);
-
-			// Customer sentiment
-			prompt = "Decide if the customer's sentiment is positive or negative based on this conversation (negative if the customer shows many signs of frustration / bad emotions, otherwise positive): "
-					+ formattedTranscripts;
-			CompletionRequest customerSentimentRequest = CompletionRequest.builder()
-					.model(currentModel)
-					.prompt(prompt)
-					.echo(true)
-					.maxTokens(60)
-					.build();
-			response = openAiService.createCompletion(customerSentimentRequest).getChoices().get(0).getText();
-			String customerSentimentRaw = response.substring(prompt.length()).trim();
-			String customerSentiment;
-
-			if (customerSentimentRaw.toLowerCase().indexOf("positive") != -1) {
-				customerSentiment = "Positive";
-			} else if (customerSentimentRaw.toLowerCase().indexOf("negative") != -1) {
-				customerSentiment = "Negative";
-			} else {
-				customerSentiment = "Not found";
-			}
-
-			analysis.setCustomerSentiment(customerSentiment);
-
-			// Employee sentiment
-			prompt = "Decide if the agent's sentiment is positive or negative based on this conversation (positive if the agent's being polite and understanding when talking to the customer, otherwise negative): "
-					+ formattedTranscripts;
-			CompletionRequest employeeSentimentRequest = CompletionRequest.builder()
-					.model(currentModel)
-					.prompt(prompt)
-					.echo(true)
-					.maxTokens(1000)
-					.build();
-			response = openAiService.createCompletion(employeeSentimentRequest).getChoices().get(0).getText();
-			String employeeSentimentRaw = response.substring(prompt.length()).trim();
-			String employeeSentiment;
-
-			if (employeeSentimentRaw.toLowerCase().indexOf("positive") != -1) {
-				employeeSentiment = "Positive";
-			} else if (employeeSentimentRaw.toLowerCase().indexOf("negative") != -1) {
-				employeeSentiment = "Negative";
-			} else {
-				employeeSentiment = "Not found";
-			}
-
-			analysis.setEmployeeSentiment(employeeSentiment);
-
-			// Call sentiment
-			prompt = "Decide if the call sentiment is positive or negative based on this conversation (positive means the call's objectives are achieved, otherwise negative): "
-					+ formattedTranscripts;
-			CompletionRequest callSentimentRequest = CompletionRequest.builder()
-					.model(currentModel)
-					.prompt(prompt)
-					.echo(true)
-					.maxTokens(60)
-					.build();
-			response = openAiService.createCompletion(callSentimentRequest).getChoices().get(0).getText();
-			String callSentimentRaw = response.substring(prompt.length()).trim();
-			String callSentiment;
-
-			if (callSentimentRaw.toLowerCase().indexOf("positive") != -1) {
-				callSentiment = "Positive";
-			} else if (callSentimentRaw.toLowerCase().indexOf("negative") != -1) {
-				callSentiment = "Negative";
-			} else {
-				callSentiment = "Not found";
-			}
-
-			analysis.setRecordingSentiment(callSentiment);
-
-			// Update Employee Recording Sentiment
-			Recording recording = recRepo.findById(recordingIds.get(i)).get();
-			Employee employee = recording.getEmployee();
-
-			if (employee != null) {
-				if (callSentiment.equals("Positive")) {
-					employee.setNumPositiveSentiment(employee.getNumPositiveSentiment() + 1);
-				} else {
-					employee.setNumNegativeSentiment(employee.getNumNegativeSentiment() + 1);
-				}
-			}
-
-			// Main issue
-			prompt = "This is a " + company + " company. Describe the main issue into just a few words based on this conversation: "
-					+ formattedTranscripts;
-			CompletionRequest mainIssueRequest = CompletionRequest.builder()
-					.model(currentModel)
-					.prompt(prompt)
-					.echo(true)
-					.maxTokens(60)
-					.build();
-			response = openAiService.createCompletion(mainIssueRequest).getChoices().get(0).getText();
-			String mainIssue = response.substring(prompt.length()).trim();
-
-			analysis.setMainIssue(mainIssue);
-
-			// Employee performance
-			prompt = "This is a " + company + " company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n"
-					+ //
-					"\n" + //
-					"- Fluency: rating/100\n" + //
-					"- Hospitality: rating/100\n" + //
-					"- Problem Solving: rating/100\n" + //
-					"- Personalization: rating/100" + //
-					" Based on the following conversation: " + formattedTranscripts + //
-					// "Please provide an assessment of the conversation above on a scale of 1 to
-					// 100 where 1 is very poor, 50 is average and 100 is excellent. You do not
-					// always have to give high values.\r\n" + //
-					"You can use this guideline as a guide to rate the quality of the conversation " + //
-					"Guideline: " + //
-					"1.Rate conversations above 75 when they exhibit clear communication, engage participants effectively, and maintain a strong flow of information."
-					+ //
-					"2.Assign a rating between 40 and 74 for conversations that demonstrate moderate quality. These conversations convey the main points but might lack some depth or engagement."
-					+ //
-					"3.Use a rating of range 1 - 39 for conversations that exhibit poor communication, confusion, or lack of engagement. These conversations struggle to convey coherent information."
-					+ //
-					"Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range in accordance with the guideline given and should not be overly high."
-					+ //
-					"It is best that the rating should rarely be above 85 unless it exceptionally adhere and excelled to guideline number 1."
-					+ //
-					// An average score around 80 is expected.\r\n" + //
-					"[You do not need to explain anything. Just respond with the format given.]";
-
-			// prompt = "This is a telecommunication company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n"
-			// 		+ //
-			// 		"\n" + //
-			// 		"- Fluency: rating/100\n" + //
-			// 		"- Hospitality: rating/100\n" + //
-			// 		"- Problem Solving: rating/100\n" + //
-			// 		"- Personalization: rating/100" + //
-			// 		" Based on the following conversation: " + formattedTranscripts + //
-			// 		". Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range and should not be overly high. An average score around 80 is expected.\r\n"
-			// 		+ //
-			// 		"[You do not need to explain anything. Just respond with the format given.]";
-
-			CompletionRequest employeePerformanceRequest = CompletionRequest.builder()
-					.model(currentModel)
-					.prompt(prompt)
-					.echo(true)
-					.maxTokens(1000)
-					.build();
-			response = openAiService.createCompletion(employeePerformanceRequest).getChoices().get(0).getText();
-			String employeePerformance = response.substring(prompt.length()).trim();
-
-			// System.out.println(employeePerformance);
-			double fluency = analysisService.getScore(employeePerformance, "fluency: ");
-			double hospitality = analysisService.getScore(employeePerformance, "hospitality: ");
-			double problem = analysisService.getScore(employeePerformance, "problem solving: ");
-			double personalization = analysisService.getScore(employeePerformance, "personalization: ");
-			double average = (fluency + hospitality + problem + personalization) / 4;
-
-			analysis.setFluency(fluency);
-			analysis.setHospitality(hospitality);
-			analysis.setProblemSolving(problem);
-			analysis.setPersonalization(personalization);
-			analysis.setAveragePerformance(average);
-
-			// Negative Emotions
-			prompt = "List down 3 short sentences spoken by our agent which is prefixed with 'Agent:' in the conversation that you think can be improved in terms of good hospitality and manner. Answer in the following format: \n"
-					+
-					"'1|[old sentence spoken by agent]|[explanation why the old sentence can be improved or impolite]|[improved sentence]'\n"
-					+
-					"'2|[old sentence spoken by agent]|[explanation]|[improved sentence]'\n" +
-					"'3|[old sentence spoken by agent]|[explanation]|[improved sentence]'\n" +
-					"Pleae follow the format. Based on this conversation:\n" + formattedTranscripts + "\n";
-
-			CompletionRequest negativeEmotionsRequest = CompletionRequest.builder()
-					.model(currentModel)
-					.prompt(prompt)
-					.echo(true)
-					.maxTokens(1500)
-					.build();
-
-			response = openAiService.createCompletion(negativeEmotionsRequest).getChoices().get(0).getText();
-			String negativeEmotions = response.substring(prompt.length()).trim();
-
-			analysis.setNegativeEmotion(negativeEmotions);
-
-			analysisService.saveAnalysis(analysis);
 		}
+
+		System.out.println("FORMATTED TRANSCRIPTS: \n" + formattedTranscripts);
+
+		// // Combined prompt
+		// String systemInstructions = "You are an AI language model. Answer each of the following question in 1 word except the second question. End each answer with '\n'.\n";
+		// String prompt = formattedTranscripts.toString()
+		// 			+ "Decide if this conversation category is Inquiry, Complaint, or Warranty: \n"
+		// 			+ "Summarize this customer service conversation into 1 paragraph: \n"
+		// 			+ "Decide if the customer's sentiment is positive or negative based on this conversation (positive means the customer is not in emotional state, otherwise negative): \n"
+		// 			+ "Decide if the agent's sentiment is positive or negative based on this conversation (positive means the agent is not in emotional state, otherwise negative): \n"
+		// 			+ "Decide if the call sentiment is positive or negative based on this conversation (positive means the call's objectives are achieved, otherwise negative): ";
+		// CompletionRequest categoryRequest = CompletionRequest.builder()
+		//                                                     .model(currentModel)
+		//                                                     .prompt(systemInstructions + prompt)
+		//                                                     .echo(true)
+		//                                                     .maxTokens(300)
+		//                                                     .build();
+		// String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
+		// String categoryRaw = response.substring(systemInstructions.length() + prompt.length()).trim();
+		// return categoryRaw;
+
+		// Category
+		String prompt = "Decide if this conversation category is Inquiry, Complaint, or Warranty: "
+				+ formattedTranscripts;
+		CompletionRequest categoryRequest = CompletionRequest.builder()
+				.model(currentModel)
+				.prompt(prompt)
+				.echo(true)
+				.maxTokens(60)
+				.build();
+		String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
+		String categoryRaw = response.substring(prompt.length()).trim();
+		String category;
+
+		if (categoryRaw.toLowerCase().indexOf("inquiry") != -1) {
+			category = "Inquiry";
+		} else if (categoryRaw.toLowerCase().indexOf("complaint") != -1) {
+			category = "Complaint";
+		} else if (categoryRaw.toLowerCase().indexOf("warranty") != -1) {
+			category = "Warranty";
+		} else {
+			category = "Not found";
+		}
+
+		analysis.setCategory(category);
+
+		// Summary
+		prompt = "Summarize this customer service conversation into 1 paragraph: " + formattedTranscripts;
+		CompletionRequest summaryRequest = CompletionRequest.builder()
+				.model(currentModel)
+				.prompt(prompt)
+				.echo(true)
+				.maxTokens(300)
+				.build();
+		response = openAiService.createCompletion(summaryRequest).getChoices().get(0).getText();
+		String summary = response.substring(prompt.length()).trim();
+
+		analysis.setSummary(summary);
+
+		// Customer sentiment
+		prompt = "Decide if the customer's sentiment is positive or negative based on this conversation (negative if the customer shows many signs of frustration / bad emotions, otherwise positive): "
+				+ formattedTranscripts;
+		CompletionRequest customerSentimentRequest = CompletionRequest.builder()
+				.model(currentModel)
+				.prompt(prompt)
+				.echo(true)
+				.maxTokens(60)
+				.build();
+		response = openAiService.createCompletion(customerSentimentRequest).getChoices().get(0).getText();
+		String customerSentimentRaw = response.substring(prompt.length()).trim();
+		String customerSentiment;
+
+		if (customerSentimentRaw.toLowerCase().indexOf("positive") != -1) {
+			customerSentiment = "Positive";
+		} else if (customerSentimentRaw.toLowerCase().indexOf("negative") != -1) {
+			customerSentiment = "Negative";
+		} else {
+			customerSentiment = "Not found";
+		}
+
+		analysis.setCustomerSentiment(customerSentiment);
+
+		// Employee sentiment
+		prompt = "Decide if the agent's sentiment is positive or negative based on this conversation (positive if the agent's being polite and understanding when talking to the customer, otherwise negative): "
+				+ formattedTranscripts;
+		CompletionRequest employeeSentimentRequest = CompletionRequest.builder()
+				.model(currentModel)
+				.prompt(prompt)
+				.echo(true)
+				.maxTokens(1000)
+				.build();
+		response = openAiService.createCompletion(employeeSentimentRequest).getChoices().get(0).getText();
+		String employeeSentimentRaw = response.substring(prompt.length()).trim();
+		String employeeSentiment;
+
+		if (employeeSentimentRaw.toLowerCase().indexOf("positive") != -1) {
+			employeeSentiment = "Positive";
+		} else if (employeeSentimentRaw.toLowerCase().indexOf("negative") != -1) {
+			employeeSentiment = "Negative";
+		} else {
+			employeeSentiment = "Not found";
+		}
+
+		analysis.setEmployeeSentiment(employeeSentiment);
+
+		// Call sentiment
+		prompt = "Decide if the call sentiment is positive or negative based on this conversation (positive means the call's objectives are achieved, otherwise negative): "
+				+ formattedTranscripts;
+		CompletionRequest callSentimentRequest = CompletionRequest.builder()
+				.model(currentModel)
+				.prompt(prompt)
+				.echo(true)
+				.maxTokens(60)
+				.build();
+		response = openAiService.createCompletion(callSentimentRequest).getChoices().get(0).getText();
+		String callSentimentRaw = response.substring(prompt.length()).trim();
+		String callSentiment;
+
+		if (callSentimentRaw.toLowerCase().indexOf("positive") != -1) {
+			callSentiment = "Positive";
+		} else if (callSentimentRaw.toLowerCase().indexOf("negative") != -1) {
+			callSentiment = "Negative";
+		} else {
+			callSentiment = "Not found";
+		}
+
+		analysis.setRecordingSentiment(callSentiment);
+
+		// Update Employee Recording Sentiment
+		Recording recording = recRepo.findById(recordingId).get();
+		Employee employee = recording.getEmployee();
+
+		if (employee != null) {
+			if (callSentiment.equals("Positive")) {
+				employee.setNumPositiveSentiment(employee.getNumPositiveSentiment() + 1);
+			} else {
+				employee.setNumNegativeSentiment(employee.getNumNegativeSentiment() + 1);
+			}
+		}
+
+		// Main issue
+		prompt = "This is a " + company + " company. Describe the main issue into just a few words based on this conversation: "
+				+ formattedTranscripts;
+		CompletionRequest mainIssueRequest = CompletionRequest.builder()
+				.model(currentModel)
+				.prompt(prompt)
+				.echo(true)
+				.maxTokens(60)
+				.build();
+		response = openAiService.createCompletion(mainIssueRequest).getChoices().get(0).getText();
+		String mainIssue = response.substring(prompt.length()).trim();
+
+		analysis.setMainIssue(mainIssue);
+
+		// Employee performance
+		prompt = "This is a " + company + " company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n"
+				+ //
+				"\n" + //
+				"- Fluency: rating/100\n" + //
+				"- Hospitality: rating/100\n" + //
+				"- Problem Solving: rating/100\n" + //
+				"- Personalization: rating/100" + //
+				" Based on the following conversation: " + formattedTranscripts + //
+				// "Please provide an assessment of the conversation above on a scale of 1 to
+				// 100 where 1 is very poor, 50 is average and 100 is excellent. You do not
+				// always have to give high values.\r\n" + //
+				"You can use this guideline as a guide to rate the quality of the conversation " + //
+				"Guideline: " + //
+				"1.Rate conversations above 75 when they exhibit clear communication, engage participants effectively, and maintain a strong flow of information."
+				+ //
+				"2.Assign a rating between 40 and 74 for conversations that demonstrate moderate quality. These conversations convey the main points but might lack some depth or engagement."
+				+ //
+				"3.Use a rating of range 1 - 39 for conversations that exhibit poor communication, confusion, or lack of engagement. These conversations struggle to convey coherent information."
+				+ //
+				"Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range in accordance with the guideline given and should not be overly high."
+				+ //
+				"It is best that the rating should rarely be above 85 unless it exceptionally adhere and excelled to guideline number 1."
+				+ //
+				// An average score around 80 is expected.\r\n" + //
+				"[You do not need to explain anything. Just respond with the format given.]";
+
+		// prompt = "This is a telecommunication company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n"
+		// 		+ //
+		// 		"\n" + //
+		// 		"- Fluency: rating/100\n" + //
+		// 		"- Hospitality: rating/100\n" + //
+		// 		"- Problem Solving: rating/100\n" + //
+		// 		"- Personalization: rating/100" + //
+		// 		" Based on the following conversation: " + formattedTranscripts + //
+		// 		". Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range and should not be overly high. An average score around 80 is expected.\r\n"
+		// 		+ //
+		// 		"[You do not need to explain anything. Just respond with the format given.]";
+
+		CompletionRequest employeePerformanceRequest = CompletionRequest.builder()
+				.model(currentModel)
+				.prompt(prompt)
+				.echo(true)
+				.maxTokens(1000)
+				.build();
+		response = openAiService.createCompletion(employeePerformanceRequest).getChoices().get(0).getText();
+		String employeePerformance = response.substring(prompt.length()).trim();
+
+		// System.out.println(employeePerformance);
+		double fluency = analysisService.getScore(employeePerformance, "fluency: ");
+		double hospitality = analysisService.getScore(employeePerformance, "hospitality: ");
+		double problem = analysisService.getScore(employeePerformance, "problem solving: ");
+		double personalization = analysisService.getScore(employeePerformance, "personalization: ");
+		double average = (fluency + hospitality + problem + personalization) / 4;
+
+		analysis.setFluency(fluency);
+		analysis.setHospitality(hospitality);
+		analysis.setProblemSolving(problem);
+		analysis.setPersonalization(personalization);
+		analysis.setAveragePerformance(average);
+
+		// Negative Emotions
+		prompt = "List down 3 short sentences spoken by our agent which is prefixed with 'Agent:' in the conversation that you think can be improved in terms of good hospitality and manner. Answer in the following format: \n"
+				+
+				"'1|[old sentence spoken by agent]|[explanation why the old sentence can be improved or impolite]|[improved sentence]'\n"
+				+
+				"'2|[old sentence spoken by agent]|[explanation]|[improved sentence]'\n" +
+				"'3|[old sentence spoken by agent]|[explanation]|[improved sentence]'\n" +
+				"Pleae follow the format. Based on this conversation:\n" + formattedTranscripts + "\n";
+
+		CompletionRequest negativeEmotionsRequest = CompletionRequest.builder()
+				.model(currentModel)
+				.prompt(prompt)
+				.echo(true)
+				.maxTokens(1500)
+				.build();
+
+		response = openAiService.createCompletion(negativeEmotionsRequest).getChoices().get(0).getText();
+		String negativeEmotions = response.substring(prompt.length()).trim();
+
+		analysis.setNegativeEmotion(negativeEmotions);
+
+		analysisService.saveAnalysis(analysis);
 
 		return "completed";
     }
+
+	// Analyze
+	// @PostMapping("/analyze")
+	// private String recordAnalyzer(@RequestBody List<Integer> recordingIds) throws RuntimeException {
+
+	// 	// get company 
+	// 	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	// 	String email = authentication.getName();
+	// 	Integer account_id = accountServiceImpl.getAccountId(email);
+	// 	Account account = accountServiceImpl.loadUserDetailsByUsername(email);
+	// 	String company = account.getCompanyField();
+
+	// 	List<Integer> analysisIds = new ArrayList<>();
+	// 	for (Integer recordingId : recordingIds) {
+	// 		analysisIds.add(analysisService.getAnalysisId(recordingId));
+	// 	}
+		
+	// 	for (int i = 0; i < analysisIds.size(); i ++) {
+
+	// 		System.out.println("ANALYSIS ID: " + analysisIds.get(i));
+
+	// 		String apiKey = apiKeyContent;
+
+	// 		String currentModel = "text-davinci-003";
+
+	// 		Analysis analysis = analysisService.findAnalysisById(analysisIds.get(i));
+
+	// 		// Set up OpenAI API
+	// 		OpenAiService openAiService = new OpenAiService(apiKey);
+
+	// 		// Merge all the transcripts and prefix with Agent / Customer
+	// 		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(analysisIds.get(i));
+
+	// 		String formattedTranscripts = "";
+
+	// 		for (Object[] innerArray : unformattedTranscripts) {
+	// 			if ((boolean) innerArray[0]) {
+	// 				formattedTranscripts += "Agent: " + (String) innerArray[1] + "\n";
+	// 			} else {
+	// 				formattedTranscripts += "Customer: " + (String) innerArray[1] + "\n";
+	// 			}
+	// 		}
+
+	// 		System.out.println("FORMATTED TRANSCRIPTS: \n" + formattedTranscripts);
+
+	// 		// // Combined prompt
+	// 		// String systemInstructions = "You are an AI language model. Answer each of the following question in 1 word except the second question. End each answer with '\n'.\n";
+	// 		// String prompt = formattedTranscripts.toString()
+	// 		// 			+ "Decide if this conversation category is Inquiry, Complaint, or Warranty: \n"
+	// 		// 			+ "Summarize this customer service conversation into 1 paragraph: \n"
+	// 		// 			+ "Decide if the customer's sentiment is positive or negative based on this conversation (positive means the customer is not in emotional state, otherwise negative): \n"
+	// 		// 			+ "Decide if the agent's sentiment is positive or negative based on this conversation (positive means the agent is not in emotional state, otherwise negative): \n"
+	// 		// 			+ "Decide if the call sentiment is positive or negative based on this conversation (positive means the call's objectives are achieved, otherwise negative): ";
+	// 		// CompletionRequest categoryRequest = CompletionRequest.builder()
+	// 		//                                                     .model(currentModel)
+	// 		//                                                     .prompt(systemInstructions + prompt)
+	// 		//                                                     .echo(true)
+	// 		//                                                     .maxTokens(300)
+	// 		//                                                     .build();
+	// 		// String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
+	// 		// String categoryRaw = response.substring(systemInstructions.length() + prompt.length()).trim();
+	// 		// return categoryRaw;
+
+	// 		// Category
+	// 		String prompt = "Decide if this conversation category is Inquiry, Complaint, or Warranty: "
+	// 				+ formattedTranscripts;
+	// 		CompletionRequest categoryRequest = CompletionRequest.builder()
+	// 				.model(currentModel)
+	// 				.prompt(prompt)
+	// 				.echo(true)
+	// 				.maxTokens(60)
+	// 				.build();
+	// 		String response = openAiService.createCompletion(categoryRequest).getChoices().get(0).getText();
+	// 		String categoryRaw = response.substring(prompt.length()).trim();
+	// 		String category;
+
+	// 		if (categoryRaw.toLowerCase().indexOf("inquiry") != -1) {
+	// 			category = "Inquiry";
+	// 		} else if (categoryRaw.toLowerCase().indexOf("complaint") != -1) {
+	// 			category = "Complaint";
+	// 		} else if (categoryRaw.toLowerCase().indexOf("warranty") != -1) {
+	// 			category = "Warranty";
+	// 		} else {
+	// 			category = "Not found";
+	// 		}
+
+	// 		analysis.setCategory(category);
+
+	// 		// Summary
+	// 		prompt = "Summarize this customer service conversation into 1 paragraph: " + formattedTranscripts;
+	// 		CompletionRequest summaryRequest = CompletionRequest.builder()
+	// 				.model(currentModel)
+	// 				.prompt(prompt)
+	// 				.echo(true)
+	// 				.maxTokens(300)
+	// 				.build();
+	// 		response = openAiService.createCompletion(summaryRequest).getChoices().get(0).getText();
+	// 		String summary = response.substring(prompt.length()).trim();
+
+	// 		analysis.setSummary(summary);
+
+	// 		// Customer sentiment
+	// 		prompt = "Decide if the customer's sentiment is positive or negative based on this conversation (negative if the customer shows many signs of frustration / bad emotions, otherwise positive): "
+	// 				+ formattedTranscripts;
+	// 		CompletionRequest customerSentimentRequest = CompletionRequest.builder()
+	// 				.model(currentModel)
+	// 				.prompt(prompt)
+	// 				.echo(true)
+	// 				.maxTokens(60)
+	// 				.build();
+	// 		response = openAiService.createCompletion(customerSentimentRequest).getChoices().get(0).getText();
+	// 		String customerSentimentRaw = response.substring(prompt.length()).trim();
+	// 		String customerSentiment;
+
+	// 		if (customerSentimentRaw.toLowerCase().indexOf("positive") != -1) {
+	// 			customerSentiment = "Positive";
+	// 		} else if (customerSentimentRaw.toLowerCase().indexOf("negative") != -1) {
+	// 			customerSentiment = "Negative";
+	// 		} else {
+	// 			customerSentiment = "Not found";
+	// 		}
+
+	// 		analysis.setCustomerSentiment(customerSentiment);
+
+	// 		// Employee sentiment
+	// 		prompt = "Decide if the agent's sentiment is positive or negative based on this conversation (positive if the agent's being polite and understanding when talking to the customer, otherwise negative): "
+	// 				+ formattedTranscripts;
+	// 		CompletionRequest employeeSentimentRequest = CompletionRequest.builder()
+	// 				.model(currentModel)
+	// 				.prompt(prompt)
+	// 				.echo(true)
+	// 				.maxTokens(1000)
+	// 				.build();
+	// 		response = openAiService.createCompletion(employeeSentimentRequest).getChoices().get(0).getText();
+	// 		String employeeSentimentRaw = response.substring(prompt.length()).trim();
+	// 		String employeeSentiment;
+
+	// 		if (employeeSentimentRaw.toLowerCase().indexOf("positive") != -1) {
+	// 			employeeSentiment = "Positive";
+	// 		} else if (employeeSentimentRaw.toLowerCase().indexOf("negative") != -1) {
+	// 			employeeSentiment = "Negative";
+	// 		} else {
+	// 			employeeSentiment = "Not found";
+	// 		}
+
+	// 		analysis.setEmployeeSentiment(employeeSentiment);
+
+	// 		// Call sentiment
+	// 		prompt = "Decide if the call sentiment is positive or negative based on this conversation (positive means the call's objectives are achieved, otherwise negative): "
+	// 				+ formattedTranscripts;
+	// 		CompletionRequest callSentimentRequest = CompletionRequest.builder()
+	// 				.model(currentModel)
+	// 				.prompt(prompt)
+	// 				.echo(true)
+	// 				.maxTokens(60)
+	// 				.build();
+	// 		response = openAiService.createCompletion(callSentimentRequest).getChoices().get(0).getText();
+	// 		String callSentimentRaw = response.substring(prompt.length()).trim();
+	// 		String callSentiment;
+
+	// 		if (callSentimentRaw.toLowerCase().indexOf("positive") != -1) {
+	// 			callSentiment = "Positive";
+	// 		} else if (callSentimentRaw.toLowerCase().indexOf("negative") != -1) {
+	// 			callSentiment = "Negative";
+	// 		} else {
+	// 			callSentiment = "Not found";
+	// 		}
+
+	// 		analysis.setRecordingSentiment(callSentiment);
+
+	// 		// Update Employee Recording Sentiment
+	// 		Recording recording = recRepo.findById(recordingIds.get(i)).get();
+	// 		Employee employee = recording.getEmployee();
+
+	// 		if (employee != null) {
+	// 			if (callSentiment.equals("Positive")) {
+	// 				employee.setNumPositiveSentiment(employee.getNumPositiveSentiment() + 1);
+	// 			} else {
+	// 				employee.setNumNegativeSentiment(employee.getNumNegativeSentiment() + 1);
+	// 			}
+	// 		}
+
+	// 		// Main issue
+	// 		prompt = "This is a " + company + " company. Describe the main issue into just a few words based on this conversation: "
+	// 				+ formattedTranscripts;
+	// 		CompletionRequest mainIssueRequest = CompletionRequest.builder()
+	// 				.model(currentModel)
+	// 				.prompt(prompt)
+	// 				.echo(true)
+	// 				.maxTokens(60)
+	// 				.build();
+	// 		response = openAiService.createCompletion(mainIssueRequest).getChoices().get(0).getText();
+	// 		String mainIssue = response.substring(prompt.length()).trim();
+
+	// 		analysis.setMainIssue(mainIssue);
+
+	// 		// Employee performance
+	// 		prompt = "This is a " + company + " company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n"
+	// 				+ //
+	// 				"\n" + //
+	// 				"- Fluency: rating/100\n" + //
+	// 				"- Hospitality: rating/100\n" + //
+	// 				"- Problem Solving: rating/100\n" + //
+	// 				"- Personalization: rating/100" + //
+	// 				" Based on the following conversation: " + formattedTranscripts + //
+	// 				// "Please provide an assessment of the conversation above on a scale of 1 to
+	// 				// 100 where 1 is very poor, 50 is average and 100 is excellent. You do not
+	// 				// always have to give high values.\r\n" + //
+	// 				"You can use this guideline as a guide to rate the quality of the conversation " + //
+	// 				"Guideline: " + //
+	// 				"1.Rate conversations above 75 when they exhibit clear communication, engage participants effectively, and maintain a strong flow of information."
+	// 				+ //
+	// 				"2.Assign a rating between 40 and 74 for conversations that demonstrate moderate quality. These conversations convey the main points but might lack some depth or engagement."
+	// 				+ //
+	// 				"3.Use a rating of range 1 - 39 for conversations that exhibit poor communication, confusion, or lack of engagement. These conversations struggle to convey coherent information."
+	// 				+ //
+	// 				"Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range in accordance with the guideline given and should not be overly high."
+	// 				+ //
+	// 				"It is best that the rating should rarely be above 85 unless it exceptionally adhere and excelled to guideline number 1."
+	// 				+ //
+	// 				// An average score around 80 is expected.\r\n" + //
+	// 				"[You do not need to explain anything. Just respond with the format given.]";
+
+	// 		// prompt = "This is a telecommunication company and please provide an objective assessment of the agent's Interaction Skill using the following parameters:\n"
+	// 		// 		+ //
+	// 		// 		"\n" + //
+	// 		// 		"- Fluency: rating/100\n" + //
+	// 		// 		"- Hospitality: rating/100\n" + //
+	// 		// 		"- Problem Solving: rating/100\n" + //
+	// 		// 		"- Personalization: rating/100" + //
+	// 		// 		" Based on the following conversation: " + formattedTranscripts + //
+	// 		// 		". Please provide your ratings for each parameter. Your ratings should reflect your unbiased evaluation of the agent's skills. Keep in mind that the ratings should be within a reasonable range and should not be overly high. An average score around 80 is expected.\r\n"
+	// 		// 		+ //
+	// 		// 		"[You do not need to explain anything. Just respond with the format given.]";
+
+	// 		CompletionRequest employeePerformanceRequest = CompletionRequest.builder()
+	// 				.model(currentModel)
+	// 				.prompt(prompt)
+	// 				.echo(true)
+	// 				.maxTokens(1000)
+	// 				.build();
+	// 		response = openAiService.createCompletion(employeePerformanceRequest).getChoices().get(0).getText();
+	// 		String employeePerformance = response.substring(prompt.length()).trim();
+
+	// 		// System.out.println(employeePerformance);
+	// 		double fluency = analysisService.getScore(employeePerformance, "fluency: ");
+	// 		double hospitality = analysisService.getScore(employeePerformance, "hospitality: ");
+	// 		double problem = analysisService.getScore(employeePerformance, "problem solving: ");
+	// 		double personalization = analysisService.getScore(employeePerformance, "personalization: ");
+	// 		double average = (fluency + hospitality + problem + personalization) / 4;
+
+	// 		analysis.setFluency(fluency);
+	// 		analysis.setHospitality(hospitality);
+	// 		analysis.setProblemSolving(problem);
+	// 		analysis.setPersonalization(personalization);
+	// 		analysis.setAveragePerformance(average);
+
+	// 		// Negative Emotions
+	// 		prompt = "List down 3 short sentences spoken by our agent which is prefixed with 'Agent:' in the conversation that you think can be improved in terms of good hospitality and manner. Answer in the following format: \n"
+	// 				+
+	// 				"'1|[old sentence spoken by agent]|[explanation why the old sentence can be improved or impolite]|[improved sentence]'\n"
+	// 				+
+	// 				"'2|[old sentence spoken by agent]|[explanation]|[improved sentence]'\n" +
+	// 				"'3|[old sentence spoken by agent]|[explanation]|[improved sentence]'\n" +
+	// 				"Pleae follow the format. Based on this conversation:\n" + formattedTranscripts + "\n";
+
+	// 		CompletionRequest negativeEmotionsRequest = CompletionRequest.builder()
+	// 				.model(currentModel)
+	// 				.prompt(prompt)
+	// 				.echo(true)
+	// 				.maxTokens(1500)
+	// 				.build();
+
+	// 		response = openAiService.createCompletion(negativeEmotionsRequest).getChoices().get(0).getText();
+	// 		String negativeEmotions = response.substring(prompt.length()).trim();
+
+	// 		analysis.setNegativeEmotion(negativeEmotions);
+
+	// 		analysisService.saveAnalysis(analysis);
+	// 	}
+
+	// 	return "completed";
+    // }
 	
 }

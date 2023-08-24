@@ -172,7 +172,7 @@ function EmployeeRecordingList() {
   const firstPostIndex = lastPostIndex - postsPerPage;
 
   return (
-    <div className="mx-20 pt-16">
+    <div className="ml-20 pt-16">
       <div className="flex mb-5">
         <Link to="../employeeList">
           <img src={ArrowLeft} className="mr-3"></img>

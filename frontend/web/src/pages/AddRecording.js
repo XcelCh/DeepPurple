@@ -612,54 +612,64 @@ const addEmployee = async (empData) => {
       },
       body: JSON.stringify(ids),
     })
-      .then((response) => {
-        if (response.status === 400) {
-          setErrorMessage("Limit is not sufficient to analyse!");
-          setLimitError(true);
-          throw new Error("Limit Exceeded");
+    .then((response) => {
+      if (response.status === 400) {
+        setErrorMessage("Limit is not sufficient to analyse!");
+        setLimitError(true);
+        throw new Error("Limit Exceeded");
 
-        } else if (response.ok) {
-          // Perform operations related to the first fetch's success
+      } else if (response.ok) {
+        // Perform operations related to the first fetch's success
 
-          // Second Fetch
-          return fetch(`${BASE_URL}/audio/analyze`, {
-            method: "POST",
-            headers: {
-              Authorization: token.Authorization,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(ids),
-          });
-        } else if (response.status === 401) {
-          navigate("/");
-        } else {
-          setErrorMessage("An error has occured. Please try again.");
-          setLimitError(true);
-          throw new Error("Error Happened.");
-        }
-      })
-      .then((secondResponse) => {
-        if (secondResponse.status === 400) {
-          setErrorMessage("Limit is not sufficient to analyse!");
-          setLimitError(true);
-          throw new Error("Limit Exceeded");
-        } else if (secondResponse.ok) {
-          navigate("/RecordingList");
-        } else if (secondResponse.status === 401) {
-          navigate("/");
-        } else {
-          setErrorMessage("An error has occured. Please try again.");
-          setLimitError(true);
-          throw new Error("Error Happened.");
-        }
-      })
-      .catch((error) => {
-        if (error.message === 'Failed to fetch') {
-          setErrorMessage("An error has occured. Please try again.");
-          setLimitError(true);
-        }
-        console.error(error);
-      }).finally(() => {
+        // Second Fetch
+        const fetchPromises = ids.map(id =>
+          fetch(`${BASE_URL}/audio/analyze`, {
+              method: "POST",
+              headers: {
+                  Authorization: token.Authorization,
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify(id),
+          })
+          .then((response) => {
+              return response.ok; // Return true for successful requests
+          })
+        );
+        // Wait for all fetch promises to complete
+        return Promise.all(fetchPromises);
+
+
+        // return fetch(`${BASE_URL}/audio/analyze`, {
+        //   method: "POST",
+        //   headers: {
+        //     Authorization: token.Authorization,
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(ids),
+        // });
+      } else if (response.status === 401) {
+        navigate("/RecordingList");
+      } else {
+        setErrorMessage("An error has occured. Please try again.");
+        setLimitError(true);
+        throw new Error("Error Happened.");
+      }
+    })
+    .then((results) => {
+      // Check if all responses in the second fetch were successful
+      const allSuccessful = results.every(result => result);
+
+      if (allSuccessful) {
+        navigate("/");
+      } else {
+        setErrorMessage("An error has occured. Please try again.");
+        throw new Error("Error Happened.");
+      }
+    })
+    .catch(error => {
+        console.error("An error occurred:", error);
+    })
+    .finally(() => {
       Swal.close();
     });
     
@@ -766,7 +776,6 @@ const addEmployee = async (empData) => {
             >
               <option value="">Select</option>
               <option value="existingEmployee">Existing Employee</option>
-              <option value="folderName">Folder Name</option>
               <option value="splitFileName">Split File Name</option>
               <option value="none">None</option>
             </select>
