@@ -409,12 +409,12 @@ function SummaryAnalysis() {
                 </div>
                 <div
                   data-tooltip-style="light"
-                  data-tooltip-target="callSentiment"
+                  data-tooltip-target="callSentiment-tooltip"
                 >
                   <QuestionIcon></QuestionIcon>
                 </div>
                 <div
-                  id="callSentiment"
+                  id="callSentiment-tooltip"
                   role="tooltip"
                   class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-normal text-xs text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
                 >
@@ -502,12 +502,12 @@ function SummaryAnalysis() {
                   </div>
                   <div
                     data-tooltip-style="light"
-                    data-tooltip-target="employeeSentiment"
+                    data-tooltip-target="employeeSentiment-tooltip"
                   >
                     <QuestionIcon></QuestionIcon>
                   </div>
                   <div
-                    id="employeeSentiment"
+                    id="employeeSentiment-tooltip"
                     role="tooltip"
                     class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-normal text-xs text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
                   >

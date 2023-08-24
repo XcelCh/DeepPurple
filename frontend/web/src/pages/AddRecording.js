@@ -638,17 +638,8 @@ const addEmployee = async (empData) => {
         // Wait for all fetch promises to complete
         return Promise.all(fetchPromises);
 
-
-        // return fetch(`${BASE_URL}/audio/analyze`, {
-        //   method: "POST",
-        //   headers: {
-        //     Authorization: token.Authorization,
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(ids),
-        // });
       } else if (response.status === 401) {
-        navigate("/RecordingList");
+        navigate("/");
       } else {
         setErrorMessage("An error has occured. Please try again.");
         setLimitError(true);
@@ -660,7 +651,7 @@ const addEmployee = async (empData) => {
       const allSuccessful = results.every(result => result);
 
       if (allSuccessful) {
-        navigate("/");
+        navigate("/RecordingList");
       } else {
         setErrorMessage("An error has occured. Please try again.");
         throw new Error("Error Happened.");

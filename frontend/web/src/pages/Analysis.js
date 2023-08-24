@@ -222,7 +222,7 @@ function Analysis() {
         callbacks: {
           label: function (context) {
             const value = context.parsed.y;
-            return value + "%";
+            return value.toFixed(2) + "%";
           },
         },
       },
@@ -498,12 +498,12 @@ function Analysis() {
           <p className="text-xl font-bold">Summary {" "}</p>
            <div
               data-tooltip-style="light"
-              data-tooltip-target="personalization"
+              data-tooltip-target="summary-tooltip"
             >
           <QuestionIcon></QuestionIcon>
             </div>
             <div
-              id="personalization"
+              id="summary-tooltip"
               role="tooltip"
               class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-normal text-xs text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
             >
@@ -799,7 +799,7 @@ function Analysis() {
           <div className="col-span-2">
             <div className="m-4">
               <p className="text-xl font-bold">Improvement Suggestions</p>
-              <div className="h-96 mt-2">
+              <div className="overflow-y-scroll h-96 pr-4">
                 {suggestions &&
                   suggestions.map((elem) => {
                     return (

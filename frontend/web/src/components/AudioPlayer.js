@@ -224,22 +224,41 @@ function AudioPlayer({
                 );
               }
               if(index == initialParagraphs.length - 1) {
-                return (
-                  <React.Fragment>
-                    <div
-                      style={{ width: `${((gapToPrevEndTime) / duration) * 100}%`}}
-                      class="bg-[#F5F5F5] transition-all duration-500 ease-out"
-                    ></div>
-                    <div
-                      style={{ width: `${((endTime - startTime) / duration) * 100}%`}}
-                      class="bg-[#80F2AA] transition-all duration-500 ease-out"
-                    ></div>
-                    <div
-                      style={{ width: `${((duration - endTime) / duration) * 100}%`}}
-                      class="bg-[#F5F5F5] transition-all duration-500 ease-out"
-                    ></div>
-                  </React.Fragment>
-                );
+                if(paragraph[0]) {
+                  return (
+                    <React.Fragment>
+                      <div
+                        style={{ width: `${((gapToPrevEndTime) / duration) * 100}%`}}
+                        class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                      ></div>
+                      <div
+                        style={{ width: `${((endTime - startTime) / duration) * 100}%`}}
+                        class="bg-[#80F2AA] transition-all duration-500 ease-out"
+                      ></div>
+                      <div
+                        style={{ width: `${((duration - endTime) / duration) * 100}%`}}
+                        class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                      ></div>
+                    </React.Fragment>
+                  );
+                } else {
+                  return (
+                    <React.Fragment>
+                      <div
+                        style={{ width: `${((gapToPrevEndTime) / duration) * 100}%`}}
+                        class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                      ></div>
+                      <div
+                        style={{ width: `${((endTime - startTime) / duration) * 100}%`}}
+                        class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                      ></div>
+                      <div
+                        style={{ width: `${((duration - endTime) / duration) * 100}%`}}
+                        class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                      ></div>
+                    </React.Fragment>
+                  );
+                }
               }
               if(paragraph[0]) {
                 return (
@@ -293,22 +312,41 @@ function AudioPlayer({
                   );
                 }
                 if(index == initialParagraphs.length - 1) {
-                  return (
-                    <React.Fragment>
-                      <div
-                        style={{ width: `${((gapToPrevEndTime) / duration) * 100}%`}}
-                        class="bg-[#F5F5F5] transition-all duration-500 ease-out"
-                      ></div>
-                      <div
-                        style={{ width: `${((endTime - startTime) / duration) * 100}%`}}
-                        class="bg-[#F5F5F5] transition-all duration-500 ease-out"
-                      ></div>
-                      <div
-                        style={{ width: `${((duration - endTime) / duration) * 100}%`}}
-                        class="bg-[#F5F5F5] transition-all duration-500 ease-out"
-                      ></div>
-                    </React.Fragment>
-                  );
+                  if(paragraph[0]) {
+                    return (
+                      <React.Fragment>
+                        <div
+                          style={{ width: `${((gapToPrevEndTime) / duration) * 100}%`}}
+                          class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                        ></div>
+                        <div
+                          style={{ width: `${((endTime - startTime) / duration) * 100}%`}}
+                          class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                        ></div>
+                        <div
+                          style={{ width: `${((duration - endTime) / duration) * 100}%`}}
+                          class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                        ></div>
+                      </React.Fragment>
+                    );
+                  } else {
+                    return (
+                      <React.Fragment>
+                        <div
+                          style={{ width: `${((gapToPrevEndTime) / duration) * 100}%`}}
+                          class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                        ></div>
+                        <div
+                          style={{ width: `${((endTime - startTime) / duration) * 100}%`}}
+                          class="bg-[#9554FE] transition-all duration-500 ease-out"
+                        ></div>
+                        <div
+                          style={{ width: `${((duration - endTime) / duration) * 100}%`}}
+                          class="bg-[#F5F5F5] transition-all duration-500 ease-out"
+                        ></div>
+                      </React.Fragment>
+                    );
+                  }
                 }
                 if(paragraph[0]) {
                   return (
