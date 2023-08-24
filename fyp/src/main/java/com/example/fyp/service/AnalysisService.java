@@ -3,6 +3,8 @@ package com.example.fyp.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -102,29 +104,42 @@ public class AnalysisService {
     // Get the sentiment score for the Analysis
     public double getScore(String employeePerformance, String skill) {
 
-        int index = employeePerformance.toLowerCase().indexOf(skill);
+        // // int index = employeePerformance.toLowerCase().indexOf(skill);
 
-        String score = "";
+        // String score = "";
 
-        if (employeePerformance.length() >= index+skill.length()+2) {
+        // if (employeePerformance.length() >= index+skill.length()+2) {
 
-            score = employeePerformance.substring(index+skill.length(), index+skill.length()+2);
+        //     score = employeePerformance.substring(index+skill.length(), index+skill.length()+2);
+        // }
+        // else {
+        //     score = employeePerformance.substring(index+skill.length(), index+skill.length()+1);
+        // }
+
+        // if (!score.matches("^\\d{2}$")) {
+
+        //     score = score.substring(0, 1);
+        // } 
+        // else if (score.equals("10")) {
+
+        //     if (employeePerformance.substring(index+skill.length()+2, index+skill.length()+3).equals("0")) {
+        //         score = "100";
+        //     }
+        // }
+
+        String performance = employeePerformance.toLowerCase();
+
+        String pattern = skill+"\\s*(\\d+(?:\\.\\d+)?)";
+        Pattern regex = Pattern.compile(pattern);
+
+        Matcher matcher = regex.matcher(performance);
+
+        String score = "0";
+
+        if(matcher.find()) {
+            score = matcher.group(1);
+
         }
-        else {
-            score = employeePerformance.substring(index+skill.length(), index+skill.length()+1);
-        }
-
-        if (!score.matches("^\\d{2}$")) {
-
-            score = score.substring(0, 1);
-        } 
-        else if (score.equals("10")) {
-
-            if (employeePerformance.substring(index+skill.length()+2, index+skill.length()+3).equals("0")) {
-                score = "100";
-            }
-        }
-
         return Double.parseDouble(score);
     }
 
