@@ -551,10 +551,10 @@ public class UploadController {
 		String employeePerformance = response.substring(prompt.length()).trim();
 
 		// System.out.println(employeePerformance);
-		double fluency = analysisService.getScore(employeePerformance, "fluency: ");
-		double hospitality = analysisService.getScore(employeePerformance, "hospitality: ");
-		double problem = analysisService.getScore(employeePerformance, "problem solving: ");
-		double personalization = analysisService.getScore(employeePerformance, "personalization: ");
+		double fluency = analysisService.getScore(employeePerformance, "fluency:");
+		double hospitality = analysisService.getScore(employeePerformance, "hospitality:");
+		double problem = analysisService.getScore(employeePerformance, "problem solving:");
+		double personalization = analysisService.getScore(employeePerformance, "personalization:");
 		double average = (fluency + hospitality + problem + personalization) / 4;
 
 		analysis.setFluency(fluency);
