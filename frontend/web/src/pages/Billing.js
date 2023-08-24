@@ -50,7 +50,7 @@ function Billing() {
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const limitPattern = /^[0-9]+\.?[0-9]+$/;
+    const limitPattern = /^(?:\d+(?:\.\d*)?|\.\d+)$/;
 
     const openModal = () => {
         setVisible(true);
