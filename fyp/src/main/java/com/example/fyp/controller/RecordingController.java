@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.fyp.controller.dto.AnalyzeRecordingDto;
 import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Employee;
@@ -220,7 +221,7 @@ public class RecordingController {
     // check if the recording analysis was successful, based on user's current usage
     // limit.
     @PostMapping("analyzeLambda")
-    public ResponseEntity<String> apply(@RequestBody List<Integer> ids) {
+    public ResponseEntity<String> apply(@RequestBody AnalyzeRecordingDto analyzeRecordingDto) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Account account = accountServiceImpl.loadUserDetailsByUsername(authentication.getName());
@@ -229,7 +230,7 @@ public class RecordingController {
             Float totalUnbilled = usageService.getTotalUnbilledUsage(account.getAccountId());
             Float limitLeft = limit - totalUnbilled;
 
-            boolean check = recordingService.checkLimit(ids, limitLeft, account);
+            boolean check = recordingService.checkLimit(analyzeRecordingDto, limitLeft, account);
 
             if (check == false) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limit Exceeded");
