@@ -609,7 +609,7 @@ const addEmployee = async (empData) => {
     });    
   }      
 
-  const [exit, setExit] = useState(false);
+  let exit = false;
 
   //handle analyzing recordings after upload
   const analyzeRecordings = async () => {
@@ -690,14 +690,15 @@ const addEmployee = async (empData) => {
             setLimitError(true);
           }
           else if (error.message === 'Limit Exceeded') {
-            setExit(true);
+            exit = true;
           }
           console.error(error);
         })
         
     }
-    navigate('/recordingList');
+    
     Swal.close();
+    navigate('/recordingList');
   }
   //   // make transcription + analysis id
   //   fetch(`${BASE_URL}/recordingList/analyzeLambda`, {
