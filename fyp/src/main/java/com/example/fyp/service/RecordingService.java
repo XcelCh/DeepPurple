@@ -23,10 +23,12 @@ import javax.sound.sampled.spi.AudioFileWriter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
+import com.example.fyp.controller.dto.AnalyzeRecordingDto;
 import com.example.fyp.entity.Account;
 import com.example.fyp.entity.Analysis;
 import com.example.fyp.entity.Diarization;
@@ -68,53 +70,68 @@ public class RecordingService extends AudioFileWriter{
     }
 
     // Check if limit of the user is enough to analyze the recording uploaded
-    public boolean checkLimit (List<Integer> ids, Float limitLeft, Account account) throws UnsupportedAudioFileException, IOException, Exception {
+    public boolean checkLimit (AnalyzeRecordingDto analyzeRecordingDto, Float limitLeft, Account account) throws UnsupportedAudioFileException, IOException, Exception {
         double price = priceService.getPrice(1);
 
         System.out.println("Now fetching");
-        List<Recording> recordings = (List<Recording>) (recordingRepository.findAllById(ids));
+        List<Recording> recordings = (List<Recording>) (recordingRepository.findAllById(analyzeRecordingDto.getRecordingList()));
         System.out.println("Finish fetching");
 
         double totalDuration = 0;
 
         // For loop the recording uploaded to be analyze
-        for (Recording recording : recordings) {
+        if (analyzeRecordingDto.getRecordingList().indexOf(analyzeRecordingDto.getRecordingId()) == 0) {
+            for (Recording recording : recordings) {
 
-            System.out.println("Inside recording");
+                System.out.println("Inside recording");
+                recording.setTempFilePath(readFromS3ObjectToFile(recording.getTimeStamp()+"_"+recording.getRecordingName(), recording.getRecordingUrl()));
+
+                AudioInputStream audio = AudioSystem.getAudioInputStream(recording.getTempFilePath());
+                recording.setBytes(audio.readAllBytes());
+                recording.setFormat(audio.getFormat());
+                recording.setSampleRate((int) (recording.getFormat().getSampleRate()));
+                recording.setAudioFormat(recording.getRecordingName().split("\\.")[1]);
+                recording.setRecordingDuration((double) (audio.getFrameLength() / recording.getFormat().getFrameRate()));
+
+                // Add total duration
+                totalDuration += recording.getRecordingDuration();
+
+                audio.close();
+                
+            }
+
+            // If price of analyzing uploads larger than limit left return false
+            double charge = (totalDuration/60) * price;
+            if (charge > limitLeft ) {
+
+                return false;
+            }
+            else {
+                for (Recording recording : recordings) {
+                    recordingRepository.save(recording);
+                }
+            }
+        }
+
+         Recording recording = recordingRepository.findById(analyzeRecordingDto.getRecordingId())
+                                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with id: " + analyzeRecordingDto.getRecordingId()));;
+
+        // If limit left is sufficient, call the analyze function to analyze the recordings
+        return analyze(recording, totalDuration, price, account);
+    }
+
+    public boolean analyze(Recording recording, double totalDuration, double price, Account account) throws UnsupportedAudioFileException, IOException, Exception{
+
+        double intervalSeconds = 0.25;
+        double amplitudeThreshold = 0.01;
+        // for (Recording recording : recordings){
+
+            Container c = new Container(new double[6]);
             recording.setTempFilePath(readFromS3ObjectToFile(recording.getTimeStamp()+"_"+recording.getRecordingName(), recording.getRecordingUrl()));
 
             AudioInputStream audio = AudioSystem.getAudioInputStream(recording.getTempFilePath());
             recording.setBytes(audio.readAllBytes());
             recording.setFormat(audio.getFormat());
-            recording.setSampleRate((int) (recording.getFormat().getSampleRate()));
-            recording.setAudioFormat(recording.getRecordingName().split("\\.")[1]);
-            recording.setRecordingDuration((double) (audio.getFrameLength() / recording.getFormat().getFrameRate()));
-
-            // Add total duration
-            totalDuration += recording.getRecordingDuration();
-
-            audio.close();
-        }
-
-        // If price of analyzing uploads larger than limit left return false
-        double charge = (totalDuration/60) * price;
-        if (charge > limitLeft ) {
-
-            return false;
-        }
-
-        // If limit left is sufficient, call the analyze function to analyze the recordings
-        return analyze(recordings, totalDuration, price, account);
-    }
-
-    public boolean analyze(List<Recording> recordings, double totalDuration, double price, Account account) throws UnsupportedAudioFileException, IOException, Exception{
-
-        double intervalSeconds = 0.25;
-        double amplitudeThreshold = 0.01;
-        for (Recording recording : recordings){
-            Container c = new Container(new double[6]);
-
-            AudioInputStream audio = AudioSystem.getAudioInputStream(recording.getTempFilePath());
             
             System.out.println(recording.displayFormat());
 
@@ -215,10 +232,10 @@ public class RecordingService extends AudioFileWriter{
 
             audio.close();
 
-        }
+        // }
 
         // Save record of Usages object into the database after analyzing 
-        Usages usage = new Usages(null, (totalDuration/60), price, new Date(System.currentTimeMillis()), null, account);
+        Usages usage = new Usages(null, (recording.getRecordingDuration()/60), price, new Date(System.currentTimeMillis()), null, account);
         account.addUsage(usage);
         accountServiceImpl.saveAccount(account);
         

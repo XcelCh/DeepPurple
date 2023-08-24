@@ -310,6 +310,7 @@ function AddRecording() {
           .then(response => {
             if (response.ok) {
               uploadedFilesCount++;
+              console.log('final',rejectedFile);
               if (uploadedFilesCount === (totalFiles-rejectedFile)) {
                 Swal.close();
                 getRecList();
@@ -332,38 +333,52 @@ function AddRecording() {
         };
   
         // Upload each file one by one
-        for(let i = 0; i < totalFiles; i++){
+        (async () => {
+          for(let i = 0; i < totalFiles; i++){
 
-          const file = audioInput.files[i];
+            const file = audioInput.files[i];
 
-          const inputDateString = audioInput.files[i].lastModifiedDate;
+            const inputDateString = audioInput.files[i].lastModifiedDate;
 
-          // Parse the input date string
-          const parsedDate = new Date(inputDateString);
+            // Parse the input date string
+            const parsedDate = new Date(inputDateString);
 
-          // Extract individual components
-          const year = parsedDate.getFullYear();
-          const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
-          const day = String(parsedDate.getDate()).padStart(2, "0");
-          const hours = String(parsedDate.getHours()).padStart(2, "0");
-          const minutes = String(parsedDate.getMinutes()).padStart(2, "0");
-          const seconds = String(parsedDate.getSeconds()).padStart(2, "0");
+            // Extract individual components
+            const year = parsedDate.getFullYear();
+            const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+            const day = String(parsedDate.getDate()).padStart(2, "0");
+            const hours = String(parsedDate.getHours()).padStart(2, "0");
+            const minutes = String(parsedDate.getMinutes()).padStart(2, "0");
+            const seconds = String(parsedDate.getSeconds()).padStart(2, "0");
 
-          // Format the components into the desired format
-          const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+            // Format the components into the desired format
+            const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
-          if (file.type.startsWith('audio/wav')) {
+            if (file.type.startsWith('audio/wav')) {
 
 
-            if (file.webkitRelativePath) {
-              const modifiedFile = new File([file], file.name);
-              uploadFile(modifiedFile, rejectedFile, formattedDate);
+              if (file.webkitRelativePath) {
+                console.log('input', rejectedFile);
+                const modifiedFile = new File([file], file.name);
+                await uploadFile(modifiedFile, rejectedFile, formattedDate);
+              }
+            }
+            else {
+              console.log('minus', rejectedFile)
+              rejectedFile++;
+              if (uploadedFilesCount === (totalFiles-rejectedFile)) {
+                Swal.close();
+                getRecList();
+                // Success message for all files uploaded
+                Swal.fire(
+                  "Updated",
+                  "All recordings have been added.",
+                  "success"
+                );
+              }
             }
           }
-          else {
-            rejectedFile++;
-          }
-        }
+        }) ();
         
       },
       allowOutsideClick: () => !Swal.isLoading()
@@ -570,6 +585,9 @@ const addEmployee = async (empData) => {
               var name = "";
               if(recList[i].recordingName.split(delimiter).length >= col-1) {
                 name = recList[i].recordingName.split(delimiter)[col-1];
+                if(name.endsWith(".wav")) {
+                  name = name.replace(/\.wav$/, "");                  
+                }
               } else {
                 continue;
               }
@@ -592,10 +610,10 @@ const addEmployee = async (empData) => {
   }      
 
   //handle analyzing recordings after upload
-  const analyzeRecordings = () => {
+  const analyzeRecordings = async () => {
     const ids = recList.map((recording) => recording.recordingId);
     setIsButtonDisabled(true);
-     Swal.fire({
+    Swal.fire({
           title: "Analyzing... Please wait for a while...",
           didOpen: () => {
             Swal.showLoading();
@@ -603,68 +621,148 @@ const addEmployee = async (empData) => {
           allowOutsideClick: () => !Swal.isLoading(),
         });
 
-    // make transcription + analysis id
-    fetch(`${BASE_URL}/recordingList/analyzeLambda`, {
-      method: "POST",
-      headers: {
-        Authorization: token.Authorization,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(ids),
-    })
-    .then((response) => {
-      if (response.status === 400) {
-        setErrorMessage("Limit is not sufficient to analyse!");
-        setLimitError(true);
-        throw new Error("Limit Exceeded");
+      for (const id of ids) {
 
-      } else if (response.ok) {
-        // Perform operations related to the first fetch's success
+        const data = {
+          recordingList: ids,
+          recordingId : id
+        }
 
-        // Second Fetch
-        const fetchPromises = ids.map(id =>
-          fetch(`${BASE_URL}/audio/analyze`, {
-              method: "POST",
+        console.log(data);
+
+        await fetch(`${BASE_URL}/recordingList/analyzeLambda`, {
+          method : 'POST',
+          headers : {
+              Authorization : token.Authorization,
+              'Content-Type' : 'application/json'
+          },
+          body : JSON.stringify(data)
+        })
+        .then(response => {
+          if (response.status === 400) {
+            setErrorMessage("Limit is not sufficient to analyse!");
+            setLimitError(true);
+            throw new Error("Limit Exceeded");
+          }
+          else if (response.ok) {
+            
+            return fetch(`${BASE_URL}/audio/analyze`, {
+              method:'POST',
               headers: {
-                  Authorization: token.Authorization,
-                  "Content-Type": "application/json",
+                Authorization: token.Authorization,
+                'Content-Type' : 'application/json'
               },
-              body: JSON.stringify(id),
-          })
-          .then((response) => {
-              return response.ok; // Return true for successful requests
-          })
-        );
-        // Wait for all fetch promises to complete
-        return Promise.all(fetchPromises);
+              body : JSON.stringify(id)
+            })
+          }
+          else {
+            setErrorMessage("An error has occured. Please try again.");
+            setLimitError(true);
+            throw new Error("Error Happened.");
+          }
+        })
 
-      } else if (response.status === 401) {
-        navigate("/");
-      } else {
-        setErrorMessage("An error has occured. Please try again.");
-        setLimitError(true);
-        throw new Error("Error Happened.");
-      }
-    })
-    .then((results) => {
-      // Check if all responses in the second fetch were successful
-      const allSuccessful = results.every(result => result);
+        .then(secondResponse => {
+          if(secondResponse.status === 401) {
+            navigate('/unauthorizedPage');
+            throw new Error('Unauthorized');
+          }
+          else if(secondResponse.ok) {
 
-      if (allSuccessful) {
-        navigate("/RecordingList");
-      } else {
-        setErrorMessage("An error has occured. Please try again.");
-        throw new Error("Error Happened.");
-      }
-    })
-    .catch(error => {
-        console.error("An error occurred:", error);
-    })
-    .finally(() => {
-      Swal.close();
-    });
-    
+            // navigate('/recordingList');
+          }
+          else {
+            setErrorMessage("An error has occured. Please try again.");
+            setLimitError(true);
+            throw new Error("Error Happened.");
+          }
+        })
+
+        .catch((error) => {
+          if (error.message === 'Failed to fetch') {
+            setErrorMessage("An error has occured. Please try again.");
+            setLimitError(true);
+          }
+          console.error(error);
+        })
+        
+
+
+    }
+    navigate('/recordingList');
+    Swal.close();
   }
+  //   // make transcription + analysis id
+  //   fetch(`${BASE_URL}/recordingList/analyzeLambda`, {
+  //     method: "POST",
+  //     headers: {
+  //       Authorization: token.Authorization,
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(ids),
+  //   })
+  //   .then((response) => {
+  //     if (response.status === 400) {
+  //       setErrorMessage("Limit is not sufficient to analyse!");
+  //       setLimitError(true);
+  //       throw new Error("Limit Exceeded");
+
+  //     } else if (response.ok) {
+  //       // Perform operations related to the first fetch's success
+
+  //       // Second Fetch
+  //       const fetchPromises = ids.map(id =>
+  //         fetch(`${BASE_URL}/audio/analyze`, {
+  //             method: "POST",
+  //             headers: {
+  //                 Authorization: token.Authorization,
+  //                 "Content-Type": "application/json",
+  //             },
+  //             body: JSON.stringify(id),
+  //         })
+  //         .then((response) => {
+  //             return response.ok; // Return true for successful requests
+  //         })
+  //       );
+  //       // Wait for all fetch promises to complete
+  //       return Promise.all(fetchPromises);
+
+
+  //       // return fetch(`${BASE_URL}/audio/analyze`, {
+  //       //   method: "POST",
+  //       //   headers: {
+  //       //     Authorization: token.Authorization,
+  //       //     "Content-Type": "application/json",
+  //       //   },
+  //       //   body: JSON.stringify(ids),
+  //       // });
+  //     } else if (response.status === 401) {
+  //       navigate("/RecordingList");
+  //     } else {
+  //       setErrorMessage("An error has occured. Please try again.");
+  //       setLimitError(true);
+  //       throw new Error("Error Happened.");
+  //     }
+  //   })
+  //   .then((results) => {
+  //     // Check if all responses in the second fetch were successful
+  //     const allSuccessful = results.every(result => result);
+
+  //     if (allSuccessful) {
+  //       navigate("/");
+  //     } else {
+  //       setErrorMessage("An error has occured. Please try again.");
+  //       throw new Error("Error Happened.");
+  //     }
+  //   })
+  //   .catch(error => {
+  //       console.error("An error occurred:", error);
+  //   })
+  //   .finally(() => {
+  //     Swal.close();
+  //   });
+    
+  // }
 
   //helper function to encode 2 strings to 1
   const encodeValue = (id, name) => {
