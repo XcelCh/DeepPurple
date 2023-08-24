@@ -583,7 +583,7 @@ public class UploadController {
 		String negativeEmotions = response.substring(prompt.length()).trim();
 
 		analysis.setNegativeEmotion(negativeEmotions);
-		System.out.println(analysis);
+
 		analysisService.saveAnalysis(analysis);
 
 		return "completed";
