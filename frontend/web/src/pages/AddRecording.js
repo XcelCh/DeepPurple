@@ -366,6 +366,16 @@ function AddRecording() {
             else {
               console.log('minus', rejectedFile)
               rejectedFile++;
+              if (uploadedFilesCount === (totalFiles-rejectedFile)) {
+                Swal.close();
+                getRecList();
+                // Success message for all files uploaded
+                Swal.fire(
+                  "Updated",
+                  "All recordings have been added.",
+                  "success"
+                );
+              }
             }
           }
         }) ();
