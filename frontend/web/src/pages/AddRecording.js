@@ -570,6 +570,9 @@ const addEmployee = async (empData) => {
               var name = "";
               if(recList[i].recordingName.split(delimiter).length >= col-1) {
                 name = recList[i].recordingName.split(delimiter)[col-1];
+                if(name.endsWith(".wav")) {
+                  name = name.replace(/\.wav$/, "");                  
+                }
               } else {
                 continue;
               }
