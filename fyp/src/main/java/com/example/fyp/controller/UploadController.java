@@ -3,6 +3,7 @@ package com.example.fyp.controller;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -272,6 +273,7 @@ public class UploadController {
 	}
 	
 	// Get all recent uploaded recordings 
+	// Get all recent uploaded recordings 
 	@GetMapping("/getRecordings")
     public ResponseEntity<?> getAllRecording(@RequestParam(required = false) String currentDate) {
         ResponseStatus<List<Map<String, Object>>> response = new ResponseStatus<>();
@@ -293,6 +295,15 @@ public class UploadController {
                 recList = recList.stream()
                         .filter(rec -> ((LocalDateTime) rec.get("uploadDate")).isAfter(currTime))
                         .collect(Collectors.toList());
+            }
+            
+            Iterator<Map<String, Object>> iterator = recList.iterator();
+            while (iterator.hasNext()) {
+                Map<String, Object> recIter = iterator.next();
+                Optional<Recording> r = recRepo.findById((Integer) recIter.get("recordingId"));
+                if (r.get().getAnalysis() != null) {                    
+                    iterator.remove();
+                }
             }
 
             // RESPONSE DATA

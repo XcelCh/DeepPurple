@@ -609,6 +609,8 @@ const addEmployee = async (empData) => {
     });    
   }      
 
+  let exit = false;
+
   //handle analyzing recordings after upload
   const analyzeRecordings = async () => {
     const ids = recList.map((recording) => recording.recordingId);
@@ -622,6 +624,10 @@ const addEmployee = async (empData) => {
         });
 
       for (const id of ids) {
+
+        if (exit) {
+          break;
+        }
 
         const data = {
           recordingList: ids,
@@ -683,12 +689,20 @@ const addEmployee = async (empData) => {
             setErrorMessage("There was an analysis error but the rest are still being analyzed. Please do not refresh.");
             setLimitError(true);
           }
+          else if (error.message === 'Limit Exceeded') {
+            exit = true;
+          }
           console.error(error);
         })
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 3e3c6bdb29bf3b6a76f374cac2ab59e41bfdea98
     }
-    navigate('/recordingList');
+    
     Swal.close();
+    navigate('/recordingList');
   }
   //   // make transcription + analysis id
   //   fetch(`${BASE_URL}/recordingList/analyzeLambda`, {
