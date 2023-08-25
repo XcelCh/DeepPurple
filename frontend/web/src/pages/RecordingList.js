@@ -246,8 +246,7 @@ function RecordingList() {
             }
           );
 
-        // Success message
-        Swal.fire("Deleted!", "The recording has been deleted!", "success");
+        
       }
     });
   };
