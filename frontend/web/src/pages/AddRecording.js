@@ -664,7 +664,7 @@ const addEmployee = async (empData) => {
 
         .then(secondResponse => {
           if(secondResponse.status === 401) {
-            navigate('/unauthorizedPage');
+            // navigate('/unauthorizedPage');
             throw new Error('Unauthorized');
           }
           else if(secondResponse.ok) {
@@ -680,13 +680,11 @@ const addEmployee = async (empData) => {
 
         .catch((error) => {
           if (error.message === 'Failed to fetch') {
-            setErrorMessage("An error has occured. Please try again.");
+            setErrorMessage("There was an analysis error but the rest are still being analyzed. Please do not refresh.");
             setLimitError(true);
           }
           console.error(error);
         })
-        
-
 
     }
     navigate('/recordingList');

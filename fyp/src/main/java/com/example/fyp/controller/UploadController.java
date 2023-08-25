@@ -1,5 +1,6 @@
 package com.example.fyp.controller;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -334,7 +335,7 @@ public class UploadController {
 		Analysis analysis = analysisService.findAnalysisById(analysisId);
 
 		// Set up OpenAI API
-		OpenAiService openAiService = new OpenAiService(apiKey);
+		OpenAiService openAiService = new OpenAiService(apiKey, Duration.ofSeconds(30));
 
 		// Merge all the transcripts and prefix with Agent / Customer
 		List<Object[]> unformattedTranscripts = service.getTranscriptsByAnalysisId(analysisId);
