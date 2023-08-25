@@ -625,6 +625,7 @@ const addEmployee = async (empData) => {
 
       for (const id of ids) {
 
+        console.log(exit);
         if (exit) {
           break;
         }
@@ -646,8 +647,7 @@ const addEmployee = async (empData) => {
         })
         .then(response => {
           if (response.status === 400) {
-            setErrorMessage("Limit is not sufficient to analyse!");
-            setLimitError(true);
+            
             throw new Error("Limit Exceeded");
           }
           else if (response.ok) {
@@ -690,6 +690,9 @@ const addEmployee = async (empData) => {
             setLimitError(true);
           }
           else if (error.message === 'Limit Exceeded') {
+            console.log('limit');
+            setErrorMessage("Limit is not sufficient to analyse!");
+            setLimitError(true);
             exit = true;
           }
           console.error(error);
@@ -697,7 +700,10 @@ const addEmployee = async (empData) => {
     }
     
     Swal.close();
-    navigate('/recordingList');
+
+    if (!exit) {
+      navigate('/recordingList');
+    }
   }
   //   // make transcription + analysis id
   //   fetch(`${BASE_URL}/recordingList/analyzeLambda`, {
