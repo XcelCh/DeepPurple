@@ -510,7 +510,7 @@ function RecordingList() {
                     <tr>
                       <th>{currentPage * postsPerPage - 4 + index}</th>
                       <td>
-                        {recording.recordingName}-[{recording.recordingId}]
+                        {recording.recordingName}
                       </td>
                       <td>{recording.uploadDate.substring(0, 10)}</td>
                       <td>{recording.dateRecorded.substring(0, 10)}</td>
