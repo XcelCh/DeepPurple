@@ -694,11 +694,6 @@ const addEmployee = async (empData) => {
           }
           console.error(error);
         })
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> 3e3c6bdb29bf3b6a76f374cac2ab59e41bfdea98
     }
     
     Swal.close();
